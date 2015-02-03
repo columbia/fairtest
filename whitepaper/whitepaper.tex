@@ -1,26 +1,84 @@
 \documentclass{article}
+
+\usepackage{xspace}
+\usepackage{hyperref}
 \usepackage[margin=1in]{geometry}
 \usepackage{listings}
 
-\newcommand{\lang}{FairTest}
+\newcommand{\thetool}{{\it FairTest}\xspace}
+\newcommand{\heading}[1]{\noindent{\bf{#1}}}
+\newcommand{\xxx}[1]{\textbf{{XXX} #1}}
 
-\title{\lang{}:  }
-\author{V. Atlidakis, ...}
+\title{\thetool: A Unit Testing Framework for Uncovering Privacy Bugs in
+  Internet-of-Things Applications}
+\author{V. Atlidakis, D. X. He, E. D. Park}
 \date{\today}
-
-
-\newenvironment{enu}{%
-    \begin{enumerate}%
-    \vspace{-\topsep}%
-    \setlength\itemsep{-\parskip}%
-    \setlength\parsep{0.25in}%
-    }
-    {
-%    \vspace{-\topsep}
-    \end{enumerate}
-}
 
 \begin{document}
 \maketitle
 
+\heading{Motivation.}
+The Internet of Things (IoT) offers enormous capabilities for data exchange
+enhancing societal progress, but it comes with a strong need for transparency
+and accountability with respect to data usage. All the more, highly sensitive
+data are transmitted from devices on our bodies, in our homes, and in the
+streets. Unfortunately, the privacy implications of collecting and using that
+information are poorly understood and rarely studied. Consequently, there is a
+clear danger of unintentional algorithmic discriminations. An indicative recent
+example is the Staples price discrimination case~\cite{Staples}.
+In this case an arguably reasonable algorithmic decision to optimize online
+prices based on user proximity to competitor brick-and-mortar locations led to
+consistently higher prices for low-income populations, since they tend to
+generally live farther from these stores. This kind of indirect--and likely
+unintended--effects are challenging to identify, and with the use of sensitive
+information collected by IoT applications, the risk for these dangers is only
+increasing. Thus, we believe that new programming tools are needed to increase
+developers’ visibility into the data they collect and the implications of its
+integration into applications.
+
+\heading{Goals.}
+Our purpose is to build \thetool: A discrimination testing suite uncovering
+differential treatment of various populations based on protected
+attributes, such as religion, sexual orientation, or income. Our idea is to
+measure correlation between outputs of a specific program (such as a price
+recommendation engine) and the values of the protected attributes. Any strong
+correlation between protected attributes and outputs is reported to the
+developer as potential discrimination. To provide a better perspective to the
+programmer, we will try to develop meaningful heuristics that rank observed
+correlations based on their likelihood to be unintended or unfair
+discriminations versus natural, preference-based effects. We will design
+{\it FairTest} to be easy to use by regular app programmers, will integrate it
+into popular testing frameworks, and write a set of sample applications
+indicating meaningful use cases.
+
+\heading{Prior Experience.}
+\xxx{prior work}
+
+\heading{Expected Conclusions.}
+\xxx{What is our expectations}
+
+\heading{Research Plan.}
+The first milestone is to build a prototype of our system no later than
+the project status presentation date, on 3/10. Our prototype will include a
+demo dataset for an application imitating a know discrimination case, such as
+the Staple~\cite{Staples} case. We expect to be able to identify strong
+correlations between protected attributes and outputs in clear cut cases such
+as in~\cite{Staples}. The second milestone is to augment our prototype
+with real datasets (hopefully obtained from online web stores) and a set of
+simple applications featuring a real price recommendation engine. Our hope is
+that we will be able to uncover obscure correlations of protected attributes
+and outputs that are impossible to foresee by the programmer. The third
+milestone is to finalize a fine grained API for integrating our \thetool
+framework in a popule testing framework. The fourth milestone, is to present
+our experiences and lessons learned as well as interesting (and previously
+unknown) unintendiotal cases of discrimination uncaovered by \thetool.
+
+\clearpage
+{
+  \scriptsize
+  \setlength\itemsep{0pt}
+  \footnotesize
+  \bibliographystyle{abbrv}
+  \bibliography{whitepaper}
+}
 \end{document}

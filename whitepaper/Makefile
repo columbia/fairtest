@@ -9,7 +9,7 @@ ifeq ($(UNAME),Darwin)
 	OPEN_COMMAND = open
 endif
 
-all:	$(FILE).tex
+all:	$(FILE).tex bib
 	rm -f $(FILE).ps
 	latex $(FILE)
 	dvips $(FILE).dvi -o $(FILE).ps
