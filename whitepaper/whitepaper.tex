@@ -42,61 +42,62 @@ differential treatment of various populations based on protected
 attributes, such as religion, sexual orientation, or income. Our idea is to
 measure correlation between outputs of a specific program (such as a price
 recommendation engine) and the values of the protected attributes. Any strong
-correlation between protected attributes and outputs is reported to the
+correlation between protected attributes and outputs is threated as a privacy
+bug and is reported to the
 developer as potential discrimination. To provide a better perspective to the
 programmer, we will try to develop meaningful heuristics that rank observed
 correlations based on their likelihood to be unintended or unfair
 discriminations versus natural, preference-based effects. We will design
-{\it FairTest} to be easy to use by regular app programmers, will integrate it
-into popular testing frameworks, and write a set of sample applications
+{\it FairTest} to be easy to use by regular application programmers,
+will integrate
+it into popular testing frameworks, and write a set of sample applications
 indicating meaningful use cases.
 
-\heading{Prior Experience.}
-\xxx{prior work}
-Fairness in the usage of data by IoT applications is drawing
-increasing attention in our days, and yet there is no established methodology
-for measuring fairness of online algorithms producing recommendations, nor is
-there an established methodology for shading some light and helping uncover
-potential online discrimination cases.
-The authors of~\cite{Fairness} study the fairness of classification and their pupose is
-to prevent discrimitating of individuals based on certain characteristics, such as
-membership in a group, and at the same time maintain the effectiveness (utility)
-of the classifier. The limitation of this approach is that it requires programmes
-to be able to define similarity metrics and it is unclear to what extend programmers
-will be able to define such metrics.
-Also, in~\cite{DisparateImpact} unuqual threatment of different subpopulations by a
-classification methodology is studied for its legal concept of disparate impact.
-This work formalizes what it means for a dataset to have the
-potential for disparate impact if used by a classification mechanism,
-and suggests procedures for detecting and removing
-potential disparate impact in a dataset. However, it is not showing the
-effectiveness of the proposed procedures in real applications, and also does
-not extend to more general discrimination hazards that we consider here.
-
+\heading{Related Work.}
+Fairness in the use of data by IoT applications is drawing increasing
+attention in our days, and yet there is no established methodology for
+measuring fairness of online algorithms producing recommendations, nor is
+there an established methodology for shading some light and helping
+uncover potential online discrimination cases. The authors of~\cite{Fairness}
+study fairness of classification and their purpose is to prevent
+discriminating individuals based on certain characteristics, such as
+membership in a group, and at the same time maintain the effectiveness of
+the classifier. The limitation of this approach is that it requires
+programmes to be able to define similarity metrics, and it is unclear
+whether programmers are able to define such metrics or not. Also,
+in~\cite{DisparateImpact} unequal treatment of different populations
+by a classification methodology is studied for its legal concept of
+disparate impact. This work formalizes what it means for a dataset to
+have the potential for disparate impact if used by a classifier, and
+suggests methods for detecting and removing potential disparate impact.
+However, it is not showing the effectiveness of the proposed procedures
+in real applications, and also does not extend to general discrimination
+hazards.
 
 \heading{Expected Conclusions.}
-By using our framework, a developer will be able to test an application of discrimination. Failing 
-the test would inform the developer that output of the algorithm used by the application has 
-significant correlation with the private data of users. Passing the test should indicate that the application 
-is free of discrimination with reasonable probability. The framework should work independently from 
-the algorithm being tested so that it can be used to test various different algorithms, and the api 
-should be simple so that developers can easily test their algorithm, whenever they need it.
+By using \thetool a developer will be able to test an application for
+discrimination cases by uncovering correlations between protected attributes
+and outputs. We expect to be able to identify clear cut discrimination cases,
+as well as previously unknown obscure discrimination cases. \thetool should
+work independently from the algorithm being tested and it should feature a
+simple API allowing developers easily test their code for privacy bugs.
 
 \heading{Research Plan.}
 The first milestone is to build a prototype of our system no later than
 the project status presentation date, on 3/10. Our prototype will include a
-demo dataset for an application imitating a known discrimination case, such as
-the Staple~\cite{Staples} case. We expect to be able to identify strong
-correlations between protected attributes and outputs in clear cut cases such
-as in~\cite{Staples}. The second milestone is to augment our prototype
-with real datasets (hopefully obtained from online web stores) and a set of
-simple applications featuring a real price recommendation engine. Our hope is
-that we will be able to uncover obscure correlations of protected attributes
-and outputs that are impossible to foresee by the programmer. The third
-milestone is to finalize a fine grained API for integrating our \thetool
-framework in a popule testing framework. The fourth milestone, is to present
-our experiences and lessons learned as well as interesting (and previously
-unknown) unintendiotal cases of discrimination uncaovered by \thetool.
+demo dataset for an application imitating a known discrimination case,
+such as the Staple~\cite{Staples} case. We expect to be able to identify
+strong correlations between protected attributes and outputs in clear cut
+cases such as in~\cite{Staples}. The second milestone is to augment our
+prototype with real datasets (hopefully obtained from online web stores)
+and a set of simple applications featuring a real price recommendation
+engine. Our hope is that we will be able to uncover obscure correlations
+of protected attributes and outputs that are impossible to foresee by the
+programmer. The third milestone is to finalize the implementation of \thetool
+and integrate it into a popular testing framework. The fourth milestone,
+is to present our experiences and lessons learned as well as interesting
+(and previously unknown) unintentional cases of discrimination
+uncovered by \thetool.
 
 {
   \scriptsize
