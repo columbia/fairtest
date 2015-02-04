@@ -53,6 +53,26 @@ indicating meaningful use cases.
 
 \heading{Prior Experience.}
 \xxx{prior work}
+Fairness in the usage of data by IoT applications is drawing
+increasing attention in our days, and yet there is no established methodology
+for measuring fairness of online algorithms producing recommendations, nor is
+there an established methodology for shading some light and helping uncover
+potential online discrimination cases.
+The authors of~\cite{Fairness} study the fairness of classification and their pupose is
+to prevent discrimitating of individuals based on certain characteristics, such as
+membership in a group, and at the same time maintain the effectiveness (utility)
+of the classifier. The limitation of this approach is that it requires programmes
+to be able to define similarity metrics and it is unclear to what extend programmers
+will be able to define such metrics.
+Also, in~\cite{DisparateImpact} unuqual threatment of different subpopulations by a
+classification methodology is studied for its legal concept of disparate impact.
+This work formalizes what it means for a dataset to have the
+potential for disparate impact if used by a classification mechanism,
+and suggests procedures for detecting and removing
+potential disparate impact in a dataset. However, it is not showing the
+effectiveness of the proposed procedures in real applications, and also does
+not extend to more general discrimination hazards that we consider here.
+
 
 \heading{Expected Conclusions.}
 By using our framework, a developer will be able to test an application of discrimination. Failing 
@@ -78,7 +98,6 @@ framework in a popule testing framework. The fourth milestone, is to present
 our experiences and lessons learned as well as interesting (and previously
 unknown) unintendiotal cases of discrimination uncaovered by \thetool.
 
-\clearpage
 {
   \scriptsize
   \setlength\itemsep{0pt}
