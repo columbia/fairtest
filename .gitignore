@@ -5,3 +5,5 @@
 *.pdf
 *.aux
 *.dvi
+db.sqlite3
+*.pyc
