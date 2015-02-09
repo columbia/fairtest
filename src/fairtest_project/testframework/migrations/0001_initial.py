@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Choice',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('choice_text', models.CharField(max_length=200)),
                 ('votes', models.IntegerField(default=0)),
             ],
@@ -24,9 +24,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Question',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('question_text', models.CharField(max_length=200)),
-                ('pub_date', models.DateTimeField(verbose_name='date published')),
+                ('pub_date', models.DateTimeField(verbose_name=b'date published')),
             ],
             options={
             },
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='choice',
             name='question',
-            field=models.ForeignKey(to='testframe.Question'),
+            field=models.ForeignKey(to='testframework.Question'),
             preserve_default=True,
         ),
     ]
