@@ -1,1 +1,1 @@
-web: gunicorn fairtest.wsgi --log-file -
+web: gunicorn fairtest_project.wsgi --log-file -
