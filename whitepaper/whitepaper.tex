@@ -9,29 +9,31 @@
 \newcommand{\heading}[1]{\noindent{\bf{#1}}}
 \newcommand{\xxx}[1]{\textbf{{XXX} #1}}
 
-\title{\thetool: A Unit Testing Framework for Uncovering Privacy Bugs in
-  Internet-of-Things Applications}
-\author{V. Atlidakis, D. X. He, E. D. Park}
+\title{\thetool: A Unit Testing Framework for Uncovering Privacy Bugs in Data
+Driven Applications}
+\author{V. Atlidakis and D. X. He}
 \date{\today}
 
 \begin{document}
 \maketitle
 
 \heading{Motivation.}
-The Internet of Things (IoT) offers enormous capabilities for data exchange
-enhancing societal progress, but it comes with a strong need for transparency
-and accountability with respect to data usage. All the more, highly sensitive
-data are transmitted from devices on our bodies, in our homes, and in the
-streets. Unfortunately, the privacy implications of collecting and using that
-information are poorly understood and rarely studied. Consequently, there is a
-clear danger of unintentional algorithmic discriminations. An indicative recent
+Modern data driven web applications offer enormous capabilities for data
+exchange and usage,
+but there is a strong need for transparency and accountability.
+All the more, highly sensitive personal information are being used from web
+applications to enhance user experience and help create efficient advertising
+policies. Unfortunately, the privacy implications of using that information are
+poorly understood and rarely studied due to lack of transparency and
+accountability. Consequently, there is a clear danger of unintentional data
+misuse, such as algorithmic discriminations. An indicative recent
 example is the Staples price discrimination case~\cite{Staples}.
 In this case an arguably reasonable algorithmic decision to optimize online
 prices based on user proximity to competitor brick-and-mortar locations led to
 consistently higher prices for low-income populations, since they tend to
 generally live farther from these stores. This kind of indirect--and likely
 unintended--effects are challenging to identify, and with the use of sensitive
-information collected by IoT applications, the risk for these dangers is only
+information collected by web applications, the risk for these dangers is only
 increasing. Thus, we believe that new programming tools are needed to increase
 developers’ visibility into the data they collect and the implications of its
 integration into applications.
@@ -54,7 +56,7 @@ it into popular testing frameworks, and write a set of sample applications
 indicating meaningful use cases.
 
 \heading{Related Work.}
-Fairness in the use of data by IoT applications is drawing increasing
+Fairness in the use of data by web applications is drawing increasing
 attention in our days, and yet there is no established methodology for
 measuring fairness of online algorithms producing recommendations, nor is
 there an established methodology for shading some light and helping
@@ -84,21 +86,21 @@ and it should feature a
 simple API allowing developers easily test their code for privacy bugs.
 
 \heading{Research Plan.}
-The first milestone is to build a prototype of our system no later than
-the project status presentation date, on 3/10. Our prototype will include a
-demo dataset for an application imitating a known discrimination case,
-such as the Staple~\cite{Staples} case. We expect to be able to identify
-strong correlations between protected attributes and outputs in clear cut
-cases such as in~\cite{Staples}. The second milestone is to augment our
-prototype with real datasets (hopefully obtained from online web stores)
-and a set of simple applications featuring a real price recommendation
-engine. Our hope is that we will be able to uncover obscure correlations
-of protected attributes and outputs that are impossible to foresee by the
-programmer. The third milestone is to finalize the implementation of \thetool
-and integrate it into a popular testing framework. The fourth milestone,
-is to present our experiences and lessons learned as well as interesting
-(and previously unknown) unintentional cases of discrimination
-uncovered by \thetool.
+The first milestone is to build a demonstrating scenario for the Staple
+case~\cite{Staples} no later than the project status presentation date, on 3/10.
+This will include a demo set of users created by tuning yelp's publicly
+available data set~\cite{Yelp} to resemble Staple's user set, and a list of
+random competitor addresses. Then, we will build a sample application
+recommending product prices based on user and competitor locality.
+The second milestone is to build the necessary infrastructure to identify and
+rank correlations between user attributes, such as address, sex, and age, with
+outputs, such as price. The third milestone is the design of \thetool's API
+for writing tests to rank the aforesaid correlations and the integration of
+\thetool's API with a popular web framework, such as Django. We intend to write
+some basic test cases --unittests-- to demonstrate clear cut cases of strong
+correlations between inputs and outputs. The fourth milestone, is to present our
+experiences and lessons learned as well as interesting (and previously unknown)
+unintentional cases of discrimination uncovered by \thetool.
 
 {
   \scriptsize
