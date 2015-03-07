@@ -2,3 +2,4 @@ Django==1.7.4
 dj-database-url
 psycopg2
 gunicorn
+django-bootstrap3
