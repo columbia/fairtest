@@ -35,3 +35,24 @@ class Competitor(models.Model):
 
     def __str__(self):
         return self.name + self.address
+
+
+class Zipcode(models.Model):
+    """A Zipcode geocoding database.
+
+    Attributes:
+        zip(str): Zipcode
+        city(str): City represented by the zipcode
+        state(str): State represented by the zipcode
+        la(float): Latitude of the zipcode
+        lo(float): Longtitude of the zipcode
+    """
+    zip = models.CharField(max_length=6)
+    city = models.CharField(max_length=50)
+    state = models.CharField(max_length=3)
+
+    la = models.FloatField()
+    lo = models.FloatField()
+
+    def __str__(self):
+        return self.city + ", " + self.state + self.zip
