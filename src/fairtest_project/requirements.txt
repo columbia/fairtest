@@ -3,3 +3,4 @@ dj-database-url
 psycopg2
 gunicorn
 django-bootstrap3
+geopy
