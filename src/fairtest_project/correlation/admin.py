@@ -10,7 +10,7 @@ def correlation_view(request):
     t = get_template('correlation_admin');
     co = []
     for i in range(len(Correlation.inputs)):
-        co.append((str(Correlation.inputs[i]), str(Correlation.outputs[i])));
+        co.append((str(Correlation.inputs[i][0][1]), str(Correlation.outputs[i])));
     print(co)
     return HttpResponse(t.render(Context({'co' : co})))
 
