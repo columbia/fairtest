@@ -7,12 +7,12 @@ class Product(models.Model):
     """A product to be sold online
 
     Attributes:
-        name(str): The name of the product
-        basprice(decimal): The initial price of the product,  which is subject
-                           to modifications based on the location of competitors
+        name(str):           The name of the product
+        base_price(decimal): The initial price of the product, which is subject
+                             to modification based on competitor locations
     """
     name = models.CharField(max_length=200)
-    baseprice = models.DecimalField(max_digits=15,decimal_places=2,default=0)
+    baseprice = models.DecimalField(max_digits=15, decimal_places=2, default=0)
 
     def __str__(self):
         return self.name
@@ -34,19 +34,17 @@ class Product(models.Model):
 
 
 class Competitor(models.Model):
-    """A Competitor of the selle.
+    """A Competitor that sells similar products.
 
     Attributes:
-        name(str): The name of the competitor
-        basprice(decimal): The address of the competitor.
-                           to modifications based on the location of competitors
+        name(str):    The name of the competitor
+        address(str): The address of the competitor.
+        zip_code(int):The zip code of the competitor.
 
-    Note:
-        We need to set a specific format for the addresses.
     """
     name = models.CharField(max_length=200)
     address = models.CharField(max_length=200)
-    zip = models.CharField(max_length=6)
+    zip_code = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name + self.address
@@ -74,3 +72,11 @@ class Zipcode(models.Model):
 
     def __str__(self):
         return self.city + ", " + self.state + self.zip
+
+class HasProduct(models.Model):
+    """A relationship that connect a Competitor with a product"""
+    competitor = models.ForeignKey(Competitor)
+    product = models.ForeignKey(Product)
+
+    def __str__(self):
+        return self.competitor.name + " has " + self.product.name
