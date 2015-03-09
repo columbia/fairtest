@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+import dj_database_url
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -61,10 +62,7 @@ WSGI_APPLICATION = 'fairtest_project.wsgi.application'
 
 
 DATABASES = {
-'default': {
-   'ENGINE': 'django.db.backends.sqlite3',
-   'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-  }
+        'default': dj_database_url.config()
 }
 
 #import dj_database_url
