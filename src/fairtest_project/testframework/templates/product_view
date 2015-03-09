@@ -25,6 +25,7 @@ Products
     <td>{{ product.price }}</td>
   </tr>
   {% endfor %}
+  </tbody>
   {% endblock table.tbody %}
 </table>
 {% endblock table %}
