@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'fairtest_project',
     'testframework',
+    'correlation',
 )
 
 MIDDLEWARE_CLASSES = (
