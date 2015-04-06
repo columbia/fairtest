@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+import dj_database_url
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -36,8 +37,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap3',
     'fairtest_project',
     'testframework',
+    'correlation',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -58,10 +61,15 @@ WSGI_APPLICATION = 'fairtest_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-import dj_database_url
+
 DATABASES = {
         'default': dj_database_url.config()
-        }
+}
+
+#import dj_database_url
+#DATABASES = {
+#        'default': dj_database_url.config()
+#        }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/

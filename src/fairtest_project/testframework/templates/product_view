@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load bootstrap3 %}
+
+{% block title %}
+Products
+{% endblock title %}
+
+{% block content %}
+{% block table %}
+<table class="table table-compact table-bordered">
+  {% block table.thead %}
+  <thead>
+  <tr>
+    <td>Product</td>
+    <td>Price</td>
+  </tr>
+  </thead>
+  {% endblock table.thead %}
+  {% block table.tbody %}
+  <tbody>
+  {% for product in products %}
+  <tr>
+    <td>{{ product.name }}</td>
+    <td>{{ product.price }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+  {% endblock table.tbody %}
+</table>
+{% endblock table %}
+{% endblock content %}
+
