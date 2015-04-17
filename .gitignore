@@ -9,3 +9,4 @@ migrations
 *.dvi
 db.sqlite3
 *.pyc
+*.blg

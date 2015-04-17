@@ -1,48 +1,38 @@
-FILE = paper
+PAPER=paper
+LATEX=pdflatex
+BIBTEX=bibtex
 
-PRINTER = lp
-UNAME = $(shell uname)
-ifeq ($(UNAME),Linux)
-	OPEN_COMMAND = evince
-endif
-ifeq ($(UNAME),Darwin)
-	OPEN_COMMAND = open
+LATEXARGS=
+BIBTEXARGS=
+PYDFLATEX = $(shell which pydflatex 2>/dev/null | grep -v "aliased" | head -1)
+
+SRCS=$(wildcard *.tex)
+REFS=$(wildcard *.bib)
+FIGS=$(wildcard figures/*)
+
+ifneq ($(PYDFLATEX),)
+  LATEX = $(PYDFLATEX)
+  LATEXARGS = -l
+  BIBTEX = $(PYDFLATEX)
+  BIBTEXARGS = --bibtex
 endif
 
-all:	$(FILE).tex bib
-	rm -f $(FILE).ps
-	latex $(FILE)
-	dvips $(FILE).dvi -o $(FILE).ps
-#	$(OPEN_COMMAND) $(FILE).ps
+.PHONY: results $(PAPER).pdf clean
+
+all: $(PAPER).pdf
+
+$(PAPER).pdf: $(SRCS) $(REFS) $(FIGS)
+	$(LATEX) $(LATEXARGS) $(PAPER)
+	$(BIBTEX) $(BIBTEXARGS) $(PAPER)
+	$(LATEX) $(LATEXARGS) $(PAPER)
+	$(LATEX) $(PAPER)
+
+
+submission: $(PAPER).pdf
+	cp $(PAPER).pdf submission/
 
 clean:
-	rm -f $(FILE).ps $(FILE).pdf $(FILE).log $(FILE).dvi $(FILE).bbl $(FILE).blg $(FILE).aux
-	rm -f *~
-	rm -f *.bak
-	rm -f *.backup
-	rm -f *.log
-
-pdf:
-	gs -q -dNOPAUSE -sDEVICE=pdfwrite -sOutputFile=$(FILE).pdf $(FILE).ps -c quit
-
-bib:	$(FILE).tex
-	latex $(FILE)
-	bibtex $(FILE)
-	latex $(FILE)
-	latex $(FILE)
-	dvips $(FILE).dvi -o $(FILE).ps
-	rm $(FILE).dvi $(FILE).log $(FILE).blg
-
-s:	$(FILE).tex
-	latex $(FILE)
-	dvips $(FILE).dvi -o $(FILE).ps
-
-f:	s
-	ps2pdf $(FILE).ps
-
-p:	
-	lpr -P$(PRINTER) $(FILE).ps; 
-	lpq -P$(PRINTER)
-
-dist:
-	tar cfj ../$(FILE)-`date +%F`.tar.bz2 .
+	rm -f *.dvi *.aux *.log *.blg *.bbl \
+          $(PAPER).ps $(PAPER).pdf \
+          $(PAPER)-single.pdf $(PAPER)-single.ps
+	+make -C results clean
