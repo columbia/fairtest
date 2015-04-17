@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from rest_framework import routers, serializers, viewsets
-from fairtest_api.models import User, Transaction
+from api.models import User, Transaction
 
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
