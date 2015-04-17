@@ -1,0 +1,36 @@
+\documentclass[10pt,twocolumn]{article} 
+
+\usepackage{xspace}
+\usepackage{hyphenat}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage[margin=1in]{geometry}
+\usepackage[vertfit]{breakurl}
+
+\newcommand{\thetool}{{\it FairTest}\xspace}
+\newcommand{\heading}[1]{\noindent{\bf{#1}}}
+\newcommand{\xxx}[1]{\textbf{{XXX} #1}}
+
+\title{\thetool: A Unit Testing Framework for Uncovering Privacy Bugs in Data
+Driven Applications}
+\author{V. Atlidakis and D. X. He}
+\date{\today}
+
+\begin{document}
+\maketitle
+\input{abstract}
+\input{intro}
+\input{motivation}
+\input{fairtest}
+\input{evaluation}
+\input{related}
+\input{conclusion}
+
+{
+  \scriptsize
+  \setlength\itemsep{0pt}
+  \footnotesize
+  \bibliographystyle{abbrv}
+  \bibliography{paper}
+}
+\end{document}

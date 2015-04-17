@@ -4,6 +4,7 @@ migrations
 *.out
 *.ps
 *.pdf
+!*/related/*.pdf
 *.aux
 *.dvi
 db.sqlite3
