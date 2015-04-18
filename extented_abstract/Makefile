@@ -35,4 +35,3 @@ clean:
 	rm -f *.dvi *.aux *.log *.blg *.bbl \
           $(PAPER).ps $(PAPER).pdf \
           $(PAPER)-single.pdf $(PAPER)-single.ps
-	+make -C results clean
