@@ -22,6 +22,8 @@ class UserTransaction(models.Model):
     race = models.IntegerField(choices=RACE_CHOICES)
     price = models.FloatField()
 
+    def __str__(self):
+        return str(self.uid)
 
 #class Transaction(models.Model):
 #    uid = models.ForeignKey('User')
