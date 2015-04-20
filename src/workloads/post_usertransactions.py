@@ -31,13 +31,15 @@ def main(argv=sys.argv):
             sex = int(line.split(',')[1])
             zipcode = str(line.split(',')[2])
             race = int(line.split(',')[3])
+            price = float(line.split(',')[4])
         except IndexError, error:
             print >> sys.stderr, "IndexError at line:", line
             continue
 
-        response = requests.post('http://127.0.0.1:8000/users/',
-                                 data={'id':uid, 'sex':sex, 'zip':zipcode, 'race': race},
-                                 auth=('root', 'os15'))
+        response = requests.post('http://127.0.0.1:8000/usertransactions/',
+                        data={'uid':uid, 'sex':sex, 'zipcode':zipcode,
+                            'race': race, 'price':price},
+                        auth=('root', 'os15'))
         if response.ok:
             print "POST success for user with id: %d" % uid
         else:

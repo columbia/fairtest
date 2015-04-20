@@ -1,5 +1,4 @@
 from django.contrib import admin
-from .models import User, Transaction
+from .models import UserTransaction
 
-admin.site.register(User)
-admin.site.register(Transaction)
+admin.site.register(UserTransaction)

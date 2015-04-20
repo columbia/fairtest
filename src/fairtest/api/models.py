@@ -1,6 +1,6 @@
 from django.db import models
 
-class User(models.Model):
+class UserTransaction(models.Model):
     RACE_CHOICES = (
             (1, 'White, Not Hispanic or Latino'),
             (2, 'Hispanic or Latino'),
@@ -16,12 +16,13 @@ class User(models.Model):
             (2, 'F'),
             )
 
-    id = models.IntegerField(primary_key=True)
-    zip = models.CharField(max_length=10)
+    uid = models.IntegerField()
+    zipcode = models.CharField(max_length=10)
     sex = models.IntegerField(choices=SEX_CHOICES)
     race = models.IntegerField(choices=RACE_CHOICES)
-
-
-class Transaction(models.Model):
-    uid = models.ForeignKey('User')
     price = models.FloatField()
+
+
+#class Transaction(models.Model):
+#    uid = models.ForeignKey('User')
+#    price = models.FloatField()
