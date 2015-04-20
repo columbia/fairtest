@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 post_users.py
 Copyright (C) 2015, V. Atlidakis vatlidak@cs.columbia.edu>
@@ -7,7 +7,7 @@ Script to post json requests representing synthetic users to
 be inserted into the users DB.
 
 @argv[1]: A csv file containing sunthetic users. Each line should
-            be formatted as follows: <X,X,X,...>
+            be formatted as follows: <uid,sex,zipcode,race,price>
 """
 import sys
 import requests
@@ -32,8 +32,8 @@ def main(argv=sys.argv):
             zipcode = str(line.split(',')[2])
             race = int(line.split(',')[3])
             price = float(line.split(',')[4])
-        except IndexError, error:
-            print >> sys.stderr, "IndexError at line:", line
+        except (IndexError,ValueError) as error:
+            print("IndexError at line:", line, file=sys.stderr)
             continue
 
         response = requests.post('http://127.0.0.1:8000/usertransactions/',
@@ -41,16 +41,16 @@ def main(argv=sys.argv):
                             'race': race, 'price':price},
                         auth=('root', 'os15'))
         if response.ok:
-            print "POST success for user with id: %d" % uid
+            print("POST success for user with id: %d", uid)
         else:
-            print "POST fail for user with id: %d. Got response: %s" %\
-                (uid, response.text)
+            print("POST fail for user with id: %d. Got response: %s",
+                  uid, response.text)
 
     f.close()
 
 
 def usage(argv):
-    print ("Usage:%s users_file") % argv[0]
+    print ("Usage:%s users_file", argv[0])
     sys.exit(-1)
 
 

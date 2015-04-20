@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 get_usertransactions.py
 Copyright (C) 2015, V. Atlidakis vatlidak@cs.columbia.edu>
@@ -18,11 +18,11 @@ def main(argv=sys.argv):
     response = requests.get('http://127.0.0.1:8000/usertransactions/',
                             auth=('root', 'os15')).json()
     for j in response:
-        print j
+        print(j)
 
 
 def usage(argv):
-    print ("Usage:%s") % argv[0]
+    print ("Usage:%s", argv[0])
     sys.exit(-1)
 
 
