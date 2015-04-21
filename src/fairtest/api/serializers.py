@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from api.models import UserTransaction
+from api.models import User
 
 # Serializers define the API representation.
-class UserTransactionsSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserTransaction
-        fields = ('tid', 'uid', 'zipcode', 'sex', 'race', 'price')
+        model = User
+        fields = ('uid', 'zipcode', 'sex', 'race')

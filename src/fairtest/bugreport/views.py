@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from api.models import UserTransaction
+from api.models import User
 from django.db.models import Count
 from django.template.loader import get_template
 from django.template import Context
@@ -8,7 +8,7 @@ import sys
 def BugreportView(request):
     prices_by_race = {}
 
-    for tr in UserTransaction.objects.all():
+    for tr in User.objects.all():
         if tr.race not in prices_by_race:
             prices_by_race[tr.race] = {'high': 0, 'low': 0}
         if tr.price == 100.0:
