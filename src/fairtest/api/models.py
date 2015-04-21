@@ -16,6 +16,7 @@ class UserTransaction(models.Model):
             (2, 'F'),
             )
 
+    tid = models.IntegerField(primary_key=True)
     uid = models.IntegerField()
     zipcode = models.CharField(max_length=10)
     sex = models.IntegerField(choices=SEX_CHOICES)

@@ -4,18 +4,14 @@
 {% block content %}
 <table class="table table-compact table-bordered">
   <thead>
+  {% for race, low, high in content %}
   <tr>
-    <td>Input</td>
-    <td>Output</td>
-  </tr>
-  </thead>
-  <tbody>
-  {% for input,output in co %}
-  <tr>
-    <td>{{ input }}</td>
-    <td>{{ output }}</td>
+    <td>Statistical parity condition is violated for population with race {{race}}.
+      Distribution of outputs is {{low}}:{{high}} (low:high)</td>
   </tr>
   {% endfor %}
+  </thead>
+  <tbody>
   </tbody>
 </table>
 {% endblock content %}

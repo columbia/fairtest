@@ -1,9 +1,11 @@
 from django.http import HttpResponse
 from api.models import UserTransaction
 from django.db.models import Count
+from django.template.loader import get_template
+from django.template import Context
 import sys
 
-def Bugreport(request):
+def BugreportView(request):
     prices_by_race = {}
 
     for tr in UserTransaction.objects.all():
@@ -18,6 +20,7 @@ def Bugreport(request):
     total_low = sum([prices_by_race[k]['low'] for k in prices_by_race])
     total_high = sum([prices_by_race[k]['high'] for k in prices_by_race])
 
+    content = []
     for race in prices_by_race:
         cur = prices_by_race[race]
 
@@ -27,8 +30,12 @@ def Bugreport(request):
         p2 = (total_high - cur['high']) /(total - cur['high'] - cur['low'])
 
         delta =  abs(p1 - p2)
-        print(delta)
+        epsilon = 0.3
+        if delta > epsilon:
+            content.append((race, cur['low'], cur['high']))
+            print(delta)
 
     print(prices_by_race, total, total_low, total_high)
-    return HttpResponse("Hello, world from BugReport.")
+    template = get_template('bugreport')
+    return HttpResponse(template.render(Context({'content': content})))
 

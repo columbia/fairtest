@@ -1,29 +1,15 @@
-from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from rest_framework import routers, serializers, viewsets
-from api.models import UserTransaction
-from bugreport import views
+from django.conf.urls import patterns, include, url
+from rest_framework.views import APIView
 
-# Serializers define the API representation.
-class UserTransactionSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = UserTransaction
-        fields = ('uid', 'zipcode', 'sex', 'race', 'price')
+from api import views as api_views
+from bugreport import views as bugreport_views
 
-
-# ViewSets define the view behavior.
-class UserTransactionViewSet(viewsets.ModelViewSet):
-    queryset = UserTransaction.objects.all()
-    serializer_class = UserTransactionSerializer
-
-
-# Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
-router.register(r'usertransactions', UserTransactionViewSet)
 
 urlpatterns = patterns('',
-    url(r'^', include(router.urls)),
-    url(r'^bugreport/', views.Bugreport),
+    url(r'^usertransactions/', api_views.UserTransactionsListView.as_view()),
+    url(r'^usertransaction/(?P<tid>[0-9]+)/$', api_views.UserTransactionsUpdateView.as_view()),
+    url(r'^bugreport/', bugreport_views.BugreportView),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api-auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
