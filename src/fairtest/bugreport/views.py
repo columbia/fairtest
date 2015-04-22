@@ -1,26 +1,59 @@
+import sys
+import random
+
 from django.http import HttpResponse
-from api.models import User
 from django.db.models import Count
 from django.template.loader import get_template
 from django.template import Context
-import sys
+
+from api.models import User
+
+#constants
+price = {'low': 0, 'high': 1}
+epsilon = 0.3
+
+def _get_price(user):
+    """
+    Helper function to simulate price shown to a user.
+    The appriach taken is the one followed in the Staples case
+    whicj is summarized by the following rules:
+
+    a) ZIP Codes whose center was farther than 20 miles from a Staples
+       competitor saw higher prices 67% of the time. By contrast, ZIP
+       Codes within 20 miles of a rival saw the high price least often,
+       only 12% of the time.
+
+    b) Staples.com showed higher prices most often—86% of the time—when
+       the ZIP Code actually had a brick-and-mortar Staples store in it,
+       but was also far from a competitor's store
+    """
+    return random.randint(0,1)
+
 
 def BugreportView(request):
-    prices_by_race = {}
+    """
+    Evaluate statistical parity condition for all values of race
+    which is the protected attribute on which we want to examine
+    for discriminatory behavior
+    """
 
-    for tr in User.objects.all():
-        if tr.race not in prices_by_race:
-            prices_by_race[tr.race] = {'high': 0, 'low': 0}
-        if tr.price == 100.0:
-            prices_by_race[tr.race]['low'] += 1
+    #Query DB and create an in-memory structure (dictionary)
+    prices_by_race = {}
+    for user in User.objects.all():
+        if user.race not in prices_by_race:
+            prices_by_race[user.race] = {'high': 0, 'low': 0}
+        if _get_price(user) == price['low']:
+            prices_by_race[user.race]['low'] += 1
         else:
-            prices_by_race[tr.race]['high'] += 1
+            prices_by_race[user.race]['high'] += 1
+
     total = sum([prices_by_race[k]['high'] + prices_by_race[k]['low'] for k\
                 in prices_by_race])
     total_low = sum([prices_by_race[k]['low'] for k in prices_by_race])
     total_high = sum([prices_by_race[k]['high'] for k in prices_by_race])
 
     content = []
+    #Evaluate condition for each value of the protected attribute
     for race in prices_by_race:
         cur = prices_by_race[race]
 
@@ -30,12 +63,12 @@ def BugreportView(request):
         p2 = (total_high - cur['high']) /(total - cur['high'] - cur['low'])
 
         delta =  abs(p1 - p2)
-        epsilon = 0.3
         if delta > epsilon:
             content.append((race, cur['low'], cur['high']))
             print(delta)
 
     print(prices_by_race, total, total_low, total_high)
     template = get_template('bugreport')
+
     return HttpResponse(template.render(Context({'content': content})))
 
