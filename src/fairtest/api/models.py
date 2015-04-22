@@ -12,8 +12,8 @@ class User(models.Model):
             (8, 'Two or More Races'),
             )
     SEX_CHOICES = (
-            (1, 'M'),
-            (2, 'F'),
+            (0, 'M'),
+            (1, 'F'),
             )
 
 #    tid = models.IntegerField(primary_key=True)
@@ -21,6 +21,7 @@ class User(models.Model):
     zipcode = models.CharField(max_length=10)
     sex = models.IntegerField(choices=SEX_CHOICES)
     race = models.IntegerField(choices=RACE_CHOICES)
+    income = models.IntegerField()
 
     def __str__(self):
         return str(self.uid)

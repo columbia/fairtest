@@ -32,4 +32,4 @@ class Command(BaseCommand):
     def _read_users(self):
         "Read users from the DB"
         for u in  User.objects.all():
-            print("%d,%s,%d,%d"% (u.uid, u.zipcode, u.sex, u.race))
+            print("%d,%s,%d,%d,%d"% (u.uid, u.zipcode, u.sex, u.race, u.income))

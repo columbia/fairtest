@@ -59,11 +59,12 @@ class Command(BaseCommand):
                 zipcode = str(line.split(',')[1])
                 sex = int(line.split(',')[2])
                 race = int(line.split(',')[3])
+                income = int(line.split(',')[4])
             except IndexError as error:
                 print("Malformed line: <%s>" % line, file=sys.stderr)
                 continue
-            u = User(uid, zipcode, sex, race)
+            u = User(uid, zipcode, sex, race, income)
             u.save()
-            print("Used:%d saved"% (uid))
+            print("User:%d saved"% (uid))
         transaction.commit()
         f.close()

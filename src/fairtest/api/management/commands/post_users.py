@@ -57,11 +57,13 @@ class Command(BaseCommand):
                 zipcode = str(line.split(',')[1])
                 sex = int(line.split(',')[2])
                 race = int(line.split(',')[3])
+                income = int(line.split(',')[4])
             except IndexError as error:
                 print("Malformed line: <%s>" % line, file=sys.stderr)
                 continue
             response = requests.post('http://127.0.0.1:8000/users/',
-                    data={'uid':uid, 'zipcode':zipcode, 'sex':sex, 'race':race},
+                    data={'uid':uid, 'zipcode':zipcode, 'sex':sex,
+                          'race':race, 'income': income},
                     auth=('root', 'os15'))
             if response.ok:
                 print("POST success for user with id: %d" % uid)
