@@ -16,7 +16,7 @@ def _get_price(user):
     """
     Helper function to simulate price shown to a user.
     The appriach taken is the one followed in the Staples case
-    whicj is summarized by the following rules:
+    which is summarized by the following rules:
 
     a) ZIP Codes whose center was farther than 20 miles from a Staples
        competitor saw higher prices 67% of the time. By contrast, ZIP

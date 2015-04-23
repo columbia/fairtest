@@ -26,6 +26,14 @@ class User(models.Model):
     def __str__(self):
         return str(self.uid)
 
+
+class Store(models.Model):
+    zipcode = models.CharField(max_length=10)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+
+
 #class Transaction(models.Model):
 #    uid = models.ForeignKey('User')
 #    price = models.FloatField()
