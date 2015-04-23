@@ -6,7 +6,9 @@ from django.db.models import Count
 from django.template.loader import get_template
 from django.template import Context
 
-from api.models import User
+from api.models import User, Zipcode, Store, Competitor
+
+from geopy.distance import vincenty
 
 #constants
 price = {'low': 0, 'high': 1}
@@ -27,7 +29,29 @@ def _get_price(user):
        the ZIP Code actually had a brick-and-mortar Staples store in it,
        but was also far from a competitor's store
     """
-    return random.randint(0,1)
+
+    def check_distance(models, loc, cutoff):
+        for model in models:
+            dist = vincenty(loc, (model.latitude, model.longitude)).miles
+            if dist <= cutoff:
+                return True
+        return False
+
+    def randBinary(prob):
+        # Prob in percentile integer
+        if random.randint(0, 99) < prob:
+            return 0
+        return 1
+
+    user_zip = Zipcode.objects.get(zipcode=user.zipcode)
+    loc = (user_zip.latitude, user_zip.longitude) # Use zipcode for location
+
+    if check_distance(models.Competitor, loc, 20):
+        return randBinary(12)
+    elif check_distance(models.Store, loc, 20):
+        return randBinary(86)
+    else:
+        return randBinary(67)
 
 
 def BugreportView(request):

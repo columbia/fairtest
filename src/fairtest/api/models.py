@@ -33,6 +33,17 @@ class Store(models.Model):
     longitude = models.FloatField()
 
 
+class Competitor(models.Model):
+    zipcode = models.CharField(max_length=10)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+
+class Zipcode(models.Model):
+    zipcode = models.CharField(primary_key=True, max_length=10)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
 
 #class Transaction(models.Model):
 #    uid = models.ForeignKey('User')
