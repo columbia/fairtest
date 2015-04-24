@@ -34,6 +34,16 @@ class User(models.Model):
     def __str__(self):
         return str(self.uid)
 
+    def get_attribute(self, attribute):
+        if attribute == "sex":
+            return str(self.sex)
+        elif attribute == "income":
+            return str(self.income)
+        elif attribute == "race":
+            return str(self.race)
+        else:
+            return ""
+
 
 class Store(models.Model):
     zipcode = models.CharField(primary_key=True, max_length=10)

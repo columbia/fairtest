@@ -11,9 +11,10 @@ from api.models import User, Zipcode, Store, Competitor
 from bugreport.helpers.distance import haversine
 
 #constants
-epsilon = 0.1
+epsilon = 0.05
 price = {'low': 0, 'high': 1}
-logfile = open("/tmp/logfile", "a+")
+logfile = sys.stdout
+#logfile = open("/tmp/logfile", "a+")
 
 #caches
 zipcode_coordinates = {}
@@ -92,34 +93,38 @@ def _get_price(user, location_dependency):
         return randBinary(67)
 
 
-def BugreportView(request, location_dependency):
+def BugreportView(request, location_dependency="100", protected_attr="race"):
     """
-    Evaluate statistical parity condition for all values of race
-    which is the protected attribute on which we want to examine
-    for discriminatory behavior
+    Evaluate statistical parity condition for all values of a protected
+    attribute which we examine for discriminatory behavior.
     """
 
     location_dependency = int(location_dependency)
     #Query DB and create an in-memory structure (dictionary)
-    prices_by_race = {}
+    prices_by_attr = {}
     for user in User.objects.all():
-        if user.race not in prices_by_race:
-            prices_by_race[user.race] = {'high': 0, 'low': 0}
-        if _get_price(user, location_dependency) == price['low']:
-            prices_by_race[user.race]['low'] += 1
-        else:
-            prices_by_race[user.race]['high'] += 1
 
-    total = sum([prices_by_race[k]['high'] + prices_by_race[k]['low'] for k\
-                in prices_by_race])
-    total_low = sum([prices_by_race[k]['low'] for k in prices_by_race])
-    total_high = sum([prices_by_race[k]['high'] for k in prices_by_race])
+        attr_val = user.get_attribute(protected_attr)
+        if not attr_val:
+            print("Attribute: <%s> was not found in models"
+                  % protected_attr, file=sys.stderr)
+            continue
+        if attr_val not in prices_by_attr:
+            prices_by_attr[attr_val] = {'high': 0, 'low': 0}
+        if _get_price(user, location_dependency) == price['low']:
+            prices_by_attr[attr_val]['low'] += 1
+        else:
+            prices_by_attr[attr_val]['high'] += 1
+
+    total = sum([prices_by_attr[k]['high'] + prices_by_attr[k]['low'] for k\
+                in prices_by_attr])
+    total_low = sum([prices_by_attr[k]['low'] for k in prices_by_attr])
+    total_high = sum([prices_by_attr[k]['high'] for k in prices_by_attr])
 
     content = []
     #Evaluate condition for each value of the protected attribute
-    for race in prices_by_race:
-        cur = prices_by_race[race]
-
+    for attr_val in prices_by_attr:
+        cur = prices_by_attr[attr_val]
         #Probability that a member of the current race receives high price
         p1 = cur['high'] / (cur['high'] + cur['low'])
         #Probability that a member of any race, but current, receives high price
@@ -129,10 +134,10 @@ def BugreportView(request, location_dependency):
         delta =  abs(p1 - p2)
         if delta > epsilon:
             flag = "red"
-            content.append((race, cur['low'], cur['high']))
-   #     print("race:%d,delta:%.4f,total:%d,low:%d,high:%d,flag:%s,location_dependency:%d" %
-   #           (race, delta, cur['high'] + cur['low'], cur['low'], cur['high'], flag, location_dependency),
-   #           file = logfile)
+            content.append((attr_val, cur['low'], cur['high']))
+        print("attr_val:%s,delta:%.4f,total:%d,low:%d,high:%d,flag:%s,location_dependency:%d" %
+              (attr_val, delta, cur['high'] + cur['low'], cur['low'], cur['high'], flag, location_dependency),
+              file = logfile)
 
     print("total:%d,low:%d,high:%d,discriminated:%d,location_dependency:%d" %
           (total, total_low, total_high, len(content), location_dependency), file = logfile)

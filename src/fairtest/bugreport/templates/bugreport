@@ -4,9 +4,9 @@
 {% block content %}
 <table class="table table-compact table-bordered">
   <thead>
-  {% for race, low, high in content %}
+  {% for attr_val, low, high in content %}
   <tr>
-    <td>Statistical parity condition is violated for population with race {{race}}.
+    <td>Statistical parity condition is violated for population with protected attribute value {{attr_val}}.
       Distribution of outputs is {{low}}:{{high}} (low:high)</td>
   </tr>
   {% endfor %}
