@@ -38,27 +38,33 @@ def main(argv=sys.argv):
     i = 0
     print("#uid, zipcode, sex, race, income")
     for line in f:
-        line = next(f)
-        line = line.split('\n')[0]
-        income = int(line.split(': ')[1].split(',')[0])
+        try:
+            line = next(f)
+            line = line.split('\n')[0]
+            income = int(line.split(': ')[1].split(',')[0])
 
-        line = next(f)
-        line = line.split('\n')[0]
-        race = int(line.split(': ')[1].split(',')[0])
+            line = next(f)
+            line = line.split('\n')[0]
+            race = int(line.split(': ')[1].split(',')[0])
 
-        line = next(f)
-        line = line.split('\n')[0]
-        sex = int(line.split(': ')[1].split(',')[0])
+            line = next(f)
+            line = line.split('\n')[0]
+            sex = int(line.split(': ')[1].split(',')[0])
 
-        line = next(f)
-        line = line.split('\n')[0]
-        zipcode = str(line.split(': ')[1].split(',')[0].replace('"',''))
+            line = next(f)
+            line = line.split('\n')[0]
+            zipcode = str(line.split(': ')[1].split(',')[0].replace('"',''))
 
-        next(f)
-        print("%d,%s,%d,%d,%d" % (i, zipcode, sex, race, income))
-        i += 1
+            next(f)
 
-
+            if not zipcode:
+                print("Malformed line:%s" % line, file=sys.stderr)
+                continue
+            else:
+                print("%d,%s,%d,%d,%d" % (i, zipcode, sex, race, income))
+                i += 1
+        except Exception as error:
+            print("Exception:%s at line:%s" % (error, line), file=sys.stderr)
 
     f.close()
 
