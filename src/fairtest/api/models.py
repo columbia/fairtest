@@ -16,7 +16,6 @@ class User(models.Model):
             (1, 'F'),
             )
 
-#    tid = models.IntegerField(primary_key=True)
     uid = models.IntegerField(primary_key=True)
     zipcode = models.CharField(max_length=10)
     sex = models.IntegerField(choices=SEX_CHOICES)
@@ -28,13 +27,13 @@ class User(models.Model):
 
 
 class Store(models.Model):
-    zipcode = models.CharField(max_length=10)
+    zipcode = models.CharField(primary_key=True, max_length=10)
     latitude = models.FloatField()
     longitude = models.FloatField()
 
 
 class Competitor(models.Model):
-    zipcode = models.CharField(max_length=10)
+    zipcode = models.CharField(primary_key=True, max_length=10)
     latitude = models.FloatField()
     longitude = models.FloatField()
 
@@ -43,8 +42,3 @@ class Zipcode(models.Model):
     zipcode = models.CharField(primary_key=True, max_length=10)
     latitude = models.FloatField()
     longitude = models.FloatField()
-
-
-#class Transaction(models.Model):
-#    uid = models.ForeignKey('User')
-#    price = models.FloatField()
