@@ -40,6 +40,24 @@ class Command(BaseCommand):
         else:
             print("No filename given... :-(", file=sys.stderr)
 
+    def _normalized_income(self, income):
+        if income < 5000:
+            return 1
+        elif 5000   <= income < 10000:
+            return 2
+        elif 10000  <= income < 20000:
+            return 3
+        elif 20000  <= income < 40000:
+            return 4
+        elif 40000  <= income < 80000:
+            return 5
+        elif 80000  <= income < 160000:
+            return 6
+        elif 160000 <= income < 320000:
+            return 7
+        elif 320000 <= income:
+            return 8
+
     @transaction.commit_manually
     def _populate_users(self, filename):
         "Open and parse a csv file, and register users"
@@ -59,7 +77,7 @@ class Command(BaseCommand):
                 zipcode = str(line.split(',')[1])
                 sex = int(line.split(',')[2])
                 race = int(line.split(',')[3])
-                income = int(line.split(',')[4])
+                income = self._normalized_income(int(line.split(',')[4]))
             except IndexError as error:
                 print("Malformed line: <%s>" % line, file=sys.stderr)
                 continue
