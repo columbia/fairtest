@@ -12,7 +12,7 @@ from bugreport.helpers.distance import haversine
 
 #constants
 price = {'low': 0, 'high': 1}
-epsilon = 0.3
+epsilon = 0.1
 
 #caches
 zipcode_coordinates = {}
@@ -55,28 +55,23 @@ def _get_price(user):
     if not zipcode_coordinates:
         for z in Zipcode.objects.all():
             zipcode_coordinates[z.zipcode] = [z.latitude, z.longitude]
-            print("zipcodes base")
-
 
     #cache competitor stores
     if not competitor_stores_coordinates:
         for c in Competitor.objects.all():
             competitor_stores_coordinates[c.zipcode] = [c.latitude, c.longitude]
-            print("competitors")
 
     #cache staples stores
     if not staples_stores_coordinates:
         for s in Store.objects.all():
             staples_stores_coordinates[s.zipcode] = [s.latitude, s.longitude]
-            print("staples")
 
-
-    try:
-        user_location = (zipcode_coordinates[user.zipcode][0],
-                         zipcode_coordinates[user.zipcode][1])
-    except Exception as error:
-        print("Zipcode %s error: %s " % (user.zipcode, error))
+    #if we don't know this zipcode, let's be generous
+    if user.zipcode not in zipcode_coordinates:
         return price['low']
+
+    user_location = (zipcode_coordinates[user.zipcode][0],
+                         zipcode_coordinates[user.zipcode][1])
 
     if check_distance_from_store(user_location,
                                  competitor_stores_coordinates,
@@ -112,6 +107,7 @@ def BugreportView(request):
     total_low = sum([prices_by_race[k]['low'] for k in prices_by_race])
     total_high = sum([prices_by_race[k]['high'] for k in prices_by_race])
 
+    logfile = sys.stdout
     content = []
     #Evaluate condition for each value of the protected attribute
     for race in prices_by_race:
@@ -122,13 +118,17 @@ def BugreportView(request):
         #Probability that a member of any race, but current, receives high price
         p2 = (total_high - cur['high']) /(total - cur['high'] - cur['low'])
 
+        flag = "green"
         delta =  abs(p1 - p2)
         if delta > epsilon:
+            flag = "red"
             content.append((race, cur['low'], cur['high']))
-        print(delta)
+        print("race:%d,delta:%.4f,total:%d,low:%d,high:%d,flag:%s" %
+              (race, delta, cur['high'] + cur['low'], cur['low'], cur['high'], flag),
+              file = logfile)
 
-    print(prices_by_race, total, total_low, total_high)
+    print("total:%d,low:%d,high:%d,discriminated:%d" %
+          (total, total_low, total_high, len(content)), file = logfile)
+
     template = get_template('bugreport')
-
     return HttpResponse(template.render(Context({'content': content})))
-
