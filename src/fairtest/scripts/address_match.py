@@ -18,6 +18,7 @@ def main(argv=sys.argv):
 
     google = geopy.geocoders.GoogleV3()
 
+    print("#store_numder,zipcode,latitude,longitude")
     for line in open(argv[1], 'r').readlines()[1:]:
         items = line[:-1].split(',')
         addr = items[0] + ',' + items[3] + ',' + items[4] + ',' + items[5]
