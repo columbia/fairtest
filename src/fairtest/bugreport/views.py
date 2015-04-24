@@ -14,10 +14,14 @@ from geopy.distance import vincenty
 price = {'low': 0, 'high': 1}
 epsilon = 0.3
 
+zipcode_coordinates = {}
+competitor_stores_coordinates = {}
+staples_stores_coordinates = {}
+
 def _get_price(user):
     """
     Helper function to simulate price shown to a user.
-    The appriach taken is the one followed in the Staples case
+    The approach taken is the one followed in the Staples case
     which is summarized by the following rules:
 
     a) ZIP Codes whose center was farther than 20 miles from a Staples
@@ -30,9 +34,11 @@ def _get_price(user):
        but was also far from a competitor's store
     """
 
-    def check_distance(models, loc, cutoff):
-        for model in models:
-            dist = vincenty(loc, (model.latitude, model.longitude)).miles
+    def check_distance_from_store(stores_coordinates, loc, cutoff):
+        for zipcode in stores_coordinates:
+            dist = vincenty(loc,
+                           (stores_coordinates[zipcode][0],
+                           stores_coordinates[zipcode][1])).miles
             if dist <= cutoff:
                 return True
         return False
@@ -40,15 +46,43 @@ def _get_price(user):
     def randBinary(prob):
         # Prob in percentile integer
         if random.randint(0, 99) < prob:
-            return 0
-        return 1
+            return price['low']
+        return price['high']
 
-    user_zip = Zipcode.objects.get(zipcode=user.zipcode)
-    loc = (user_zip.latitude, user_zip.longitude) # Use zipcode for location
+    #cache zipcodes to coordinates mapping
+    if not zipcode_coordinates:
+        for z in Zipcode.objects.all():
+            zipcode_coordinates[z.zipcode] = [z.latitude, z.longitude]
+            print("zipcodes base")
 
-    if check_distance(models.Competitor, loc, 20):
+
+    #cache competitor stores
+    if not competitor_stores_coordinates:
+        for c in Competitor.objects.all():
+            competitor_stores_coordinates[c.zipcode] = [c.latitude, c.longitude]
+            print("competitors")
+
+    #cache staples stores
+    if not staples_stores_coordinates:
+        for s in Store.objects.all():
+            staples_stores_coordinates[s.zipcode] = [s.latitude, s.longitude]
+            print("staples")
+
+
+    try:
+        user_location = (zipcode_coordinates[user.zipcode][0],
+                         zipcode_coordinates[user.zipcode][1])
+    except Exception as error:
+        print("Zipcode %s error: %s " % (user.zipcode, error))
+        return price['low']
+
+    if check_distance_from_store(competitor_stores_coordinates,
+                                 user_location,
+                                 20):
         return randBinary(12)
-    elif check_distance(models.Store, loc, 20):
+    elif check_distance_from_store(staples_stores_coordinates,
+                                   user_location,
+                                   20):
         return randBinary(86)
     else:
         return randBinary(67)
@@ -89,7 +123,7 @@ def BugreportView(request):
         delta =  abs(p1 - p2)
         if delta > epsilon:
             content.append((race, cur['low'], cur['high']))
-            print(delta)
+        print(delta)
 
     print(prices_by_race, total, total_low, total_high)
     template = get_template('bugreport')
