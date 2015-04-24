@@ -11,15 +11,17 @@ from api.models import User, Zipcode, Store, Competitor
 from bugreport.helpers.distance import haversine
 
 #constants
+location_dependency = 100
 price = {'low': 0, 'high': 1}
 epsilon = 0.1
+logfile = open("/tmp/logfile", "a+")
 
 #caches
 zipcode_coordinates = {}
 competitor_stores_coordinates = {}
 staples_stores_coordinates = {}
 
-def _get_price(user):
+def _get_price(user, location_dependency):
     """
     Helper function to simulate price shown to a user.
     The approach taken is the one followed in the Staples case
@@ -35,6 +37,7 @@ def _get_price(user):
        but was also far from a competitor's store
     """
 
+    #helper
     def check_distance_from_store(location, stores_coordinates, cutoff):
         for zipcode in stores_coordinates:
             dist = haversine(location[0],
@@ -45,10 +48,15 @@ def _get_price(user):
                 return True
         return False
 
+    # helper
     def randBinary(prob):
         # Prob in percentile integer
         if random.randint(0, 99) < prob:
-            return price['low']
+            return 0
+        return 1
+
+    # Use location dependency to decide what pricing approach to follow
+    if not randBinary(100 - location_dependency):
         return price['high']
 
     #cache zipcodes to coordinates mapping
@@ -97,7 +105,7 @@ def BugreportView(request):
     for user in User.objects.all():
         if user.race not in prices_by_race:
             prices_by_race[user.race] = {'high': 0, 'low': 0}
-        if _get_price(user) == price['low']:
+        if _get_price(user, location_dependency) == price['low']:
             prices_by_race[user.race]['low'] += 1
         else:
             prices_by_race[user.race]['high'] += 1
@@ -107,7 +115,6 @@ def BugreportView(request):
     total_low = sum([prices_by_race[k]['low'] for k in prices_by_race])
     total_high = sum([prices_by_race[k]['high'] for k in prices_by_race])
 
-    logfile = sys.stdout
     content = []
     #Evaluate condition for each value of the protected attribute
     for race in prices_by_race:
