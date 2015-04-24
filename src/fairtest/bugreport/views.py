@@ -11,9 +11,8 @@ from api.models import User, Zipcode, Store, Competitor
 from bugreport.helpers.distance import haversine
 
 #constants
-location_dependency = 100
-price = {'low': 0, 'high': 1}
 epsilon = 0.1
+price = {'low': 0, 'high': 1}
 logfile = open("/tmp/logfile", "a+")
 
 #caches
@@ -93,13 +92,14 @@ def _get_price(user, location_dependency):
         return randBinary(67)
 
 
-def BugreportView(request):
+def BugreportView(request, location_dependency):
     """
     Evaluate statistical parity condition for all values of race
     which is the protected attribute on which we want to examine
     for discriminatory behavior
     """
 
+    location_dependency = int(location_dependency)
     #Query DB and create an in-memory structure (dictionary)
     prices_by_race = {}
     for user in User.objects.all():
@@ -130,12 +130,12 @@ def BugreportView(request):
         if delta > epsilon:
             flag = "red"
             content.append((race, cur['low'], cur['high']))
-        print("race:%d,delta:%.4f,total:%d,low:%d,high:%d,flag:%s" %
-              (race, delta, cur['high'] + cur['low'], cur['low'], cur['high'], flag),
-              file = logfile)
+   #     print("race:%d,delta:%.4f,total:%d,low:%d,high:%d,flag:%s,location_dependency:%d" %
+   #           (race, delta, cur['high'] + cur['low'], cur['low'], cur['high'], flag, location_dependency),
+   #           file = logfile)
 
-    print("total:%d,low:%d,high:%d,discriminated:%d" %
-          (total, total_low, total_high, len(content)), file = logfile)
+    print("total:%d,low:%d,high:%d,discriminated:%d,location_dependency:%d" %
+          (total, total_low, total_high, len(content), location_dependency), file = logfile)
 
     template = get_template('bugreport')
     return HttpResponse(template.render(Context({'content': content})))
