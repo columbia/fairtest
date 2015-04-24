@@ -8,12 +8,13 @@ from django.template import Context
 
 from api.models import User, Zipcode, Store, Competitor
 
-from geopy.distance import vincenty
+from bugreport.helpers.distance import haversine
 
 #constants
 price = {'low': 0, 'high': 1}
 epsilon = 0.3
 
+#caches
 zipcode_coordinates = {}
 competitor_stores_coordinates = {}
 staples_stores_coordinates = {}
@@ -34,11 +35,12 @@ def _get_price(user):
        but was also far from a competitor's store
     """
 
-    def check_distance_from_store(stores_coordinates, loc, cutoff):
+    def check_distance_from_store(location, stores_coordinates, cutoff):
         for zipcode in stores_coordinates:
-            dist = vincenty(loc,
-                           (stores_coordinates[zipcode][0],
-                           stores_coordinates[zipcode][1])).miles
+            dist = haversine(location[0],
+                             location[1],
+                             stores_coordinates[zipcode][0],
+                             stores_coordinates[zipcode][1])
             if dist <= cutoff:
                 return True
         return False
@@ -76,12 +78,12 @@ def _get_price(user):
         print("Zipcode %s error: %s " % (user.zipcode, error))
         return price['low']
 
-    if check_distance_from_store(competitor_stores_coordinates,
-                                 user_location,
+    if check_distance_from_store(user_location,
+                                 competitor_stores_coordinates,
                                  20):
         return randBinary(12)
-    elif check_distance_from_store(staples_stores_coordinates,
-                                   user_location,
+    elif check_distance_from_store(user_location,
+                                   staples_stores_coordinates,
                                    20):
         return randBinary(86)
     else:
