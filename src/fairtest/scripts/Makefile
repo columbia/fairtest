@@ -1,4 +1,6 @@
-FIGS = race_discrimination_on_location
+FIGS = race_discrimination_on_location\
+			 sex_discrimination_on_location\
+			 income_discrimination_on_location
 
 GNUPLOT := gnuplot
 EPS2PDF := epstopdf
