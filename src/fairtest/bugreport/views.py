@@ -48,15 +48,14 @@ def _get_price(user, location_dependency):
                 return True
         return False
 
-    # helper
+    # helper which returns 1 with probability "prob" in percentile integer
     def randBinary(prob):
-        # Prob in percentile integer
         if random.randint(0, 99) < prob:
-            return 0
-        return 1
+            return 1
+        return 0
 
     # Use location dependency to decide what pricing approach to follow
-    if not randBinary(100 - location_dependency):
+    if not randBinary(location_dependency):
         return price['high']
 
     #cache zipcodes to coordinates mapping
@@ -84,13 +83,13 @@ def _get_price(user, location_dependency):
     if check_distance_from_store(user_location,
                                  competitor_stores_coordinates,
                                  20):
-        return randBinary(12)
+        return (price['high'] if randBinary(12) else price['low'])
     elif check_distance_from_store(user_location,
                                    staples_stores_coordinates,
                                    20):
-        return randBinary(86)
+        return (price['high'] if randBinary(86) else price['low'])
     else:
-        return randBinary(67)
+        return (price['high'] if randBinary(67) else price['low'])
 
 
 def BugreportView(request, location_dependency="100", protected_attr="race"):
