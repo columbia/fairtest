@@ -37,6 +37,7 @@ def main(argv=sys.argv):
 
     i = 0
     print("#dependency, min, avg, max, iter")
+    print("0,0,0,0,-")
     for line in f:
         try:
             line = line.split('\n')[0]

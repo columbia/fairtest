@@ -36,25 +36,34 @@ def main(argv=sys.argv):
         return
 
     i = 0
-    print("#attr_val,red,green")
+    print("#attr_val,total_visits,low_price,high_price,percent_low, percent_high")
     for line in f:
         try:
             line = line.split('\n')[0]
             if line.split(',')[0].split(':')[0] == "total":
                 continue
             attr_val = str(line.split(',')[0].split(':')[1])
-            flag = line.split(',')[5].split(':')[1]
+            #flag = line.split(',')[5].split(':')[1]
+            low = int(line.split(',')[3].split(':')[1])
+            high = int(line.split(',')[4].split(':')[1])
             if attr_val not in stats:
                 stats[attr_val] = [0, 0]
-            if flag == "red":
-                stats[attr_val][0] += 1
-            else:
-                stats[attr_val][1] += 1
+            #if flag == "red":
+            #    stats[attr_val][0] += 1
+            #else:
+            #    stats[attr_val][1] += 1
+            stats[attr_val][0] += low
+            stats[attr_val][1] += high
+
         except Exception as error:
             print("Exception:%s at line:%s" % (error, line), file=sys.stderr)
 
     for s in sorted(stats):
-        print("%s,%d,%d" % (s, stats[s][0], stats[s][1]))
+        perc_high = 100 * int(stats[s][1]) / ( int(stats[s][0]) + int(stats[s][1]))
+        perc_low  = 100.0 - perc_high
+        print("%s,%d,%d,%d,%.2f,%.2f" % (s, stats[s][0] + stats[s][1],
+                                    stats[s][0], stats[s][1],
+                                    perc_low, perc_high))
     f.close()
 
 
