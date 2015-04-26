@@ -20,6 +20,6 @@ set ytics ('25' 25, '50' 50, '75' 75, '100' 100)
 set datafile separator ","
 
 plot newhistogram, "sex_discrimination_on_proportional.csv"\
-  u 5:xticlabels(7) t "Low price" lc rgbcolor "black" lt 1 fs pattern 3,\
-  '' u 6:xticlabels(7) t "High price" lc rgbcolor "black" lt 1  fs pattern 1,\
+  u 6:xticlabels(7) t "High price" lc rgbcolor "black" lt 1 fs pattern 3,\
+  '' u 5:xticlabels(7) t "Low price" lc rgbcolor "black" lt 1  fs pattern 1,\
   '' using ($1):(102):2 notitle with labels rotate left

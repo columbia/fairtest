@@ -64,6 +64,7 @@ def main(argv=sys.argv):
         print("%s,%d,%d,%d,%.2f,%.2f" % (s, stats[s][0] + stats[s][1],
                                     stats[s][0], stats[s][1],
                                     perc_low, perc_high))
+    print("#Total: %s" % sum([stats[s][0] +stats[s][1] for s in stats]))
     f.close()
 
 
