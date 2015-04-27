@@ -1,4 +1,4 @@
-set terminal postscript eps enhanced color solid 'Times' 25
+set terminal postscript eps enhanced color solid 'Times' 27
 
 set style data histogram
 set style histogram rowstack
@@ -9,7 +9,7 @@ set key invert above width 1 vertical maxrows 1
 set key samplen 2.5 spacing 0.85 font ",30"
 
 set xlabel "Users grouped by race"
-set ylabel "Average income per race in dollars"
+set ylabel "Average income per race (dollars)"
 
 set border 3
 set format "%'g

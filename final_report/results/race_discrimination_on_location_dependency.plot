@@ -1,6 +1,6 @@
-set terminal postscript eps enhanced color solid 'Times' 25
+set terminal postscript eps enhanced color solid 'Times' 28
 set xlabel "Dependency of price engine on user's location (%)"
-set ylabel "#Races discriminated based user's location. \n Total: 8 races."
+set ylabel "#Races discriminated on user's location.\n Total: 8 races."
 set yrange [0:9]
 
 set key samplen 2.5 spacing 0.85 font ",30"

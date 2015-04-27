@@ -1,4 +1,4 @@
-set terminal postscript eps enhanced color solid 'Times' 25
+set terminal postscript eps enhanced color solid 'Times' 28
 
 set style data histogram
 set style histogram rowstack
@@ -9,7 +9,7 @@ set key invert above width 1 vertical maxrows 1
 set key samplen 2.5 spacing 0.85 font ",30"
 
 set xlabel "User-visits grouped by user's sex"
-set ylabel "Prices shown uppon each user-visit (%).\n Total: \\~500,000 user-visits"
+set ylabel "Prices shown on each user-visit (%).\n Total: \\~500,000 user-visits"
 
 set border 3
 set format "%'g
