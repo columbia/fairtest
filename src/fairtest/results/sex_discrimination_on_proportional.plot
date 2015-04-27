@@ -8,8 +8,8 @@ set boxwidth 0.7 absolute
 set key invert above width 1 vertical maxrows 1
 set key samplen 2.5 spacing 0.85 font ",30"
 
-set xlabel "User-visits grouped by sex (2 different sexes)"
-set ylabel "Distribution of prices to user-visits (%).\n Total: \\~500,000 user-visits"
+set xlabel "User-visits grouped by user's sex"
+set ylabel "Prices shown uppon each user-visit (%).\n Total: \\~500,000 user-visits"
 
 set border 3
 set format "%'g
@@ -24,4 +24,5 @@ set xlabel offset 0,-2,0
 plot newhistogram, "sex_discrimination_on_proportional.csv"\
   u 6:xticlabels(7) t "High price" lc rgbcolor "black" lt 1 fs pattern 3,\
   '' u 5:xticlabels(7) t "Low price" lc rgbcolor "black" lt 1  fs pattern 1,\
-  '' using ($1):(102):2 notitle with labels rotate left
+  '' using ($1):(110):2 notitle with labels
+#rotate left

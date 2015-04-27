@@ -8,8 +8,8 @@ set boxwidth 0.7 absolute
 set key invert above width 1 vertical maxrows 1
 set key samplen 2.5 spacing 0.85 font ",30"
 
-set xlabel "User-visits grouped by race (8 different race groups)"
-set ylabel "Distribution of prices to user-visits (%).\n Total: \\~500,000 user-visits"
+set xlabel "User-visits grouped by user's race"
+set ylabel "Prices shown uppon each user-visit (%).\n Total: \\~500,000 user-visits"
 
 set border 3
 set format "%'g
