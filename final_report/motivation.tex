@@ -1,22 +1,30 @@
 \section{Motivation}
-\begin{itemize}
-  \item Introduce the notion of Fairness in a data driven world. Refer again to the case mentioned
-    in paragraph two (Staples case in detail). Then give specific examples with numbers and tables
-    to simulate discrimination an underline lack (or not) of fairness.
-  \item Analyze the tables and introduce the notion of statistical parity.
-  \item Foreshadow the notion of business necessity.
-  \item Introduce an example with business necessity (requirement).
-  \item Analyze the example based only on statistical parity.
-  \item Contradict and introduce business necessity.
-  \item In addition to statistical parity, analyze also considering
-    business necessity.
-  \item Foreshadow natural inclination/utility function.
-  \item Adreess that we limit our scope without adressing system utility; we leave it for future work.
-\end{itemize}
+%\begin{itemize}
+%  \item Introduce the notion of Fairness in a data driven world. Refer again to the case mentioned
+%    in paragraph two (Staples case in detail). Then give specific examples with numbers and tables
+%    to simulate discrimination an underline lack (or not) of fairness.
+%  \item Analyze the tables and introduce the notion of statistical parity.
+%  \item Foreshadow the notion of business necessity.
+%  \item Introduce an example with business necessity (requirement).
+%  \item Analyze the example based only on statistical parity.
+%  \item Contradict and introduce business necessity.
+%  \item In addition to statistical parity, analyze also considering
+%    business necessity.
+%  \item Foreshadow natural inclination/utility function.
+%  \item Adreess that we limit our scope without adressing system utility; we leave it for future work.
+%\end{itemize}
+%
 
+\subsection{Statistical Parity}
+For sets of users S and T and some output O, statistical parity asks that:
+\begin{equation}
+|P\{O | x \in S\} - P\{O | x \in T\}| \le \varepsilon
+\label{eq:StatisticalParity}
+\end{equation}
 
+Use ~\ref{tab:DiscrimniationExample} and ~\ref{tab:NondiscriminationExample} to motivate.
 
-\begin{table}[!h]
+\begin{table}[h]
 {
   \renewcommand{\arraystretch}{1.5}
   \begin{tabular}{ c | c | c  c | c }
@@ -33,10 +41,10 @@
   the same proportions of low versus high prices. Therefore, the probability that a user
   will receive a high price is independent of the population to which he or she belongs,
   and the condition for statistical parity yields a low delta.}
-  \label{tab:S}
+  \label{tab:NondiscriminationExample}
 } \end{table}
 
-\begin{table}[!h]
+\begin{table}[h]
 {
   \renewcommand{\arraystretch}{1.5}
   \begin{tabular}{ c | c | c  c | c }
@@ -54,11 +62,49 @@
   ammount of high and low prices. Therefore, the probability that a user will receive a high price
   depends on the population to which he or she belongs, and the condition for statistical parity
   yields a higher delta compared to the previous example. }
-  \label{tab:S}
+  \label{tab:DiscrimniationExample}
 } \end{table}
 
+\subsection{Relaxing Statistical Parity}
+There may be situations in which satisfying statistical parity is not reasonable. Indeed, disparate
+impact is in itself not necessarily illegal, if the discriminatory practice can be justified
+through some notion of business necessity. Although the notion of business necessity was
+originally considered for discrimination in hiring, it can reasonably be applied to other situations
+of interest such as ad targeting, mortgage or (life) insurance
+
+In many examples where business necessity is brought up, business utility is defined very
+simply by the presence of some particular ability or attribute. For instance, a truck
+driving company would argue that possession of a truck drivers license is a business necessity,
+which would justify that their hiring process is discriminatory against women.
+This leads to a simple binary definition of business necessity. Let R denote the set of
+users that satisfy the business requirements. Then, a relaxed form of statistical parity would
+require that
+
+Essentially, we let the users be discriminated into R and Rc (this is business necessity).
+However, we want to make sure that conditioned on being in R (or not), there is no additional
+discrimination between sets S and T .
+This definition could easily be extended to deal with non-binary categories of utility,
+where business-necessity implies splitting the user base into multiple sets
+
+
+
+For a sets of users S and T and some output O, relaxed statistical parity asks that:
+\begin{equation}
+|P\{O | x \in S \cap R\} - P\{O | x \in T \cap R\}| \le \varepsilon
+\label{eq:RelaxedStatisticalParityA}
+\end{equation}
+and
+\begin{equation}
+|P\{O | x \in S \cap R'\} - P\{O | x \in T \cap R'\}| \le \varepsilon
+\label{eq:RelaxedStatisticalParityB}
+\end{equation}
+
+
+
+Use ~\ref{tab:BusinessNessecity} to motivate.
 \begin{table*}[t]
-{\center
+{ \small
+  \center
   \renewcommand{\arraystretch}{1.5}
   \begin{tabular}{ c | c c c | c c c | c c c}
     Credit
@@ -70,15 +116,40 @@
     YES & 5  & 15 & 20 & 15 & 40 & 55 & 10 & 45 & 55 \\
     NO  & 80 & 0  & 80 & 45 & 0 & 45 & 45 & 0 & 45\\
     \hline
-    - & 85 & 15 & 100 & 60 & 40 & 100 & 55 & 45 & 100\\
+    Total & 85 & 15 & 100 & 60 & 40 & 100 & 55 & 45 & 100\\
   \end{tabular}
-  \caption{{\bf Discriminatory behavior and bussiness necessity.} At first sight users of
+  \label{tab:BusinessNessecity}
+  \caption{{\bf Discriminatory behavior on presence of bussiness necessity (credit history).}
+  At first sight users of
   population A are proportionaly taking more payday loans (payday loans come with higher interest
-  than personal loans) than users of population B. Upon closer examination, however, one notes that
-  only 20\% of A's population users have credit history against 55\% of B's and C's population users.
-  Therefore, bussiness necessity requires that before examining statistical parity, users should be
-  discriminated based on whether they have credit history or not.}
-  \label{tab:S}
+  than personal loans) than users of population B. Specifically, users of population A receive 25\%
+  more and 20\% more  payday loans than users of populations B and C, respectively. However, upon closer
+  examination, one notes that only 20\% of A's users have credit history (which is a prerequisite for personal loans)
+  against 55\% of B's and C's users. Therefore, bussiness necessity requires that before examining statistical
+  parity, users should be discriminated based on whether they have credit history or not.}
+} \end{table*}
+
+\begin{table*}[t]
+{ \small
+  \center
+  \renewcommand{\arraystretch}{1.5}
+  \begin{tabular}{ c | c c c | c c | c c}
+    Credit
+    & \multicolumn{3}{|c|}{\underline{Loan Type (Population A)}}
+    & \multicolumn{2}{|c}{\underline{Statistical Parity (Population A) }}
+    & \multicolumn{2}{|c}{\underline{Relaxed Stat. Parity (Population A) }} \\
+    history & Payday & Personal & Total & Payday & Personal & Payday & Personal \\
+    \hline
+    YES & 5  & 15 & 20 & - & - &  0.10 & 0.11 \\
+    NO  & 80 & 0  & 80 & - & - &  0    & 0 \\
+    \hline
+    Total & 85 & 15 & 100 & 0.275 & 0.70 & - & - \\
+  \end{tabular}
+  \label{tab:BusinessNessecityA}
+  \caption{{\bf Relaxing statistical parity on presence of bussiness necessity (credit history).}
+  Without considering business necessity (credit history) the condition for statistical parity
+  yields a higher delta than if we consider business necessity and let the users be discriminated
+  on whether they have credit history or not.}
 } \end{table*}
 
 
