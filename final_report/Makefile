@@ -19,7 +19,10 @@ endif
 
 .PHONY: results $(PAPER).pdf clean
 
-all: $(PAPER).pdf
+all: results $(PAPER).pdf
+
+results:
+	+make -C $@
 
 $(PAPER).pdf: $(SRCS) $(REFS) $(FIGS)
 	$(LATEX) $(LATEXARGS) $(PAPER)
@@ -35,3 +38,4 @@ clean:
 	rm -f *.dvi *.aux *.log *.blg *.bbl \
           $(PAPER).ps $(PAPER).pdf \
           $(PAPER)-single.pdf $(PAPER)-single.ps
+	+make -C results clean
