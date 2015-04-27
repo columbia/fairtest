@@ -1,4 +1,4 @@
-set terminal postscript eps enhanced color solid 'Times' 28
+set terminal postscript eps enhanced color solid 'Times' 25
 set xlabel "Dependency of price engine on user's location (%)"
 set ylabel "#Sexes discriminated based user's location."
 set yrange [0:3]
