@@ -1,1 +1,0 @@
-web: gunicorn fairtest_project.wsgi --log-file -
