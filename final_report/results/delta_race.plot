@@ -7,7 +7,7 @@ set yrange [0:1]
 set xtics nomirror
 set ytics nomirror
 set datafile separator ","
-plot 'temp_race.csv'\
+plot 'delta_race.csv'\
   using 1:2 title "race-1" with lines lt 1,\
   '' using 1:3 title "race-2" with lines lt 2,\
   '' using 1:4 title "race-3" with lines lt 3,\

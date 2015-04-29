@@ -1,76 +1,82 @@
 
 \section{Introduction}
-\begin{itemize}
-  \item One general paragraph to set the ground about data-driven world and apps.
-  \item One paragraph to introduce the lack of transparency on data-use
-    and the lack of a model to describe and quantify fairness. Brief description of the
-    Staples case.
-  \item One paragraph to introduce our approach for fairness and our
-    idea of reporting privacy bugs.
-  \item One paragraph to describe the system we built to measure fairness.
-  \item One paragraph describing how we evaluate our system.
-  \item One paragraph to describe 3 major contributions of our work
-\end{itemize}
-%\heading{Motivation.}
-%Modern data driven web applications offer enormous capabilities for data
-%exchange and usage,
-%but there is a strong need for transparency and accountability.
-%All the more, highly sensitive personal information are being used from web
-%applications to enhance user experience and help create efficient advertising
-%policies. Unfortunately, the privacy implications of using that information are
-%poorly understood and rarely studied due to lack of transparency and
-%accountability. Consequently, there is a clear danger of unintentional data
-%misuse, such as algorithmic discriminations. An indicative recent
-%example is the Staples price discrimination case~\cite{Staples}.
-%In this case an arguably reasonable algorithmic decision to optimize online
-%prices based on user proximity to competitor brick-and-mortar locations led to
-%consistently higher prices for low-income populations, since they tend to
-%generally live farther from these stores. This kind of indirect--and likely
-%unintended--effects are challenging to identify, and with the use of sensitive
-%information collected by web applications, the risk for these dangers is only
-%increasing. Thus, we believe that new programming tools are needed to increase
-%developers’ visibility into the data they collect and the implications of its
-%integration into applications.
+
+%general paragraph to set the ground about data-driven world and apps
+Modern web applications are increasingly data driven and assist users
+with their every-day tasks, ranging from browsing social networks to
+issuing bank transactions. Users are accessing these applications from
+various personal devices such as smartphones, tablets, and desktop PCs,
+and always expect a highly personalized experience. Therefore, modern
+applications are metamorphosing the internet from an unbiased, impersonal
+service into a highly personalized service that dynamically reforms to match
+each individual's preferences. This personalized versioning of the internet
+is based on the collection and processing of users' data that aid profiling
+individuals and infering matching preferences.
+
+%paragraph to introduce the lack of transparency on data-use
+Although there is a phenomenal evolution in the techniques and tools used to
+process collected data and infer users' prefereces, there is a stagnation
+in the development of tools to increase transparency and acountability of
+this data. Yet, all the more,  highly sensitive personal information is being
+used from applications to enhance user experience and help create efficient
+policies. Developers notoriously miss tools to evaluate whether policies are
+enforced correctly across collected data and whether their algorithms are
+creating objectionable biases within user populations or not. Consequntly,
+these unpredictable ways in which data is being used carry the danger of
+unintentional data misuse, such as algorithmic discrimination of seemingly
+unrelated users.
+
+%Give a conctrete motivating example
+An indicative motivating example of data misuse recent example is the ``Staples Inc.'' price discrimination
+case~\cite{Staples}.
+In this case an arguably reasonable algorithmic decision to optimize online
+prices based on user proximity to competitor brick-and-mortar locations led to
+consistently higher prices for low-income populations, since they tend to
+generally live farther from these stores. This kind of indirect--and likely
+unintended--effects are challenging to identify, and with the use of sensitive
+information collected by web applications, the risk for these dangers is only
+increasing. Thus, we believe that new programming tools are needed to increase
+developers’ visibility into the data they collect and the implications of its
+integration into applications.
+
+%To motivate our work, we recall the recent Staples differential treatment case,
+%discovered by
+%Wall Street Journal investigators in 2012 [14]. From their article: “[The
+%investigators] found that the Staples Inc. website
+%displayed different prices to people after estimating their locations. [...]
+%Staples appeared to consider the person’s distance
+%from a rival brick-and-mortar store, either OfficeMax Inc. or Office Depot Inc.
+%If rival stores were within 20 miles or so,
+%Staples.com usually showed a discounted price. [...] In what appears to be an
+%unintended side effect of Staples’ pricing
+%methods – likely a function of retail competition with its rivals – the
+%Journal’s testing also showed that areas that tended to
+%see the discounted prices had a higher average income than areas that tended to
+%see higher prices.” Staples’ intentions aside,
+%we as programmers appreciate the difficulty of fully understanding the subtle
+%implications of such data-driven heuristics.
+%Other examples of differential treatment in web applications – intentional or
+%unintentional – have been identified in a
+%variety of other contexts, including advertising [13], pricing [12, 8], and
+%hiring [1]. Moreover, many new types of personal
+%data (e.g., heartbeats, sleep patterns) being collected by devices are very new
+%for most developers, and the effects of their use
+%at scale are poorly understood. Incorporating such data into applications –
+%e.g., to improve recommendations, promotions,
+%prices, suggestions – will raise the risk of unintended and discriminatory
+%effects.
 %
-%\heading{Goals.}
-%Our purpose is to build \thetool: A discrimination testing suite uncovering
-%differential treatment of various populations based on protected
-%attributes, such as religion, sexual orientation, or income. Our idea is to
-%measure correlation between outputs of a specific program (such as a price
-%recommendation engine) and the values of the protected attributes. Any strong
-%correlation between protected attributes and outputs is threated as a privacy
-%bug and is reported to the
-%developer as potential discrimination. To provide a better perspective to the
-%programmer, we will try to develop meaningful heuristics that rank observed
-%correlations based on their likelihood to be unintended or unfair
-%discriminations versus natural, preference-based effects. We will design
-%{\it FairTest} to be easy to use by regular application programmers,
-%will integrate
-%it into popular testing frameworks, and write a set of sample applications
-%indicating meaningful use cases.
+%We call such effects privacy bugs and propose to build tools for concerned
+%programmers to discover them. Just like pro-
+%grammers test their code for functional or reliability bugs, our vision is to
+%have programmers test their code for privacy bugs.
+%Our primary research objective, and challenge, will be to create a tool that is
+%effective at discovering meaningful privacy
+%bugs, easy to use by regular programmers, and practical to apply at scale and
+%to many different applications.
 %
-%\heading{Expected Conclusions.}
-%By using \thetool a developer will be able to test an application for
-%discrimination cases by uncovering correlations between protected attributes
-%and outputs. We expect to be able to identify clear cut discrimination cases,
-%as well as previously unknown obscure discrimination cases. \thetool should
-%work independently from the backend algorithms used for recomendations,
-%and it should feature a
-%simple API allowing developers easily test their code for privacy bugs.
-%
-%%\heading{Research Plan.}
-%%The first milestone is to build a demonstrating scenario for the Staple
-%%case~\cite{Staples} no later than the project status presentation date, on 3/10.
-%%This will include a demo set of users created by tuning yelp's publicly
-%%available data set~\cite{Yelp} to resemble Staple's user set, and a list of
-%%random competitor addresses. Then, we will build a sample application
-%%recommending product prices based on user and competitor locality.
-%%The second milestone is to build the necessary infrastructure to identify and
-%%rank correlations between user attributes, such as address, sex, and age, with
-%%outputs, such as price. The third milestone is the design of \thetool's API
-%%for writing tests to rank the aforesaid correlations and the integration of
-%%\thetool's API with a popular web framework, such as Django. We intend to write
-%%some basic test cases --unittests-- to demonstrate clear cut cases of strong
-%%correlations between inputs and outputs. The fourth milestone, is to present our
-%%experiences and lessons learned as well as interesting (and previously unknown)
-%%unintentional cases of discrimination uncovered by \thetool.
+
+%One paragraph to introduce our approach for fairness and our idea of reporting privacy bugs.
+%One paragraph to describe the system we built to measure fairness.
+%One paragraph describing how we evaluate our system.
+%One paragraph to describe 3 major contributions of our work

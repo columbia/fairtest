@@ -7,7 +7,7 @@ set yrange [0:1]
 set xtics nomirror
 set ytics nomirror
 set datafile separator ","
-plot 'temp_income.csv'\
+plot 'delta_income.csv'\
   using 1:2 title "income-1" with lines lt 1,\
   '' using 1:3 title "income-2" with lines lt 2,\
   '' using 1:4 title "income-3" with lines lt 3,\

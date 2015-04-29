@@ -5,8 +5,8 @@ FIGS = race_discrimination_on_location_dependency\
 			 sex_discrimination_on_proportional\
 			 sex_discrimination_on_location_dependency\
 			 income_per_race\
-			 temp_race\
-			 temp_income
+			 delta_race\
+			 delta_income
 
 GNUPLOT := gnuplot
 EPS2PDF := epstopdf
