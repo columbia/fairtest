@@ -36,20 +36,54 @@ brick-and-mortar stores effectively led to objectionable bias:
 Areas that tended to see discounted prices had a higher income than areas
 that tended to see higher prices. Other examples of differential treatment in
 web applications – intentional or unintentional – have been identified in a
-variety of other contexts, including
-advertising~\cite{Sweeney:AdDiscrimination},
-pricing~\cite{Hannak:PriceDiscrimination},
-and hiring~\cite{acquisiti:HiringDiscrimination}.
-This kind of indirect --and likely unintended-- effects are challenging to
-identify, and with the ubiquituous use of sensitive information collected by
-web applications, the risk for these dangers --or, privacy bugs-- is only increasing.
+variety of other contexts, including advertising~\cite{Sweeney:AdDiscrimination},
+pricing~\cite{Hannak:PriceDiscrimination}, and
+hiring~\cite{acquisiti:HiringDiscrimination}. This kind of indirect --and likely
+unintended-- effects are challenging to identify, and with the ubiquituous use
+of sensitive information collected by web applications, the risk for these
+dangers --or, privacy bugs-- is only increasing.
 
 In this paper we present the theoretical foundation to formalize the notion of
-fairness in modern web applications; and then, we build \thetool, a tool to
-increase developers’ visibility into the implications of various policies applied
-to data, and report privacy bugs in order to increase fairness.
-%One paragraph to introduce our approach for fairness and our idea of reporting privacy bugs.
+discriminatory treatment of users in modern web applications. Then, we build
+\sysname, a tool to increase developers’ visibility into the implications of
+various data-use policies by reporting discriminatory treatment --or,
+privacy bugs. Our theoretical foundation for identifying discriminatory
+treatment of users examines the correlation between a set of ouputs (shown to
+users) and a set of user attributes. More precisely, user attributes are split
+into two categories: (a) a set of protected user attributes such as race or
+sexual orientation --which application should not use to implement their
+policies and produce outputs-- and (b) a set of input attributes which
+applications is legitimate to use to produce outputs. Based on this rule,
+\sysname report's as privacy bugs any strong correlations between protected
+user attributes and outputs shown to users.
 
 %One paragraph to describe the system we built to measure fairness and how we evaluated it
+We built \sysname and provide it as a service with a REpresentational
+State Transfer (REST) Application Program Interface (API). Clients of the 
+\sysname service --let them be application developers or external auditors, e.g.,
+the Federal Trade Commission (FTC) -- use its REST API to register users and the
+corresponding outputs. Based on a set of registered users and the corresponding
+outputs, \sysname then creates bugreports and publishes them into its web interface.
+These reports indicate any strong correlations between (protected) user attributes
+and outputs. In Section~\ref{sect:fairtest} we present in detail the architecture
+of \sysname's implementation and its API. In order to evaluate our \sysname
+prototype, we created a set of XXX synthetic users that match the demographics of
+US population, simulate ``Staple Inc.'' pricing policy, and use \sysname to generate
+bugreports. Our results included bugrepots that identify the discriminatory behavior
+of ``Staple  Inc.'' pricing policy. In Section~\ref{sect:evaluation} we detail more
+on our experimental methodology and on the results of our evaluation.
 
-%One paragraph to describe 3 major contributions of our work
+Overall, this paper includes XXX major contributions:
+\begin{itemize}
+  \item XXX 
+  \item XXX 
+  \item XXX 
+\end{itemize}
+
+The rest of this paper is organized as follows. Section~\ref{sect:motivation}
+present our theoretical foundations along with a set of motivating exaples.
+Section~\ref{sect:fairtest} gives an overview on our \sysname implementations
+and its API. Section~\ref{sect:evaluation} presents results of the evaluation of
+our \sysname prototype. Section~\ref{sect:related} describes related work, and
+finally, section~\ref{sect:conclusion} includes our concluding remarks and
+directions for future work.
