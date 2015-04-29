@@ -7,11 +7,11 @@ with their every-day tasks, ranging from browsing social networks to
 issuing bank transactions. Users are accessing these applications from
 various personal devices such as smartphones, tablets, and desktop PCs,
 and always expect a highly personalized experience. Therefore, modern
-applications are metamorphosing the internet from an unbiased, impersonal
+applications are now metamorphosing the internet from an unbiased, impersonal
 service into a highly personalized service that dynamically reforms to match
 each individual's preferences. This personalized versioning of the internet
 is based on the collection and processing of users' data that aid profiling
-individuals and infering matching preferences.
+of individuals and infering matching preferences.
 
 %paragraph to introduce the lack of transparency on data-use
 Although there is a phenomenal evolution in the techniques and tools used to
@@ -19,62 +19,31 @@ process collected data and infer users' prefereces, there is a stagnation
 in the development of tools to increase transparency and acountability of
 this data. Yet, all the more,  highly sensitive personal information is being
 used from applications to enhance user experience and help create efficient
-policies. Developers notoriously miss tools to evaluate whether policies are
+policies (XXX Policies for what?).
+Developers notoriously miss tools to evaluate whether policies are
 enforced correctly across collected data and whether their algorithms are
-creating objectionable biases within user populations or not. Consequntly,
+creating objectionable biases within user populations or not. Clearly,
 these unpredictable ways in which data is being used carry the danger of
 unintentional data misuse, such as algorithmic discrimination of seemingly
 unrelated users.
 
 %Give a conctrete motivating example
-An indicative motivating example of data misuse recent example is the ``Staples Inc.'' price discrimination
-case~\cite{Staples}.
-In this case an arguably reasonable algorithmic decision to optimize online
-prices based on user proximity to competitor brick-and-mortar locations led to
-consistently higher prices for low-income populations, since they tend to
-generally live farther from these stores. This kind of indirect--and likely
-unintended--effects are challenging to identify, and with the use of sensitive
+An indicative motivating example of data misuse is the ``Staples Inc.''
+different treatment case, reported by the Wall Street Journal in 2012
+~\cite{Staples}. In this case, an arguably reasonable algorithmic decision
+to customize online prices based on user proximity to competitor
+brick-and-mortar stores effectively led to objectionable bias:
+Areas that tended to see discounted prices had a higher income than areas
+that tended to see higher prices. Other examples of differential treatment in
+web applications – intentional or unintentional – have been identified in a
+variety of other contexts, including advertising~\cite{}, pricing~\cite{},
+and hiring~\cite{}. This kind of indirect --and likely unintended--
+effects are challenging to identify, and with the ubiquituous use of sensitive
 information collected by web applications, the risk for these dangers is only
-increasing. Thus, we believe that new programming tools are needed to increase
-developers’ visibility into the data they collect and the implications of its
-integration into applications.
+increasing. We call such effects privacy bugs and build FaiTest,
+a tool to increase developers’ visibility into the implications of various
+policies applied to collected data.
 
-%To motivate our work, we recall the recent Staples differential treatment case,
-%discovered by
-%Wall Street Journal investigators in 2012 [14]. From their article: “[The
-%investigators] found that the Staples Inc. website
-%displayed different prices to people after estimating their locations. [...]
-%Staples appeared to consider the person’s distance
-%from a rival brick-and-mortar store, either OfficeMax Inc. or Office Depot Inc.
-%If rival stores were within 20 miles or so,
-%Staples.com usually showed a discounted price. [...] In what appears to be an
-%unintended side effect of Staples’ pricing
-%methods – likely a function of retail competition with its rivals – the
-%Journal’s testing also showed that areas that tended to
-%see the discounted prices had a higher average income than areas that tended to
-%see higher prices.” Staples’ intentions aside,
-%we as programmers appreciate the difficulty of fully understanding the subtle
-%implications of such data-driven heuristics.
-%Other examples of differential treatment in web applications – intentional or
-%unintentional – have been identified in a
-%variety of other contexts, including advertising [13], pricing [12, 8], and
-%hiring [1]. Moreover, many new types of personal
-%data (e.g., heartbeats, sleep patterns) being collected by devices are very new
-%for most developers, and the effects of their use
-%at scale are poorly understood. Incorporating such data into applications –
-%e.g., to improve recommendations, promotions,
-%prices, suggestions – will raise the risk of unintended and discriminatory
-%effects.
-%
-%We call such effects privacy bugs and propose to build tools for concerned
-%programmers to discover them. Just like pro-
-%grammers test their code for functional or reliability bugs, our vision is to
-%have programmers test their code for privacy bugs.
-%Our primary research objective, and challenge, will be to create a tool that is
-%effective at discovering meaningful privacy
-%bugs, easy to use by regular programmers, and practical to apply at scale and
-%to many different applications.
-%
 
 %One paragraph to introduce our approach for fairness and our idea of reporting privacy bugs.
 %One paragraph to describe the system we built to measure fairness.
