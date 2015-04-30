@@ -1,4 +1,6 @@
 \section{Motivation and Theoretical Background}
+\label{sect:motivation}
+
 In this section we motivate our work and establish the theoretical
 background neccessary for building \sysname. We start with examples
 that intuitivelly  introduce the notion of discriminatory treatment
@@ -18,7 +20,7 @@ of B and C. This is because users who belong to population A receive high
 prices more often than users who belong to the populations B and C. In other
 words, the probability that a user will be presented with a high price is
 higher if he or she belong to population A, and lower if he or she belongs to
-population B and C. Therefore, there is no statistical parity among the
+population B and C. Therefore, there is no {\em statistical parity} among the
 users of populations A, B, and C, since the hypothetical online store
 customizes price and disciminates based on users' membership on a population.
 
@@ -34,11 +36,13 @@ infavorably.
 The previous two motivating examples intuitivelly leads us use statistical
 parity as a simple metric indicating discriminatory treatment of populations.
 In what follows, we more formally introduce the condition asserting
-statistical parity among users of populations.
+{\em statistical parity} among users of populations.
 
 
 \subsection{Statistical Parity}
-For two sets of users S and S', and some output O, statistical parity
+\label{sect:statparity}
+
+For two sets of users S and S', and some output O, {\em statistical parity}
 asks that:
 \begin{equation}
 |P\{O | x \in S\} - P\{O | x \in T\}| \le \varepsilon
@@ -48,7 +52,7 @@ Note that if users are split into more than two populations then statistical
 parity requires that condition~\ref{eq:StatisticalParity} holds for seperately
 for each population against all the rest.
 
-Having introduced a formal metric for asserting statistical parity, we now
+Having introduced a formal metric for asserting {\em statistical parity}, we now
 revisit Tables~\ref{tab:DiscriminationExample}
 and~\ref{tab:NonDiscriminationExample}.
 In Table~\ref{tab:DiscriminationExample}, we observe that for population A the
@@ -58,7 +62,7 @@ of condition~\ref{eq:StatisticalParity} is $0.028$ for high price. Observe that
 the value of the delta in the first case is one order of magnitude higher than
 the respective value in the second case. This is because in the first case
 users of A are receiving a high price much more often than in the second case.
-Hence, in the first case there is low statistical parity among users of
+Hence, in the first case there is low {\em statistical parity} among users of
 populations A, B, and C, while in the second case there is high statistical
 parity among users of populations A, B, and C.
 
@@ -81,39 +85,41 @@ parity among users of populations A, B, and C.
     populations B and C receive approximately the same ammount of high and low
     prices. Therefore, the probability that a user will receive a high price
     depends on the population to which he or she belongs, and
-    condition~\ref{eq:StatisticalParity} for statistical parity yields a higher
-    delta compared to the previous example.
+    condition~\ref{eq:StatisticalParity} for {\em statistical parity} yields a
+    higher delta compared to the previous example.
   }
   \label{tab:DiscriminationExample}
 }
 \end{table}
 
-Although simple and intuitive, the above definition of statistical parity fails
-in cases where users are inherently discrimintated based on an attribute that
-constitutes a business necessity for a policy implemented by the developer.
-%%one more
-To be more specific, consider the example of a hypothetial bank that issues two
-types of loans: (a) payday loans that are issued to customers without credit
+Although simple and intuitive, the above definition of {\em statistical parity}
+fails in cases where developers implement policies that inherently discriminate
+users based on some requirement. Such cases may arise when there is a
+business necessity which is relevant to the policy of pricing, advertising,
+or hiring. For instance, consider the example of a hypothetial bank that issues
+two types of loans: (a) payday loans that are issued to customers without credit
 history and have high interest rate, and (b) personal loans that are issued to
 customers with credit history and have low interest. Suppose that this
 hypothetical bank serves 300 customers as shown in
-Table~\ref{tab:BusinessNessecity}.
+Table~\ref{tab:BusinessNessecityA}.
 
-At first sight users of population A are
-being treated unfavorably because they are proportionaly taking more payday
-loans than users of population B and C. Specifically, users of population A
+At first sight users of population A are being treated unfavorably because they
+are proportionaly taking more payday loans than users of population B and C.
+Specifically, users of population A
 receive 25\% and 20\% more payday loans than users of populations B and C,
 respectively. However, upon closer examination, one notes that only 20\% of A’s
 users have credit history (which is a prerequisite for personal loans) against
 55\% of B’s and C’s users. Therefore, bussiness necessity requires that before
-examining statistical parity, users should be discriminated based on whether
+examining {\em statistical parity}, users should be discriminated based on whether
 they have credit history or not. Since in presence of bussiness necessity 
-satisfying statistical parity is not reasonable, in what follows we introduce
-a relaxed version of statistical parity.
+satisfying {\em statistical parity} is not reasonable, in what follows we introduce
+a relaxed version of {\em statistical parity}.
 
 \subsection{Relaxing Statistical Parity}
+\label{sect:relaxedstatparity}
+
 For a sets of users S and S', a bussiness necessity (requirement) R, and some
-output O, relaxed statistical parity asks that:
+output O, {\em relaxed statistical parity} asks that:
 \begin{equation}
 |P\{O | x \in S \cap R\} - P\{O | x \in T \cap R\}| \le \varepsilon
 \label{eq:RelaxedStatisticalParityA}
@@ -132,7 +138,31 @@ there is no additional discrimination between the sets S and S. This definition
 could easily be extended to deal with non-binary categories of utility, where
 business-necessity implies splitting the user base into multiple sets.
 
-%Revisit Tables
+Having established the notion of {\em relaxed statistical parity} we now revisit
+the example of a hypothetical bank that issues payday and personal loans to 300
+users, and compare {\em statistical payday} againsts {\em relaxed statistical
+parity}. The users of the hypothetical bank are again distributed into three
+populations, as shown in Table~\ref{tab:BusinessNessecityA}. Also, in
+Table~\ref{tab:BusinessNessecityB} demonstated the {\em statistical parity}
+and the {\em relaxed statistical parity} for users of population A. The delta
+of condition~\ref{eq:StatisticalParity}) for {\em statistical parity} of
+population A (middle column of Table~\ref{tab:BusinessNessecityB}) is $0.27$
+and $0.70$ for payday and personal loans respectivelly. This implies
+discriminatory (unfavorable) treatment of users of population A. Indeed, there
+is such a discriminatory behavior that can be explained from an apriory
+credit history requiremnt --or, bussiness necessity. Towards incorporating
+bussiness necessity, the right-hand side column of
+Table~\ref{tab:BusinessNessecityB} presents the values for the delta of
+conditions~\ref{eq:RelaxedStatisticalParityA}
+and~\ref{eq:RelaxedStatisticalParityB}. In this case the deltas are $0.02$
+(compared to $0.27$ and $0.70$), because users are split into two sets
+based on whether they qualify for a personal loan or not, and then
+{\em relaxed statistical parity} is examined seperately.
+
+Based on the theoretical background disscussed in Section~\ref{sect:statparity}
+and~\ref{sect:relaxedstatparity} we design and implement \sysname; A service
+which, at its core, uncovers --and reports as privacy bugs-- any violations
+of statistical parity among users of different populations.
 
 \begin{table}[t]
 {\scriptsize
@@ -181,7 +211,7 @@ business-necessity implies splitting the user base into multiple sets.
     before examining statistical parity, users should be discriminated based on whether
     they have credit history or not.
   }
-  \label{tab:BusinessNessecity}
+  \label{tab:BusinessNessecityA}
 }
 \end{table*}
 
@@ -208,6 +238,6 @@ business-necessity implies splitting the user base into multiple sets.
     history or not, and apply conditions~\ref{eq:RelaxedStatisticalParityA}
     and~\ref{eq:RelaxedStatisticalParityB}.
   }
-  \label{tab:BusinessNessecityA}
+  \label{tab:BusinessNessecityB}
 }
 \end{table*}
