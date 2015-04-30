@@ -36,7 +36,8 @@ brick-and-mortar stores effectively led to objectionable bias:
 Areas that tended to see discounted prices had a higher income than areas
 that tended to see higher prices. Other examples of differential treatment in
 web applications – intentional or unintentional – have been identified in a
-variety of other contexts, including advertising~\cite{Sweeney:AdDiscrimination},
+variety of other contexts, including
+advertising~\cite{Sweeney:AdDiscrimination},
 pricing~\cite{Hannak:PriceDiscrimination}, and
 hiring~\cite{acquisiti:HiringDiscrimination}. This kind of indirect --and likely
 unintended-- effects are challenging to identify, and with the ubiquitous use
@@ -61,34 +62,36 @@ user attributes and outputs shown to users.
 %One paragraph to describe the system we built and how we evaluated it
 We built \sysname and provide it as a service with a REpresentational
 State Transfer (REST) Application Program Interface (API). Clients of the 
-\sysname service --let them be application developers or external auditors, e.g.,
-the Federal Trade Commission (FTC)-- use its REST API to register users and the
-corresponding outputs. Based on a set of registered users and the corresponding
-outputs, \sysname then creates bug-reports and publishes them into its web interface.
-These reports indicate any strong correlations between (protected) user attributes
-and outputs. In Section~\ref{sect:fairtest} we present in detail the architecture
-of \sysname's implementation and its API. In order to evaluate our \sysname
-prototype, we used a set of synthetic users that match the demographics of
-US population, simulate ``Staple Inc.'' pricing policy, and use \sysname to generate
-bug-reports. Our results included bug-reports that identify the discriminatory behavior
-of ``Staple  Inc.'' pricing policy. In Section~\ref{sect:evaluation} we detail more
-on our experimental methodology and on the results of our evaluation.
+\sysname service --let them be application developers or external auditors,
+e.g., the Federal Trade Commission (FTC)-- use its REST API to register users
+and the corresponding outputs. Based on a set of registered users and the
+corresponding outputs, \sysname then creates bug-reports and publishes them
+into its web interface. These reports indicate any strong correlations between
+(protected) user attributes and outputs. In Section~\ref{sect:fairtest} we
+present in detail the architecture of \sysname's implementation and its API.
+In order to evaluate our \sysname prototype, we used a set of synthetic users
+that match the demographics of US population, simulate ``Staple Inc.'' pricing
+policy, and use \sysname to generate bug-reports. Our results included
+bug-reports that identify the discriminatory behavior of ``Staple  Inc.''
+pricing policy. In Section~\ref{sect:evaluation} we detail more on our
+experimental methodology and on the results of our evaluation.
 
 Overall, this paper includes three major contributions:
 \begin{itemize}
   \item The theoretical background necessary to formulate and evaluate the
     presence of discriminatory treatment of users of modern data-driven web
     applications.
-  \item The design and implementation of \sysname, a service for identifying and
-    reporting discriminatory treatment of users of modern data-driven applications.
-  \item The evaluation of \sysname in the ``Staples Inc.'' pricing engine, a well
-    know case of discriminatory treatment of users.
+  \item The design and implementation of \sysname, a service for identifying
+    and reporting discriminatory treatment of users of modern data-driven
+    applications.
+  \item The evaluation of \sysname in the ``Staples Inc.'' pricing engine, a
+    well know case of discriminatory treatment of users.
 \end{itemize}
 
 The rest of this paper is organized as follows. Section~\ref{sect:motivation}
 present our theoretical foundations along with a set of motivating examples.
 Section~\ref{sect:fairtest} gives an overview on our \sysname implementations
-and its API. Section~\ref{sect:evaluation} presents results of the evaluation of
-our \sysname prototype. Section~\ref{sect:related} describes related work, and
-finally, section~\ref{sect:conclusion} includes our concluding remarks and
+and its API. Section~\ref{sect:evaluation} presents results of the evaluation
+of our \sysname prototype. Section~\ref{sect:related} describes related work,
+and finally, section~\ref{sect:conclusion} includes our concluding remarks and
 directions for future work.
