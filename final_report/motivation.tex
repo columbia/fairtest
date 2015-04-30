@@ -92,6 +92,7 @@ parity among users of populations A, B, and C.
 }
 \end{table}
 
+
 Although simple and intuitive, the above definition of {\em statistical parity}
 fails in cases where developers implement policies that inherently discriminate
 users based on some requirement. Such cases may arise when there is a
@@ -115,55 +116,6 @@ they have credit history or not. Since in presence of bussiness necessity
 satisfying {\em statistical parity} is not reasonable, in what follows we introduce
 a relaxed version of {\em statistical parity}.
 
-\subsection{Relaxing Statistical Parity}
-\label{sect:relaxedstatparity}
-
-For a sets of users S and S', a bussiness necessity (requirement) R, and some
-output O, {\em relaxed statistical parity} asks that:
-\begin{equation}
-|P\{O | x \in S \cap R\} - P\{O | x \in T \cap R\}| \le \varepsilon
-\label{eq:RelaxedStatisticalParityA}
-\end{equation}
-and
-\begin{equation}
-|P\{O | x \in S \cap R'\} - P\{O | x \in T \cap R'\}| \le \varepsilon
-\label{eq:RelaxedStatisticalParityB}
-\end{equation}
-
-Essentially, conditions~\ref{eq:RelaxedStatisticalParityA}
-and~\ref{eq:RelaxedStatisticalParityB} let the users be discriminated into two
-sets R (users that meet the bussiness necessity) and R' (users that do not
-meet the business necessity). However, conditioned on being in R (or not),
-there is no additional discrimination between the sets S and S. This definition
-could easily be extended to deal with non-binary categories of utility, where
-business-necessity implies splitting the user base into multiple sets.
-
-Having established the notion of {\em relaxed statistical parity} we now revisit
-the example of a hypothetical bank that issues payday and personal loans to 300
-users, and compare {\em statistical payday} againsts {\em relaxed statistical
-parity}. The users of the hypothetical bank are again distributed into three
-populations, as shown in Table~\ref{tab:BusinessNessecityA}. Also, in
-Table~\ref{tab:BusinessNessecityB} demonstated the {\em statistical parity}
-and the {\em relaxed statistical parity} for users of population A. The delta
-of condition~\ref{eq:StatisticalParity}) for {\em statistical parity} of
-population A (middle column of Table~\ref{tab:BusinessNessecityB}) is $0.27$
-and $0.70$ for payday and personal loans respectivelly. This implies
-discriminatory (unfavorable) treatment of users of population A. Indeed, there
-is such a discriminatory behavior that can be explained from an apriory
-credit history requiremnt --or, bussiness necessity. Towards incorporating
-bussiness necessity, the right-hand side column of
-Table~\ref{tab:BusinessNessecityB} presents the values for the delta of
-conditions~\ref{eq:RelaxedStatisticalParityA}
-and~\ref{eq:RelaxedStatisticalParityB}. In this case the deltas are $0.02$
-(compared to $0.27$ and $0.70$), because users are split into two sets
-based on whether they qualify for a personal loan or not, and then
-{\em relaxed statistical parity} is examined seperately.
-
-Based on the theoretical background disscussed in Section~\ref{sect:statparity}
-and~\ref{sect:relaxedstatparity} we design and implement \sysname; A service
-which, at its core, uncovers --and reports as privacy bugs-- any violations
-of statistical parity among users of different populations.
-
 \begin{table}[t]
 {\scriptsize
   \renewcommand{\arraystretch}{1.5}
@@ -185,6 +137,10 @@ of statistical parity among users of different populations.
 }
 \end{table}
 
+
+
+\subsection{Relaxing Statistical Parity}
+\label{sect:relaxedstatparity}
 \begin{table*}[t]
 { \small
   \center
@@ -241,3 +197,50 @@ of statistical parity among users of different populations.
   \label{tab:BusinessNessecityB}
 }
 \end{table*}
+For a sets of users S and S', a bussiness necessity (requirement) R, and some
+output O, {\em relaxed statistical parity} asks that:
+\begin{equation}
+|P\{O | x \in S \cap R\} - P\{O | x \in T \cap R\}| \le \varepsilon
+\label{eq:RelaxedStatisticalParityA}
+\end{equation}
+and
+\begin{equation}
+|P\{O | x \in S \cap R'\} - P\{O | x \in T \cap R'\}| \le \varepsilon
+\label{eq:RelaxedStatisticalParityB}
+\end{equation}
+
+Essentially, conditions~\ref{eq:RelaxedStatisticalParityA}
+and~\ref{eq:RelaxedStatisticalParityB} let the users be discriminated into two
+sets R (users that meet the bussiness necessity) and R' (users that do not
+meet the business necessity). However, conditioned on being in R (or not),
+there is no additional discrimination between the sets S and S. This definition
+could easily be extended to deal with non-binary categories of utility, where
+business-necessity implies splitting the user base into multiple sets.
+
+Having established the notion of {\em relaxed statistical parity} we now revisit
+the example of a hypothetical bank that issues payday and personal loans to 300
+users, and compare {\em statistical payday} againsts {\em relaxed statistical
+parity}. The users of the hypothetical bank are again distributed into three
+populations, as shown in Table~\ref{tab:BusinessNessecityA}. Also, in
+Table~\ref{tab:BusinessNessecityB} demonstated the {\em statistical parity}
+and the {\em relaxed statistical parity} for users of population A. The delta
+of condition~\ref{eq:StatisticalParity}) for {\em statistical parity} of
+population A (middle column of Table~\ref{tab:BusinessNessecityB}) is $0.27$
+and $0.70$ for payday and personal loans respectivelly. This implies
+discriminatory (unfavorable) treatment of users of population A. Indeed, there
+is such a discriminatory behavior that can be explained from an apriory
+credit history requiremnt --or, bussiness necessity. Towards incorporating
+bussiness necessity, the right-hand side column of
+Table~\ref{tab:BusinessNessecityB} presents the values for the delta of
+conditions~\ref{eq:RelaxedStatisticalParityA}
+and~\ref{eq:RelaxedStatisticalParityB}. In this case the deltas are $0.02$
+(compared to $0.27$ and $0.70$), because users are split into two sets
+based on whether they qualify for a personal loan or not, and then
+{\em relaxed statistical parity} is examined seperately.
+
+Based on the theoretical background disscussed in Section~\ref{sect:statparity}
+and~\ref{sect:relaxedstatparity} we design and implement \sysname; A service
+which, at its core, uncovers --and reports as privacy bugs-- any violations
+of statistical parity among users of different populations.
+
+
