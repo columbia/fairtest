@@ -1,6 +1,3 @@
-\section{Motivation}
-\label{sect:motivation}
-%\begin{itemize}
 %  \item Introduce the notion of Fairness in a data driven world. Refer again to the case mentioned
 %    in paragraph two (Staples case in detail). Then give specific examples with numbers and tables
 %    to simulate discrimination an underline lack (or not) of fairness.
@@ -9,44 +6,70 @@
 %  \item Introduce an example with business necessity (requirement).
 %  \item Analyze the example based only on statistical parity.
 %  \item Contradict and introduce business necessity.
-%  \item In addition to statistical parity, analyze also considering
-%    business necessity.
-%  \item Foreshadow natural inclination/utility function.
-%  \item Adreess that we limit our scope without adressing system utility; we leave it for future work.
-%\end{itemize}
-%
+%  \item Adreess that we limit our scope into statistical parity wnhen we build Fairtest
+
+\section{Motivation and Theoretical Background}
+In this section we present a set of motivating examples that help
+(i) introduce the notion of discriminatory treatment of users of modern
+data-driven applications, and (ii) quantify the presence of
+discriminatory treatment of seemingly unrelated users.
+
+As a first, very simple example consider a web application which is
+the front end of an online store. Suppose that this hypothetical online
+store has 100 active users that are spread into three different groups
+A, B, and C, as shown in Table~\ref{tab:DiscriminationExample}. Also,
+suppose that upon visiting, a user sees either a low or high price, as
+shown in Table~\ref{tab:DiscriminationExample}. Intuitivelly, users of
+the population A are treated unfavorably compared to users of populations
+of B and C, since users of the former population receive high prices
+more often than users of the later population. In other words, the
+probability that a user will be presented with a high price is higher
+if he or she belong to population A, and lower if he or she belongs to
+population B and C. Therefore, there is no statistical parity among the
+users of populations A, B, and C, since the hypothetical online store
+optimizes its price and disciminates based on users' membership on a
+population.
+
+On the other hand, for the same hypothetical online store, consider
+that the users are distributed into three populations A, B, and C, as
+shown in Table~\ref{tab:NonDiscriminationExample}. In this case it is
+apparent that a user has approximately the same probability to receive
+a high or a low price, regardless of the population to which he or she
+belongs. In other words, there is no population whose users are treated
+infavorably.
+
+The previous two motivating examples leads us to the following definition
+of statistical parity, in order to quantify the notion of discriminatory
+treatment of populations.
 
 \subsection{Statistical Parity}
-For sets of users S and T and some output O, statistical parity asks that:
+For two sets of users S and S', and some output O, statistical parity
+asks that:
 \begin{equation}
 |P\{O | x \in S\} - P\{O | x \in T\}| \le \varepsilon
 \label{eq:StatisticalParity}
 \end{equation}
+Note that if users are split into more than two populations then statistical
+parity requires that condition~\ref{eq:StatisticalParity} holds for seperately
+for each population against all the rest.
 
-Use ~\ref{tab:DiscrimniationExample} and ~\ref{tab:NondiscriminationExample} to motivate.
+Having introduced a formal metric
+for statistical parity, we now revisit Tables~\ref{tab:DiscriminationExample}
+and~\ref{tab:NonDiscriminationExample}. In Table~\ref{tab:DiscriminationExample},
+we observe that for population A the delta of condition~\ref{eq:StatisticalParity}
+is $0.198$ for high price. While, in Table~\ref{tab:NonDiscriminationExample}, for
+population A the delta of condition~\ref{eq:StatisticalParity} is $0.028$ for
+high price. The value of the delta in the first case is one order of magnitude
+higher than in the second case, because users of A are receiving a high
+price much more often and therefore there is very low statistical parity among
+users of populations A, B, and C. On the other hand, in the second case a
+user is equially probable to receive either a low or a high price, regardless
+of the population to which he or she belongs, and therefore there is a high
+statistical parity among users of populations A, B, and C.
 
-\begin{table}[h]
-{\scriptsize
-  \renewcommand{\arraystretch}{1.5}
-  \begin{tabular}{ c | c | c  c | c }
-    & & \multicolumn{2}{|c|}{\underline{Price}} &  Statistical Parity\\
-    Population & \#Members & Low & High & (for high price) \\
-    \hline
-    A & 30 &  15 & 15 & $0.028 = | \frac{15}{30} - \frac{37}{70}|$ \\
-    B & 30 &  14 & 16 & $0.019$ \\
-    C & 40 &  19 & 21 & $0.008$ \\
-    \hline
-    Total & \#100 & 48 & 52 & - \\
-  \end{tabular}
-  \caption{{\bf Non-discriminatory behavior.} Users of three populations receive approximately
-  the same proportions of low versus high prices. Therefore, the probability that a user
-  will receive a high price is independent of the population to which he or she belongs,
-  and condition~\ref{eq:StatisticalParity} for statistical parity yields a low delta.}
-  \label{tab:NondiscriminationExample}
-} \end{table}
-
-\begin{table}[h]
-{\scriptsize
+\begin{table}[t]
+{
+ \scriptsize
   \renewcommand{\arraystretch}{1.5}
   \begin{tabular}{ c | c | c  c | c }
     & & \multicolumn{2}{|c|}{\underline{Price}} &  Statistical Parity\\
@@ -63,8 +86,21 @@ Use ~\ref{tab:DiscrimniationExample} and ~\ref{tab:NondiscriminationExample} to 
   ammount of high and low prices. Therefore, the probability that a user will receive a high price
   depends on the population to which he or she belongs, and condition ~\ref{eq:StatisticalParity}
   for statistical parity yields a higher delta compared to the previous example. }
-  \label{tab:DiscrimniationExample}
-} \end{table}
+  \label{tab:DiscriminationExample}
+}
+\end{table}
+
+Although simple and intuitive, the above definition of statistical parity fails
+in cases where users are inherently discrimintated based on an attribute that
+constitutes a business necessity for a policy implemented by the developer.
+To be more specific, consider the example of a hypothetial bank that issues two
+types of loans: (a) payday loans that are issued to customers without credit
+history and have high interest rate, and (b) personal loans that are issued to
+customers with credit history and have low interest. Suppose that this
+hypothetical bank serves 300 customers as shown in
+Table~\ref{tab:BusinessNessecity}.
+
+
 
 \subsection{Relaxing Statistical Parity}
 There may be situations in which satisfying statistical parity is not reasonable. Indeed, disparate
@@ -87,8 +123,6 @@ discrimination between sets S and T .
 This definition could easily be extended to deal with non-binary categories of utility,
 where business-necessity implies splitting the user base into multiple sets
 
-
-
 For a sets of users S and T and some output O, relaxed statistical parity asks that:
 \begin{equation}
 |P\{O | x \in S \cap R\} - P\{O | x \in T \cap R\}| \le \varepsilon
@@ -101,8 +135,57 @@ and
 \end{equation}
 
 
+\begin{table}[t]
+{\scriptsize
+  \renewcommand{\arraystretch}{1.5}
+  \begin{tabular}{ c | c | c  c | c }
+    & & \multicolumn{2}{|c|}{\underline{Price}} &  Statistical Parity\\
+    Population & \#Members & Low & High & (for high price) \\
+    \hline
+    A & 30 &  15 & 15 & $0.028 = | \frac{15}{30} - \frac{37}{70}|$ \\
+    B & 30 &  14 & 16 & $0.019$ \\
+    C & 40 &  19 & 21 & $0.008$ \\
+    \hline
+    Total & \#100 & 48 & 52 & - \\
+  \end{tabular}
+  \caption{{\bf Non-discriminatory behavior.} Users of three populations receive approximately
+  the same proportions of low versus high prices. Therefore, the probability that a user
+  will receive a high price is independent of the population to which he or she belongs,
+  and condition~\ref{eq:StatisticalParity} for statistical parity yields a low delta.}
+  \label{tab:NonDiscriminationExample}
+}
+\end{table}
 
-Use ~\ref{tab:BusinessNessecity} to motivate.
+
+
+
+\begin{table*}[t]
+{ \small
+  \center
+  \renewcommand{\arraystretch}{1.5}
+  \begin{tabular}{ c | c c c | c c | c c}
+    Credit
+    & \multicolumn{3}{|c|}{\underline{Loan Type (Population A)}}
+    & \multicolumn{2}{|c}{\underline{Statistical Parity (Population A) }}
+    & \multicolumn{2}{|c}{\underline{Relaxed Statistical Parity (Population A) }} \\
+    history & Payday & Personal & Total & Payday & Personal & Payday & Personal \\
+    \hline
+    YES & 5  & 15 & 20 & - & - &  0.022 & 0.022 \\
+    NO  & 80 & 0  & 80 & - & - &  0    & 0 \\
+    \hline
+    Total & 85 & 15 & 100 & 0.275 & 0.70 & - & - \\
+  \end{tabular}
+  \label{tab:BusinessNessecityA}
+  \caption{{\bf Relaxing statistical parity on presence of bussiness necessity (credit history).}
+    Without considering business necessity, i.e., credit history,
+    condition~\ref{eq:StatisticalParity} for statistical parity yields a higher delta than if we
+    consider business necessity, let the users be discriminated on whether they have credit
+    history or not, and apply conditions~\ref{eq:RelaxedStatisticalParityA}
+    and~\ref{eq:RelaxedStatisticalParityB}.}
+} \end{table*}
+
+
+
 \begin{table*}[t]
 { \small
   \center
@@ -131,30 +214,3 @@ Use ~\ref{tab:BusinessNessecity} to motivate.
   they have credit history or not.}
 }
 \end{table*}
-
-\begin{table*}[t]
-{ \small
-  \center
-  \renewcommand{\arraystretch}{1.5}
-  \begin{tabular}{ c | c c c | c c | c c}
-    Credit
-    & \multicolumn{3}{|c|}{\underline{Loan Type (Population A)}}
-    & \multicolumn{2}{|c}{\underline{Statistical Parity (Population A) }}
-    & \multicolumn{2}{|c}{\underline{Relaxed Statistical Parity (Population A) }} \\
-    history & Payday & Personal & Total & Payday & Personal & Payday & Personal \\
-    \hline
-    YES & 5  & 15 & 20 & - & - &  0.022 & 0.022 \\
-    NO  & 80 & 0  & 80 & - & - &  0    & 0 \\
-    \hline
-    Total & 85 & 15 & 100 & 0.275 & 0.70 & - & - \\
-  \end{tabular}
-  \label{tab:BusinessNessecityA}
-  \caption{{\bf Relaxing statistical parity on presence of bussiness necessity (credit history).}
-    Without considering business necessity, i.e., credit history,
-    condition~\ref{eq:StatisticalParity} for statistical parity yields a higher delta than if we
-    consider business necessity, let the users be discriminated on whether they have credit
-    history or not, and apply conditions~\ref{eq:RelaxedStatisticalParityA}
-    and~\ref{eq:RelaxedStatisticalParityB}.}
-} \end{table*}
-
-
