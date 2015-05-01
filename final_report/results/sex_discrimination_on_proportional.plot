@@ -18,6 +18,7 @@ set xtics nomirror
 set ytics nomirror
 set ytics ('25' 25, '50' 50, '75' 75, '100' 100)
 set xtic rotate by -45 scale 0
+set xtics ('Male' 0, 'Female' 1)
 set datafile separator ","
 set xlabel offset 0,-2,0
 

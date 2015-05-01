@@ -38,16 +38,16 @@ Synthetic users simulation to evaluate FairTest reports.
 
 \begin{figure*}[t]
 {
-  \subfigure[Income]{
-    \includegraphics[width=0.33\textwidth]
-    {\detokenize{results/income_discrimination_on_proportional}}
-    \label{fig:IncomeDiscriminationProportional}
- }
  \subfigure[Race]{
     \includegraphics[width=0.33\textwidth]
     {\detokenize{results/race_discrimination_on_proportional}}
     \label{fig:}
   }
+  \subfigure[Income]{
+    \includegraphics[width=0.33\textwidth]
+    {\detokenize{results/income_discrimination_on_proportional}}
+    \label{fig:IncomeDiscriminationProportional}
+ }
  \subfigure[Sex]{
     \includegraphics[width=0.33\textwidth]
     {\detokenize{results/sex_discrimination_on_proportional}}
@@ -55,9 +55,9 @@ Synthetic users simulation to evaluate FairTest reports.
   }
  \caption{\textbf{Prices shown to users and their dependency on income, race, and sex.}
           Shows the proportion of high versus low prices shown to users based on income,
-          race, and sex. Figure (a) reveals that a users with annual income less than
+          race, and sex. Figure (b) reveals that a users with annual income less than
           \$5,000 receive proportionaly more high prices than users with annual income
-          more than \$320,000. Figure (b) indicates that Indian or Alaskan users receive
+          more than \$320,000. Figure (a) indicates that Indian or Alaskan users receive
           notably more high prices than any other race. This raises a consern, since as
           shown in Figure~\ref{fig:IncomePerRace}, an Indian or Alaskan user has a
           considerably lower income than a white American user. Figure (c) shows that
