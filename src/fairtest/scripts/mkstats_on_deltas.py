@@ -36,31 +36,29 @@ def main(argv=sys.argv):
         return
 
     i = 0
-    print("#attr_val,total_visits,low_price,high_price,percent_low, percent_high")
+    print("#location_dep, attr_val1, attr_val2, ..., attr_valN")
     for line in f:
         try:
             line = line.split('\n')[0]
             if line.split(',')[0].split(':')[0] == "total":
                 continue
-            attr_val = str(line.split(',')[0].split(':')[1])
-            #flag = line.split(',')[5].split(':')[1]
-            low = int(line.split(',')[3].split(':')[1])
-            high = int(line.split(',')[4].split(':')[1])
-            if attr_val not in stats:
-                stats[attr_val] = [0, 0]
-            stats[attr_val][0] += low
-            stats[attr_val][1] += high
+            attr_val = int(line.split(',')[0].split(':')[1])
+            delta = float(line.split(',')[1].split(':')[1])
+            location_dependency = int(line.split(',')[6].split(':')[1])
+            if location_dependency not in stats:
+                stats[location_dependency] = {}
+            if attr_val not in stats[location_dependency]:
+                stats[location_dependency][attr_val] = []
+            stats[location_dependency][attr_val].append(delta)
 
         except Exception as error:
             print("Exception:%s at line:%s" % (error, line), file=sys.stderr)
 
-    for s in sorted(stats):
-        perc_high = 100 * int(stats[s][1]) / ( int(stats[s][0]) + int(stats[s][1]))
-        perc_low  = 100.0 - perc_high
-        print("%s,%d,%d,%d,%.2f,%.2f" % (s, stats[s][0] + stats[s][1],
-                                    stats[s][0], stats[s][1],
-                                    perc_low, perc_high))
-    print("#Total: %s" % sum([stats[s][0] +stats[s][1] for s in stats]))
+    for location_dependency in sorted(stats):
+        print("%d" % location_dependency, end="")
+        for s in sorted(stats[location_dependency]):
+            print(",%.2f" % (sum(stats[location_dependency][s]) / len(stats[location_dependency][s])), end="")
+        print("")
     f.close()
 
 
