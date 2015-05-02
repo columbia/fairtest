@@ -1,14 +1,18 @@
 set terminal postscript eps enhanced color solid 'Times' 28
 set xlabel "Dependency of price engine on user's location (%)"
-set ylabel "#Incomes discriminated on user's location. \n Total: 8 income groups."
-set yrange [0:9]
+set ylabel "Deltas for incomes"
 
-set key samplen 2.5 spacing 0.85 font ",30"
 set border 3
+set yrange [0:0.2]
 set xtics nomirror
 set ytics nomirror
-set ytics ('2' 2, '4' 4, '6' 6, '8' 8)
 set datafile separator ","
 plot 'income_discrimination_on_location_dependency.csv'\
-  using 1:3:2:4:xticlabels(1) notitle with errorbars lc rgb 'gray60' lw 1,\
-  "" using 1:3 title "Avg. #incomes discriminated\n on user's location" with linespoints lc -1 lw 8 pointtype 16
+  using 1:2 title    "Income < $5,000" with lines lt 1,\
+  '' using 1:3 title "Income > $5,000" with lines lt 2,\
+  '' using 1:4 title "Income > $10,000" with lines lt 3,\
+  '' using 1:5 title "Income > $20,000" with lines lt 4,\
+  '' using 1:6 title "Income > $40,000" with lines lt 5,\
+  '' using 1:7 title "Income > $80,000" with lines lt 6,\
+  '' using 1:8 title "Income > $160,000" with lines lt 7,\
+  '' using 1:9 title "Income > $320,000" with lines lt 8

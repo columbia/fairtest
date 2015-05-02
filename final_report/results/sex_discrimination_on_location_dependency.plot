@@ -1,14 +1,12 @@
-set terminal postscript eps enhanced color solid 'Times' 25
+set terminal postscript eps enhanced color solid 'Times' 28
 set xlabel "Dependency of price engine on user's location (%)"
-set ylabel "#Sexes discriminated based user's location."
-set yrange [0:3]
+set ylabel "Deltas for sexes"
 
-set key samplen 2.5 spacing 0.85 font ",30"
 set border 3
+set yrange [0:0.2]
 set xtics nomirror
 set ytics nomirror
-set ytics ('1' 1, '2' 2)
 set datafile separator ","
 plot 'sex_discrimination_on_location_dependency.csv'\
-  using 1:3:2:4:xticlabels(1) notitle with errorbars lc rgb 'gray60' lw 1,\
-  "" using 1:3 title "Avg. #sexs discriminated\n on user's location" with linespoints lc -1 lw 8 pointtype 16
+  using 1:2 title    "Male" with lines lt 1,\
+  '' using 1:3 title "Female" with lines lt 2
