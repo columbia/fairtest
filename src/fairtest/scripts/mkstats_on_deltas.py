@@ -57,7 +57,7 @@ def main(argv=sys.argv):
     for location_dependency in sorted(stats):
         print("%d" % location_dependency, end="")
         for s in sorted(stats[location_dependency]):
-            print(",%.2f" % (sum(stats[location_dependency][s]) / len(stats[location_dependency][s])), end="")
+            print(",%.5f" % (sum(stats[location_dependency][s]) / len(stats[location_dependency][s])), end="")
         print("")
     f.close()
 

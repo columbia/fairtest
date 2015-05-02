@@ -13,7 +13,7 @@ from bugreport.helpers.distance import haversine
 #constants
 epsilon = 0.05
 price = {'low': 0, 'high': 1}
-#logfile = sys.stdout
+logfile = sys.stdout
 logfile = open("/tmp/logfile", "a+")
 
 #caches
@@ -83,16 +83,22 @@ def _get_price(user, location_dependency):
     if check_distance_from_store(user_location,
                                  competitor_stores_coordinates,
                                  20):
-        return (price['high'] if randBinary(12) else price['low'])
-    elif check_distance_from_store(user_location,
-                                   staples_stores_coordinates,
-                                   20):
-        return (price['high'] if randBinary(86) else price['low'])
+        return price['low']
     else:
-        return (price['high'] if randBinary(67) else price['low'])
+        price['high']
+
+ #   elif check_distance_from_store(user_location,
+ #                                  staples_stores_coordinates,
+ #                                  20):
+ #       return (price['high'] if randBinary(86) else price['low'])
+ #   else:
+ #       return (price['high'] if randBinary(67) else price['low'])
 
 
-def BugreportView(request, location_dependency="100", protected_attr="race"):
+def BugreportView(request,
+                  location_dependency="100",
+                  protected_attr="race",
+                  visits_per_user=10):
     """
     Evaluate statistical parity condition for all values of a protected
     attribute which we examine for discriminatory behavior.
@@ -102,18 +108,18 @@ def BugreportView(request, location_dependency="100", protected_attr="race"):
     #Query DB and create an in-memory structure (dictionary)
     prices_by_attr = {}
     for user in User.objects.all():
-
-        attr_val = user.get_attribute(protected_attr)
-        if not attr_val:
-            print("Attribute: <%s> was not found in models"
-                  % protected_attr, file=sys.stderr)
-            continue
-        if attr_val not in prices_by_attr:
-            prices_by_attr[attr_val] = {'high': 0, 'low': 0}
-        if _get_price(user, location_dependency) == price['low']:
-            prices_by_attr[attr_val]['low'] += 1
-        else:
-            prices_by_attr[attr_val]['high'] += 1
+        for _ in range(0, visits_per_user):
+            attr_val = user.get_attribute(protected_attr)
+            if not attr_val:
+                print("Attribute: <%s> was not found in models"
+                      % protected_attr, file=sys.stderr)
+                continue
+            if attr_val not in prices_by_attr:
+                prices_by_attr[attr_val] = {'high': 0, 'low': 0}
+            if _get_price(user, location_dependency) == price['low']:
+                prices_by_attr[attr_val]['low'] += 1
+            else:
+                prices_by_attr[attr_val]['high'] += 1
 
     total = sum([prices_by_attr[k]['high'] + prices_by_attr[k]['low'] for k\
                 in prices_by_attr])
