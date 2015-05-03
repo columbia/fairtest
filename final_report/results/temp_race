@@ -1,0 +1,9 @@
+attr_val:1,delta:0.0325,total:625180,low:39060,high:586120,flag:green,location_dependency:100
+attr_val:3,delta:0.0292,total:125210,low:6150,high:119060,flag:green,location_dependency:100
+attr_val:2,delta:0.0690,total:176310,low:23180,high:153130,flag:red,location_dependency:100
+attr_val:5,delta:0.0024,total:46550,low:3370,high:43180,flag:green,location_dependency:100
+attr_val:4,delta:0.0419,total:7740,low:900,high:6840,flag:green,location_dependency:100
+attr_val:7,delta:0.0170,total:10540,low:610,high:9930,flag:green,location_dependency:100
+attr_val:6,delta:0.2722,total:1530,low:530,high:1000,flag:red,location_dependency:100
+attr_val:8,delta:0.0510,total:6940,low:870,high:6070,flag:red,location_dependency:100
+total:1000000,low:74670,high:925330,discriminated:3,location_dependency:100
