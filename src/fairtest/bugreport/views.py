@@ -85,7 +85,7 @@ def _get_price(user, location_dependency):
                                  20):
         return price['low']
     else:
-        price['high']
+        return price['high']
 
  #   elif check_distance_from_store(user_location,
  #                                  staples_stores_coordinates,
