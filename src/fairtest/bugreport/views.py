@@ -101,7 +101,7 @@ def _get_price(user, location_dependency):
 def BugreportView(request,
                   location_dependency="100",
                   protected_attr="race",
-                  visits_per_user=10):
+                  visits_per_user=1):
     """
     Evaluate statistical parity condition for all values of a protected
     attribute which we examine for discriminatory behavior.
