@@ -60,18 +60,18 @@ applications is legitimate to use to produce outputs. Based on this rule,
 user attributes and outputs shown to users.
 
 %One paragraph to describe the system we built and how we evaluated it
-We built \sysname and provide it as a service with a REpresentational
+We build \sysname and provide it as a service with a REpresentational
 State Transfer (REST) Application Program Interface (API). Clients of the 
 \sysname service -- let them be application developers or external auditors,
 e.g., the Federal Trade Commission (FTC) -- use its REST API to register users
-and the corresponding outputs. Based on a set of registered users and the
+and corresponding outputs. Based on a set of registered users and the
 corresponding outputs, \sysname then creates bug-reports and publishes them
 into its web interface. These reports indicate any strong correlations between
 (protected) user attributes and outputs. In Section~\ref{sect:fairtest} we
 present in detail the architecture of \sysname's implementation and its API.
 In order to evaluate our \sysname prototype, we used a set of synthetic users
 that match the demographics of US population, simulate ``Staple Inc.'' pricing
-policy, and use \sysname to generate bug-reports. Our results included
+policy, and use \sysname to generate bug-reports. Our results include
 bug-reports that identify the discriminatory behavior of ``Staple  Inc.''
 pricing policy. In Section~\ref{sect:evaluation} we detail more on our
 experimental methodology and on the results of our evaluation.
