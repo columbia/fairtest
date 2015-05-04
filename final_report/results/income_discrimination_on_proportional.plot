@@ -28,4 +28,4 @@ set ylabel offset 0,-3,0
 plot newhistogram, "income_discrimination_on_proportional.csv"\
   u 6 t "High" lc rgbcolor "black" lt 1 fs pattern 3,\
   '' u 5 t "Low" lc rgbcolor "black" lt 1  fs pattern 1,\
-  '' using ($1-1):(105):2 notitle with labels rotate left
+  '' using ($1-1):(103):2 notitle with labels rotate left
