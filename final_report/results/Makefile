@@ -12,8 +12,13 @@ PDFFILES = $(FIGS:=.pdf)
 OUTPUT_TYPE := post
 OUTPUT_EXT := eps
 
-all: $(PDFFILES)
+.PHONY: misc all clean
+
+all: misc $(PDFFILES)
 	@echo "[DONE]"
+
+misc:
+	+make -C $@
 
 %.pdf: %.eps
 	@$(EPS2PDF) $<
@@ -24,3 +29,4 @@ all: $(PDFFILES)
 
 clean:
 	@rm -f $(PDFFILES)
+	+make -C misc clean
