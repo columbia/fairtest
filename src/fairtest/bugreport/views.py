@@ -73,9 +73,12 @@ def _get_price(user, location_dependency):
         for s in Store.objects.all():
             staples_stores_coordinates[s.zipcode] = [s.latitude, s.longitude]
 
-    #if we don't know this zipcode, let's be generous
+    #if we don't know this zipcode, let's be random
     if user.zipcode not in zipcode_coordinates:
-        return price['low']
+        if randBinary(50):
+            return price['low']
+        else:
+            return price['high']
 
     user_location = (zipcode_coordinates[user.zipcode][0],
                          zipcode_coordinates[user.zipcode][1])
