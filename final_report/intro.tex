@@ -42,22 +42,22 @@ pricing~\cite{Hannak:PriceDiscrimination}, and
 hiring~\cite{acquisiti:HiringDiscrimination}. This kind of indirect -- and likely
 unintended -- effects are challenging to identify, and with the ubiquitous use
 of sensitive information collected by web applications, the risk for these
-dangers -- or, privacy bugs -- is only increasing.
+dangers -- or, {\em privacy bugs} -- is only increasing.
 
 %Our approach
 In this paper we present the theoretical foundation to formalize the notion of
 discriminatory treatment of users in modern web applications. Then, we build
 \sysname, a tool to increase developers’ visibility into the implications of
 various data-use policies by reporting discriminatory treatment -- or,
-privacy bugs. Our theoretical foundation for identifying discriminatory
+{\em privacy bugs}. Our theoretical foundation for identifying discriminatory
 treatment of users examines the correlation between a set of outputs (shown to
 users) and a set of user attributes. More precisely, user attributes are split
 into two categories: (a) a set of protected user attributes such as race or
 sexual orientation -- which applications should not use to implement their
 policies and produce outputs -- and (b) a set of input attributes which
 applications is legitimate to use to produce outputs. Based on this rule,
-\sysname reports as privacy bugs any strong correlations between protected
-user attributes and outputs shown to users.
+\sysname reports as {\em privacy bugs} any strong correlations between
+protected user attributes and outputs shown to users.
 
 %One paragraph to describe the system we built and how we evaluated it
 We build \sysname and provide it as a service with a REpresentational

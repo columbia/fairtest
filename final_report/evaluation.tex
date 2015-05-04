@@ -1,12 +1,28 @@
 \section{Evaluation}
 \label{sect:evaluation}
 
-\begin{itemize}
-  \item what question our evaluation answers and why?
-\end{itemize}
+We have implemented a \sysname prototype as a Django web application
+that features a REST API presented in Section~\ref{sect:fairtest}.
+We evaluated our prototype by using it to uncover {\it privacy bugs}
+in the pricing policy of the ``Staples Inc.'', as described by the
+Wall Street Journal in 2012~\cite{Staples}. We sought answer to
+the following three questions:
 
-\subsection{Simulation}
+\begin{enumerate}
+  \item[{\bf Q1}] Can \sysname uncover any {\em privacy bugs} in the
+    pricing policy of the ``Staples Inc.'' online store?
+  \item[{\bf Q2}] What is the impact of any privacy bugs in the outputs
+    shown to users?
+  \item[{\bf Q3}] What is the dependency of privacy bugs on the 
+    pricing policy? Is the impact of {\em privacy bugs} constant,
+    or varies for diffent pricing policies?
+\end{enumerate}
+
+\subsection{Methodology}
+
 Synthetic users simulation to evaluate FairTest reports.
+
+\subsection{Measurements}
 
 \begin{figure*}[t]
 {
