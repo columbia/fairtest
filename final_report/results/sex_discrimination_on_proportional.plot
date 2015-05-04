@@ -10,7 +10,7 @@ set key samplen 1.5 spacing 1.85
 
 
 set xlabel "Online visits grouped by user's sex"
-set ylabel "Prices shown on each user-visit (%).\n Total: \\~500,000 user-visits"
+set ylabel "Prices shown upon each visit (%)\n Total: 1,000,000 user-visits"
 
 set border 3
 set format "%'g
