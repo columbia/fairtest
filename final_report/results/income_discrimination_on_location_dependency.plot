@@ -8,7 +8,8 @@ set border 3
 set yrange [0:0.3]
 set xtics nomirror
 set ytics nomirror
-set ytics ('0' 0, '0.1' 0.1, '0.2' 0.2)
+set ytics ('0' 0, '0.05' 0.05, '0.2' 0.2)
+set arrow from 0,0.05 to 100,0.05 nohead lt 0 lw 2
 set datafile separator ","
 plot 'income_discrimination_on_location_dependency.csv'\
   using 1:2 title    "Income < $5,000" with linespoints lt 1,\

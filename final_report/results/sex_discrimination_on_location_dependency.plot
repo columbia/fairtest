@@ -4,7 +4,8 @@ set ylabel "Deltas for sexes"
 
 set key at 65, 0.2
 
-set ytics ('0.1' 0.1, '0.2' 0.2)
+set ytics ('0' 0, '0.05' 0.05, '0.2' 0.2)
+set arrow from 0,0.05 to 100,0.05 nohead lt 0 lw 2
 
 set border 3
 set yrange [0:0.2]
