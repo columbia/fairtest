@@ -1,3 +1,3 @@
-attr_val:1,delta:0.0031,total:508780,low:479840,high:28940,flag:green,location_dependency:100
-attr_val:0,delta:0.0031,total:491220,low:461770,high:29450,flag:green,location_dependency:100
-total:1000000,low:941610,high:58390,discriminated:0,location_dependency:100
+attr_val:1,delta:0.0032,total:508780,low:477177,high:31603,flag:green,location_dependency:100
+attr_val:0,delta:0.0032,total:491220,low:459136,high:32084,flag:green,location_dependency:100
+total:1000000,low:936313,high:63687,discriminated:0,location_dependency:100
