@@ -3,13 +3,22 @@
 
 % What we built
 
+\begin{figure}[h]
+ \includegraphics[width=0.49\textwidth]
+  {\detokenize{figures/overview}}
+  \caption{\textbf{FairTest Overview}. This figures shows the basic workflow of
+  \textit{FairTest}.}
+  \label{fig:FairtestOverview}
+\end{figure}
+
 To address the descrimination test, We designed \textit{FairTest}, a software
 testing framework for web-based applications to find out potential
-\textit{privacy bugs}, whose definition was just described. The framework
-records both the input and output of an application, and based on the
-correlation between the output and certain protected private data (such as
-gender, race, etc.), discover if any \textit{privacy bugs} can be discovered 
-based on the statistical parity model.
+\textit{privacy bugs}, whose definition was just described. Its basic workflow
+is shown in Figure~\ref{fig:FairtestOverview}. The framework records user
+attributes (both protected and unprotected inputs) and the appliation output.
+Based on the correlation between the output and certain protected private data 
+(such as gender, race, etc.), \textit{FairTest} discovers if any
+\textit{privacy bugs} can be discovered based on the statistical parity model. 
 
 % Target user / characteristic
 
@@ -20,7 +29,9 @@ such as in the Staples case. The framework, for generality, is interfaced
 with RESTful API that can easily connect to existing software solutions.
 We expect that developers will only make minimal modifications to the
 application (mostly adding the tracking code) to derive the data for audit
-in \textit{FairTest}. The framework itself is implemented in Python and
+in \textit{FairTest}. Also, to address privacy on the testing framework,
+\textit{FairTest} does not require identifiable user information, such as
+exact address, name, etc. The framework itself is implemented in Python and
 Django, with support to both SQLite or PostgreSQL database.
 
 % Data got
@@ -58,8 +69,12 @@ application, the architecture is shown in Figure~\ref{fig:FairtestArch}.
   \label{fig:FairtestArch}
 \end{figure}
 
-In the figure, it shows that the input API is derectly linked with the 
+Overall, \textit{FairTest} includes three parts: a RESTful input API that
+gathers data from the application tested; a statistical engine that finds
+statistical parity between sentitive user data and the price descrimination,
+and a report tool that shows the results.
 
+The input API consists of several modules for the input info. 
 
 \subsection{API}
 Describe maybe with a table
