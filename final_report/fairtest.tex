@@ -41,12 +41,25 @@ This section will be divided into the following parts. In subsection 3.1, the
 discuss the API design of \textit{FairTest}. 
 
 \subsection{Architecture}
-\begin{itemize}
-  \item Overview
-  \item Architecture
-\end{itemize}
-We say systemsy :-) details here to make people happy
- 
+
+% Overview
+The \textit{FairTest} architecture contains three most important parts: the
+input API, the data analyzer and the result reporter. Together with an
+application, the architecture is shown in Figure~\ref{fig:FairtestArch}.
+
+\begin{figure}[h]
+ \includegraphics[width=0.49\textwidth]
+  {\detokenize{figures/architecture}}
+  \caption{\textbf{FairTest Architecture}. The diagram shows a very simple
+  application hooked up with the FairTest architecture. Bold lines are API
+  calls to be added by the developer to the application code, and dash lines
+  are used by the auditors to get the result. Solid line shows data flow
+  as part of the application or testing framework.}
+  \label{fig:FairtestArch}
+\end{figure}
+
+In the figure, it shows that the input API is derectly linked with the 
+
 
 \subsection{API}
 Describe maybe with a table
