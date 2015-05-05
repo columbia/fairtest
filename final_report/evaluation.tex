@@ -14,9 +14,9 @@ questions:
     online store?
   \item[{\bf Q2}] What is the impact of {\em privacy bugs} in the outputs
     shown to users?
-  \item[{\bf Q3}] What is the dependency of {\em privacy} bugs on the
-    pricing policy? Is the impact of {\em privacy bugs} constant,
-    or does it change for diffent pricing policies?
+  \item[{\bf Q3}] What is impact of pricing policies on {\em privacy bugs}?
+    Are {\em privacy bugs} inherent to any pricing policy, or are
+    dependant on pricing policies?
 \end{enumerate}
 
 \subsection{\normalsize Methodology}
@@ -61,13 +61,14 @@ each user has an income the lies into one of the following seven ranges:
 ``more than $\$20,000$'', ``more than $\$40,000$'', ``more than $\$80,000$'',
 ``more than $\$160,000$'', ``more than $\$320,000$''.
 
-\subsection{\normalsize Measuring {\em Statistical Parity} (Q1)}
+\subsection{\normalsize Uncovering {\em Privacy Bugs}}
+\label{sect:uncovering}
 In this section we use \sysname to evaluate the {\em statistical parity}
 of one million synthetic users that visit an online store which
 implements a pricing policy summarized by the following rule:
-{\it if a user resides in an area without competitor's stores
-(``OfficeDepot \& OfficeMax''), then show a high price; otherwise,
-show a low price.}
+{\it if a user's distance from a competitor's store
+(``OfficeDepot \& OfficeMax'') is less than 20 miles, show a low price;
+otherwise, show a high price.}
 To evaluate {\em statistical parity} of users, we measure the dependency of
 the delta of condition~\ref{eq:StatisticalParity} (introduced
 in Section~\ref{sect:statparity}) on user's location. We group users
@@ -101,7 +102,87 @@ On the other hand, Figure~\ref{fig:DeltasSex} indicates when users are grouped
 according to their sex, {\em statistical parity} is independent of location,
 and therefore males are treated similarly to females.
 
-\subsection{\normalsize Measuring the Impact of {\em Privacy Bugs} (Q2)}
+\begin{figure*}[t]
+{
+  \subfigure[Income]{
+    \includegraphics[width=0.33\textwidth]
+    {\detokenize{results/income_discrimination_on_location_dependency}}
+    \label{fig:DeltasIncome}
+  }
+  \subfigure[Race]{
+    \includegraphics[width=0.33\textwidth]
+    {\detokenize{results/race_discrimination_on_location_dependency}}
+    \label{fig:DeltasRace}
+  }
+  \subfigure[Sex]{
+    \includegraphics[width=0.33\textwidth]
+    {\detokenize{results/sex_discrimination_on_location_dependency}}
+    \label{fig:DeltasSex}
+  }
+  \caption{\textbf{Statistical parity and its dependency on user's location.}
+          Shows the dependency of statistical parity on user's location,
+          when users are grouped based on (a) income, (b) race, and (c) sex.
+          Figures (a) and (b) reveal that when users are grouped according to
+          income and race, statistical parity correlates for some groups with
+          the dependency of the price engine on user's location. While Figure
+          (c) reveals that statistical parity is independent of user's location
+          when users are grouped based on sex.
+  }
+  \label{fig:Deltas}
+}
+\end{figure*}
+
+\begin{figure*}[t]
+{
+  \subfigure[Income]{
+    \includegraphics[width=0.33\textwidth]
+    {\detokenize{results/income_discrimination_on_proportional}}
+    \label{fig:IncomeDiscriminationProportional}
+  }
+  \subfigure[Race]{
+    \includegraphics[width=0.33\textwidth]
+    {\detokenize{results/race_discrimination_on_proportional}}
+    \label{fig:RaceDiscriminationProportional}
+  }
+  \subfigure[Sex]{
+    \includegraphics[width=0.33\textwidth]
+    {\detokenize{results/sex_discrimination_on_proportional}}
+    \label{fig:SexDiscriminationProportional}
+  }
+  \caption{\textbf{Prices shown to users and their dependency on income,
+          race, and sex.} Shows the proportion of high versus low
+          prices shown to users based on (a) income, (b) race, and (c) sex.
+          Figure (a) reveals that a users with annual income less than
+          \$5,000 receives proportionaly more high prices than a user with
+          annual income more than \$320,000. Figure (a) indicates that an
+          Indian American or an Alaskan users receives notably more high prices
+          than any other user. This raises a consern, since as shown in
+          Figure~\ref{fig:IncomePerRace}, an Indian American or an Alaskan
+          user has on average a considerably lower annual income than a
+          white American user. Figure (c) shows that male and female users
+          receive approximately the same proportion of high versus
+          low prices.
+  }
+  \label{fig:DiscriminationProportional}
+}
+\end{figure*}
+\begin{figure}[t]
+ \includegraphics[width=0.49\textwidth]
+  {\detokenize{results/income_per_race}}
+  \caption{\textbf{Average annual income per race.} An Indian or an Alaskan user has
+           a considerably lower income than a white American, and yet, as shown in
+           Figure~\ref{fig:IncomeDiscriminationProportional}, he or she receives
+           proportionally more high prices.
+  }
+  \label{fig:IncomePerRace}
+\end{figure}
+
+
+
+
+
+
+\subsection{\normalsize Measuring the Impact of {\em Privacy Bugs}}
 Having concluded that the implemented pricing policy violates {\em statistical
 parity} of users, i.e., introduces {\em privacy bugs}, we now investigate the
 impact of these bugs. To this end, we examine whether users are treated
@@ -139,112 +220,66 @@ other words, the enforced pricing policy consistently shows more
 ``high'' prices to populations with lower annual income.
 
 
-\subsection{\normalsize Measuring the Impact of Pricing Policies (Q3)}
+\subsection{\normalsize Measuring the Impact of Pricing Policies}
+Finally, we examine the impact of different pricing policies on the presence
+of {\em privacy bugs}, and seek to understand how algorithmic decision
+affect {\em privacy bugs}. To achieve this, we modify the pricing policy
+to now abide by the following rule: {\it if a user's distance from a
+competitor's store (``OfficeDepot \& OfficeMax'') is less than 10 miles,
+show a low price; otherwise, show a high price.} Then, we compare the outputs
+shown to users in this case, against the outputs shown to users with the policy
+introduced in Section~\ref{sect:uncovering}. Note that the only modification 
+is the change on the competitor's distance from 20 miles to 10 miles.
 
+Figure~\ref{fig:DiscriminationProportionalAdditional} show that after
+applying the new  pricing policy more users receive ``high'' prices
+compared to Figure~\ref{fig:DiscriminationProportional}. This is expected
+since we apply a stricter policy that shows ``low'' if the competitor's
+stores are within 10 miles,  instead of 20 miles. Notably, however, Indian Americans
+and Alaskans are still the most unfavorably treated populations. Also, users
+with annual income more than \$320,000 are still the most favorably treated
+poulation. This indicates that despite variations of the pricing policies,
+there are inherent correlations between user attributes that are transparent
+to developers, had it not been \sysname. Hence, we believe that \sysname
+helps increase developers transparency of data use and provide some understanding
+of the policies applyied on the data.
 
-\begin{figure*}[t]
-{
-  \subfigure[Income]{
-    \includegraphics[width=0.33\textwidth]
-    {\detokenize{results/income_discrimination_on_location_dependency}}
-    \label{fig:DeltasIncome}
- }
- \subfigure[Race]{
-    \includegraphics[width=0.33\textwidth]
-    {\detokenize{results/race_discrimination_on_location_dependency}}
-    \label{fig:DeltasRace}
-  }
- \subfigure[Sex]{
-    \includegraphics[width=0.33\textwidth]
-    {\detokenize{results/sex_discrimination_on_location_dependency}}
-    \label{fig:DeltasSex}
-  }
- \caption{\textbf{Statistical parity and its dependency on user's location.}
-          Shows the dependency of statistical parity, i.e., number of samples that
-          violate condition~\ref{eq:StatisticalParity}, as a function of (a) user's income,
-          (b) user's race, and (c) user's sex. Figure (b) reveals that statistical parity on
-          user-incomes correlates with the dependency of the price engine on user's location.
-          While Figures (a) and (b) reveal that statistical parity on user-race and on user-sex
-          do not correlate with the dependency of the price engine on user's location.}
- \label{fig:Deltas}
-}
-\end{figure*}
 
 
 \begin{figure*}[t]
 {
-  \subfigure[Income]{
+ \subfigure[Income]{
     \includegraphics[width=0.33\textwidth]
-    {\detokenize{results/income_discrimination_on_proportional}}
-    \label{fig:IncomeDiscriminationProportional}
+    {\detokenize{results/misc/income_discrimination_on_proportional}}
+    \label{fig:IncomeDiscriminationProportionalAdditional}
   }
   \subfigure[Race]{
     \includegraphics[width=0.33\textwidth]
-    {\detokenize{results/race_discrimination_on_proportional}}
-    \label{fig:RaceDiscriminationProportional}
- }
- \subfigure[Sex]{
-    \includegraphics[width=0.33\textwidth]
-    {\detokenize{results/sex_discrimination_on_proportional}}
-    \label{fig:SexDiscriminationProportional}
+    {\detokenize{results/misc/race_discrimination_on_proportional}}
+    \label{fig:RaceDiscriminationProportionalAdditional}
   }
- \caption{\textbf{Prices shown to users and their dependency on income, race, and sex.}
-          Shows the proportion of high versus low prices shown to users based on income,
-          race, and sex. Figure (b) reveals that a users with annual income less than
-          \$5,000 receive proportionaly more high prices than users with annual income
-          more than \$320,000. Figure (a) indicates that Indian or Alaskan users receive
-          notably more high prices than any other race. This raises a consern, since as
-          shown in Figure~\ref{fig:IncomePerRace}, an Indian or Alaskan user has a
-          considerably lower income than a white American user. Figure (c) shows that
-          male and female users receive approximately the same proportion of high versus
-          low prices.}
-  \label{fig:DiscriminationProportional}
+  \subfigure[Sex]{
+    \includegraphics[width=0.33\textwidth]
+    {\detokenize{results/misc/sex_discrimination_on_proportional}}
+    \label{fig:SexDiscriminationProportionalAdditional}
+  }
+  \caption{\textbf{NEWPrices shown to users and their dependency on income,
+          race, and sex.} Shows the proportion of high versus low
+          prices shown to users based on (a) income, (b) race, and (c) sex.
+          Figure (a) reveals that a users with annual income less than
+          \$5,000 receives proportionaly more high prices than a user with
+          annual income more than \$320,000. Figure (a) indicates that an
+          Indian American or an Alaskan users receives notably more high prices
+          than any other user. This raises a consern, since as shown in
+          Figure~\ref{fig:IncomePerRace}, an Indian American or an Alaskan
+          user has on average a considerably lower annual income than a
+          white American user. Figure (c) shows that male and female users
+          receive approximately the same proportion of high versus
+          low prices.
+  }
+  \label{fig:DiscriminationProportionalAdditional}
 }
 \end{figure*}
 
 
-\begin{figure}[!h]
- \includegraphics[width=0.49\textwidth]
-  {\detokenize{results/income_per_race}}
-  \caption{\textbf{Average user income for each race.} An Indian or Alaskan user has
-           a considerably lower income than a white American user, and yet, as shown in
-           Figure~\ref{fig:IncomeDiscriminationProportional}, he or she receives
-           proportional more high prices compared to a white American.}
-  \label{fig:IncomePerRace}
-\end{figure}
 
-
-
-
-%\begin{figure*}[t]
-%{
-% \subfigure[Race]{
-%    \includegraphics[width=0.33\textwidth]
-%    {\detokenize{results/misc/race_discrimination_on_proportional}}
-%    \label{fig:}
-%  }
-%  \subfigure[Income]{
-%    \includegraphics[width=0.33\textwidth]
-%    {\detokenize{results/misc/income_discrimination_on_proportional}}
-%    \label{fig:IncomeDiscriminationProportional}
-% }
-% \subfigure[Sex]{
-%    \includegraphics[width=0.33\textwidth]
-%    {\detokenize{results/misc/sex_discrimination_on_proportional}}
-%    \label{fig:}
-%  }
-% \caption{\textbf{NEW:Prices shown to users and their dependency on income, race, and sex.}
-%          Shows the proportion of high versus low prices shown to users based on income,
-%          race, and sex. Figure (b) reveals that a users with annual income less than
-%          \$5,000 receive proportionaly more high prices than users with annual income
-%          more than \$320,000. Figure (a) indicates that Indian or Alaskan users receive
-%          notably more high prices than any other race. This raises a consern, since as
-%          shown in Figure~\ref{fig:IncomePerRace}, an Indian or Alaskan user has a
-%          considerably lower income than a white American user. Figure (c) shows that
-%          male and female users receive approximately the same proportion of high versus
-%          low prices.}
-%}
-%\end{figure*}
-%
-%
-%
