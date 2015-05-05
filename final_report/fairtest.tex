@@ -1,12 +1,44 @@
-\section{Fairtest}
+\section{FairTest}
 \label{sect:fairtest}
 
-\begin{itemize}
-  \item What do we built? (and little of why do we buid it? --not to much)
-  \item Who are the target users? ( auditors, e.g., FTC, developers, etc...)
-  \item What are the conclusions users will derive by using our systems?
-    What questions will they be able to answer?
-\end{itemize}
+% What we built
+
+To address the descrimination test, We designed \textit{FairTest}, a software
+testing framework for web-based applications to find out potential
+\textit{privacy bugs}, whose definition was just described. The framework
+records both the input and output of an application, and based on the
+correlation between the output and certain protected private data (such as
+gender, race, etc.), discover if any \textit{privacy bugs} can be discovered 
+based on the statistical parity model.
+
+% Target user / characteristic
+
+\textit{FairTest} is designed to be used for designers and engineers of 
+data-based web applications. In addition, it can also be used for auditors 
+or government agencies to look for evidence on certain parity violation,
+such as in the Staples case. The framework, for generality, is interfaced 
+with RESTful API that can easily connect to existing software solutions.
+We expect that developers will only make minimal modifications to the
+application (mostly adding the tracking code) to derive the data for audit
+in \textit{FairTest}. The framework itself is implemented in Python and
+Django, with support to both SQLite or PostgreSQL database.
+
+% Data got
+
+Once \textit{FairTest} has information about the users and the corresponding
+outputs from the software being tested, it can generate statistical reports
+evaluating the statistical parity between the protected info, the actual
+input and the output. This info can then be reported either through a RESTful
+API or a web interface to the developer or tester. With the info, we can then
+suggest potential \textit{privacy bugs} that are caused by the statiscal
+parity found by the system, offering suggestion to the developer if the
+customization engine appears acceptable or not.
+
+% Subsections
+
+This section will be divided into the following parts. In subsection 3.1, the
+\textit{FairTest} archetecture will be discussed; and subsection 3.2 will
+discuss the API design of \textit{FairTest}. 
 
 \subsection{Architecture}
 \begin{itemize}
