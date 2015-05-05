@@ -24,15 +24,15 @@ Our experimental evaluation of \sysname consists of the following three steps:
 
 \begin{enumerate}
   \item
-  Generate one million synthetic users that are spread accross the
+  Generate one million synthetic users that are spread across the
   areas corresponding to 40,000 US zip-codes. These synthetic users
   have four attributes: zip-code, race, sex, and income, and match
   the demographic characteristics of the US population, according to
   the US Census Bureau~\cite{CensusBureau}, as of May 3, 2014.
   \footnote{
-    The infrastructure necessary for generating syntetic users is
+    The infrastructure necessary for generating synthetic users is
     provided by a project of the ``Advanced Distributed Systems'' course,
-    tought by professor Roxana Geambasu, Spring 2015. The developers of this
+    taught by professor Roxana Geambasu, Spring 2015. The developers of this
     project are Z. Zhou, Z. Wan, and X. Ma.
   }
 
@@ -41,14 +41,14 @@ Our experimental evaluation of \sysname consists of the following three steps:
   an online store whose pricing policy is similar to the pricing policy
   of the ``Staples Inc.''.
   After each visit, register to \sysname the respective synthetic user
-  along with the ouput received.
+  along with the output received.
 
   \item
   Query \sysname's web interface to uncover any strong correlation between
   outputs and protected user attributes, i.e., race, income, and sex.
 \end{enumerate}
 
-Since user-attributes match the demographics of the US popation,
+Since user-attributes match the demographics of the US population,
 race, sex, and income are assigned values that depend on zip-code. This is
 because
 the later defines the area in which a user lives in. In other words, user's race,
@@ -69,7 +69,7 @@ when one million synthetic users visit an online store which
 implements the following pricing policy:
 {\it if a user's distance from a competitor's store
 (``OfficeDepot \& OfficeMax'') is less than 20 miles, show a low price;
-otherwise, show a high price.} This pricing schema is similat to the pricing
+otherwise, show a high price.} This pricing schema is similar to the pricing
 policy implemented by the ``Staples Inc.'' online store, as of the Wall Street
 Journal, 2012.
 
@@ -93,17 +93,17 @@ except for users with annual income ``more than \$320,000''. Users whose income
 lie in the later categorie are treated differently (favorably or unfavorably)
 than the rest, and their location correlates with the outputs (i.e., prices)
 they receive. Also, Figure~\ref{fig:DeltasRace} indicates that when users are
-groupped according to their race, {\em statistical parity} is not dependant on
+grouped according to their race, {\em statistical parity} is not dependant on
 user's location, unless the user is an Indian American or an Alaskan.
 This signals that Indian Americans and Alaskans are treated differently
 (favorably or unfavorably) than the rest.
 
 Given the fact that both user's race and user's income are a protected
-attribute, one can use \sysname's reports to conclude that the impelented
+attribute, one can use \sysname's reports to conclude that the implemented
 pricing policy imposes an undesirable privacy bug, which is
 summarized as follows: ``If the user is an Indian American or an Alaskan, or
 has an income more than \$320,000, he or she will consistently be treated
-diffently than others.''
+differently than others.''
 On the other hand, Figure~\ref{fig:DeltasSex} indicates when users are grouped
 according to their sex, {\em statistical parity} is independent of user's
 location, and therefore males are treated similarly to females.
@@ -183,18 +183,13 @@ location, and therefore males are treated similarly to females.
   \label{fig:IncomePerRace}
 \end{figure}
 
-
-
-
-
-
 \subsection{\normalsize Measuring the Impact of {\em Privacy Bugs}}
 Having concluded that the aforementioned pricing policy violates {\em statistical
 parity} of users, i.e., introduces {\em privacy bugs}, we now investigate the
 impact of these bugs. To this end, we examine whether users are treated
-favorably or unfavorably by measuring the proportion of ``high'' vesus ``low''
+favorably or unfavorably by measuring the proportion of ``high'' versus ``low''
 prices shown to users. Figure~\ref{fig:DiscriminationProportional} shows, in
-percentage, the proportion of ``high'' vesus ``low'' prices shown to them
+percentage, the proportion of ``high'' versus ``low'' prices shown to them
 grouped by user's (a) race, (b) income, and (c) sex. Also, on top of each bar the
 raw number of members of the respective group is shown.
 
@@ -216,7 +211,7 @@ Figure~\ref{fig:RaceDiscriminationProportional} helps conclude that the
 percentage of ``high'' prices shown to ``Indian Americans and Alaskans'' is
 notably higher than any other race. Recall that by analyzing
 Figure~\ref{fig:DeltasRace}, we had already concluded that
-``Indian Americans and Alaskans'' are treated diffently than the rest.
+``Indian Americans and Alaskans'' are treated differently than the rest.
 In addition, Figure~\ref{fig:RaceDiscriminationProportional} reveals that
 ``Indian Americans and Alaskans'' are treated unfavorably, since they are
 more probable to receive a ``high'' price, than the rest. This is also a very
@@ -225,7 +220,7 @@ poor algorithmic decision, because as shown in Figure~\ref{fig:IncomePerRace},
 other words, the enforced pricing policy consistently shows more
 ``high'' prices to populations with lower annual income.
 Although this is an unintentional effect of a reasonable algorithmic decision,
-it may actually attract negative critisism. We believe that \sysname helps
+it may actually attract negative criticism. We believe that \sysname helps
 increase developers' transparency on such kind of side effects, and minimize
 the unpredictable danger of discriminatory treatment of populations.
 
@@ -248,11 +243,11 @@ since we apply a stricter policy that shows ``low'' if the competitor's
 stores are within 10 miles,  instead of 20 miles. Notably, however, Indian Americans
 and Alaskans are still the most unfavorably treated populations. Also, users
 with annual income ``more than \$320,000'' are still the most favorably treated
-poulation. This indicates that despite variations of the pricing policies,
+population. This indicates that despite variations of the pricing policies,
 there are inherent correlations between user attributes that are transparent
 to developers, have it not been \sysname. Hence, we believe that \sysname
 helps increase developers transparency on data use and provide some understanding
-on: the policies applyied on the data.
+on: the policies applied on the data.
 
 
 \subsection{\normalsize Summary of Results}
@@ -287,7 +282,7 @@ these bugs to developers.
           In this case, the pricing policy is stricter and results to ``low''
           prices if user's distance from a competitor's store is less than 10
           miles. Figure (a) reveals that a users with annual income less than
-          \$5,000 still receives proportionaly more high prices than a user with
+          \$5,000 still receives proportionally more high prices than a user with
           annual income more than \$320,000. Figure (b) indicates that an
           Indian American or an Alaskan users still receives notably more high
           prices than any other user. Figure (c) shows that male and female
