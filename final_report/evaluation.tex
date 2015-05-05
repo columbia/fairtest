@@ -224,7 +224,10 @@ poor algorithmic decision, because as shown in Figure~\ref{fig:IncomePerRace},
 ``Indian Americans and Alaskans'' have a low annual income on average. In
 other words, the enforced pricing policy consistently shows more
 ``high'' prices to populations with lower annual income.
-XXX comment
+Although this is an unintentional effect of a reasonable algorithmic decision,
+it may actually attract negative critisism. We believe that \sysname helps
+increase developers' transparency on such kind of side effects, and minimize
+the unpredictable danger of discriminatory treatment of populations.
 
 \subsection{\normalsize Measuring the Impact of Pricing Policies}
 Finally, we examine the impact of different pricing policies on the presence
@@ -253,7 +256,13 @@ on: the policies applyied on the data.
 
 
 \subsection{\normalsize Summary of Results}
-Overall, these result demonstrate that couple of sentences here.
+Overall, these result highlight the danger of discriminatory treatment of
+users as a results of legitimate algorithmic decisions. Although developers
+design policies to optimize for their needs, these policies have unpredictable
+side effects on data, and may result into objectionable situations. With simulating
+``Staples Inc.'' pricing policy, we show-cased how \sysname helps increase
+developers' transparency on data use, uncover {\em privacy bugs}, and report
+these bugs to developers.
 
 \begin{figure*}[t]
 {
@@ -275,9 +284,9 @@ Overall, these result demonstrate that couple of sentences here.
   \caption{\textbf{Prices shown to users and their dependency on income,
           race, and sex.} Shows the proportion of high versus low
           prices shown to users based on (a) income, (b) race, and (c) sex.
-          In this case, pricing policy is stricter and shows ``low'' prices
-          if user's distance from a competitor's store is less than 10 miles.
-          Figure (a) reveals that a users with annual income less than
+          In this case, the pricing policy is stricter and results to ``low''
+          prices if user's distance from a competitor's store is less than 10
+          miles. Figure (a) reveals that a users with annual income less than
           \$5,000 still receives proportionaly more high prices than a user with
           annual income more than \$320,000. Figure (b) indicates that an
           Indian American or an Alaskan users still receives notably more high
