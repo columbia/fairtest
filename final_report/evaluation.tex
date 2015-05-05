@@ -9,13 +9,14 @@ Wall Street Journal in 2012. We sought answer to the following three
 questions:
 
 \begin{enumerate}
-  \item[{\bf Q1}] Can \sysname uncover any {\em privacy bugs} in the
-    pricing policy of the ``Staples Inc.'' online store?
-  \item[{\bf Q2}] What is the impact of any privacy bugs in the outputs
+  \item[{\bf Q1}] Can \sysname uncover {\em privacy bugs} for
+    a pricing policy similar to the policy of the ``Staples Inc.''
+    online store?
+  \item[{\bf Q2}] What is the impact of {\em privacy bugs} in the outputs
     shown to users?
-  \item[{\bf Q3}] What is the dependency of privacy bugs on the 
+  \item[{\bf Q3}] What is the dependency of {\em privacy} bugs on the
     pricing policy? Is the impact of {\em privacy bugs} constant,
-    or varies for diffent pricing policies?
+    or does it change for diffent pricing policies?
 \end{enumerate}
 
 \subsection{\normalsize Methodology}
@@ -37,9 +38,10 @@ Our experimental evaluation of \sysname consists of the following three steps:
 
   \item
   Use the users generated in Step 1 to simulate one million user-visits on
-  an online store with a pricing engine that implements the pricing policy of
-  the ``Staples Inc.'' online store. After each visit, register to \sysname
-  the respective synthetic user along with the received output.
+  an online store with a pricing policy similar to the one that the
+  ``Staples Inc.'' online store implements. After each visit,
+  register to \sysname the respective synthetic user along with the ouput
+  received.
 
   \item
   Query \sysname's web interface to uncover any strong correlation between
@@ -50,47 +52,95 @@ Since user-attributes match the demographics of the US popation,
 race, sex, and income are assigned values that depend on the zip-code. Because
 the later defines the area in which a user lives. In other words, user's race,
 sex, and income correlate with user's zip-code, but not amongst each other.
-Each user has
-one of the following races:  (i) ``White'', (ii) ``Hispanic'', (iii) ``African
-American'', (iv) ``Indian or Alaskan'', (v) ``Asian'', (vi) ``Pacific
-Islander'', (vii) ``Other'', and (viii) ``Two or More''. Also, each user is
-either ``Male'' or ``Female''. Finally, each user has an income the lies
-into one of the following ranges: (i) ``less then $\$5,000$'', (ii) ``more
-than $\$5,000$'', (iii) ``more than $\$10,000$'', (iv) ``more than
-$\$20,000$'', (v) ``more than $\$40,000$'', (vi) ``more than $\$80,000$'',
-(vii) ``more than $\$160,000$'', (viii) ``more than $\$320,000$''.
+Each synthetic user has
+one of the following seven races: ``White'', ``Hispanic'', ``African
+American'', ``Indian or Alaskan'', ``Asian'', ``Pacific Islander'', ``Other'',
+and ``Two or More''. Also, each user is either ``Male'' or ``Female''. Finally,
+each user has an income the lies into one of the following seven ranges:
+``less then $\$5,000$'', ``more than $\$5,000$'', ``more than $\$10,000$'',
+``more than $\$20,000$'', ``more than $\$40,000$'', ``more than $\$80,000$'',
+``more than $\$160,000$'', ``more than $\$320,000$''.
 
 \subsection{\normalsize Measuring {\em Statistical Parity} (Q1)}
-In this section we use \sysname to evaluate the {\em Statistical Parity}
-of 1 million synthetic users that visit an online store which
-implements the pricing policy of the ``Staples Inc.'', as described
-by the Wall Street Journal in 2012. That is: {\it if a user resides in an
-area in which there is no competitor store (``OfficeDepot \& OfficeMax''),
-then show a high price; otherwise, show a discounted (low) price.}
+In this section we use \sysname to evaluate the {\em statistical parity}
+of one million synthetic users that visit an online store which
+implements a pricing policy summarized by the following rule:
+{\it if a user resides in an area without competitor's stores
+(``OfficeDepot \& OfficeMax''), then show a high price; otherwise,
+show a low price.}
 To evaluate {\em statistical parity} of users, we measure the dependency of
-the delta of condition~\ref{eq:StatisticalParity}, formerly introduced
-in Section~\ref{sect:statparity}, on user's location, and identify any
-potential violations for $\epsilon=0.05$.
+the delta of condition~\ref{eq:StatisticalParity} (introduced
+in Section~\ref{sect:statparity}) on user's location. We group users
+based on (a) income, (b) race, and (c) sex, and examine potential
+violations of condition~\ref{eq:StatisticalParity} for $\epsilon=0.05$ and
+output being ``high'' price.
+Figure~\ref{fig:Deltas} shows the deltas
+for user's race, income, and sex, as a function of price engine's dependency
+on user' s location. When price engine's dependency on users location is zero,
+all users receive random prices. When price engine's dependency on users
+location is 100\%, all users receive prices strictly based on the rule
+introduced in the previous paragraph.
 
-Figure~\ref{fig:Deltas} shows the delta of
-condition~\ref{eq:StatisticalParity} for (a) user's income, (b) user's race,
-and (c) user's sex, as a function of price engine's dependency on users
-location. When price engine's dependency on users location is zero, all
-users receive random prices. When price engine's dependency on users location
-is 100\%, all users receive prices strictly based on the rule introduced in
-the previous paragraph.
 
-Figure~\ref{fig:DeltasIncome} reveals that there is
-no {\em statistical parity} dependency on user's location, except for the
-users that receive more that \$320,000. This means that ....
-Figure~\ref{fig:DeltasIncome} indicated that...This means that...
-Figure~\ref{fig:DeltasSex} indicated that...This means that...
+Figure~\ref{fig:DeltasIncome} reveals that when users are grouped according to
+their income, {\em statistical parity} is not dependant on user's location,
+except for users with annual income more than \$320,000. Users whose income
+lie in the later
+categorie are treated differently (favorably or unfavorably) than the rest,
+and their location correlates with the outputs (i.e., prices) they receive.
+Figure~\ref{fig:DeltasRace} indicates that when users are groupped according
+to their race, {\em statistical parity} is not dependant on user's location,
+unless the user is an ``Indian American''. This signals that ``Indian
+Americans'' are treated differently (favorably or unfavorably) than the rest.
+Given the fact that both user's race and user's income are a protected
+attribute, one can use \sysname's reports to conclude that the impelented
+pricing policy imposes an undesirable privacy bug, which is
+summarized as follows: ``If a user is an Indian American or has an income more
+than \$320,000 he or she will consistently be treated diffently than others.''
+On the other hand, Figure~\ref{fig:DeltasSex} indicates when users are grouped
+according to their sex, {\em statistical parity} is independent of location,
+and therefore males are treated similarly to females.
 
 \subsection{\normalsize Measuring the Impact of {\em Privacy Bugs} (Q2)}
-bla...
+Having concluded that the implemented pricing policy violates {\em statistical
+parity} of users, i.e., introduces {\em privacy bugs}, we now investigate the
+impact of these bugs. To this end, we examine whether users are treated
+favorably or unfavorably by measuring the proportion of ``high'' vesus ``low''
+prices shown to users. Figure~\ref{fig:DiscriminationProportional} shows in
+percentage the proportion of ``high'' vesus ``low'' prices shown to users
+grouped by (a) race, (b) income, and (c) sex. On top of each bar the raw number
+of members of the respective group is shown.
+
+Figure~\ref{fig:IncomeDiscriminationProportional} shows that for each income
+group around 6\% of users receive ``high'' prices (the rest receive ``low''
+prices), except the income group which consists of users with annual income
+more than \$320,000. Recall that based on Figure~\ref{fig:DeltasIncome}, we
+had already concluded that users with annual income more than \$320,000 are
+treated differently that the rest. Additionally,
+Figure~\ref{fig:IncomeDiscriminationProportional} shows that users with
+annual income more than \$320,000 are treated favorably compare to the rest.
+Note that a user with annual income less than \$5,000 is more probable to
+receive a high price, than a user with annual income more than \$320,000.
+Clearly this is a very poor -- yet unintentional -- algorithmic decision imposed
+by a privacy bug which is difficult to foresee without the aid of \sysname.
+
+
+Figure~\ref{fig:RaceDiscriminationProportional} indicates that the
+percentage of ``high'' prices shown to ``Indian Americans and Alaskans'' is
+notably higher than any other race. Recall that by analyzing
+Figure~\ref{fig:DeltasRace}, we had already concluded that
+``Indian Americans and Alaskans'' are treated diffently than the rest.
+In addition, Figure~\ref{fig:RaceDiscriminationProportional} reveals that
+``Indian Americans and Alaskans'' are treated unfavorably, since they are
+more probable to receive a ``high'' price, than the rest. This is also a very
+poor algorithmic decision, because as shown in Figure~\ref{fig:IncomePerRace},
+``Indian Americans and Alaskans'' have a low annual income on average. In
+other words, the enforced pricing policy consistently shows more
+``high'' prices to populations with lower annual income.
+
 
 \subsection{\normalsize Measuring the Impact of Pricing Policies (Q3)}
-bla...
+
 
 \begin{figure*}[t]
 {
@@ -123,20 +173,20 @@ bla...
 
 \begin{figure*}[t]
 {
- \subfigure[Race]{
-    \includegraphics[width=0.33\textwidth]
-    {\detokenize{results/income_discrimination_on_proportional}}
-    \label{fig:}
-  }
   \subfigure[Income]{
     \includegraphics[width=0.33\textwidth]
-    {\detokenize{results/race_discrimination_on_proportional}}
+    {\detokenize{results/income_discrimination_on_proportional}}
     \label{fig:IncomeDiscriminationProportional}
+  }
+  \subfigure[Race]{
+    \includegraphics[width=0.33\textwidth]
+    {\detokenize{results/race_discrimination_on_proportional}}
+    \label{fig:RaceDiscriminationProportional}
  }
  \subfigure[Sex]{
     \includegraphics[width=0.33\textwidth]
     {\detokenize{results/sex_discrimination_on_proportional}}
-    \label{fig:}
+    \label{fig:SexDiscriminationProportional}
   }
  \caption{\textbf{Prices shown to users and their dependency on income, race, and sex.}
           Shows the proportion of high versus low prices shown to users based on income,
@@ -148,6 +198,7 @@ bla...
           considerably lower income than a white American user. Figure (c) shows that
           male and female users receive approximately the same proportion of high versus
           low prices.}
+  \label{fig:DiscriminationProportional}
 }
 \end{figure*}
 
@@ -162,35 +213,38 @@ bla...
   \label{fig:IncomePerRace}
 \end{figure}
 
-\begin{figure*}[t]
-{
- \subfigure[Race]{
-    \includegraphics[width=0.33\textwidth]
-    {\detokenize{results/misc/race_discrimination_on_proportional}}
-    \label{fig:}
-  }
-  \subfigure[Income]{
-    \includegraphics[width=0.33\textwidth]
-    {\detokenize{results/misc/income_discrimination_on_proportional}}
-    \label{fig:IncomeDiscriminationProportional}
- }
- \subfigure[Sex]{
-    \includegraphics[width=0.33\textwidth]
-    {\detokenize{results/misc/sex_discrimination_on_proportional}}
-    \label{fig:}
-  }
- \caption{\textbf{NEW:Prices shown to users and their dependency on income, race, and sex.}
-          Shows the proportion of high versus low prices shown to users based on income,
-          race, and sex. Figure (b) reveals that a users with annual income less than
-          \$5,000 receive proportionaly more high prices than users with annual income
-          more than \$320,000. Figure (a) indicates that Indian or Alaskan users receive
-          notably more high prices than any other race. This raises a consern, since as
-          shown in Figure~\ref{fig:IncomePerRace}, an Indian or Alaskan user has a
-          considerably lower income than a white American user. Figure (c) shows that
-          male and female users receive approximately the same proportion of high versus
-          low prices.}
-}
-\end{figure*}
 
 
 
+%\begin{figure*}[t]
+%{
+% \subfigure[Race]{
+%    \includegraphics[width=0.33\textwidth]
+%    {\detokenize{results/misc/race_discrimination_on_proportional}}
+%    \label{fig:}
+%  }
+%  \subfigure[Income]{
+%    \includegraphics[width=0.33\textwidth]
+%    {\detokenize{results/misc/income_discrimination_on_proportional}}
+%    \label{fig:IncomeDiscriminationProportional}
+% }
+% \subfigure[Sex]{
+%    \includegraphics[width=0.33\textwidth]
+%    {\detokenize{results/misc/sex_discrimination_on_proportional}}
+%    \label{fig:}
+%  }
+% \caption{\textbf{NEW:Prices shown to users and their dependency on income, race, and sex.}
+%          Shows the proportion of high versus low prices shown to users based on income,
+%          race, and sex. Figure (b) reveals that a users with annual income less than
+%          \$5,000 receive proportionaly more high prices than users with annual income
+%          more than \$320,000. Figure (a) indicates that Indian or Alaskan users receive
+%          notably more high prices than any other race. This raises a consern, since as
+%          shown in Figure~\ref{fig:IncomePerRace}, an Indian or Alaskan user has a
+%          considerably lower income than a white American user. Figure (c) shows that
+%          male and female users receive approximately the same proportion of high versus
+%          low prices.}
+%}
+%\end{figure*}
+%
+%
+%

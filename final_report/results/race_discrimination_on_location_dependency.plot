@@ -1,7 +1,7 @@
 set terminal postscript eps enhanced color solid 'Times' 30 
 set xlabel "Dependency of price engine on user's location (%)"
 set ylabel "Delta for each race"
-set key at 65, 0.3
+set key at 70, 0.3
 set border 3
 set yrange [0:0.3]
 set xtics nomirror
