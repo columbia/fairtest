@@ -69,12 +69,20 @@ application, the architecture is shown in Figure~\ref{fig:FairtestArch}.
   \label{fig:FairtestArch}
 \end{figure}
 
-Overall, \textit{FairTest} includes three parts: a RESTful input API that
-gathers data from the application tested; a statistical engine that finds
-statistical parity between sentitive user data and the price descrimination,
-and a report tool that shows the results.
+\textit{FairTest} includes three parts: a RESTful input API that gathers data
+from the application tested; a statistical engine that finds statistical parity
+between sentitive user data and the price descrimination, and a reporting tool
+showing the results.
 
-The input API consists of several modules for the input info. 
+In an sample workflow, the input API receives requests from the modified
+application, and records all outputs with regard to a user's characteristics. 
+As it uses common web framwork (Django) and database, this API can, in fact, be
+distributed across a set of servers that share a same database; this can
+provide rate-limitation and fault-tolerance in case the system is deployed in
+production and to a large scale. 
+
+When, at a specific timeframe, the report needs to be shown, the data analyzer
+can be run. 
 
 \subsection{API}
 Describe maybe with a table
@@ -82,3 +90,5 @@ Describe maybe with a table
   \item Describe
   \item Explain why we think it is a good API? (e.g., is it extensible?)
 \end{itemize}
+
+The input API consists of several modules for the input info. 
