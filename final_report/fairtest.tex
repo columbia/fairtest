@@ -1,5 +1,6 @@
 \section{FairTest}
 \label{sect:fairtest}
+
 \begin{figure}[h]
  \includegraphics[width=0.49\textwidth]
   {\detokenize{figures/overview}}
@@ -8,7 +9,6 @@
   }
   \label{fig:FairtestOverview}
 \end{figure}
-
 
 In this section we present the design and implementation of \sysname.
 At its core, \sysname assets that there are no violations of
@@ -33,15 +33,11 @@ testing framework, \sysname does not require identifiable user information,
 such as exact address, name, etc. The framework itself is implemented in
 the Django Python web framework with an SQLite database.
 
-% Data got
-
-Once \textit{FairTest} has information about the users and the corresponding
-outputs from the software being tested, it can generate statistical reports
-evaluating the statistical parity between the protected info, the actual
-input and the output. This info can then be reported either through a RESTful
-API or a web interface to the developer or tester. With the info, we can then
-suggest potential \textit{privacy bugs} that are caused by the statiscal
-parity found by the system, offering suggestion to the developer if the
+\sysname can generate bug-reports for registered users by asserting
+{\em statistical parity} of users. The reports are accessible either
+through \sysname's RESTful API or its web interface.
+With the information, a developer or an auditor can then identify potential
+\textit{privacy bugs} that are caused by the statistical parity violations
 customization engine appears acceptable or not.
 In what follows we present the architecture and the API of our \sysname
 implementation.
