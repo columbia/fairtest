@@ -59,13 +59,16 @@ This section will be divided into the following parts. In subsection 3.1, the
 discuss the API design of \textit{FairTest}. 
 
 \subsection{Architecture}
-
-% Overview
 Our \sysname implementation consists of three parts:
-a RESTful input API that gathers data from monitored application; a
-statistical engine that asserts statistical parity between protected
-user attributes; and a reporting tool that generates bug-reports.
-Figure~\ref{fig:FairtestArch} demonstrates this architecture.
+(i) a RESTful input API that gathers data from monitored application;
+(ii) a statistical engine that asserts statistical parity between protected
+user attributes;
+and (iii) a reporting tool that generates bug-reports.
+Figure~\ref{fig:FairtestArch} demonstrates this architecture and a sample workflow.
+The input API receives requests from the monitored
+application and records all inputs and outputs regarding a user.
+At the same time, \sysname accepts queries for bug-reports with respect
+to certain protected attributes.
 
 \begin{figure}[h]
  \includegraphics[width=0.49\textwidth]
@@ -77,15 +80,12 @@ Figure~\ref{fig:FairtestArch} demonstrates this architecture.
   \label{fig:FairtestArch}
 \end{figure}
 
-In a sample workflow, the input API receives requests from the monitored
-application, and records all outputs with regard to a user's characteristics. 
-As it uses common web framwork (Django) and database, this API can, in fact, be
-distributed across a set of servers that share a same database; this can
-provide rate-limitation and fault-tolerance in case the system is deployed in
-production and to a large scale. 
-
-When, at a specific timeframe, the report needs to be shown, the data analyzer
-can be run. 
+%Since \sysname uses a common web framework (Django), it can be
+%distributed across a set of servers that share the same database. In this this can
+%provide rate-limitation and fault-tolerance in case the system is deployed in
+%production and to a large scale. 
+%When, at a specific timeframe, the report needs to be shown, the data analyzer
+%can be run. 
 
 \subsection{API}
 Describe maybe with a table
