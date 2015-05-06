@@ -98,4 +98,32 @@ analyzed, the \textit{privacy bugs} found will be shown to the user.
 \subsection{API}
 
 \textit{FairTest} incorporates a RESTful API for gethering data from the
-appliation. The basic functions of it is included in Table 
+appliation. The basic functions of it is included in Table~\ref{tab:fairtestApi}.
+
+\begin{table}[t]
+{
+ \scriptsize
+  \renewcommand{\arraystretch}{1.5}
+  \begin{tabular}{ l | l }
+    Usage & Function \\
+    \hline
+    POST /user & Add a user with attributes \\
+    POST /output & Add a output from the program \\
+    POST /user/12/output & Link an output to a user\\
+    \hline
+    PUT /user/12 & Change attributes of user \#12 \\
+    \hline
+    GET /user/12 & Get information of user \#12 \\
+    GET /user/12/output & Get outputs for user \#12 \\
+  \end{tabular}
+  \caption{\bf Data input API for FairTest} 
+  \label{tab:fairtestApi}
+}
+\end{table}
+
+As can be seen, this API contains very simple operations to be linked into
+the application. As a RESTful API, it also has support in most programming
+languages to add the outputs directly from the MVC models. It also offers
+a simple querying mechanism for the developer to check validity of data.
+
+As the data model is simple, we expect this API to be scalable as well.
