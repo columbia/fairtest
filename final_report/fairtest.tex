@@ -1,9 +1,22 @@
 \section{FairTest}
 \label{sect:fairtest}
 
-% What we built
-
-\begin{figure}[h]
+In this section we present the design and implementation of \sysname.
+At its core, \sysname assets that there are no violations of
+{\em statistical parity} (condition~\ref{eq:StatisticalParity}
+- Section~\ref{sect:statparity}).
+%To address the descrimination test, We designed \textit{FairTest}, a software
+%testing framework for web-based applications to find out potential
+%\textit{privacy bugs}, whose definition was just described. Its basic workflow
+Figure~\ref{fig:FairtestOverview}, gives an overview of how a data-driven
+application with a pricing policy ``P'' can use \sysname to generate
+bug reports. As shown in Figure~\ref{fig:FairtestOverview}, user-attributes
+(protected and non-protected) and price engine's outputs are used by
+\sysname to generate bug-reports. \sysname generates these report based on
+the {\em statistical parity} of users on certain protected attributes
+(such as gender, race, etc.). Any violation of
+condition~\ref{eq:StatisticalParity}, is reported by \sysname as a {\em privacy bug}.
+\begin{figure}[t]
  \includegraphics[width=0.49\textwidth]
   {\detokenize{figures/overview}}
   \caption{ {\bf \textit{FairTest} Use Overview}. Gives an overview of how an application
@@ -12,22 +25,6 @@
   \label{fig:FairtestOverview}
 \end{figure}
 
-In this section we present the design and implementation of \sysname.
-At its core, \sysname assets that there are no violations of statistical
-condition~\ref{eq:StatisticalParity} of Section~\ref{sect:statparity}.
-%To address the descrimination test, We designed \textit{FairTest}, a software
-%testing framework for web-based applications to find out potential
-%\textit{privacy bugs}, whose definition was just described. Its basic workflow
-Figure~\ref{fig:FairtestOverview}, gives an overview of how a data-driven
-application with a pricing policy ``P'' can use \sysname to generate
-bug reports. As shown in Figure~\ref{fig:FairtestOverview}, user-attributes
-(protected and non-protected) and price engine's output are used by
-\sysname to generate bug-reports. \sysname generates these report based on
-on the {\em statistical parity} of users on certain protected attributes
-(such as gender, race, etc.). In specific, any violation of
-condition~\ref{eq:StatisticalParity}, is reported by \sysname as a {\em privacy bug}.
-
-% Target user / characteristic
 
 \sysname is designed to be used for designers and engineers of 
 data-based web applications. In addition, it can also be used for auditors 
