@@ -14,9 +14,6 @@ In this section we present the design and implementation of \sysname.
 At its core, \sysname assets that there are no violations of
 {\em statistical parity} (condition~\ref{eq:StatisticalParity}
 - Section~\ref{sect:statparity}).
-%To address the descrimination test, We designed \textit{FairTest}, a software
-%testing framework for web-based applications to find out potential
-%\textit{privacy bugs}, whose definition was just described. Its basic workflow
 Figure~\ref{fig:FairtestOverview}, gives an overview of how a data-driven
 application with a pricing policy ``P'' can use \sysname to generate
 bug reports. As shown in Figure~\ref{fig:FairtestOverview}, user-attributes
@@ -46,16 +43,12 @@ API or a web interface to the developer or tester. With the info, we can then
 suggest potential \textit{privacy bugs} that are caused by the statiscal
 parity found by the system, offering suggestion to the developer if the
 customization engine appears acceptable or not.
-
-% Subsections
-
-This section will be divided into the following parts. In subsection 3.1, the
-\textit{FairTest} archetecture will be discussed; and subsection 3.2 will
-discuss the API design of \textit{FairTest}. 
+In what follows we present the architecture and the API of our \sysname
+implementation.
 
 \subsection{Architecture}
 Our \sysname implementation consists of three parts:
-(i) a RESTful input API that gathers data from monitored application;
+(i) a REST API that gathers data from monitored application;
 (ii) a statistical engine that asserts statistical parity between protected
 user attributes;
 and (iii) a reporting tool that generates bug-reports.
@@ -70,12 +63,12 @@ to certain protected attributes.
   {\detokenize{figures/architecture}}
   \caption{{\bf \textit{FairTest}'s Architecture}. The diagram shows \sysname's architecture,
     along with a very simple application using it. Bold lines represent API
-    calls and dash lines represent bugreport queries. Solid line indicate data flow
+    calls and dash lines represent bug-report queries. Solid line indicate data flow
     as part of the application or of the testing framework.}
   \label{fig:FairtestArch}
 \end{figure}
 
 \subsection{API}
 
-\textit{FairTest} incorporates a RESTful API for gethering data from the
-appliation. The basic functions of it is included in Table 
+\textit{FairTest} incorporates a REST API for gathering data from the
+application. The basic functions of it is included in Table 
