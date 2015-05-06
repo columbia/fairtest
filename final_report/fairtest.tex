@@ -4,7 +4,7 @@
 \begin{figure}[h]
  \includegraphics[width=0.49\textwidth]
   {\detokenize{figures/overview}}
-  \caption{ {\bf \textit{FairTest} Use Overview}. Gives an overview of how an application
+  \caption{ {\bf \textit{FairTest} use overview}. Gives an overview of how an application
     may use \sysname to generate bug-reports.
   }
   \label{fig:FairtestOverview}
@@ -57,7 +57,7 @@ to certain protected attributes.
 \begin{figure}[h]
  \includegraphics[width=0.49\textwidth]
   {\detokenize{figures/architecture}}
-  \caption{{\bf \textit{FairTest}'s Architecture}. The diagram shows \sysname's architecture,
+  \caption{{\bf \textit{FairTest}'s architecture}. The diagram shows \sysname's architecture,
     along with a very simple application using it. Bold lines represent API
     calls and dash lines represent bug-report queries. Solid line indicate data flow
     as part of the application or of the testing framework.}
@@ -65,10 +65,6 @@ to certain protected attributes.
 \end{figure}
 
 \subsection{API}
-
-\textit{FairTest} incorporates a REST API for gathering data from the
-application. The basic functions of it is included in Table~\ref{tab:fairtestApi}.
-
 \begin{table}[t]
 {
  \scriptsize
@@ -85,10 +81,16 @@ application. The basic functions of it is included in Table~\ref{tab:fairtestApi
     GET /user/12 & Get information of user \#12 \\
     GET /user/12/output & Get outputs for user \#12 \\
   \end{tabular}
-  \caption{\bf Data input API for FairTest} 
+  \caption{{{\bf \textit{FairTest}'s API}}. Summarizes \sysname's
+      REST API.}
   \label{tab:fairtestApi}
 }
 \end{table}
+
+
+\textit{FairTest} incorporates a REST API for gathering data from the
+application and generating bug-reports. Its basic functions are summarized
+in Table~\ref{tab:fairtestApi}.
 
 As can be seen, this API contains very simple operations to be linked into
 the application. As a RESTful API, it also has support in most programming
