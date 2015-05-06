@@ -1,8 +1,5 @@
 \section{FairTest}
 \label{sect:fairtest}
-
-% What we built
-
 \begin{figure}[h]
  \includegraphics[width=0.49\textwidth]
   {\detokenize{figures/overview}}
@@ -12,34 +9,32 @@
   \label{fig:FairtestOverview}
 \end{figure}
 
+
 In this section we present the design and implementation of \sysname.
-At its core, \sysname assets that there are no violations of statistical
-condition~\ref{eq:StatisticalParity} of Section~\ref{sect:statparity}.
+At its core, \sysname assets that there are no violations of
+{\em statistical parity} (condition~\ref{eq:StatisticalParity}
+- Section~\ref{sect:statparity}).
 %To address the descrimination test, We designed \textit{FairTest}, a software
 %testing framework for web-based applications to find out potential
 %\textit{privacy bugs}, whose definition was just described. Its basic workflow
 Figure~\ref{fig:FairtestOverview}, gives an overview of how a data-driven
 application with a pricing policy ``P'' can use \sysname to generate
 bug reports. As shown in Figure~\ref{fig:FairtestOverview}, user-attributes
-(protected and non-protected) and price engine's output are used by
+(protected and non-protected) and price engine's outputs are used by
 \sysname to generate bug-reports. \sysname generates these report based on
-on the {\em statistical parity} of users on certain protected attributes
-(such as gender, race, etc.). In specific, any violation of
+the {\em statistical parity} of users on certain protected attributes
+(such as gender, race, etc.). Any violation of
 condition~\ref{eq:StatisticalParity}, is reported by \sysname as a {\em privacy bug}.
 
-% Target user / characteristic
-
-\sysname is designed to be used for designers and engineers of 
-data-based web applications. In addition, it can also be used for auditors 
-or government agencies to look for evidence on certain parity violation,
-such as in the Staples case. The framework, for generality, is interfaced 
-with RESTful API that can easily connect to existing software solutions.
-We expect that developers will only make minimal modifications to the
-application (mostly adding the tracking code) to derive the data for audit
-in \sysname. Also, to address privacy on the testing framework,
-\sysname does not require identifiable user information, such as
-exact address, name, etc. The framework itself is implemented in Python and
-Django, with support to both SQLite or PostgreSQL database.
+\sysname is designed to be used both by developers and by auditors of
+data-driven web applications. It is interfaced with REST API that can be
+used by web applications, without any fundamental limitation.
+We expect developers to make only minimal modifications to their
+application (mostly adding the tracking code) in order to provide
+\sysname with the data necessary for auditing. To address privacy on the
+testing framework, \sysname does not require identifiable user information,
+such as exact address, name, etc. The framework itself is implemented in
+the Django Python web framework with an SQLite database.
 
 % Data got
 
@@ -59,13 +54,16 @@ This section will be divided into the following parts. In subsection 3.1, the
 discuss the API design of \textit{FairTest}. 
 
 \subsection{Architecture}
-
-% Overview
 Our \sysname implementation consists of three parts:
-a RESTful input API that gathers data from monitored application; a
-statistical engine that asserts statistical parity between protected
-user attributes; and a reporting tool that generates bug-reports.
-Figure~\ref{fig:FairtestArch} demonstrates this architecture.
+(i) a RESTful input API that gathers data from monitored application;
+(ii) a statistical engine that asserts statistical parity between protected
+user attributes;
+and (iii) a reporting tool that generates bug-reports.
+Figure~\ref{fig:FairtestArch} demonstrates this architecture and a sample workflow.
+The input API receives requests from the monitored
+application and records all inputs and outputs regarding a user.
+At the same time, \sysname accepts queries for bug-reports with respect
+to certain protected attributes.
 
 \begin{figure}[h]
  \includegraphics[width=0.49\textwidth]
@@ -76,24 +74,6 @@ Figure~\ref{fig:FairtestArch} demonstrates this architecture.
     as part of the application or of the testing framework.}
   \label{fig:FairtestArch}
 \end{figure}
-
-\textit{FairTest} includes three parts: a RESTful input API that gathers data
-from the application tested; a statistical engine that finds statistical parity
-between sentitive user data and the price descrimination, and a reporting tool
-showing the results.
-
-In a sample workflow, the input API receives requests from the monitored
-application, and records all outputs with regard to a user's characteristics. 
-As it uses common web framwork (Django) and database, this API can, in fact, be
-distributed across a set of servers that share a same database; this can
-provide rate-limitation and fault-tolerance in case the system is deployed in
-production and to a large scale. 
-
-When, at a specific timeframe, the report needs to be shown, the data analyzer
-can be run to apply the algorithm. The data analyzer currently runs as a single
-procedure to be run on a server; but it can be designed to be scalable to
-multiple machines with distributed computing frameworks. After the data is
-analyzed, the \textit{privacy bugs} found will be shown to the user.
 
 \subsection{API}
 
