@@ -3,8 +3,8 @@
 Transparency and understanding of the implications of various policies applied
 to data by modern data-driven web applications is drawing increasing attention
 in our days. Yet, there is no well-established methodology for asserting
-non-discrimintatory treatment of online users of pricing engines,
-recomendation engines, and even hiring web sites. The notion of
+non-discriminatory treatment of online users of pricing engines,
+recommendation engines, and even hiring web sites. The notion of
 (non-)discriminatory treatment of populations had already been perceived two decades
 ago by the authors of~\cite{EmploymentDisc}. In this work regression is being
 used to test for salary discrimination among males and females, and the concept
@@ -27,16 +27,21 @@ of disparate impact, and present methods for making data unbiased, i.e.,
 removing disparate impact. In~\cite{FairnessRegularization} a regularization
 technique is presented to safeguard against causes of unfairness in machine
 learning techniques and to eliminate biases in determinations due to indirect
-dependences on sensitive information, such as gender and religion.
+dependences on sensitive information, such as gender and religion. \sysname
+differs from the previous works, since we actually implement a system that
+helps assert fairness amongst users.
 
-Closer to our work, pricind and hiring discrimination in online applications is
+Closer to our work, pricing and hiring discrimination in online applications is
 investigated in~\cite{PriceDiscrimination,SearchDiscrimination,XRay}.
-In~\cite{PriceDiscrimination}, the authors describe a methodology to study the
+In~\cite{PriceDiscrimination}, the authors present a measurement study of the
 ways in which e-commerce web sites discriminate based on users' browsing
-profile and optimize prices. Then, they evaluate their methodology on a variety
-od e-commerce sites.  In~\cite{SearchDiscrimination},  the authors present a
-study that demonstrates the existence of both price and search discrimination
-on the internet. Finally, in~\cite{HiringDiscrimination}, the authors implement
-a system to increase transparency in the for the Web. They implement a tool
-which helps uncover which data, in an online account,  is used to target 
-which outputs. Our work differs in this way from these XXX.
+profile and optimize prices. In~\cite{SearchDiscrimination},  the authors
+present a study that demonstrates the existence of both price and search
+discrimination on the internet. Finally, in~\cite{HiringDiscrimination}, the
+authors implement a system to increase transparency in the for the Web. They
+implement a tool which helps uncover which data, in an online account,
+is used to target which outputs. Our approach differs from the above works in that
+it is -- to the best of our knowledge -- the first system that helps assert
+non-discriminatory treatment of users of web application. We design \sysname
+as a service that can be used -- without fundamental limitations -- to
+uncover {\em privacy bugs}  in any data-driven web application.
