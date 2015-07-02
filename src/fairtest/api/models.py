@@ -2,7 +2,7 @@ from django.db import models
 
 class User(models.Model):
     RACE_CHOICES = (
-            (1, 'White, Not Hispanic or Latino'),
+            (1, 'White Not Hispanic or Latino'),
             (2, 'Hispanic or Latino'),
             (3, 'Black or African American'),
             (4, 'American Indian and Alaska Native'),
@@ -16,14 +16,14 @@ class User(models.Model):
             (1, 'F'),
             )
     INCOME_CHOICES = (
-            (1, 'income < 5000$'),
-            (2, '5000   <= income < 10000$'),
-            (3, '10000  <= income < 20000'),
-            (4, '20000  <= income < 40000'),
-            (5, '40000  <= income < 80000'),
-            (6, '80000  <= income < 160000'),
-            (7, '160000 <= income < 320000'),
-            (8, '320000 <= income '),
+            (1, 'income<5000'),
+            (2, '5000<=income<10000'),
+            (3, '10000<=income<20000'),
+            (4, '20000<=income<40000'),
+            (5, '40000<=income<80000'),
+            (6, '80000<=income<160000'),
+            (7, '160000<=income<320000'),
+            (8, '320000<=income'),
             )
     uid = models.IntegerField(primary_key=True)
     zipcode = models.CharField(max_length=10)
