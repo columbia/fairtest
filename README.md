@@ -41,4 +41,19 @@ Launch IPython:
 >> cd src/
 >> ipython notebook
 
-Execute the notebook
+
+
+============================
+||    Code Organisation   ||
+============================
+
+src/fairtest/spark                  Test script for the Spark implementation
+
+src/fairtest/bugreport/clustering   Module for extracting clusters from a tree
+                                    structure, and displaying them
+                                    
+src/fairtest/bugreport/core         Contains a class for representing a dataset
+
+src/fairtest/bugreport/statistics   Code for statistical measures and tests
+
+src/fairtest/bugreport/trees        Code for building trees

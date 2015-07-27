@@ -1,0 +1,5 @@
+* Add Correlation measure for categorical tree + Spark tree
+
+* Add multiple hypothesis testing corrections to cluster analysis
+
+* Test different bias measures and aggregation techniques on various datasets
