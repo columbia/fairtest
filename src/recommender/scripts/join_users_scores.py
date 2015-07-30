@@ -68,9 +68,8 @@ def categorize(score, avg, stdev):
     """
     Turn a continous variable into categorical from 0 to 5
     """
-    if score < avg:# - 2 * stdev:
+    if score < avg:
         return 0
-    return 1
     if score < avg - stdev and score >= avg - 2 * stdev:
         return 1
     if score < avg and  score >= avg - stdev:
