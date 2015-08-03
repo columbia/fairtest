@@ -1,7 +1,7 @@
 #FairTest
 
 ===============
-||   SPARK   ||
+   SPARK   
 ===============
 
 Build Spark (go grab a coffee):
