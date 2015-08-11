@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import scipy.stats as stats
+import scipy.special as special
 import sklearn.metrics as metrics
 import numpy as np
 import pandas as pd
-from math import sqrt, log
+from math import sqrt, log, exp, atanh, tanh
 from collections import Counter
 
 # 
@@ -12,12 +13,12 @@ from collections import Counter
 #
 # @args data    the contingency table to compute the MI of
 # @args norm    whether the MI should be normalized
-# @args ci      whether to compute confidence intervals
-# @args level   confidence level
-def mutual_info(data, norm=True, ci=False, level=0.95):
+# @args ci_level    level for confidence intervals (or None)
+#
+def mutual_info(data, norm=False, ci_level=None):
     mi = metrics.mutual_info_score(None, None, contingency=data)
     
-    assert (not (norm and ci))
+    assert (not (norm and ci_level))
     
     #
     # Normalize I(X,Y) by dividing by the min entropy of X and Y
@@ -35,31 +36,10 @@ def mutual_info(data, norm=True, ci=False, level=0.95):
         
         mi = mi/min(hx,hy)
     
-    # compute confidence interval
-    if (ci):
-        conf_mi = stats.norm.interval(level, loc=mi, scale=mi_sigma(data))
+    # compute confidence interval (measure, delta)
+    if (ci_level):
+        conf_mi = stats.norm.interval(ci_level, loc=mi, scale=mi_sigma(data))
         return mi, conf_mi[1]-mi
-        
-        '''
-        
-        Method of Stefani et al. Does not seem to give good intervals
-        
-        def bin_entropy(x):
-            return -x*log(x)-(1-x)*log(1-x)
-            
-        alpha = 1-level
-        Mx = min(np.array(data).shape)
-        My = max(np.array(data).shape)
-        n = np.sum(data)
-        epsilon = sqrt(2.0/n*(log(2**(Mx*My) - 2) - log(alpha)))
-
-        if epsilon <= 2-2.0/Mx:
-            mi_delta = epsilon/2*(log(Mx*My-1)+log(Mx-1)+log(My-1)) + 3*bin_entropy(epsilon/2)
-        else:
-            mi_delta = log(Mx)
-        
-        return mi, mi_delta
-        '''
         
     return mi
 
@@ -67,6 +47,7 @@ def mutual_info(data, norm=True, ci=False, level=0.95):
 # statistical parity measure
 #
 # @args data    the contingency table of shape (?, 2)
+#
 def statistical_parity(data):
     assert data.shape[1] == 2
     
@@ -80,11 +61,10 @@ def statistical_parity(data):
 # 
 # slift measures, possibly with confidence intervals
 #
-# @args data    contingency table  
-# @args ci      whether to compute confidence intervals
-# @args level   confidence level
+# @args data        contingency table  
+# @args ci_level    level for confidence intervals (or None)
 #
-def slifts(data, ci=False, level=0.95):
+def slifts(data, ci_level=0.95):
     assert (data.shape == (2,2))
     
     # transform contingency table into probability table
@@ -99,7 +79,7 @@ def slifts(data, ci=False, level=0.95):
     #
     # confidence levels as in Ruggieri et al. '10
     #
-    if ci:
+    if ci_level:
         # contingency table values
         n1 = sum(data[1])
         n2 = sum(data[0])
@@ -114,8 +94,8 @@ def slifts(data, ci=False, level=0.95):
         sigma_ratio = sqrt(1.0/a1-1.0/n1+1.0/a2-1.0/n2)
     
         #confidence intervals
-        int_diff = stats.norm.interval(level, loc=slift_d, scale=sigma_diff)
-        int_ratio = stats.norm.interval(level, loc=slift, scale=sigma_ratio)
+        int_diff = stats.norm.interval(ci_level, loc=slift_d, scale=sigma_diff)
+        int_ratio = stats.norm.interval(ci_level, loc=slift, scale=sigma_ratio)
         
         return (slift, slift_d, int_ratio[1]-slift, int_diff[1]-slift_d)
     else:
@@ -127,7 +107,11 @@ def slifts(data, ci=False, level=0.95):
 # @args data        contingency table to test
 # @args correction  whether to apply continuity corrections
 # 
-def G_test(data, correction=False):   
+def G_test(data, correction=False):
+    # remove all-zero columns/rows
+    data = data[data.columns[(data != 0).any()]]
+    data = data[(data.T != 0).any()]
+
     return stats.chi2_contingency(data, correction=False, 
                                     lambda_="log-likelihood")
                                     
@@ -143,12 +127,6 @@ def mi_cond(data):
     
     # total size of the data
     tot = sum(map(lambda group: group.sum().sum(), data))
-    
-    '''
-    for group in data:
-        p = (1.0*group.sum().sum())/tot
-        mi += p*fm.mutual_info(group, norm=False)
-    '''
     
     G, _ = G_test_cond(data)
     
@@ -174,6 +152,7 @@ def G_test_cond(data):
     p_val = stats.chisqprob(G, df)
     
     return G, p_val
+
 #
 # Computes the exact Fisher test
 #
@@ -212,10 +191,72 @@ def mi_sigma(data):
     
     return sqrt((mi_sqr-pow(mi,2))/N)
 
+'''
+def cramer_v(data, ci=False, level=0.95):
+    # remove all-zero columns/rows
+    data = data[data.columns[(data != 0).any()]]
+    data = data[(data.T != 0).any()]
+
+    chi2, _, _, _ = stats.chi2_contingency(data, correction=False)
+    dim = data.shape
+    df = (dim[0]-1)*(dim[1]-1)
+    n = data.sum().sum()
+
+    cv = sqrt(chi2/(n*(min(dim[0], dim[1])-1)))
+
+    if not ci:
+        return cv
+
+    #
+    # Confidence Intervals for Cramér's V are described here
+    # http://psychology3.anu.edu.au/people/smithson/details/CIstuff/CI.html
+    #
+    p_low = 1-(1-level)/2
+    p_high=(1-level)/2
+    chi_low = special.chndtrinc(chi2, df, p_low)
+    chi_high = special.chndtrinc(chi2, df, p_high)
+    (cv_low, cv_high) = map(lambda x: sqrt((x+df)/(n*(min(dim[0], dim[1])-1))), (chi_low, chi_high))
+    return (cv_low, cv_high)
+'''
+
+
+#
+# Pearson correlation with confidence intervals
+#
+# @args counts      statistics for correlation computation (sum_x, sum_y, sum_x2, sum_y2, sum_xy, n)
+# @args ci_level    level for confidence intervals (or None)
+#
+def correlation(counts, ci_level=None):
+    assert(len(counts) == 6)
+    
+    sum_x = counts[0]
+    sum_x2 = counts[1]
+    sum_y = counts[2]
+    sum_y2 = counts[3]
+    sum_xy = counts[4]
+    n = counts[5]
+    
+    corr = (n*sum_xy - sum_x*sum_y)/(sqrt(n*sum_x2 - sum_x**2) * sqrt(n*sum_y2 - sum_y**2))
+    
+    if ci_level:
+        # Fisher transform
+        fisher = atanh(corr)
+        std = 1.0/sqrt(n-3)
+        conf_fisher = stats.norm.interval(ci_level, loc=fisher, scale=std)
+        
+        # inverse transform
+        conf_corr = [tanh(conf_fisher[0]), tanh(conf_fisher[1])]
+        
+        return abs(corr), conf_corr[1]-corr         
+        
+    else:
+        return abs(corr)
+
 
 # number of randomized samplings in the Monte Carlo test
 N_SAMPLES = 1000
-    
+
+
 #
 # Perform a Monte-Carlo permutation test
 #

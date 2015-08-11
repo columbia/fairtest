@@ -7,6 +7,7 @@ import fairtest.bugreport.trees.tree_builder_spark as tree_builder
 import fairtest.bugreport.trees.categorical_tree as cat_tree
 import fairtest.bugreport.clustering.tree_clustering as tc
 import fairtest.bugreport.clustering.display_clusters as display_clusters
+from fairtest.bugreport.clustering.display_clusters import NodeFilter
 import random
 
 #
@@ -57,7 +58,7 @@ def find_clusters(root, data, train_set=False):
 # @args sort_by    How to sort the clusters ('effect' or 'sig')
 #    
 def print_clusters(clusters, sort_by='effect'):
-    display_clusters.bug_report(clusters, sort_by=sort_by)
+    display_clusters.bug_report(clusters, sort_by=sort_by, node_filter=NodeFilter.ALL)
 
 #
 # Print the tree

@@ -1,8 +1,13 @@
-from fairtest.bugreport.statistics import fairness_measures as fm
-import numpy as np
-import pandas as pd
 from StringIO import StringIO
-import prettytable 
+import prettytable
+
+from fairtest.bugreport.statistics import fairness_measures as fm
+
+class NodeFilter:
+    LEAVES_ONLY = 1
+    LEAVES_AND_ROOT = 2
+    ALL = 3
+
 
 #
 # Print all the clusters sorted by relevance
@@ -14,17 +19,26 @@ import prettytable
 # @args leaves_only consider tree leaves only
 # @args conf_level  level for confidence intervals
 #
-def bug_report(clusters, sort_by='sig', leaves_only=True, conf_level=0.95):
-    
+def bug_report(clusters, measure='MI', sort_by='sig', node_filter=NodeFilter.LEAVES_ONLY, conf_level=0.95):
+    assert measure in ['MI', 'CORR']
+    assert sort_by in ['sig', 'effect']
+
     # take only the leaves
-    if leaves_only:
+    if node_filter == NodeFilter.LEAVES_ONLY:
         clusters = filter(lambda c: c.isleaf, clusters)
-    
-    # compute p-values and mutual information CIs for all clusters
-    p_vals = map(lambda c: fm.G_test(c.ct)[1], clusters)
-    mi_s = map(lambda c: fm.mutual_info(c.ct, norm=False, ci=True, level=conf_level), clusters)
-    
-    zipped = zip(clusters, p_vals, mi_s)
+    elif node_filter == NodeFilter.LEAVES_AND_ROOT:
+        clusters = filter(lambda c: c.isleaf or c.isroot, clusters)
+
+    if measure == 'MI':
+        # compute p-values and mutual information CIs for all clusters
+        p_vals = map(lambda c: fm.G_test(c.stats)[1], clusters)
+        effects = map(lambda c: fm.mutual_info(c.stats, ci_level=conf_level), clusters)
+    else:
+        # TODO
+        p_vals = [0]*len(clusters)
+        effects = map(lambda c: fm.correlation(c.stats, ci_level=conf_level), clusters)
+
+    zipped = zip(clusters, p_vals, effects)
         
     # sort by significance
     if sort_by == 'sig':
@@ -34,26 +48,33 @@ def bug_report(clusters, sort_by='sig', leaves_only=True, conf_level=0.95):
         zipped.sort(key=lambda tup: max(0, tup[2][0]-tup[2][1]), reverse=True)
     
     # print clusters in order of relevance    
-    for (cluster, p_val, (mi, mi_delta)) in zipped:
-        ctype = "LEAF" if (cluster.isleaf) else "ROOT" if (cluster.isroot) else "INTERNAL"
-        print '{} node {} of size {}'.format(ctype, cluster.num, cluster.size)
+    for (cluster, p_val, (effect, effect_delta)) in zipped:
+        #ctype = "LEAF" if cluster.isleaf else "ROOT" if cluster.isroot else "INTERNAL"
+        #print '{} node {} of size {}'.format(ctype, cluster.num, cluster.size)
+        print 'Population of size {}'.format(cluster.size)
         print 'Context = {}'.format(cluster.path)
         print
+
+        if measure == 'MI':
+            # pretty-print the contingency table
+            output = StringIO()
+            rich_ct(cluster.stats).to_csv(output)
+            output.seek(0)
+            pt = prettytable.from_csv(output)
+            print pt
+            print
         
-        # pretty-print the contingency table
-        output = StringIO()
-        rich_ct(cluster.ct).to_csv(output)
-        output.seek(0)
-        pt = prettytable.from_csv(output)
-        
-        print pt
-        print
-        
-        # print p-value and confidence interval of MI
-        mi_low = max(0, mi-mi_delta)
-        mi_high = mi+mi_delta
-        print 'p-value = {:.2e} ; MI = [{:.4f}, {:.4f}]'.format(p_val, mi_low, mi_high)
+            # print p-value and confidence interval of MI
+            mi_low = max(0, effect-effect_delta)
+            mi_high = effect+effect_delta
+            print 'p-value = {:.2e} ; MI = [{:.4f}, {:.4f}]'.format(p_val, mi_low, mi_high)
+        else:
+            # print p-value and confidence interval of correlation
+            corr_low = max(0, effect-effect_delta)
+            corr_high = min(effect+effect_delta, 1)
+            print 'p-value = {:.2e} ; Corr = [{:.4f}, {:.4f}]'.format(p_val, corr_low, corr_high)
         print '-'*80
+        print
 
 #
 # Build a rich contingency table with proportions and marginals

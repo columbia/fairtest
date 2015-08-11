@@ -1,0 +1,420 @@
+################################################################################
+
+Results of Fairtest on the Adult dataset using SPARK.
+
+ - Target Feature = 'Income'
+ - Sensitive Feature = 'Gender'
+
+When Spark performs a split on a categorical feature, it splits the categories
+into two subsets such as to maximize the tree criterion (mutual information)
+
+Discrimination contexts are sorted by effect size (lower range of the confidence
+interval for mutual information). 
+
+################################################################################
+
+Population of size 1568
+Context = {'age': (49.0, 58.0], 'Workclass': set([nan, 'Federal-gov', 'Private', 'Never-worked']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+-------------+-------------+---------------+
+| predicted-income |    Female   |     Male    |     Total     |
++------------------+-------------+-------------+---------------+
+|      <=50K       | 488 (82.4%) | 357 (36.6%) |  845 (53.9%)  |
+|       >50K       | 104 (17.6%) | 619 (63.4%) |  723 (46.1%)  |
+|      Total       | 592 (37.8%) | 976 (62.2%) | 1568 (100.0%) |
++------------------+-------------+-------------+---------------+
+
+p-value = 3.36e-74 ; MI = [0.0848, 0.1270]
+--------------------------------------------------------------------------------
+
+Population of size 2496
+Context = {'age': (49.0, inf), 'Workclass': set([nan, 'Federal-gov', 'Private', 'Never-worked']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'India', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'England', 'Guatemala', 'China', 'Haiti', 'Philippines', 'Holand-Netherlands', 'Poland', 'Vietnam', 'Columbia', 'South', 'Jamaica', 'Honduras', 'Mexico', 'El-Salvador', 'Outlying-US(Guam-USVI-etc)', 'Puerto-Rico', 'Yugoslavia', 'United-States', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+-------------+--------------+---------------+
+| predicted-income |    Female   |     Male     |     Total     |
++------------------+-------------+--------------+---------------+
+|      <=50K       | 832 (85.3%) | 637 (41.9%)  |  1469 (58.9%) |
+|       >50K       | 143 (14.7%) | 884 (58.1%)  |  1027 (41.1%) |
+|      Total       | 975 (39.1%) | 1521 (60.9%) | 2496 (100.0%) |
++------------------+-------------+--------------+---------------+
+
+p-value = 8.10e-111 ; MI = [0.0841, 0.1163]
+--------------------------------------------------------------------------------
+
+Population of size 4034
+Context = {'age': (49.0, inf), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+--------------+--------------+---------------+
+| predicted-income |    Female    |     Male     |     Total     |
++------------------+--------------+--------------+---------------+
+|      <=50K       | 1158 (82.1%) | 1107 (42.2%) |  2265 (56.1%) |
+|       >50K       | 253 (17.9%)  | 1516 (57.8%) |  1769 (43.9%) |
+|      Total       | 1411 (35.0%) | 2623 (65.0%) | 4034 (100.0%) |
++------------------+--------------+--------------+---------------+
+
+p-value = 2.18e-139 ; MI = [0.0669, 0.0897]
+--------------------------------------------------------------------------------
+
+Population of size 928
+Context = {'age': (58.0, inf), 'Workclass': set([nan, 'Federal-gov', 'Private', 'Never-worked']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+-------------+-------------+--------------+
+| predicted-income |    Female   |     Male    |    Total     |
++------------------+-------------+-------------+--------------+
+|      <=50K       | 344 (89.8%) | 280 (51.4%) | 624 (67.2%)  |
+|       >50K       |  39 (10.2%) | 265 (48.6%) | 304 (32.8%)  |
+|      Total       | 383 (41.3%) | 545 (58.7%) | 928 (100.0%) |
++------------------+-------------+-------------+--------------+
+
+p-value = 4.00e-38 ; MI = [0.0651, 0.1144]
+--------------------------------------------------------------------------------
+
+Population of size 2069
+Context = {'age': (44.0, 49.0], 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'India', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'England', 'Guatemala', 'China', 'Haiti', 'Philippines', 'Holand-Netherlands', 'Poland', 'Vietnam', 'Columbia', 'South', 'Jamaica', 'Honduras', 'Mexico', 'El-Salvador', 'Outlying-US(Guam-USVI-etc)', 'Puerto-Rico', 'Yugoslavia', 'United-States', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+-------------+--------------+---------------+
+| predicted-income |    Female   |     Male     |     Total     |
++------------------+-------------+--------------+---------------+
+|      <=50K       | 567 (77.2%) | 481 (36.0%)  |  1048 (50.7%) |
+|       >50K       | 167 (22.8%) | 854 (64.0%)  |  1021 (49.3%) |
+|      Total       | 734 (35.5%) | 1335 (64.5%) | 2069 (100.0%) |
++------------------+-------------+--------------+---------------+
+
+p-value = 5.88e-75 ; MI = [0.0647, 0.0975]
+--------------------------------------------------------------------------------
+
+Population of size 1442
+Context = {'age': (44.0, 49.0], 'education': set(['Masters', '12th', 'Assoc-voc', 'Bachelors', '9th', '5th-6th', 'Some-college', '11th', '10th', '7th-8th']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+-------------+-------------+---------------+
+| predicted-income |    Female   |     Male    |     Total     |
++------------------+-------------+-------------+---------------+
+|      <=50K       | 366 (75.8%) | 332 (34.6%) |  698 (48.4%)  |
+|       >50K       | 117 (24.2%) | 627 (65.4%) |  744 (51.6%)  |
+|      Total       | 483 (33.5%) | 959 (66.5%) | 1442 (100.0%) |
++------------------+-------------+-------------+---------------+
+
+p-value = 5.64e-51 ; MI = [0.0588, 0.0976]
+--------------------------------------------------------------------------------
+
+Population of size 18389
+Context = {'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'India', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'England', 'Guatemala', 'China', 'Haiti', 'Philippines', 'Holand-Netherlands', 'Poland', 'Vietnam', 'Columbia', 'South', 'Jamaica', 'Honduras', 'Mexico', 'El-Salvador', 'Outlying-US(Guam-USVI-etc)', 'Puerto-Rico', 'Yugoslavia', 'United-States', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+--------------+---------------+----------------+
+| predicted-income |    Female    |      Male     |     Total      |
++------------------+--------------+---------------+----------------+
+|      <=50K       | 6457 (85.2%) |  5758 (53.3%) | 12215 (66.4%)  |
+|       >50K       | 1124 (14.8%) |  5050 (46.7%) |  6174 (33.6%)  |
+|      Total       | 7581 (41.2%) | 10808 (58.8%) | 18389 (100.0%) |
++------------------+--------------+---------------+----------------+
+
+p-value = 0.00e+00 ; MI = [0.0544, 0.0637]
+--------------------------------------------------------------------------------
+
+Population of size 627
+Context = {'age': (44.0, 49.0], 'education': set(['Prof-school', '1st-4th', 'Assoc-acdm', 'HS-grad', 'Doctorate', 'Preschool']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+-------------+-------------+--------------+
+| predicted-income |    Female   |     Male    |    Total     |
++------------------+-------------+-------------+--------------+
+|      <=50K       | 201 (80.1%) | 149 (39.6%) | 350 (55.8%)  |
+|       >50K       |  50 (19.9%) | 227 (60.4%) | 277 (44.2%)  |
+|      Total       | 251 (40.0%) | 376 (60.0%) | 627 (100.0%) |
++------------------+-------------+-------------+--------------+
+
+p-value = 1.16e-24 ; MI = [0.0536, 0.1140]
+--------------------------------------------------------------------------------
+
+Population of size 14355
+Context = {'age': (-inf, 49.0], 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+--------------+--------------+----------------+
+| predicted-income |    Female    |     Male     |     Total      |
++------------------+--------------+--------------+----------------+
+|      <=50K       | 5299 (85.9%) | 4651 (56.8%) |  9950 (69.3%)  |
+|       >50K       | 871 (14.1%)  | 3534 (43.2%) |  4405 (30.7%)  |
+|      Total       | 6170 (43.0%) | 8185 (57.0%) | 14355 (100.0%) |
++------------------+--------------+--------------+----------------+
+
+p-value = 0.00e+00 ; MI = [0.0467, 0.0567]
+--------------------------------------------------------------------------------
+
+Population of size 12286
+Context = {'age': (-inf, 44.0], 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'India', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'England', 'Guatemala', 'China', 'Haiti', 'Philippines', 'Holand-Netherlands', 'Poland', 'Vietnam', 'Columbia', 'South', 'Jamaica', 'Honduras', 'Mexico', 'El-Salvador', 'Outlying-US(Guam-USVI-etc)', 'Puerto-Rico', 'Yugoslavia', 'United-States', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+--------------+--------------+----------------+
+| predicted-income |    Female    |     Male     |     Total      |
++------------------+--------------+--------------+----------------+
+|      <=50K       | 4732 (87.0%) | 4170 (60.9%) |  8902 (72.5%)  |
+|       >50K       | 704 (13.0%)  | 2680 (39.1%) |  3384 (27.5%)  |
+|      Total       | 5436 (44.2%) | 6850 (55.8%) | 12286 (100.0%) |
++------------------+--------------+--------------+----------------+
+
+p-value = 7.97e-242 ; MI = [0.0399, 0.0499]
+--------------------------------------------------------------------------------
+
+Population of size 431
+Context = {'age': (49.0, inf), 'education': set(['Prof-school', 'Assoc-voc', '5th-6th', 'Some-college', '10th', 'Preschool']), 'Workclass': set(['Self-emp-not-inc', 'Self-emp-inc', 'Without-pay', 'Local-gov', 'State-gov']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+-------------+-------------+--------------+
+| predicted-income |    Female   |     Male    |    Total     |
++------------------+-------------+-------------+--------------+
+|      <=50K       | 105 (84.0%) | 135 (44.1%) | 240 (55.7%)  |
+|       >50K       |  20 (16.0%) | 171 (55.9%) | 191 (44.3%)  |
+|      Total       | 125 (29.0%) | 306 (71.0%) | 431 (100.0%) |
++------------------+-------------+-------------+--------------+
+
+p-value = 3.38e-15 ; MI = [0.0389, 0.1050]
+--------------------------------------------------------------------------------
+
+Population of size 11759
+Context = {'age': (-inf, 44.0], 'capital-loss': (-inf, 1564.0], 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+--------------+--------------+----------------+
+| predicted-income |    Female    |     Male     |     Total      |
++------------------+--------------+--------------+----------------+
+|      <=50K       | 4639 (87.7%) | 4047 (62.6%) |  8686 (73.9%)  |
+|       >50K       | 650 (12.3%)  | 2423 (37.4%) |  3073 (26.1%)  |
+|      Total       | 5289 (45.0%) | 6470 (55.0%) | 11759 (100.0%) |
++------------------+--------------+--------------+----------------+
+
+p-value = 9.19e-222 ; MI = [0.0379, 0.0480]
+--------------------------------------------------------------------------------
+
+Population of size 1538
+Context = {'age': (49.0, inf), 'Workclass': set(['Self-emp-not-inc', 'Self-emp-inc', 'Without-pay', 'State-gov', 'Local-gov']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'India', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'England', 'Guatemala', 'China', 'Haiti', 'Philippines', 'Holand-Netherlands', 'Poland', 'Vietnam', 'Columbia', 'South', 'Jamaica', 'Honduras', 'Mexico', 'El-Salvador', 'Outlying-US(Guam-USVI-etc)', 'Puerto-Rico', 'Yugoslavia', 'United-States', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+-------------+--------------+---------------+
+| predicted-income |    Female   |     Male     |     Total     |
++------------------+-------------+--------------+---------------+
+|      <=50K       | 326 (74.8%) | 470 (42.6%)  |  796 (51.8%)  |
+|       >50K       | 110 (25.2%) | 632 (57.4%)  |  742 (48.2%)  |
+|      Total       | 436 (28.3%) | 1102 (71.7%) | 1538 (100.0%) |
++------------------+-------------+--------------+---------------+
+
+p-value = 5.78e-31 ; MI = [0.0293, 0.0577]
+--------------------------------------------------------------------------------
+
+Population of size 36632
+Context = {}
+
++------------------+---------------+---------------+----------------+
+| predicted-income |     Female    |      Male     |     Total      |
++------------------+---------------+---------------+----------------+
+|      <=50K       | 10731 (89.0%) | 17094 (69.6%) | 27825 (76.0%)  |
+|       >50K       |  1331 (11.0%) |  7476 (30.4%) |  8807 (24.0%)  |
+|      Total       | 12062 (32.9%) | 24570 (67.1%) | 36632 (100.0%) |
++------------------+---------------+---------------+----------------+
+
+p-value = 0.00e+00 ; MI = [0.0230, 0.0272]
+--------------------------------------------------------------------------------
+
+Population of size 36195
+Context = {'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Columbia', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Iran', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua'])}
+
++------------------+---------------+---------------+----------------+
+| predicted-income |     Female    |      Male     |     Total      |
++------------------+---------------+---------------+----------------+
+|      <=50K       | 10595 (89.0%) | 16907 (69.6%) | 27502 (76.0%)  |
+|       >50K       |  1311 (11.0%) |  7382 (30.4%) |  8693 (24.0%)  |
+|      Total       | 11906 (32.9%) | 24289 (67.1%) | 36195 (100.0%) |
++------------------+---------------+---------------+----------------+
+
+p-value = 0.00e+00 ; MI = [0.0229, 0.0272]
+--------------------------------------------------------------------------------
+
+Population of size 1107
+Context = {'age': (49.0, inf), 'education': set(['Masters', '12th', '1st-4th', 'Assoc-acdm', 'HS-grad', 'Bachelors', '9th', 'Doctorate', '11th', '7th-8th']), 'Workclass': set(['Self-emp-not-inc', 'Self-emp-inc', 'Without-pay', 'Local-gov', 'State-gov']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+-------------+-------------+---------------+
+| predicted-income |    Female   |     Male    |     Total     |
++------------------+-------------+-------------+---------------+
+|      <=50K       | 221 (71.1%) | 335 (42.1%) |  556 (50.2%)  |
+|       >50K       |  90 (28.9%) | 461 (57.9%) |  551 (49.8%)  |
+|      Total       | 311 (28.1%) | 796 (71.9%) | 1107 (100.0%) |
++------------------+-------------+-------------+---------------+
+
+p-value = 1.76e-18 ; MI = [0.0196, 0.0499]
+--------------------------------------------------------------------------------
+
+Population of size 527
+Context = {'age': (-inf, 44.0], 'capital-loss': (1564.0, inf), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Tech-support', 'Prof-specialty', 'Sales', 'Adm-clerical', 'Exec-managerial'])}
+
++------------------+-------------+-------------+--------------+
+| predicted-income |    Female   |     Male    |    Total     |
++------------------+-------------+-------------+--------------+
+|      <=50K       |  93 (63.3%) | 123 (32.4%) | 216 (41.0%)  |
+|       >50K       |  54 (36.7%) | 257 (67.6%) | 311 (59.0%)  |
+|      Total       | 147 (27.9%) | 380 (72.1%) | 527 (100.0%) |
++------------------+-------------+-------------+--------------+
+
+p-value = 1.16e-10 ; MI = [0.0157, 0.0631]
+--------------------------------------------------------------------------------
+
+Population of size 17806
+Context = {'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'India', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'England', 'Guatemala', 'China', 'Haiti', 'Philippines', 'Holand-Netherlands', 'Poland', 'Vietnam', 'Columbia', 'South', 'Jamaica', 'Honduras', 'Mexico', 'El-Salvador', 'Outlying-US(Guam-USVI-etc)', 'Puerto-Rico', 'Yugoslavia', 'United-States', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set([nan, 'Farming-fishing', 'Craft-repair', 'Other-service', 'Transport-moving', 'Handlers-cleaners', 'Armed-Forces', 'Protective-serv', 'Priv-house-serv', 'Machine-op-inspct'])}
+
++------------------+--------------+---------------+----------------+
+| predicted-income |    Female    |      Male     |     Total      |
++------------------+--------------+---------------+----------------+
+|      <=50K       | 4138 (95.7%) | 11149 (82.7%) | 15287 (85.9%)  |
+|       >50K       |  187 (4.3%)  |  2332 (17.3%) |  2519 (14.1%)  |
+|      Total       | 4325 (24.3%) | 13481 (75.7%) | 17806 (100.0%) |
++------------------+--------------+---------------+----------------+
+
+p-value = 3.20e-123 ; MI = [0.0134, 0.0179]
+--------------------------------------------------------------------------------
+
+Population of size 1469
+Context = {'age': (60.0, inf), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set([nan, 'Farming-fishing', 'Craft-repair', 'Other-service', 'Transport-moving', 'Handlers-cleaners', 'Armed-Forces', 'Protective-serv', 'Priv-house-serv', 'Machine-op-inspct'])}
+
++------------------+-------------+--------------+---------------+
+| predicted-income |    Female   |     Male     |     Total     |
++------------------+-------------+--------------+---------------+
+|      <=50K       | 407 (96.2%) | 852 (81.5%)  |  1259 (85.7%) |
+|       >50K       |  16 (3.8%)  | 194 (18.5%)  |  210 (14.3%)  |
+|      Total       | 423 (28.8%) | 1046 (71.2%) | 1469 (100.0%) |
++------------------+-------------+--------------+---------------+
+
+p-value = 4.60e-16 ; MI = [0.0132, 0.0317]
+--------------------------------------------------------------------------------
+
+Population of size 16337
+Context = {'age': (-inf, 60.0], 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set([nan, 'Farming-fishing', 'Craft-repair', 'Other-service', 'Transport-moving', 'Handlers-cleaners', 'Armed-Forces', 'Protective-serv', 'Priv-house-serv', 'Machine-op-inspct'])}
+
++------------------+--------------+---------------+----------------+
+| predicted-income |    Female    |      Male     |     Total      |
++------------------+--------------+---------------+----------------+
+|      <=50K       | 3731 (95.6%) | 10297 (82.8%) | 14028 (85.9%)  |
+|       >50K       |  171 (4.4%)  |  2138 (17.2%) |  2309 (14.1%)  |
+|      Total       | 3902 (23.9%) | 12435 (76.1%) | 16337 (100.0%) |
++------------------+--------------+---------------+----------------+
+
+p-value = 3.34e-109 ; MI = [0.0128, 0.0174]
+--------------------------------------------------------------------------------
+
+Population of size 15569
+Context = {'age': (-inf, 60.0], 'education': set(['Prof-school', '12th', 'Assoc-voc', '1st-4th', 'HS-grad', 'Bachelors', '9th', '5th-6th', 'Some-college', '11th', '10th', 'Doctorate', 'Preschool', '7th-8th']), 'marital-status': set(['Separated', 'Divorced', 'Married-spouse-absent', 'Never-married', 'Married-AF-spouse', 'Married-civ-spouse']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set([nan, 'Farming-fishing', 'Craft-repair', 'Other-service', 'Transport-moving', 'Handlers-cleaners', 'Armed-Forces', 'Protective-serv', 'Priv-house-serv', 'Machine-op-inspct'])}
+
++------------------+--------------+---------------+----------------+
+| predicted-income |    Female    |      Male     |     Total      |
++------------------+--------------+---------------+----------------+
+|      <=50K       | 3447 (95.9%) |  9952 (83.1%) | 13399 (86.1%)  |
+|       >50K       |  148 (4.1%)  |  2022 (16.9%) |  2170 (13.9%)  |
+|      Total       | 3595 (23.1%) | 11974 (76.9%) | 15569 (100.0%) |
++------------------+--------------+---------------+----------------+
+
+p-value = 2.20e-103 ; MI = [0.0126, 0.0173]
+--------------------------------------------------------------------------------
+
+Population of size 16088
+Context = {'age': (-inf, 60.0], 'marital-status': set(['Separated', 'Divorced', 'Married-spouse-absent', 'Never-married', 'Married-AF-spouse', 'Married-civ-spouse']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'India', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'England', 'Guatemala', 'China', 'Haiti', 'Philippines', 'Holand-Netherlands', 'Poland', 'Vietnam', 'Columbia', 'South', 'Jamaica', 'Honduras', 'Mexico', 'El-Salvador', 'Outlying-US(Guam-USVI-etc)', 'Puerto-Rico', 'Yugoslavia', 'United-States', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set([nan, 'Farming-fishing', 'Craft-repair', 'Other-service', 'Transport-moving', 'Handlers-cleaners', 'Armed-Forces', 'Protective-serv', 'Priv-house-serv', 'Machine-op-inspct'])}
+
++------------------+--------------+---------------+----------------+
+| predicted-income |    Female    |      Male     |     Total      |
++------------------+--------------+---------------+----------------+
+|      <=50K       | 3543 (95.5%) | 10243 (82.8%) | 13786 (85.7%)  |
+|       >50K       |  168 (4.5%)  |  2134 (17.2%) |  2302 (14.3%)  |
+|      Total       | 3711 (23.1%) | 12377 (76.9%) | 16088 (100.0%) |
++------------------+--------------+---------------+----------------+
+
+p-value = 2.13e-102 ; MI = [0.0121, 0.0166]
+--------------------------------------------------------------------------------
+
+Population of size 1100
+Context = {'age': (60.0, inf), 'education': set(['Masters', 'Prof-school', '1st-4th', 'HS-grad', '9th', '5th-6th', '11th', '10th', 'Doctorate', 'Preschool', '7th-8th']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'India', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'England', 'Guatemala', 'China', 'Haiti', 'Philippines', 'Holand-Netherlands', 'Poland', 'Vietnam', 'Columbia', 'South', 'Jamaica', 'Honduras', 'Mexico', 'El-Salvador', 'Outlying-US(Guam-USVI-etc)', 'Puerto-Rico', 'Yugoslavia', 'United-States', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set([nan, 'Farming-fishing', 'Craft-repair', 'Other-service', 'Transport-moving', 'Handlers-cleaners', 'Armed-Forces', 'Protective-serv', 'Priv-house-serv', 'Machine-op-inspct'])}
+
++------------------+-------------+-------------+---------------+
+| predicted-income |    Female   |     Male    |     Total     |
++------------------+-------------+-------------+---------------+
+|      <=50K       | 302 (97.7%) | 668 (84.5%) |  970 (88.2%)  |
+|       >50K       |   7 (2.3%)  | 123 (15.5%) |  130 (11.8%)  |
+|      Total       | 309 (28.1%) | 791 (71.9%) | 1100 (100.0%) |
++------------------+-------------+-------------+---------------+
+
+p-value = 2.93e-12 ; MI = [0.0120, 0.0323]
+--------------------------------------------------------------------------------
+
+Population of size 744
+Context = {'age': (60.0, inf), 'education': set(['Masters', 'Prof-school', '1st-4th', 'HS-grad', '9th', '5th-6th', '11th', '10th', 'Doctorate', 'Preschool', '7th-8th']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set([nan, 'Craft-repair', 'Protective-serv', 'Transport-moving', 'Priv-house-serv', 'Machine-op-inspct'])}
+
++------------------+-------------+-------------+--------------+
+| predicted-income |    Female   |     Male    |    Total     |
++------------------+-------------+-------------+--------------+
+|      <=50K       | 180 (97.3%) | 458 (81.9%) | 638 (85.8%)  |
+|       >50K       |   5 (2.7%)  | 101 (18.1%) | 106 (14.2%)  |
+|      Total       | 185 (24.9%) | 559 (75.1%) | 744 (100.0%) |
++------------------+-------------+-------------+--------------+
+
+p-value = 3.15e-09 ; MI = [0.0110, 0.0362]
+--------------------------------------------------------------------------------
+
+Population of size 437
+Context = {'native-country': set(['Portugal', 'Cuba', 'Hungary', 'Cambodia', 'Germany', 'Trinadad&Tobago', 'Greece', 'Thailand'])}
+
++------------------+-------------+-------------+--------------+
+| predicted-income |    Female   |     Male    |    Total     |
++------------------+-------------+-------------+--------------+
+|      <=50K       | 136 (87.2%) | 187 (66.5%) | 323 (73.9%)  |
+|       >50K       |  20 (12.8%) |  94 (33.5%) | 114 (26.1%)  |
+|      Total       | 156 (35.7%) | 281 (64.3%) | 437 (100.0%) |
++------------------+-------------+-------------+--------------+
+
+p-value = 9.73e-07 ; MI = [0.0067, 0.0482]
+--------------------------------------------------------------------------------
+
+Population of size 369
+Context = {'age': (60.0, inf), 'education': set(['Some-college', '12th', 'Assoc-voc', 'Bachelors', 'Assoc-acdm']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'India', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'England', 'Guatemala', 'China', 'Haiti', 'Philippines', 'Holand-Netherlands', 'Poland', 'Vietnam', 'Columbia', 'South', 'Jamaica', 'Honduras', 'Mexico', 'El-Salvador', 'Outlying-US(Guam-USVI-etc)', 'Puerto-Rico', 'Yugoslavia', 'United-States', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set([nan, 'Farming-fishing', 'Craft-repair', 'Other-service', 'Transport-moving', 'Handlers-cleaners', 'Armed-Forces', 'Protective-serv', 'Priv-house-serv', 'Machine-op-inspct'])}
+
++------------------+-------------+-------------+--------------+
+| predicted-income |    Female   |     Male    |    Total     |
++------------------+-------------+-------------+--------------+
+|      <=50K       | 105 (92.1%) | 184 (72.2%) | 289 (78.3%)  |
+|       >50K       |   9 (7.9%)  |  71 (27.8%) |  80 (21.7%)  |
+|      Total       | 114 (30.9%) | 255 (69.1%) | 369 (100.0%) |
++------------------+-------------+-------------+--------------+
+
+p-value = 4.07e-06 ; MI = [0.0067, 0.0509]
+--------------------------------------------------------------------------------
+
+Population of size 519
+Context = {'age': (-inf, 60.0], 'education': set(['Assoc-acdm', 'Masters']), 'marital-status': set(['Separated', 'Divorced', 'Married-spouse-absent', 'Never-married', 'Married-AF-spouse', 'Married-civ-spouse']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set([nan, 'Farming-fishing', 'Craft-repair', 'Other-service', 'Transport-moving', 'Handlers-cleaners', 'Armed-Forces', 'Protective-serv', 'Priv-house-serv', 'Machine-op-inspct'])}
+
++------------------+-------------+-------------+--------------+
+| predicted-income |    Female   |     Male    |    Total     |
++------------------+-------------+-------------+--------------+
+|      <=50K       |  96 (82.8%) | 291 (72.2%) | 387 (74.6%)  |
+|       >50K       |  20 (17.2%) | 112 (27.8%) | 132 (25.4%)  |
+|      Total       | 116 (22.4%) | 403 (77.6%) | 519 (100.0%) |
++------------------+-------------+-------------+--------------+
+
+p-value = 1.77e-02 ; MI = [0.0000, 0.0141]
+--------------------------------------------------------------------------------
+
+Population of size 249
+Context = {'age': (-inf, 60.0], 'marital-status': set(['Widowed']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'India', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'England', 'Guatemala', 'China', 'Haiti', 'Philippines', 'Holand-Netherlands', 'Poland', 'Vietnam', 'Columbia', 'South', 'Jamaica', 'Honduras', 'Mexico', 'El-Salvador', 'Outlying-US(Guam-USVI-etc)', 'Puerto-Rico', 'Yugoslavia', 'United-States', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set([nan, 'Farming-fishing', 'Craft-repair', 'Other-service', 'Transport-moving', 'Handlers-cleaners', 'Armed-Forces', 'Protective-serv', 'Priv-house-serv', 'Machine-op-inspct'])}
+
++------------------+-------------+------------+--------------+
+| predicted-income |    Female   |    Male    |    Total     |
++------------------+-------------+------------+--------------+
+|      <=50K       | 188 (98.4%) | 54 (93.1%) | 242 (97.2%)  |
+|       >50K       |   3 (1.6%)  |  4 (6.9%)  |   7 (2.8%)   |
+|      Total       | 191 (76.7%) | 58 (23.3%) | 249 (100.0%) |
++------------------+-------------+------------+--------------+
+
+p-value = 5.07e-02 ; MI = [0.0000, 0.0241]
+--------------------------------------------------------------------------------
+
+Population of size 356
+Context = {'age': (60.0, inf), 'education': set(['Masters', 'Prof-school', '1st-4th', 'HS-grad', '9th', '5th-6th', '11th', '10th', 'Doctorate', 'Preschool', '7th-8th']), 'native-country': set([nan, 'Canada', 'Hong', 'Dominican-Republic', 'Italy', 'Ireland', 'Outlying-US(Guam-USVI-etc)', 'Scotland', 'France', 'Peru', 'Laos', 'Ecuador', 'Iran', 'Guatemala', 'China', 'Haiti', 'Poland', 'United-States', 'Philippines', 'Vietnam', 'Columbia', 'Honduras', 'South', 'Jamaica', 'England', 'Mexico', 'El-Salvador', 'India', 'Puerto-Rico', 'Yugoslavia', 'Holand-Netherlands', 'Japan', 'Taiwan', 'Nicaragua']), 'occupation': set(['Handlers-cleaners', 'Other-service', 'Farming-fishing', 'Armed-Forces'])}
+
++------------------+-------------+-------------+--------------+
+| predicted-income |    Female   |     Male    |    Total     |
++------------------+-------------+-------------+--------------+
+|      <=50K       | 122 (98.4%) | 210 (90.5%) | 332 (93.3%)  |
+|       >50K       |   2 (1.6%)  |  22 (9.5%)  |  24 (6.7%)   |
+|      Total       | 124 (34.8%) | 232 (65.2%) | 356 (100.0%) |
++------------------+-------------+-------------+--------------+
+
+p-value = 1.72e-03 ; MI = [0.0000, 0.0285]
+--------------------------------------------------------------------------------

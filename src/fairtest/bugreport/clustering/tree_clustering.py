@@ -2,8 +2,9 @@
 
 import pandas as pd
 import numpy as np
-from ete2 import Tree
-import copy
+import ete2
+from copy import deepcopy
+
 
 #
 # class for storing a cluster
@@ -17,13 +18,14 @@ class Cluster:
     # @args isleaf      if the cluster is a tree leaf
     # @args isroot      if the cluster is the tree root
     # @args ct          the contingency table (SENS x OUT) for this cluster
-    def __init__(self, num, path, isleaf, isroot, ct):
+    def __init__(self, num, path, isleaf, isroot, stats, size):
         self.num = num
         self.path = path
         self.isleaf = isleaf
         self.isroot = isroot
-        self.size = ct.sum().sum()
-        self.ct = ct
+        self.size = size
+        self.stats = stats
+
 
 #
 # A class to represent a bound for a continuous feature
@@ -44,6 +46,7 @@ class Bound:
             ret += ']'
         return ret
 
+
 #
 # Update the predicate for a continuous feature by updating the Bound object
 #
@@ -55,7 +58,8 @@ def update_cont_path(feature_path, feature, lower_bound=None, upper_bound=None):
         bound.upper = upper_bound
     
     feature_path[feature] = bound
-        
+
+
 #
 # Traverse a categorical tree and output clusters for each node
 #
@@ -68,7 +72,9 @@ def find_clusters_cat(tree, data, train_set=False):
     clusters = []
     
     out = data.OUT
+    out_type = data.OUT_TYPE
     sens = data.SENS
+    sens_type = data.SENS_TYPE
     encoders = data.encoders
     
     if train_set:
@@ -114,28 +120,49 @@ def find_clusters_cat(tree, data, train_set=False):
                 feature_path[feature] = encoders[feature].inverse_transform([category])[0]
                 data_node = data_node[data_node[feature] == category]
         
-        # create an empty contingency table
-        ct = pd.DataFrame(0, index=range(len(encoders[out].classes_)), columns=range(len(encoders[sens].classes_)))
-        
-        # fill in available values
-        ct = ct.add(pd.crosstab(data_node[out], data_node[sens]), fill_value=0)
-        
-        # replace numbers by original labels
-        ct.index = encoders[out].classes_
-        ct.columns = encoders[sens].classes_
+
+        if out_type == 'cat':
+            # categorical data
+            # create an empty contingency table
+            ct = pd.DataFrame(0, index=range(len(encoders[out].classes_)), columns=range(len(encoders[sens].classes_)))
+
+            # fill in available values
+            ct = ct.add(pd.crosstab(data_node[out], data_node[sens]), fill_value=0)
+
+            # replace numbers by original labels
+            ct.index = encoders[out].classes_
+            ct.index.name = out
+            ct.columns = encoders[sens].classes_
+            ct.columns.name = sens
+            stats = ct
+            size = len(data_node)
+        else:
+            # continuous data
+            # get data statistics for correlation computation
+
+            sum_x = data_node[out].sum()
+            sum_x2 = np.dot(data_node[out], data_node[out])
+            sum_y = data_node[sens].sum()
+            sum_y2 = np.dot(data_node[sens], data_node[sens])
+            sum_xy = np.dot(data_node[out], data_node[sens])
+            n = len(data_node)
+
+            stats = [sum_x, sum_x2, sum_y, sum_y2, sum_xy, n]
+            size = n
         
         # build a cluster class and store it in the list
-        clstr = Cluster(node.id, feature_path, is_leaf, is_root, ct)
+        clstr = Cluster(node.id, feature_path, is_leaf, is_root, stats, size)
         clusters.append(clstr)
         
         # recurse in children
         for child in node.get_children():
-            bfs(child, data_node, copy.deepcopy(feature_path))
+            bfs(child, data_node, deepcopy(feature_path))
     
     # start bfs from the root with the full dataset and an empty path           
     bfs(tree, data, {})
     return clusters
-    
+
+
 #
 # Convert a scala list to a python list
 #
@@ -160,10 +187,12 @@ def find_clusters_spark(topNode, data, train_set=False):
     clusters = []
     
     # replicate the Scala tree with an ete2 tree (for pretty printing)
-    t = Tree()
-
+    t = ete2.Tree()
+    
     out = data.OUT
+    out_type = data.OUT_TYPE
     sens = data.SENS
+    sens_type = data.SENS_TYPE
     encoders = data.encoders
     
     if train_set:
@@ -183,19 +212,31 @@ def find_clusters_spark(topNode, data, train_set=False):
     def bfs(node, tree_node, data_node, feature_path):
         isleaf = node.isLeaf()
         isroot = node == topNode
-                
-        # create and empty contingency table
-        ct = pd.DataFrame(0, index=range(len(encoders[out].classes_)), columns=range(len(encoders[sens].classes_)))
-        
-        # fill in available values
-        ct = ct.add(pd.crosstab(data_node[out], data_node[sens]), fill_value=0)
-        
-        # replace numbers by original labels
-        ct.index = encoders[out].classes_
-        ct.columns = encoders[sens].classes_
-        
+
+        if out_type == 'cat':
+            # categorical data
+            # create and empty contingency table
+            ct = pd.DataFrame(0, index=range(len(encoders[out].classes_)), columns=range(len(encoders[sens].classes_)))
+
+            # fill in available values
+            ct = ct.add(pd.crosstab(data_node[out], data_node[sens]), fill_value=0)
+
+            # replace numbers by original labels
+            ct.index = encoders[out].classes_
+            ct.index.name = out
+            ct.columns = encoders[sens].classes_
+            ct.columns.name = sens
+            stats = ct
+            size = len(data_node)
+        else:
+            # continuous data
+            # get statistics for correlation
+            # TODO
+            stats = None
+            size = None
+
         # build a cluster object and store it        
-        clstr = Cluster(node.id(), feature_path, isleaf, isroot, ct)
+        clstr = Cluster(node.id(), feature_path, isleaf, isroot, stats, size)
         clusters.append(clstr)
         
         # append the cluster size to the ete2 tree node for future printing
@@ -221,8 +262,8 @@ def find_clusters_spark(topNode, data, train_set=False):
                 data_right = data_node[data_node[feature] > threshold]
                 
                 # copy path dictionaries
-                path_left = copy.deepcopy(feature_path)
-                path_right = copy.deepcopy(feature_path)
+                path_left = deepcopy(feature_path)
+                path_right = deepcopy(feature_path)
                 
                 # update [low, high] bounds for the feature
                 update_cont_path(path_left, feature, lower_bound=None, upper_bound=threshold)
@@ -246,8 +287,8 @@ def find_clusters_spark(topNode, data, train_set=False):
                 categories_names_right = prev_categories.difference(categories_names_left)
                 
                 # copy and update path dictionaries
-                path_left = copy.deepcopy(feature_path)
-                path_right = copy.deepcopy(feature_path)
+                path_left = deepcopy(feature_path)
+                path_right = deepcopy(feature_path)
                 path_left[feature] = categories_names_left
                 path_right[feature] = categories_names_right
                 

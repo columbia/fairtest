@@ -2,6 +2,7 @@ import fairtest.bugreport.trees.categorical_tree as cat_tree
 import fairtest.bugreport.core.dataset as dataset
 
 TARGET = '__TARGET__'
+SENS = '__SENS__'
 
 #
 # Prepare the data for decision-tree building. Encode the sensitive feature and
@@ -32,8 +33,18 @@ def prepare_data(data):
 # @args conf            Confidence level for CIs
 #
 def train_tree(data, max_depth=5, min_leaf_size=100, measure=cat_tree.ScoreParams.MI, agg_type=cat_tree.ScoreParams.WEIGHTED_AVG, conf=None):
+    train_data = data.data_train.copy()
     
-    (train_data, target_dim) = prepare_data(data)
+    if measure == cat_tree.ScoreParams.CORR:
+        target_dim = None
+    else:
+        assert data.OUT_TYPE == 'cat' and data.SENS_TYPE == 'cat'
+        # get the dimensions of the OUTPUT x SENSITIVE contingency table
+        target_dim = (len(data.encoders[data.OUT].classes_), len(data.encoders[data.SENS].classes_))
+    
+    train_data.insert(0, TARGET, train_data[data.OUT])
+    train_data.insert(1, SENS, train_data[data.SENS])
+    train_data = train_data.drop([data.SENS, data.OUT], axis=1)
     
     # prepare the function call parameters
     params = {}

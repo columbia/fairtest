@@ -4,12 +4,13 @@ from fairtest.bugreport.statistics import fairness_measures as fm
 
 import pydot
 import operator
-import pandas as pd
 import numpy as np
+import pandas as pd
 from collections import Counter
 from ete2 import Tree, TreeStyle, AttrFace, TextFace, faces
 from sklearn.externals import six
 from sklearn.externals.six import StringIO 
+from math import sqrt
 
 #
 # Find thresholds for continuous features (quantization)
@@ -79,8 +80,9 @@ class ScoreParams:
 # Split parameters
 #
 class SplitParams:
-    def __init__(self, target, dim, categorical, thresholds, min_leaf_size):
+    def __init__(self, target, sens, dim, categorical, thresholds, min_leaf_size):
         self.target = target
+        self.sens = sens
         self.dim = dim
         self.categorical = categorical
         self.thresholds = thresholds
@@ -99,17 +101,18 @@ class SplitParams:
 # @param conf           Confidence level
 # @param max_bins       Maximum number of bins to use when binning continuous features
 #
-def build_tree(data, dim, categorical, max_depth=5, min_leaf_size=100, measure="MI", agg_type="WEIGHTED_AVG", conf=None, max_bins=20):
+def build_tree(data, dim, categorical, max_depth=5, min_leaf_size=100, measure="MI", agg_type="WEIGHTED_AVG", conf=None, max_bins=10):
     t = Tree()
     
     target = data.columns[0]
-    features = data.columns[1:]
+    sens = data.columns[1]
+    features = data.columns[2:]
     
     # bin continuous features
     cont_thresholds = find_thresholds(data, features, categorical, max_bins)
     
     score_params = ScoreParams(measure, agg_type, conf)
-    split_params = SplitParams(target, dim, categorical, cont_thresholds, min_leaf_size)
+    split_params = SplitParams(target, sens, dim, categorical, cont_thresholds, min_leaf_size)
     
     #
     # Builds up the tree recursively. Selects the best feature to split on,
@@ -124,8 +127,8 @@ def build_tree(data, dim, categorical, max_depth=5, min_leaf_size=100, measure="
             return
         
         # select the best feature to split on
-        best_feature, threshold, to_drop = select_best_feature(node_data, node_features, split_params, score_params)  
-        
+        best_feature, threshold, to_drop = select_best_feature(node_data, node_features, split_params, score_params)
+
         # no split found, make a leaf
         if not best_feature:
             return
@@ -182,33 +185,34 @@ def build_tree(data, dim, categorical, max_depth=5, min_leaf_size=100, measure="
 def select_best_feature(node_data, features, split_params, score_params)  :
     best_feature = None
     best_threshold = None
-    max_mi = 0
+    max_score = 0
 
     # keep track of useless features (no splits available)
     to_drop = []
     
     categorical = split_params.categorical
     target = split_params.target
+    sens = split_params.sens
     
     # iterate over all available non-sensitive features
     for feature in features:
         # determine type of split
         if feature in categorical:
-            mi_cond = test_cat_feature(node_data[[feature, target]], feature, split_params, score_params)
+            split_score = test_cat_feature(node_data[[feature, target, sens]], feature, split_params, score_params)
             threshold = None
         else:
-            mi_cond, threshold = test_cont_feature(node_data[[feature, target]], feature, split_params, score_params)
+            split_score, threshold = test_cont_feature(node_data[[feature, target, sens]], feature, split_params, score_params)
         
         # the feature produced no split and can be dropped for future sub-trees
-        if not mi_cond:
+        if not score:
             to_drop.append(feature)
-        
+
         # check quality of split            
-        if mi_cond > max_mi:
-            max_mi = mi_cond
+        if split_score > max_score:
+            max_score = split_score
             best_feature = feature
             best_threshold = threshold
-    
+                
     return best_feature, best_threshold, to_drop
 
 #
@@ -217,6 +221,7 @@ def select_best_feature(node_data, features, split_params, score_params)  :
 # @args data    the data to count
 # @args dim     the dimensions of the contingency table
 #
+'''
 def countValues(data, dim):
     values = [0]*(dim[0]*dim[1])
     counter = Counter(data)
@@ -224,32 +229,60 @@ def countValues(data, dim):
         values[i] = counter.get(i, 0)
     
     return (np.array(values).reshape((dim[0], dim[1])), sum(values))
+'''
+
+'''
+def countValues(data, dim):
+    ct = pd.DataFrame(0, index=range(dim[0]), columns=range(dim[1]))
+    ct = ct.add(data, fill_value=0)
+    
+    return ct, ct.sum().sum()
+'''
+
+def countValues(data, dim):
+    values = np.zeros(dim)
+    counter = Counter(data)
+    for i in range(dim[0]):
+        for j in range(dim[1]):
+            values[i,j] = counter.get((i,j), 0)
+
+    return values, len(data)
+    
+def corrValues(x, y):
+    # sum(x), sum(x^2), sum(y), sum(y^2), sum(xy)
+    return np.array([x.sum(), np.dot(x, x), y.sum(), np.dot(y, y), np.dot(x, y), x.size]), x.size
 
 #
 # Find the best split for a categorical feature
 #
 # @args node_data      The current data
-# @args feature       The feature to consider
+# @args feature        The feature to consider
 # @args split_params   The splitting parameters
 # @args score_params   The split scoring parameters
 #
 def test_cat_feature(node_data, feature, split_params, score_params):
+
     target = split_params.target
+    sens = split_params.sens
     dim = split_params.dim
     min_leaf_size = split_params.min_leaf_size
     
-    # split data based on the feature value, and aggregate targets
-    ct = {key: countValues(group[target], dim) for key, group in node_data.groupby(feature)}    
- 
+    if dim:
+        # split data based on the feature value, and aggregate targets
+        #ct = {key: countValues(group[target], dim) for key, group in node_data.groupby(feature)}  
+        #ct = {key: countValues(pd.crosstab(group[target], group[sens]), dim) for key, group in node_data.groupby(feature)}
+        ct = {key: countValues(zip(group[target], group[sens]), dim) for key, group in node_data.groupby(feature)}
+    else:
+        ct = {key: corrValues(np.array(group[target]), np.array(group[sens])) for key, group in node_data.groupby(feature)}
+     
     # prune small sub-trees
     ct = {key:group for (key,(group,size)) in ct.iteritems() if size >= min_leaf_size}
-    
-    mi = None
+
+    split_score = None
     # compute the split score
     if len(ct) > 1:
-        mi = score(ct.values(), score_params)
-    
-    return mi
+        split_score = score(ct.values(), score_params)
+        return split_score
 
 
 #
@@ -262,19 +295,25 @@ def test_cat_feature(node_data, feature, split_params, score_params):
 #
 def test_cont_feature(node_data, feature, split_params, score_params):
     target = split_params.target
+    sens = split_params.sens
     dim = split_params.dim
     min_leaf_size = split_params.min_leaf_size
     thresholds = split_params.thresholds[feature]
     
-    max_mi = None
+    max_score = None
     best_threshold = None
     
     # split data based on the bin thresholds
     groups = node_data.groupby(np.digitize(node_data[feature], thresholds, right=True))
     
-    # aggregate all the target counts for each bin
-    temp = map(lambda (key, group): (key, countValues(group[target], dim)), groups)
-    
+    if dim:
+        # aggregate all the target counts for each bin
+        #temp = map(lambda (key, group): (key, countValues(pd.crosstab(group[target], group[sens]), dim)), groups)
+        temp = map(lambda (key, group): (key, countValues(zip(group[target], group[sens]), dim)), groups)
+    else:
+        # correlation score
+        temp = map(lambda (key, group): (key, corrValues(np.array(group[target]), np.array(group[sens]))), groups)
+        
     # get the indices of the bin thresholds
     keys, temp = zip(*temp)
     
@@ -291,8 +330,8 @@ def test_cont_feature(node_data, feature, split_params, score_params):
     
     # check score if split is valid
     if (size_left >= min_leaf_size) and (size_right >= min_leaf_size):
-        mi = score([data_left, data_right], score_params)
-        max_mi = mi
+        split_score = score([data_left, data_right], score_params)
+        max_score = split_score
         best_threshold = thresholds[keys[0]]
     
     # check all further splits in order
@@ -304,13 +343,13 @@ def test_cont_feature(node_data, feature, split_params, score_params):
         size_right -= size_i
         
         if (size_left >= min_leaf_size) and (size_right >= min_leaf_size):
-            mi = score([data_left, data_right], score_params)
+            split_score = score([data_left, data_right], score_params)
         
-            if mi > max_mi:
-                max_mi = mi
+            if split_score > max_score:
+                max_score = split_score
                 best_threshold = thresholds[keys[i]]
             
-    return max_mi, best_threshold
+    return max_score, best_threshold
 
 #
 # Compute the score for a split
@@ -318,27 +357,35 @@ def test_cont_feature(node_data, feature, split_params, score_params):
 # @args child_cts       Contingency tables for all the children
 # @args score_params    Split scoring parameters
 # 
-def score(child_cts, score_params):
+def score(stats, score_params):
     measure = score_params.measure
     agg_type = score_params.agg_type
     conf = score_params.conf
     
-    # use confidence intervals or not
-    if conf:
-        mi_list = map(lambda ct: fm.mutual_info(ct, norm=False, ci=True, level=conf), child_cts)
-        mi_list = map(lambda (mi, delta): max(0, mi-delta), mi_list)
-    else:
-        mi_list = map(lambda ct: fm.mutual_info(ct, norm=False), child_cts)
-    
-    # take the (weighted) average or maximum of the children scores
+    if measure == 'MI':
+        # use confidence intervals or not
+        if conf:
+            score_list = map(lambda ct: fm.mutual_info(ct, ci_level=conf), stats)
+            score_list = map(lambda (mi, delta): max(0, mi-delta), score_list)
+        else:
+            score_list = map(lambda ct: fm.mutual_info(ct), stats)
+        
+    elif measure == 'CORR':
+        if conf:
+            score_list = map(lambda group: fm.correlation(group, ci_level=conf), stats)
+            score_list = map(lambda (corr, delta): max(0, corr-delta), score_list)
+        else:
+            score_list = map(lambda group: fm.correlation(group), stats)
+        
+    # take the average or maximum of the child scores
     if agg_type == ScoreParams.WEIGHTED_AVG:
-        totals = map(lambda ct: ct.sum().sum(), child_cts)
+        totals = map(lambda group: group.sum().sum(), stats)
         probas = map(lambda tot: (1.0*tot)/sum(totals), totals)
-        return np.dot(mi_list, probas)
+        return np.dot(score_list, probas)
     elif agg_type == ScoreParams.AVG:
-        return np.mean(mi_list)
+        return np.mean(score_list)
     elif agg_type == ScoreParams.MAX:
-        return max(mi_list)
+        return max(score_list)
 
 #
 # Export a tree to a file (adapted from scikit source code)
