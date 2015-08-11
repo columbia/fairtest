@@ -1,5 +1,6 @@
 #FairTest
 
+
 SPARK
 =====
 
@@ -21,14 +22,14 @@ numpy, pandas, etc installed:
 Tell pyspark to look for freshly compiled classes (custom mllib):
 
     export SPARK_PREPEND_CLASSES=1
+    
+Compress the sources
+    
+    zip -r src/fairtest.zip src/fairtest
 
 Launch pyspark and attach the fairtest code
 
     ./bin/pyspark --py-files ../src/fairtest.zip
-
-Compress the sources
-    
-    zip -r src/fairtest.zip src/fairtest
 
 In the pyspark shell:
 
@@ -45,7 +46,7 @@ Non-SPARK
 Launch IPython:
 
     cd src/
-    ipython notebook
+    ipython notebook --pylab inline
 
 
 Code Organisation

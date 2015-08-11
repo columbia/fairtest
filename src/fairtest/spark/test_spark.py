@@ -19,9 +19,8 @@ def build_tree(sc):
     RANDOM_SEED = 0
     
     data = dataset.Dataset()
-    data.load_data_csv('../data/adult.csv')
+    data.load_data_csv('../data/adult/adult.csv')
     data.drop_feature('fnlwgt')
-    #data.drop_feature('Relationship')
     
     data.set_sens_feature('sex')
     data.set_output_feature('predicted-income')
