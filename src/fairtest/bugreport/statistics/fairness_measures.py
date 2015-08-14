@@ -16,9 +16,9 @@ from collections import Counter
 # @args ci_level    level for confidence intervals (or None)
 #
 def mutual_info(data, norm=False, ci_level=None):
-    mi = metrics.mutual_info_score(None, None, contingency=data)
-    
     assert (not (norm and ci_level))
+    
+    mi = metrics.mutual_info_score(None, None, contingency=data)
     
     #
     # Normalize I(X,Y) by dividing by the min entropy of X and Y
@@ -28,8 +28,8 @@ def mutual_info(data, norm=False, ci_level=None):
         px = np.sum(data, axis=1)
         py = np.sum(data, axis=0)
         
-        px = px/sum(px)
-        py = py/sum(py)
+        px = np.array(px, dtype=float)/sum(px)
+        py = np.array(py, dtype=float)/sum(py)
         
         hx = stats.entropy(px)
         hy = stats.entropy(py)
@@ -38,7 +38,10 @@ def mutual_info(data, norm=False, ci_level=None):
     
     # compute confidence interval (measure, delta)
     if (ci_level):
-        conf_mi = stats.norm.interval(ci_level, loc=mi, scale=mi_sigma(data))
+        std = mi_sigma(data)
+        conf_mi = stats.norm.interval(ci_level, loc=mi, scale=std)
+        z = mi/std
+        pval = 2*(1 - stats.norm.cdf(abs(z)))
         return mi, conf_mi[1]-mi
         
     return mi
@@ -53,7 +56,7 @@ def statistical_parity(data):
     
     # transform contingency table into probability table
     tot = np.sum(data, axis=0)
-    data = np.array(data/tot, dtype='float')
+    data = np.array(np.array(data, dtype=float)/tot, dtype='float')
     
     sp =  0.5*sum(abs(data[:,0]-data[:,1]))
     return sp
@@ -69,12 +72,11 @@ def slifts(data, ci_level=0.95):
     
     # transform contingency table into probability table
     tot = np.sum(data, axis=0)
-    data = np.array(data/tot, dtype='float')
+    probas = np.array(np.array(data, dtype=float)/tot, dtype='float')
     
     # Slift measures
-    slift = data[1,0]/data[1,1]
-    slift_d = data[1,0]-data[1,1]
-    
+    slift = probas[1,0]/probas[1,1]
+    slift_d = probas[1,0]-probas[1,1]
     
     #
     # confidence levels as in Ruggieri et al. '10
@@ -109,6 +111,8 @@ def slifts(data, ci_level=0.95):
 # 
 def G_test(data, correction=False):
     # remove all-zero columns/rows
+    if not isinstance(data, pd.DataFrame):
+        data = pd.DataFrame(data)
     data = data[data.columns[(data != 0).any()]]
     data = data[(data.T != 0).any()]
 
@@ -191,9 +195,10 @@ def mi_sigma(data):
     
     return sqrt((mi_sqr-pow(mi,2))/N)
 
-'''
-def cramer_v(data, ci=False, level=0.95):
+def cramer_v(data, ci_level=0.95):
     # remove all-zero columns/rows
+    if not isinstance(data, pd.DataFrame):
+        data = pd.DataFrame(data)
     data = data[data.columns[(data != 0).any()]]
     data = data[(data.T != 0).any()]
 
@@ -204,20 +209,20 @@ def cramer_v(data, ci=False, level=0.95):
 
     cv = sqrt(chi2/(n*(min(dim[0], dim[1])-1)))
 
-    if not ci:
+    if not ci_level:
         return cv
 
     #
     # Confidence Intervals for Cramér's V are described here
     # http://psychology3.anu.edu.au/people/smithson/details/CIstuff/CI.html
     #
-    p_low = 1-(1-level)/2
-    p_high=(1-level)/2
+    p_low = 1-(1-ci_level)/2
+    p_high= (1-ci_level)/2
     chi_low = special.chndtrinc(chi2, df, p_low)
     chi_high = special.chndtrinc(chi2, df, p_high)
+    print chi_low, chi_high
     (cv_low, cv_high) = map(lambda x: sqrt((x+df)/(n*(min(dim[0], dim[1])-1))), (chi_low, chi_high))
     return (cv_low, cv_high)
-'''
 
 
 #
@@ -306,4 +311,61 @@ def permutation_test(data):
     diffCount = len(np.where(estimates <= obs)[0])
     p_val = 1.0 - (float(diffCount)/float(N_SAMPLES))
     return p_val
+
+#
+# Bootstrap confidence interval computation
+#
+# @args data        Contingency table collected from independent samples
+# @args stat        Statistic to bootstrap. Takes a contingency table as argument
+# @args num_samples Number of bootstrap samples to generate
+# @args ci_level    Confidence level for the interval       
+#
+def bootstrap_ci(data, stat, num_samples=10000, ci_level=0.95):
+    dim = data.shape
+    data = data.flatten()
+    n = data.sum()
+    probas = (1.0*data)/n
+    alpha = 1-ci_level
+
+    #
+    # Obtain `num_samples' random samples of `n' multinomial values, sampled
+    # with replacement from {0, 1, ..., n-1}. For each sample, rebuild a
+    # contingency table and compute the stat.
+    #
+    #stats = np.sort(np.apply_along_axis(lambda row: stat(row.reshape(dim)), 1, np.random.multinomial(n, probas, size=num_samples)))
+    #return (stats[int((alpha/2.0)*num_samples)], stats[int((1-alpha/2.0)*num_samples)])
+    
+    #
+    # Obtain `num_samples' random samples of `n' multinomial values, sampled
+    # with replacement from {0, 1, ..., n-1}. For each sample, rebuild a
+    # contingency table and compute the stat.
+    #
+    bs_stats = np.apply_along_axis(lambda row: stat(row.reshape(dim)), 1, np.random.multinomial(n, probas, size=num_samples))
+    
+    # Use the stats to get an estimator of the mean and std of the stat
+    mean = np.mean(bs_stats)
+    std = np.std(bs_stats, ddof=1)
+    
+    # get a confidence interval as (mean-z*std, mean+z*std)
+    ci = stats.norm.interval(ci_level, loc=mean, scale=std)
+    z = mean/std
+    pval = 2*(1 - stats.norm.cdf(abs(z)))
+    return ci, pval
+    
+# Computes a confidence interval from a p-value, assuming asymptotic normality
+#
+# @args pval        the p-value
+# @args mean        the mean of the confidence interval (expected value of the asymptotic normal)
+# @args ci_level    confidence level for the interval
+#
+def ci_from_p(pval, mean, ci_level):
+    # get the z-statistic for a normal distribution test from the p-value
+    z = stats.norm.ppf(1-pval/2)
+    
+    # get the standard deviation of the normal
+    std = abs(stat/z)
+    
+    # compute a confidence interval around mean
+    ci = stats.norm.interval(ci_level, loc=mean, scale=std)
+    return ci
      
