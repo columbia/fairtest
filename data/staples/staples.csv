@@ -1,4 +1,4 @@
-#Distance,Gender,Race,Income
+Distance,Gender,Race,Income,Price
 near,F,Black or African American,40000<=income<80000,low
 near,M,Black or African American,40000<=income<80000,low
 near,F,Hispanic or Latino,80000<=income<160000,low

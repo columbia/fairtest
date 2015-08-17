@@ -1,4 +1,4 @@
-#userID,gender,age,occupation,zip,movieType,mode,median,improvement
+userID,gender,age,occupation,zip,movieType,mode,median,improvement
 5259,M,25,6,94404,Drama,90,90,3
 3936,F,35,12,01464,Drama,90,60,2
 593,F,50,1,91711,Drama,90,90,3

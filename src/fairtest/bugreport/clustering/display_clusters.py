@@ -1,12 +1,15 @@
 from StringIO import StringIO
+from math import log
 import prettytable
+from statsmodels.sandbox.stats.multicomp import multipletests
+
 
 from fairtest.bugreport.statistics import fairness_measures as fm
+from fairtest.bugreport.statistics.fairness_measures import NMI, CORR
 
 class NodeFilter:
     LEAVES_ONLY = 1
-    LEAVES_AND_ROOT = 2
-    ALL = 3
+    ALL = 2
 
 
 #
@@ -19,63 +22,83 @@ class NodeFilter:
 # @args leaves_only consider tree leaves only
 # @args conf_level  level for confidence intervals
 #
-def bug_report(clusters, measure='MI', sort_by='sig', node_filter=NodeFilter.LEAVES_ONLY, conf_level=0.95):
-    assert measure in ['MI', 'CORR']
+def bug_report(clusters, columns=None, measure=NMI(ci_level=0.95), sort_by='sig', node_filter=NodeFilter.LEAVES_ONLY, fdr=None):
+    assert isinstance(measure, fm.Measure)
     assert sort_by in ['sig', 'effect']
 
-    # take only the leaves
+    # compute effect sizes and p-values
+    stats = map(lambda c: measure.compute(c.stats), clusters)
+    
+    # corrected p-values
+    if fdr:
+        pvals = map(lambda (low, high, p): max(p, 1e-180), stats)
+        _, pvals_corr, _, _ = multipletests(pvals, alpha=fdr, method='holm')
+        stats = [measure.ci_from_p(low, high, pval_corr) for ((low, high, _), pval_corr) in zip(stats, pvals_corr)]
+    
+    zipped = zip(clusters, stats)
+    
+    # take only the leaves (plus the root)
     if node_filter == NodeFilter.LEAVES_ONLY:
-        clusters = filter(lambda c: c.isleaf, clusters)
-    elif node_filter == NodeFilter.LEAVES_AND_ROOT:
-        clusters = filter(lambda c: c.isleaf or c.isroot, clusters)
-
-    if measure == 'MI':
-        # compute p-values and mutual information CIs for all clusters
-        p_vals = map(lambda c: fm.G_test(c.stats)[1], clusters)
-        effects = map(lambda c: fm.mutual_info(c.stats, ci_level=conf_level), clusters)
+        zipped = filter(lambda (c, stat): c.isleaf or c.isroot, zipped)
+    
+    # print global stats
+    (root, (root_effect_low, root_effect_high, root_pval)) = filter(lambda (c, _): c.isroot, zipped)[0]
+    print 'Global Population of size {}'.format(root.size)
+    print
+    
+    # print a contingency table or correlation analysis
+    if not isinstance(measure, fm.CORR):
+        print_cluster_ct(root, columns, root_pval, root_effect_low, root_effect_high, measure.__class__.__name__)
     else:
-        # TODO
-        p_vals = [0]*len(clusters)
-        effects = map(lambda c: fm.correlation(c.stats, ci_level=conf_level), clusters)
-
-    zipped = zip(clusters, p_vals, effects)
+        print_cluster_corr(root, root_pval, root_effect_low, root_effect_high, measure.__class__.__name__)
+    print '='*80
+    print
+    
+    zipped = filter(lambda (c, _): not c.isroot, zipped)
+    
         
     # sort by significance
     if sort_by == 'sig':
-        zipped.sort(key=lambda tup: tup[1])
+        zipped.sort(key=lambda (c, (low,high,p)): p)
     # sort by effect-size
     elif sort_by == 'effect':
-        zipped.sort(key=lambda tup: max(0, tup[2][0]-tup[2][1]), reverse=True)
-    
+       zipped.sort(key=lambda (c, stats): measure.normalize_effect(stats), reverse=True)
+        
+        
     # print clusters in order of relevance    
-    for (cluster, p_val, (effect, effect_delta)) in zipped:
-        #ctype = "LEAF" if cluster.isleaf else "ROOT" if cluster.isroot else "INTERNAL"
-        #print '{} node {} of size {}'.format(ctype, cluster.num, cluster.size)
-        print 'Population of size {}'.format(cluster.size)
+    for (cluster, (effect_low, effect_high, p_val)) in zipped:
+        print 'Sub-Population of size {}'.format(cluster.size)
         print 'Context = {}'.format(cluster.path)
         print
 
-        if measure == 'MI':
-            # pretty-print the contingency table
-            output = StringIO()
-            rich_ct(cluster.stats).to_csv(output)
-            output.seek(0)
-            pt = prettytable.from_csv(output)
-            print pt
-            print
-        
-            # print p-value and confidence interval of MI
-            mi_low = max(0, effect-effect_delta)
-            mi_high = effect+effect_delta
-            print 'p-value = {:.2e} ; MI = [{:.4f}, {:.4f}]'.format(p_val, mi_low, mi_high)
+        if not isinstance(measure, fm.CORR):
+            print_cluster_ct(cluster, columns, p_val, effect_low, effect_high, measure.__class__.__name__)
         else:
-            # print p-value and confidence interval of correlation
-            corr_low = max(0, effect-effect_delta)
-            corr_high = min(effect+effect_delta, 1)
-            print 'p-value = {:.2e} ; Corr = [{:.4f}, {:.4f}]'.format(p_val, corr_low, corr_high)
+            print_cluster_corr(cluster, p_val, effect_low, effect_high, measure.__class__.__name__)
         print '-'*80
         print
 
+def print_cluster_ct(cluster, columns, p_val, effect_low, effect_high, effect_name):
+    # pretty-print the contingency table
+    output = StringIO()
+    
+    if columns:
+        ct = cluster.stats[columns]
+    else:
+        ct = cluster.stats
+    
+    rich_ct(ct).to_csv(output)
+    output.seek(0)
+    pt = prettytable.from_csv(output)
+    print pt
+    print 
+    
+    # print p-value and confidence interval of MI
+    print 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.format(p_val, effect_name, effect_low, effect_high)
+
+def print_cluster_corr(cluster, p_val, effect_low, effect_high, effect_name):
+    # print p-value and confidence interval of correlation
+    print 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.format(p_val, effect_name, effect_low, effect_high)
 #
 # Build a rich contingency table with proportions and marginals
 #     

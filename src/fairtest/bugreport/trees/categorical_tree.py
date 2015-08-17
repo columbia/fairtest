@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from fairtest.bugreport.statistics import fairness_measures as fm
+from fairtest.bugreport.statistics.fairness_measures import NMI
 
 import pydot
 import operator
@@ -60,21 +61,15 @@ def find_thresholds(data, features, categorical, num_bins):
 #                    
 class ScoreParams:
     
-    # Dependency measure (Mutual Info or Correlation)
-    MI = 'MI'
-    CORR = 'CORR'
-    MEASURES = [MI, CORR]
-    
     # Child-score aggregation (weighted average, average or max)
     WEIGHTED_AVG = 'WEIGHTED_AVG'
     AVG = 'AVG'
     MAX = 'MAX'
     AGG_TYPES = [WEIGHTED_AVG, AVG, MAX]
 
-    def __init__(self, measure, agg_type, conf):
+    def __init__(self, measure, agg_type):
         self.measure = measure
         self.agg_type = agg_type
-        self.conf = conf
 
 #
 # Split parameters
@@ -101,7 +96,7 @@ class SplitParams:
 # @param conf           Confidence level
 # @param max_bins       Maximum number of bins to use when binning continuous features
 #
-def build_tree(data, dim, categorical, max_depth=5, min_leaf_size=100, measure="MI", agg_type="WEIGHTED_AVG", conf=None, max_bins=10):
+def build_tree(data, dim, categorical, max_depth=5, min_leaf_size=100, measure=fm.NMI(ci_level=0.95), agg_type="WEIGHTED_AVG", max_bins=10):
     t = Tree()
     
     target = data.columns[0]
@@ -111,7 +106,7 @@ def build_tree(data, dim, categorical, max_depth=5, min_leaf_size=100, measure="
     # bin continuous features
     cont_thresholds = find_thresholds(data, features, categorical, max_bins)
     
-    score_params = ScoreParams(measure, agg_type, conf)
+    score_params = ScoreParams(measure, agg_type)
     split_params = SplitParams(target, sens, dim, categorical, cont_thresholds, min_leaf_size)
     
     #
@@ -268,9 +263,6 @@ def test_cat_feature(node_data, feature, split_params, score_params):
     min_leaf_size = split_params.min_leaf_size
     
     if dim:
-        # split data based on the feature value, and aggregate targets
-        #ct = {key: countValues(group[target], dim) for key, group in node_data.groupby(feature)}  
-        #ct = {key: countValues(pd.crosstab(group[target], group[sens]), dim) for key, group in node_data.groupby(feature)}
         ct = {key: countValues(zip(group[target], group[sens]), dim) for key, group in node_data.groupby(feature)}
     else:
         ct = {key: corrValues(np.array(group[target]), np.array(group[sens])) for key, group in node_data.groupby(feature)}
@@ -360,22 +352,8 @@ def test_cont_feature(node_data, feature, split_params, score_params):
 def score(stats, score_params):
     measure = score_params.measure
     agg_type = score_params.agg_type
-    conf = score_params.conf
-    
-    if measure == 'MI':
-        # use confidence intervals or not
-        if conf:
-            score_list = map(lambda ct: fm.mutual_info(ct, ci_level=conf), stats)
-            score_list = map(lambda (mi, delta): max(0, mi-delta), score_list)
-        else:
-            score_list = map(lambda ct: fm.mutual_info(ct), stats)
-        
-    elif measure == 'CORR':
-        if conf:
-            score_list = map(lambda group: fm.correlation(group, ci_level=conf), stats)
-            score_list = map(lambda (corr, delta): max(0, corr-delta), score_list)
-        else:
-            score_list = map(lambda group: fm.correlation(group), stats)
+
+    score_list = map(lambda ct: measure.normalize_effect(measure.compute(ct)), stats)
         
     # take the average or maximum of the child scores
     if agg_type == ScoreParams.WEIGHTED_AVG:
