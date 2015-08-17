@@ -147,8 +147,9 @@ def mutual_info(data, norm=False, ci_level=None):
         data = data.values
     
     # data smoothing if there are very small values
+    #if data.shape == (2,2):
     data = data.copy()
-    data[data < 5] = 5
+    data[data == 0] = 1
     
     # row/column sums
     sum_x = np.sum(data, axis=1)

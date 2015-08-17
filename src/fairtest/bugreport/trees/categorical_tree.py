@@ -216,24 +216,6 @@ def select_best_feature(node_data, features, split_params, score_params)  :
 # @args data    the data to count
 # @args dim     the dimensions of the contingency table
 #
-'''
-def countValues(data, dim):
-    values = [0]*(dim[0]*dim[1])
-    counter = Counter(data)
-    for i in range(len(values)):
-        values[i] = counter.get(i, 0)
-    
-    return (np.array(values).reshape((dim[0], dim[1])), sum(values))
-'''
-
-'''
-def countValues(data, dim):
-    ct = pd.DataFrame(0, index=range(dim[0]), columns=range(dim[1]))
-    ct = ct.add(data, fill_value=0)
-    
-    return ct, ct.sum().sum()
-'''
-
 def countValues(data, dim):
     values = np.zeros(dim)
     counter = Counter(data)
@@ -256,7 +238,7 @@ def corrValues(x, y):
 # @args score_params   The split scoring parameters
 #
 def test_cat_feature(node_data, feature, split_params, score_params):
-
+    
     target = split_params.target
     sens = split_params.sens
     dim = split_params.dim
@@ -352,9 +334,9 @@ def test_cont_feature(node_data, feature, split_params, score_params):
 def score(stats, score_params):
     measure = score_params.measure
     agg_type = score_params.agg_type
-
+    
     score_list = map(lambda ct: measure.normalize_effect(measure.compute(ct)), stats)
-        
+    
     # take the average or maximum of the child scores
     if agg_type == ScoreParams.WEIGHTED_AVG:
         totals = map(lambda group: group.sum().sum(), stats)
