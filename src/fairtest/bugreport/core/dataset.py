@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import sklearn.cross_validation as cross_validation
 import sklearn.preprocessing as preprocessing
-
+import ast
 
 #
 # Class to represent a dataset and do some pre-processing
@@ -16,6 +16,7 @@ class Dataset:
         self.SENS = None
         self.SENS_TYPE = None
         self.OUT = None
+        self.LABELS = None
         self.OUT_TYPE = None
         self.encoders = None
         self.encoded_data = None
@@ -26,12 +27,13 @@ class Dataset:
     # Load data in csv format, with a header indicating the column names
     #
     # @args filepath    the path to the csv file
+    # @args separator   values separator
     #
-    def load_data_csv(self, filepath):
+    def load_data_csv(self, filepath, separator=','):
         self.original_data = pd.read_csv(
             filepath,
             header=0,
-            sep=r'\s*,\s*',
+            sep=r'\s*{}\s*'.format(separator),
             engine='python',
             na_values="?")
         
@@ -52,7 +54,8 @@ class Dataset:
     #
     # Set the sensitive feature
     #
-    # @args feature the sensitive feature
+    # @args feature         the sensitive feature
+    # @args feature_type    the type of feature
     #    
     def set_sens_feature(self, feature, feature_type='cat'):
         assert feature_type in ['cat', 'cont']
@@ -65,13 +68,15 @@ class Dataset:
     #
     # Set the output feature
     #
-    # @args feature the output feature
+    # @args feature         the output feature
+    # @args feature_type    the type of feature
     #   
     def set_output_feature(self, feature, feature_type='cat'):
-        assert feature_type in ['cat', 'cont']
+        assert feature_type in ['cat', 'cont', 'labeled']
         assert self.original_data is not None
         assert feature in self.original_data.columns
-        
+
+        # single feature or list of features for multi-labeled output
         self.OUT = feature
         self.OUT_TYPE = feature_type
     
@@ -100,17 +105,31 @@ class Dataset:
                     self.encoders[column] = preprocessing.LabelEncoder()
                     self.encoded_data[column] = self.encoders[column].fit_transform(self.original_data[column])
         
-        if (self.SENS_TYPE == 'cat'):
+        if self.SENS_TYPE == 'cat':
             # encode sensitive feature as numbers
             self.encoders[self.SENS] = preprocessing.LabelEncoder()
             self.encoded_data[self.SENS] = self.encoders[self.SENS].fit_transform(self.original_data[self.SENS])
         else:
             self.encoded_data[self.SENS] = self.original_data[self.SENS]
         
-        if (self.OUT_TYPE == 'cat'):
+        if self.OUT_TYPE == 'cat':
             # encode output feature as numbers 
             self.encoders[self.OUT] = preprocessing.LabelEncoder()
             self.encoded_data[self.OUT] = self.encoders[self.OUT].fit_transform(self.original_data[self.OUT])
+        elif self.OUT_TYPE == 'labeled':
+
+            # evaluate labels as a list (there is probably a better way to do this)
+            labeled_data = map(lambda s: ast.literal_eval(s), self.original_data[self.OUT])
+
+            # encode labels as a binary matrix (can we support a sparse matrix???)
+            self.encoders[self.OUT] = preprocessing.MultiLabelBinarizer()
+            labeled_data = self.encoders[self.OUT].fit_transform(labeled_data)
+            labels = self.encoders[self.OUT].classes_
+            df_labels = pd.DataFrame(labeled_data, columns=labels)
+            self.encoded_data = pd.concat([self.encoded_data, df_labels], axis=1)
+
+            # list of labels
+            self.LABELS = labels
         else:
             self.encoded_data[self.OUT] = self.original_data[self.OUT]
         

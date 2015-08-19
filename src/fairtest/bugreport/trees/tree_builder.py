@@ -5,6 +5,7 @@ import fairtest.bugreport.statistics.fairness_measures as fm
 TARGET = '__TARGET__'
 SENS = '__SENS__'
 
+
 #
 # Prepare the data for decision-tree building. Encode the sensitive feature and
 # output feature as a single feature.
@@ -23,6 +24,7 @@ def prepare_data(data):
     
     return data_copy, target_dim
 
+
 #
 # Build a decision tree for bias detection
 #
@@ -34,23 +36,10 @@ def prepare_data(data):
 # @args conf            Confidence level for CIs
 #
 def train_tree(data, max_depth=5, min_leaf_size=100, measure=fm.NMI(ci_level=0.95), agg_type=cat_tree.ScoreParams.WEIGHTED_AVG):
-    train_data = data.data_train.copy()
-    
-    if isinstance(measure, fm.CORR):
-        target_dim = None
-    else:
-        assert data.OUT_TYPE == 'cat' and data.SENS_TYPE == 'cat'
-        # get the dimensions of the OUTPUT x SENSITIVE contingency table
-        target_dim = (len(data.encoders[data.OUT].classes_), len(data.encoders[data.SENS].classes_))
-    
-    train_data.insert(0, TARGET, train_data[data.OUT])
-    train_data.insert(1, SENS, train_data[data.SENS])
-    train_data = train_data.drop([data.SENS, data.OUT], axis=1)
-    
     # prepare the function call parameters
     params = {}
-    params['data'] = train_data
-    params['dim'] = target_dim
+    params['dataset'] = data
+    # params['dim'] = target_dim
     params['categorical'] = data.encoders.keys()
     params['max_depth'] = max_depth
     params['min_leaf_size'] = min_leaf_size

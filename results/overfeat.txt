@@ -1,0 +1,355 @@
+################################################################################
+
+Results of Fairtest on the Image Labeling dataset.
+
+ - Target Feature = Labels (about 1000)
+ - Sensitive Feature = Race
+
+For each discrimination context, we run a Logistic Regression to predict Race
+from the image labels. We output the 10 labels that have the highest absolute
+(log) odds-ratio. A negative value indicates that the label was applied mostly
+to black people.
+
+################################################################################
+
+
+Global Population of size 1324
+
+Average (absolute) Log-Odds of top-10 labels: 1.19998685226
+
+                  conf low  conf high        p-value
+lipstick          1.540818   1.768749  1.900000e-178
+brassiere         1.299787   1.492063  1.900000e-178
+maillot           1.180277   1.354874  1.900000e-178
+mask             -1.468754  -1.209474   1.949146e-91
+face powder       1.161336   1.470849   1.117438e-62
+nipple            1.248633   1.597343   6.797575e-58
+bulletproof vest -1.435321  -1.104695   1.545150e-51
+toyshop          -1.801032  -1.269661   4.862806e-30
+drum             -1.432234  -0.986529   1.008920e-26
+cleaver           0.998657   1.580454   1.835568e-18
+================================================================================
+
+Sub-Population of size 720
+Context = {'Age': (45.5, inf)}
+
+Average (absolute) Log-Odds of top-10 labels: 1.10236271757
+
+                  conf low  conf high        p-value
+maillot           1.145760   1.354095  1.333026e-122
+lipstick          1.311250   1.655876   3.452279e-64
+nipple            1.596408   2.048650   1.625033e-56
+diaper            1.124571   1.538325   8.815661e-37
+ballplayer       -1.788010  -1.281966   6.641752e-33
+bulletproof vest -1.423591  -0.983128   4.599622e-27
+face powder       0.886004   1.282998   4.648652e-27
+mask             -1.227440  -0.845115   1.142121e-26
+cleaver           0.877291   1.467786   3.520268e-15
+toyshop          -1.862936  -0.972133   2.219154e-10
+--------------------------------------------------------------------------------
+
+Sub-Population of size 604
+Context = {'Age': (-inf, 45.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 1.06295444133
+
+             conf low  conf high        p-value
+brassiere    2.146590   2.464132  1.900000e-178
+lipstick     1.314989   1.637909   3.925023e-72
+miniskirt    1.060137   1.376552   8.930207e-52
+maillot      0.868683   1.149277   2.021506e-45
+stethoscope  0.980014   1.299013   7.511079e-45
+mask        -1.661471  -1.205277   3.690253e-35
+gown         0.776067   1.168068   1.233109e-22
+face powder  0.712005   1.263807   1.125637e-12
+ski mask    -1.576207  -0.828397   1.466137e-10
+lens cap     0.737384   1.443798   7.164356e-10
+--------------------------------------------------------------------------------
+
+Sub-Population of size 617
+Context = {'Age': (45.5, 91.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 1.04875015461
+
+                  conf low  conf high       p-value
+maillot           1.051552   1.295206  8.752899e-80
+lipstick          1.218863   1.605037  6.877740e-47
+nipple            1.575201   2.081430  8.408303e-46
+diaper            1.111411   1.578019  6.802683e-30
+face powder       0.821996   1.256470  3.419587e-21
+hand blower       0.926734   1.416671  3.470151e-21
+ballplayer       -1.730967  -1.118744  3.652589e-20
+panpipe          -1.526499  -0.945966  3.488766e-17
+bulletproof vest -1.427366  -0.882334  4.957692e-17
+cleaver           0.834700   1.531052  1.381448e-11
+--------------------------------------------------------------------------------
+
+Sub-Population of size 460
+Context = {'Age': (9.5, 45.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.998091413673
+
+             conf low  conf high        p-value
+brassiere    2.059344   2.363980  1.900000e-178
+lab coat     1.072139   1.450274   2.309545e-39
+stethoscope  0.998324   1.406936   4.285011e-31
+Windsor tie -1.173773  -0.796375   7.149912e-25
+lipstick     0.883699   1.310141   3.281543e-24
+miniskirt    0.837246   1.243859   5.547912e-24
+mask        -1.636808  -1.070259   3.801282e-21
+stage       -1.621591  -0.963894   6.549603e-15
+face powder  0.737278   1.411228   2.075691e-10
+fur coat     0.562355   1.693449   4.636502e-05
+--------------------------------------------------------------------------------
+
+Sub-Population of size 368
+Context = {'Age': (45.5, 71.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.968013749842
+
+            conf low  conf high       p-value
+maillot     1.377689   1.697929  2.415095e-79
+wig         1.105300   1.513667  1.548098e-36
+mask       -1.693926  -1.123387  1.865041e-22
+nipple      1.257122   1.981239  9.317125e-19
+sunscreen   0.834436   1.406817  8.298999e-15
+cleaver     0.929546   1.648641  1.054399e-12
+panpipe    -1.496210  -0.739550  3.493172e-09
+diaper      0.808768   1.730213  3.321819e-08
+ballplayer -1.932749  -0.864336  1.439893e-07
+comic book -1.607186  -0.640004  2.633507e-06
+--------------------------------------------------------------------------------
+
+Sub-Population of size 495
+Context = {'Age': (45.5, 81.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.960336185507
+
+             conf low  conf high       p-value
+maillot      0.960292   1.268033  5.142030e-46
+dumbbell     1.050951   1.520790  3.752397e-27
+wig          0.861273   1.252464  1.652087e-26
+nipple       1.284534   1.958043  1.933526e-21
+lipstick     0.902130   1.394385  3.014331e-20
+face powder  0.829849   1.356166  1.967537e-16
+ballplayer  -1.967433  -1.160342  1.532023e-14
+panpipe     -1.547841  -0.881405  4.522175e-13
+hand blower  0.790727   1.397574  7.878036e-13
+cleaver      0.881859   1.626726  2.044382e-11
+--------------------------------------------------------------------------------
+
+Sub-Population of size 362
+Context = {'Age': (9.5, 37.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.922970108266
+
+             conf low  conf high       p-value
+brassiere    1.812478   2.194528  3.371918e-94
+lab coat     0.956959   1.343725  1.033880e-31
+Windsor tie -1.220673  -0.789743  3.014331e-20
+stethoscope  0.840284   1.314810  2.759535e-19
+bikini       0.887810   1.390438  3.228924e-19
+miniskirt    0.823111   1.302588  1.824298e-18
+mask        -1.568803  -0.932517  6.549603e-15
+lipstick     0.666772   1.186924  1.426016e-12
+stage       -1.894744  -0.981549  3.343885e-10
+gown         0.538480   1.199675  1.286073e-07
+--------------------------------------------------------------------------------
+
+Sub-Population of size 122
+Context = {'Age': (81.5, 91.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.786837751187
+
+                  conf low  conf high        p-value
+maillot           1.036680   1.190034  1.900000e-178
+miniskirt         0.875229   1.052466  3.923400e-101
+bulletproof vest -0.844427  -0.693393   6.620638e-89
+stage            -1.063539  -0.863394   1.008257e-79
+bearskin         -0.847355  -0.673642   2.597468e-66
+bikini            0.716802   0.918680   4.472594e-57
+cloak             0.817681   1.048514   7.548913e-57
+seat belt         0.726486   0.953814   7.309866e-48
+diaper            0.794657   1.045435   3.391238e-47
+lipstick          0.670414   0.911619   4.024617e-38
+--------------------------------------------------------------------------------
+
+Sub-Population of size 144
+Context = {'Age': (-inf, 9.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.775927764623
+
+                  conf low  conf high        p-value
+maillot           1.620871   1.936253  1.383363e-108
+lipstick          1.290641   1.712342   1.423432e-44
+mask             -0.932645  -0.609707   3.957581e-21
+ice lolly         0.524537   0.815145   8.177546e-20
+brassiere         0.679460   1.074400   1.603707e-18
+miniskirt         0.671278   1.067606   4.009115e-18
+wig               0.518454   0.842237   8.851929e-17
+military uniform -1.052141  -0.600233   3.847314e-13
+trench coat      -1.011491  -0.554918   8.825907e-12
+harmonica         0.689179   1.319088   2.068991e-10
+--------------------------------------------------------------------------------
+
+Sub-Population of size 98
+Context = {'Age': (37.5, 45.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.769380784064
+
+             conf low  conf high        p-value
+maillot      1.129130   1.296160  1.900000e-178
+brassiere    1.187747   1.431660   1.185832e-98
+bow tie     -1.009645  -0.830084   5.381910e-90
+cowboy hat   1.056750   1.294779   7.944259e-84
+wig          0.607865   0.748666   7.865984e-80
+mask        -0.903373  -0.676592   9.432053e-43
+stethoscope  0.597572   0.810900   1.331441e-38
+oboe        -0.726085  -0.529141   4.133120e-36
+overskirt   -0.696503  -0.504850   5.398270e-35
+lab coat     0.574076   0.917826   8.970992e-18
+--------------------------------------------------------------------------------
+
+Sub-Population of size 119
+Context = {'Age': (28.5, 37.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.762123228616
+
+             conf low  conf high       p-value
+brassiere    1.590052   1.930674  1.493882e-91
+lab coat     1.044240   1.357788  2.932536e-51
+sunscreen    0.925383   1.258333  4.040717e-38
+bikini       0.823018   1.137166  1.080272e-34
+lipstick     0.789172   1.279393  6.676227e-17
+sweatshirt   0.482466   0.795901  6.539963e-16
+hair spray   0.623174   1.097819  5.949034e-13
+overskirt    0.451363   0.806678  1.967178e-12
+stethoscope  0.473591   1.038703  7.811942e-08
+ski mask    -0.952139  -0.418773  2.355849e-07
+--------------------------------------------------------------------------------
+
+Sub-Population of size 118
+Context = {'Age': (9.5, 19.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.750221250835
+
+             conf low  conf high       p-value
+mask        -1.473517  -1.157473  3.784363e-60
+brassiere    1.051005   1.374844  4.210764e-49
+gown         0.753885   1.143230  6.479519e-22
+cloak       -0.916833  -0.590378  7.216357e-20
+miniskirt    0.736532   1.185503  2.418966e-17
+maillot      0.651248   1.069122  3.541309e-16
+stethoscope  0.544035   0.895793  5.177221e-16
+Windsor tie -1.221291  -0.729465  3.804967e-15
+lab coat     0.573805   0.961103  4.000084e-15
+stage       -1.293306  -0.714387  5.334769e-12
+--------------------------------------------------------------------------------
+
+Sub-Population of size 127
+Context = {'Age': (71.5, 81.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.637644568449
+
+               conf low  conf high       p-value
+Band Aid       0.880202   1.088805  1.030886e-76
+miniskirt      0.827578   1.065669  4.590107e-55
+dumbbell       0.620865   0.901341  1.000326e-26
+academic gown -0.984455  -0.627537  4.296667e-19
+pajama        -0.867755  -0.544358  5.732523e-18
+drumstick      0.525570   0.856092  1.272513e-16
+hair spray     0.619149   1.018031  4.328939e-16
+suit           0.547222   0.900289  4.659736e-16
+seat belt      0.546353   0.900290  5.691698e-16
+hand blower    0.637611   1.061472  1.972355e-15
+--------------------------------------------------------------------------------
+
+Sub-Population of size 125
+Context = {'Age': (19.5, 28.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.609937194886
+
+              conf low  conf high       p-value
+brassiere     1.091434   1.429932  1.421322e-48
+balance beam  0.630633   0.983681  1.595309e-19
+stethoscope   0.556675   0.929549  2.811367e-15
+bikini        0.681373   1.222769  2.724047e-12
+notebook      0.556329   1.001469  3.466244e-12
+miniskirt     0.512974   0.954791  3.726965e-11
+lipstick      0.561898   1.058969  8.234125e-11
+bolo tie      0.576241   1.096935  1.506872e-10
+jersey        0.478231   1.084429  2.181365e-07
+stage        -1.250404  -0.453584  1.386488e-05
+--------------------------------------------------------------------------------
+
+Sub-Population of size 103
+Context = {'Age': (91.5, inf)}
+
+Average (absolute) Log-Odds of top-10 labels: 0.584778319621
+
+                  conf low  conf high       p-value
+maillot           0.907874   1.203338  7.293224e-45
+toyshop          -0.809996  -0.562362  8.753431e-28
+miniskirt         0.566669   0.839488  2.707024e-24
+gong             -0.799414  -0.537834  6.243976e-24
+bikini            0.512590   0.818236  7.071165e-18
+Band Aid          0.490687   0.815435  1.599501e-15
+military uniform -1.037926  -0.624088  1.753350e-15
+swimming trunks  -0.856457  -0.509790  5.619003e-15
+acoustic guitar  -0.851226  -0.501901  1.574757e-14
+academic gown    -1.106201  -0.633989  2.545674e-13
+--------------------------------------------------------------------------------
+
+Sub-Population of size 187
+Context = {'Gender': 'Female', 'Age': (45.5, 71.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.446059884508
+
+                  conf low  conf high       p-value
+wig               0.738525   1.396879  1.027056e-10
+nipple            0.819689   1.818218  1.122472e-07
+sarong           -1.623585  -0.530823  5.574483e-05
+maillot           0.435583   1.616937  3.304575e-04
+Eskimo dog        0.237622   0.882083  3.304575e-04
+mask             -1.936407  -0.467733  6.674874e-04
+military uniform -1.566893  -0.367782  7.827643e-04
+bulletproof vest -1.497795  -0.292964  1.789162e-03
+comic book       -1.921950  -0.363208  2.030654e-03
+panpipe          -1.442252  -0.206670  4.453118e-03
+--------------------------------------------------------------------------------
+
+Sub-Population of size 181
+Context = {'Gender': 'Male', 'Age': (45.5, 71.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.424000969053
+
+             conf low  conf high       p-value
+maillot      1.368696   2.240205  2.405584e-16
+hair spray   0.320529   0.965224  4.636502e-05
+hammer      -0.951479  -0.307378  6.390623e-05
+wig          0.566821   1.838406  1.047365e-04
+miniskirt    0.460948   1.504159  1.112476e-04
+bow tie     -1.638594  -0.374981  8.944373e-04
+lab coat     0.171112   1.016404  2.948325e-03
+face powder  0.266893   1.743945  3.812159e-03
+diaper       0.223376   1.785279  5.858184e-03
+sunscreen    0.179276   1.724352  7.872054e-03
+--------------------------------------------------------------------------------
+
+Sub-Population of size 243
+Context = {'Age': (9.5, 28.5]}
+
+Average (absolute) Log-Odds of top-10 labels: 0.295249352919
+
+             conf low  conf high   p-value
+brassiere    0.707136   2.278799  0.000098
+Windsor tie -1.430615  -0.426684  0.000144
+lab coat     0.243772   1.065236  0.000894
+miniskirt    0.408392   1.923607  0.001279
+stage       -2.389864  -0.483154  0.001572
+lipstick     0.235429   1.266513  0.002152
+Band Aid     0.202419   1.255833  0.003332
+stethoscope  0.194922   1.557866  0.005858
+mask        -2.730438  -0.031585  0.022437
+bikini       0.019001   1.642590  0.022437
+--------------------------------------------------------------------------------

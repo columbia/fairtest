@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import fairtest.bugreport.statistics.fairness_measures as fm
+from fairtest.bugreport.statistics.fairness_measures import Measure
 import pandas as pd
 import numpy as np
 import ete2
@@ -17,14 +19,18 @@ class Cluster:
     # @args path        the predicate path leading from the root to the cluster
     # @args isleaf      if the cluster is a tree leaf
     # @args isroot      if the cluster is the tree root
-    # @args ct          the contingency table (SENS x OUT) for this cluster
-    def __init__(self, num, path, isleaf, isroot, stats, size):
+    # @args stats       the statistics for this cluster
+    # @args size        the cluster size
+    # @args data        any additional data required for fairness measures
+    #
+    def __init__(self, num, path, isleaf, isroot, stats, size, data=None):
         self.num = num
         self.path = path
         self.isleaf = isleaf
         self.isroot = isroot
         self.size = size
         self.stats = stats
+        self.data = data
 
 
 #
@@ -67,15 +73,14 @@ def update_cont_path(feature_path, feature, lower_bound=None, upper_bound=None):
 # @args data        the dataset object
 # @args train_set   if true, finds clusters in the training set
 #        
-def find_clusters_cat(tree, data, train_set=False):
+def find_clusters_cat(tree, data, measure=fm.NMI(ci_level=0.95), train_set=False):
     # list of clusters
     clusters = []
     
     out = data.OUT
-    out_type = data.OUT_TYPE
     sens = data.SENS
-    sens_type = data.SENS_TYPE
     encoders = data.encoders
+    labels = data.LABELS
     
     if train_set:
         data = data.data_train
@@ -84,8 +89,8 @@ def find_clusters_cat(tree, data, train_set=False):
     
     # assign an id to each node
     node_id = 0
-    for node in tree.traverse("levelorder"):
-        node.add_features(id=node_id)
+    for tree_node in tree.traverse("levelorder"):
+        tree_node.add_features(id=node_id)
         node_id += 1
     
     #
@@ -99,7 +104,7 @@ def find_clusters_cat(tree, data, train_set=False):
         is_root = node.is_root()
         is_leaf = node.is_leaf()
         
-        #current node
+        # current node
         if not is_root:
             feature = node.feature
             
@@ -115,13 +120,12 @@ def find_clusters_cat(tree, data, train_set=False):
                     update_cont_path(feature_path, feature, lower_bound=threshold)
                     data_node = data_node[data_node[feature] > threshold]
             else:
-                #categorical split
+                # categorical split
                 category = node.category
                 feature_path[feature] = encoders[feature].inverse_transform([category])[0]
                 data_node = data_node[data_node[feature] == category]
-        
 
-        if out_type == 'cat':
+        if measure.dataType == Measure.DATATYPE_CT:
             # categorical data
             # create an empty contingency table
             ct = pd.DataFrame(0, index=range(len(encoders[out].classes_)), columns=range(len(encoders[sens].classes_)))
@@ -136,10 +140,11 @@ def find_clusters_cat(tree, data, train_set=False):
             ct.columns.name = sens
             stats = ct
             size = len(data_node)
-        else:
+            cluster_data = None
+
+        elif measure.dataType == Measure.DATATYPE_CORR:
             # continuous data
             # get data statistics for correlation computation
-
             sum_x = data_node[out].sum()
             sum_x2 = np.dot(data_node[out], data_node[out])
             sum_y = data_node[sens].sum()
@@ -149,9 +154,18 @@ def find_clusters_cat(tree, data, train_set=False):
 
             stats = [sum_x, sum_x2, sum_y, sum_y2, sum_xy, n]
             size = n
+            cluster_data = {'values': data_node[[out, sens]]}
+
+        else:
+            # regression measure
+            # keep all the data
+            label_list = labels.tolist()
+            stats = data_node[label_list + [sens]]
+            size = len(data_node)
+            cluster_data = {'labels': label_list}
         
         # build a cluster class and store it in the list
-        clstr = Cluster(node.id, feature_path, is_leaf, is_root, stats, size)
+        clstr = Cluster(node.id, feature_path, is_leaf, is_root, stats, size, cluster_data)
         clusters.append(clstr)
         
         # recurse in children
@@ -182,7 +196,7 @@ def toList(scalaList):
 # @args data        the dataset object
 # @args train_set   if true, finds clusters in the training set
 #  
-def find_clusters_spark(topNode, data, train_set=False):
+def find_clusters_spark(topNode, data, measure=fm.NMI(ci_level=0.95), train_set=False):
     # list of clusters
     clusters = []
     
@@ -190,9 +204,7 @@ def find_clusters_spark(topNode, data, train_set=False):
     t = ete2.Tree()
     
     out = data.OUT
-    out_type = data.OUT_TYPE
     sens = data.SENS
-    sens_type = data.SENS_TYPE
     encoders = data.encoders
     
     if train_set:
@@ -201,7 +213,7 @@ def find_clusters_spark(topNode, data, train_set=False):
         data = data.data_test
     
     # feature names
-    features = data.columns.drop([out,sens])
+    features = data.columns.drop([out, sens])
     
     #
     # @param node           the current node
@@ -213,7 +225,7 @@ def find_clusters_spark(topNode, data, train_set=False):
         isleaf = node.isLeaf()
         isroot = node == topNode
 
-        if out_type == 'cat':
+        if measure.dataType == Measure.DATATYPE_CT:
             # categorical data
             # create and empty contingency table
             ct = pd.DataFrame(0, index=range(len(encoders[out].classes_)), columns=range(len(encoders[sens].classes_)))
@@ -228,15 +240,23 @@ def find_clusters_spark(topNode, data, train_set=False):
             ct.columns.name = sens
             stats = ct
             size = len(data_node)
+            cluster_data = None
         else:
             # continuous data
             # get statistics for correlation
-            # TODO
-            stats = None
-            size = None
+            sum_x = data_node[out].sum()
+            sum_x2 = np.dot(data_node[out], data_node[out])
+            sum_y = data_node[sens].sum()
+            sum_y2 = np.dot(data_node[sens], data_node[sens])
+            sum_xy = np.dot(data_node[out], data_node[sens])
+            n = len(data_node)
+
+            stats = [sum_x, sum_x2, sum_y, sum_y2, sum_xy, n]
+            size = n
+            cluster_data = data_node[[out, sens]]
 
         # build a cluster object and store it        
-        clstr = Cluster(node.id(), feature_path, isleaf, isroot, stats, size)
+        clstr = Cluster(node.id(), feature_path, isleaf, isroot, stats, size, cluster_data)
         clusters.append(clstr)
         
         # append the cluster size to the ete2 tree node for future printing
@@ -248,7 +268,7 @@ def find_clusters_spark(topNode, data, train_set=False):
             feature = features[feature_num]
             
             # check type of feature (continuous or categorical)
-            if (node.split().get().featureType().toString() == 'Continuous'):
+            if node.split().get().featureType().toString() == 'Continuous':
                 
                 # continuous feature splitting threshold
                 threshold = node.split().get().threshold()
@@ -301,7 +321,6 @@ def find_clusters_spark(topNode, data, train_set=False):
             right_child = tree_node.add_child(name=str(pred_right))
             bfs(node.leftNode().get(), left_child, data_left, path_left)
             bfs(node.rightNode().get(), right_child, data_right, path_right)
-     
     
     # start bfs from the root with the full dataset and an empty path           
     bfs(topNode, t, data, {})

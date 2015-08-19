@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from fairtest.bugreport.statistics import fairness_measures as fm
-from fairtest.bugreport.statistics.fairness_measures import NMI
+from fairtest.bugreport.statistics.fairness_measures import Measure
 
 import pydot
 import operator
 import numpy as np
-import pandas as pd
 from collections import Counter
-from ete2 import Tree, TreeStyle, AttrFace, TextFace, faces
+from ete2 import Tree
 from sklearn.externals import six
-from sklearn.externals.six import StringIO 
-from math import sqrt
+from sklearn.externals.six import StringIO
+
 
 #
 # Find thresholds for continuous features (quantization)
@@ -56,6 +55,8 @@ def find_thresholds(data, features, categorical, num_bins):
                 
                 thresholds[feature] = feature_thresholds
     return thresholds
+
+
 #
 # Split-scoring parameters
 #                    
@@ -71,43 +72,59 @@ class ScoreParams:
         self.measure = measure
         self.agg_type = agg_type
 
+
 #
 # Split parameters
 #
 class SplitParams:
-    def __init__(self, target, sens, dim, categorical, thresholds, min_leaf_size):
-        self.target = target
+    def __init__(self, targets, sens, dim, categorical, thresholds, min_leaf_size):
+        self.targets = targets
         self.sens = sens
         self.dim = dim
         self.categorical = categorical
         self.thresholds = thresholds
         self.min_leaf_size = min_leaf_size
 
+
 #
 # Builds a decision tree for finding nodes with high bias
 #
-# @args data            The dataset
-# @args dim             The output dimension
+# @args data            The dataset object
 # @args categorical     List of categorical features
 # @param max_depth      Maximum depth of the decision-tree
 # @param min_leaf_size  Minimum size of a leaf
-# @param measure        Dependency measure to use
+# @param measure        Fairness measure to use
 # @param agg_type       Aggregation method for children scores
 # @param conf           Confidence level
 # @param max_bins       Maximum number of bins to use when binning continuous features
 #
-def build_tree(data, dim, categorical, max_depth=5, min_leaf_size=100, measure=fm.NMI(ci_level=0.95), agg_type="WEIGHTED_AVG", max_bins=10):
+def build_tree(dataset, categorical, max_depth=5, min_leaf_size=100, measure=fm.NMI(ci_level=0.95), agg_type="WEIGHTED_AVG", max_bins=10):
     t = Tree()
-    
-    target = data.columns[0]
-    sens = data.columns[1]
-    features = data.columns[2:]
-    
-    # bin continuous features
+
+    data = dataset.data_train
+
+    # Check if there are multiple labeled outputs
+    if dataset.OUT_TYPE == 'labeled':
+        targets = dataset.LABELS.tolist()
+    else:
+        targets = [dataset.OUT]
+
+    sens = dataset.SENS
+    features = data.columns.difference(targets).difference([sens])
+
+    # check the data dimensions
+    if isinstance(measure, fm.CORR):
+        dim = None
+    else:
+        assert dataset.OUT_TYPE in ['cat', 'labeled'] and dataset.SENS_TYPE == 'cat'
+        # get the dimensions of the OUTPUT x SENSITIVE contingency table
+        dim = (len(dataset.encoders[dataset.OUT].classes_), len(dataset.encoders[dataset.SENS].classes_))
+
+    # bin the continuous features
     cont_thresholds = find_thresholds(data, features, categorical, max_bins)
     
     score_params = ScoreParams(measure, agg_type)
-    split_params = SplitParams(target, sens, dim, categorical, cont_thresholds, min_leaf_size)
+    split_params = SplitParams(targets, sens, dim, categorical, cont_thresholds, min_leaf_size)
     
     #
     # Builds up the tree recursively. Selects the best feature to split on,
@@ -118,7 +135,7 @@ def build_tree(data, dim, categorical, max_depth=5, min_leaf_size=100, measure=f
         node.add_features(size=len(node_data))
         
         # make a new leaf
-        if ((depth == max_depth) or (len(node_features) == 0)):
+        if (depth == max_depth) or (len(node_features) == 0):
             return
         
         # select the best feature to split on
@@ -154,7 +171,7 @@ def build_tree(data, dim, categorical, max_depth=5, min_leaf_size=100, measure=f
             for val in node_data[best_feature].unique():
                 data_child = node_data[node_data[best_feature] == val]
                 
-                if (len(data_child) >= min_leaf_size):
+                if len(data_child) >= min_leaf_size:
                 
                     # predicate for the current sub-tree
                     new_pred = "{} = {}".format(best_feature, val)
@@ -168,6 +185,7 @@ def build_tree(data, dim, categorical, max_depth=5, min_leaf_size=100, measure=f
             
     rec_build_tree(data, t, [], features, 0)
     return t
+
 
 #
 # Selects the optimal non-sensitive feature to split on to maximize bias
@@ -186,17 +204,17 @@ def select_best_feature(node_data, features, split_params, score_params)  :
     to_drop = []
     
     categorical = split_params.categorical
-    target = split_params.target
+    targets = split_params.targets
     sens = split_params.sens
     
     # iterate over all available non-sensitive features
     for feature in features:
         # determine type of split
         if feature in categorical:
-            split_score = test_cat_feature(node_data[[feature, target, sens]], feature, split_params, score_params)
+            split_score = test_cat_feature(node_data[[feature, sens] + targets], feature, split_params, score_params)
             threshold = None
         else:
-            split_score, threshold = test_cont_feature(node_data[[feature, target, sens]], feature, split_params, score_params)
+            split_score, threshold = test_cont_feature(node_data[[feature, sens] + targets], feature, split_params, score_params)
         
         # the feature produced no split and can be dropped for future sub-trees
         if not score:
@@ -210,13 +228,14 @@ def select_best_feature(node_data, features, split_params, score_params)  :
                 
     return best_feature, best_threshold, to_drop
 
+
 #
 # Count occurrences of target values and reshape as a contingency table
 #
 # @args data    the data to count
 # @args dim     the dimensions of the contingency table
 #
-def countValues(data, dim):
+def count_values(data, dim):
     values = np.zeros(dim)
     counter = Counter(data)
     for i in range(dim[0]):
@@ -224,10 +243,18 @@ def countValues(data, dim):
             values[i,j] = counter.get((i,j), 0)
 
     return values, len(data)
-    
-def corrValues(x, y):
+
+
+#
+# Get statistics for Pearson-correlation measure
+#
+# @args x   first dimension of data
+# @args y   second dimension of data
+#
+def corr_values(x, y):
     # sum(x), sum(x^2), sum(y), sum(y^2), sum(xy)
     return np.array([x.sum(), np.dot(x, x), y.sum(), np.dot(y, y), np.dot(x, y), x.size]), x.size
+
 
 #
 # Find the best split for a categorical feature
@@ -238,19 +265,28 @@ def corrValues(x, y):
 # @args score_params   The split scoring parameters
 #
 def test_cat_feature(node_data, feature, split_params, score_params):
-    
-    target = split_params.target
+    # print 'testing categorical feature {}'.format(feature)
+
+    targets = split_params.targets
     sens = split_params.sens
     dim = split_params.dim
     min_leaf_size = split_params.min_leaf_size
-    
-    if dim:
-        ct = {key: countValues(zip(group[target], group[sens]), dim) for key, group in node_data.groupby(feature)}
+    data_type = score_params.measure.dataType
+
+    if data_type == Measure.DATATYPE_CT:
+        target = targets[0]
+        # build a contingency table for each child
+        ct = {key: count_values(zip(group[target], group[sens]), dim) for key, group in node_data.groupby(feature)}
+    elif data_type == Measure.DATATYPE_CORR:
+        target = targets[0]
+        # compute summary statistics for each child
+        ct = {key: corr_values(np.array(group[target]), np.array(group[sens])) for key, group in node_data.groupby(feature)}
     else:
-        ct = {key: corrValues(np.array(group[target]), np.array(group[sens])) for key, group in node_data.groupby(feature)}
-     
+        # aggregate all the data for each child for regression
+        ct = {key: (group[targets+[sens]], len(group)) for key, group in node_data.groupby(feature)}
+
     # prune small sub-trees
-    ct = {key:group for (key,(group,size)) in ct.iteritems() if size >= min_leaf_size}
+    ct = {key: group for (key, (group, size)) in ct.iteritems() if size >= min_leaf_size}
 
     split_score = None
     # compute the split score
@@ -268,26 +304,51 @@ def test_cat_feature(node_data, feature, split_params, score_params):
 # @args score_params   The split scoring parameters
 #
 def test_cont_feature(node_data, feature, split_params, score_params):
-    target = split_params.target
+    # print 'testing continuous feature {}'.format(feature)
+
+    targets = split_params.targets
     sens = split_params.sens
     dim = split_params.dim
     min_leaf_size = split_params.min_leaf_size
     thresholds = split_params.thresholds[feature]
+    data_type = score_params.measure.dataType
     
     max_score = None
     best_threshold = None
-    
+
+    #
+    # If we want to do a regression for each child, simply keep all the data
+    # and check the split-score for each threshold
+    #
+    if data_type == Measure.DATATYPE_REG:
+        for threshold in thresholds:
+            # print '    testing threshold {}'.format(threshold)
+            data_left = node_data[node_data[feature] <= threshold]
+            data_right = node_data[node_data[feature] > threshold]
+
+            size_left = len(data_left)
+            size_right = len(data_right)
+
+            if (size_left >= min_leaf_size) and (size_right >= min_leaf_size):
+                split_score = score([data_left[targets+[sens]], data_right[targets+[sens]]], score_params)
+                if split_score > max_score:
+                    max_score = split_score
+                    best_threshold = threshold
+
+        return max_score, best_threshold
+
     # split data based on the bin thresholds
     groups = node_data.groupby(np.digitize(node_data[feature], thresholds, right=True))
     
-    if dim:
+    if data_type == Measure.DATATYPE_CT:
+        target = targets[0]
         # aggregate all the target counts for each bin
-        #temp = map(lambda (key, group): (key, countValues(pd.crosstab(group[target], group[sens]), dim)), groups)
-        temp = map(lambda (key, group): (key, countValues(zip(group[target], group[sens]), dim)), groups)
-    else:
+        temp = map(lambda (key, group): (key, count_values(zip(group[target], group[sens]), dim)), groups)
+    elif data_type == Measure.DATATYPE_CORR:
+        target = targets[0]
         # correlation score
-        temp = map(lambda (key, group): (key, corrValues(np.array(group[target]), np.array(group[sens]))), groups)
-        
+        temp = map(lambda (key, group): (key, corr_values(np.array(group[target]), np.array(group[sens]))), groups)
+
     # get the indices of the bin thresholds
     keys, temp = zip(*temp)
     
@@ -325,6 +386,7 @@ def test_cont_feature(node_data, feature, split_params, score_params):
             
     return max_score, best_threshold
 
+
 #
 # Compute the score for a split
 #
@@ -334,8 +396,9 @@ def test_cont_feature(node_data, feature, split_params, score_params):
 def score(stats, score_params):
     measure = score_params.measure
     agg_type = score_params.agg_type
-    
-    score_list = map(lambda ct: measure.normalize_effect(measure.compute(ct)), stats)
+
+    # compute a score for each child
+    score_list = map(lambda child: measure.normalize_effect(measure.compute(child)), stats)
     
     # take the average or maximum of the child scores
     if agg_type == ScoreParams.WEIGHTED_AVG:
@@ -346,6 +409,7 @@ def score(stats, score_params):
         return np.mean(score_list)
     elif agg_type == ScoreParams.MAX:
         return max(score_list)
+
 
 #
 # Export a tree to a file (adapted from scikit source code)
@@ -386,7 +450,6 @@ def export_graphviz(decision_tree, encoders, out_file="tree.dot", is_spark=False
     
         node_size = node.size
         return "%s\\nsamples = %s" % (pred, node_size)
-
 
     def recurse(node, parent_id=None):
 
@@ -431,6 +494,7 @@ def export_graphviz(decision_tree, encoders, out_file="tree.dot", is_spark=False
         if own_file:
             out_file.close()
 
+
 #
 # Print a tree to a file
 #
@@ -443,5 +507,4 @@ def print_tree(tree, outfile, encoders, is_spark=False):
     dot_data = StringIO()
     export_graphviz(tree, encoders, out_file=dot_data, is_spark=is_spark) 
     graph = pydot.graph_from_dot_data(dot_data.getvalue()) 
-    graph.write_pdf(outfile) 
-        
+    graph.write_pdf(outfile)

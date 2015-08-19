@@ -3,16 +3,61 @@
 import scipy.stats as stats
 import scipy.special as special
 import sklearn.metrics as metrics
+from sklearn.linear_model import LogisticRegression
 import numpy as np
 import pandas as pd
 from math import sqrt, log, exp, atanh, tanh
 from collections import Counter
 
+
+#
+# Compute an effect score for a Z-score
+# This is the absolute value of the lower bound of the confidence interval, if the interval does not contain zero.
+#
+# @args ci_low  Lower bound of the confidence interval
+# @args ci_high Upper bound of the confidence interval
+#
+def z_effect(ci_low, ci_high):
+    return 0 if (ci_low * ci_high < 0) else min(abs(ci_low), abs(ci_high))
+
+
+#
+# Recompute an asymptotically normal confidence interval from a corrected p-value
+#
+# @args ci_low      Lower bound of the original confidence interval
+# @args ci_high     Upper bound of the original confidence interval
+# @args pval        The adjusted p-value
+# @args ci_level    The confidence level
+#
+def z_ci_from_p(ci_low, ci_high, pval, ci_level):
+    pval = max(pval, 1e-180)
+
+    z = abs(stats.norm.ppf(pval))
+    mean = ci_high-(ci_high-ci_low)/2
+    std = abs(mean/z)
+
+    return stats.norm.interval(ci_level, loc=mean, scale=std)
+
+
+#
+# Class representing a fairness measure
+#
 class Measure(object):
-    def __init__(self, ci_level=None):
+    # Types of measures
+    DATATYPE_CT = 'ct'      # Measures on a contingency table
+    DATATYPE_CORR = 'corr'  # Correlation measures
+    DATATYPE_REG = 'reg'    # Regression measures
+
+    def __init__(self, ci_level=0.95):
         self.ci_level = ci_level
-    
+
+
+#
+# Normalized Mutual Information measure
+#
 class NMI(Measure):
+    dataType = Measure.DATATYPE_CT
+
     def compute(self, data):
         return mutual_info(data, norm=True, ci_level=self.ci_level)
         
@@ -27,20 +72,23 @@ class NMI(Measure):
         if pval == 1:
             return 0, 0, 1
         
-        z = abs(stats.norm.ppf(pval))
-        mean = ci_high-(ci_high-ci_low)/2
-        std = mean/z
-        ci = stats.norm.interval(self.ci_level, loc=mean, scale=std)
-        return max(0,ci[0]), min(ci[1],1), pval
-        
+        ci = z_ci_from_p(ci_low, ci_high, pval, self.ci_level)
+        return max(0, ci[0]), min(ci[1], 1), pval
+
+
+#
+# Pearson Correlation measure
+#
 class CORR(Measure):
+    dataType = Measure.DATATYPE_CORR
+
     def compute(self, data):
         return correlation(data, ci_level=self.ci_level)
         
     def normalize_effect(self, res):
         if self.ci_level:
             (ci_low, ci_high, p) = res
-            return 0 if (ci_low * ci_high < 0) else min(abs(ci_low), abs(ci_high))
+            return z_effect(ci_low, ci_high)
         else:
             return abs(res)
     
@@ -48,20 +96,23 @@ class CORR(Measure):
         if pval == 1:
             return 0, 0, 1
         
-        z = abs(stats.norm.ppf(pval))
-        mean = ci_high-(ci_high-ci_low)/2
-        std = abs(mean/z)
-        ci = stats.norm.interval(self.ci_level, loc=mean, scale=std)
+        ci = z_ci_from_p(ci_low, ci_high, pval, self.ci_level)
         return max(-1,ci[0]), min(ci[1],1), pval
-        
+
+
+#
+# Difference measure
+#
 class DIFF(Measure):
+    dataType = Measure.DATATYPE_CT
+
     def compute(self, data):
         return difference(data, ci_level=self.ci_level)
         
     def normalize_effect(self, res):
         if self.ci_level:
             (ci_low, ci_high, p) = res
-            return 0 if (ci_low * ci_high < 0) else min(abs(ci_low), abs(ci_high))
+            return z_effect(ci_low, ci_high)
         else:
             return abs(res)
     
@@ -69,20 +120,23 @@ class DIFF(Measure):
         if pval == 1:
             return 0, 0, 1
         
-        z = abs(stats.norm.ppf(pval))
-        mean = ci_high-(ci_high-ci_low)/2
-        std = abs(mean/z)
-        ci = stats.norm.interval(self.ci_level, loc=mean, scale=std)
+        ci = z_ci_from_p(ci_low, ci_high, pval, self.ci_level)
         return max(-1,ci[0]), min(ci[1],1), pval
-        
+
+
+#
+# Ratio measure
+#
 class RATIO(Measure):
+    dataType = Measure.DATATYPE_CT
+
     def compute(self, data):
         return ratio(data, ci_level=self.ci_level)
         
     def normalize_effect(self, res):
         if self.ci_level:
             (ci_low, ci_high, p) = res
-            return 0 if (log(ci_low) * log(ci_high) < 0) else min(abs(log(ci_low)), abs(log(ci_high)))
+            return z_effect(log(ci_low), log(ci_high))
         else:
             return abs(log(res))
     
@@ -90,64 +144,79 @@ class RATIO(Measure):
         if pval == 1:
             return 1, 1, 1
         
-        z = abs(stats.norm.ppf(pval))
-        mean = log(ci_high)-(log(ci_high)-log(ci_low))/2
-        std = abs(mean/z)
-        
-        ci = stats.norm.interval(self.ci_level, loc=mean, scale=std)
+        ci = z_ci_from_p(log(ci_low), log(ci_high), pval, self.ci_level)
         return exp(ci[0]), exp(ci[1]), pval
 
-# 
-# mutual information with or without normalization
+
 #
-# @args data    the contingency table to compute the MI of
-# @args norm    whether the MI should be normalized
+# Regression measure
+#
+class REGRESSION(Measure):
+    dataType = Measure.DATATYPE_REG
+
+    def __init__(self, ci_level=None, topK=10):
+        Measure.__init__(self, ci_level)
+        self.topK = topK
+
+    def compute(self, data):
+        y = data[data.columns[-1]]
+        X = data[data.columns[0:-1]]
+
+        # print 'Regressing from {}...{} to {}'.format(data.columns[0], data.columns[-2], data.columns[-1])
+
+        reg = LogisticRegression()
+        reg.fit(X, y)
+        y_pred = reg.predict(X)
+
+        # approximate the standard errors for all regression coefficients
+        mse = np.mean((y - y_pred.T)**2)
+        var_est = mse * np.diag(np.linalg.pinv(np.dot(X.T, X)))
+        SE_est = np.sqrt(var_est)
+        coeffs = reg.coef_[0].tolist()
+
+        if not self.ci_level:
+            return coeffs
+
+        # compute confidence intervals and p-values for all coefficients
+        results = pd.DataFrame(coeffs, columns=['coeff'])
+        results['std err'] = SE_est
+        results['z'] = abs(results['coeff']/results['std err'])
+        results['p-value'] = 2*stats.norm.sf(results['z'])
+        ci_s = stats.norm.interval(self.ci_level, loc=results['coeff'], scale=results['std err'])
+        results['conf low'] = exp(ci_s[0])
+        results['conf high'] = exp(ci_s[1])
+
+        # compute a standardized effect size and return the topK coefficients
+        results['effect'] = map(lambda (ci_low, ci_high): z_effect(ci_low, ci_high), zip(results['conf low'], results['conf high']))
+        sorted_results = results.sort(columns=['effect'], ascending=False)
+        return sorted_results[['conf low', 'conf high', 'p-value']].head(self.topK)
+
+    def normalize_effect(self, res):
+        if self.ci_level:
+            return np.mean(map(lambda (ci_low, ci_high, p): z_effect(ci_low, ci_high), res.values))
+        else:
+            return np.mean(abs(res))
+
+    def ci_from_p(self, ci_low, ci_high, pval):
+        if pval == 1:
+            return 0, 0, 1
+
+        ci = z_ci_from_p(ci_low, ci_high, pval, self.ci_level)
+        return ci[0], ci[1], pval
+
+
+# 
+# mutual information with or without normalization and confidence intervals
+#
+# @args data        the contingency table to compute the MI of
+# @args norm        whether the MI should be normalized
 # @args ci_level    level for confidence intervals (or None)
 #
-'''
-def mutual_info(data, norm=False, ci_level=None):
-    mi = metrics.mutual_info_score(None, None, contingency=data)
-    
-    #
-    # Normalize I(X,Y) by dividing by the min entropy of X and Y
-    #
-    if (norm):
-        # compute marginal distributions of X and Y
-        px = np.sum(data, axis=1)
-        py = np.sum(data, axis=0)
-        
-        px = np.array(px, dtype=float)/sum(px)
-        py = np.array(py, dtype=float)/sum(py)
-        
-        hx = stats.entropy(px)
-        hy = stats.entropy(py)
-        
-        mi = mi/min(hx,hy)
-    
-    # compute confidence interval (measure, delta)
-    if (ci_level):
-        if not norm:
-            std = mi_sigma(data)
-            conf_mi = stats.norm.interval(ci_level, loc=mi, scale=std)
-            z = mi/std
-            p_val = 2*(1 - stats.norm.cdf(abs(z)))
-        else:   
-            #p_val = 2*(1 - special.ndtr(abs(z)))
-            #_, pval, _, _ = G_test(data)
-            #conf_mi = ci_from_p(pval, mi, ci_level)
-            conf_mi, p_val = bootstrap_ci(data, lambda x: mutual_info(x, norm), ci_level=ci_level)
-        
-        return mi, (conf_mi[1]-conf_mi[0])/2, p_val
-        
-    return mi
-'''
-    
 def mutual_info(data, norm=False, ci_level=None):
     if isinstance(data, pd.DataFrame):
         data = data.values
     
-    # data smoothing if there are very small values
-    #if data.shape == (2,2):
+    # data smoothing
     data = data.copy()
     data[data == 0] = 1
     
@@ -161,18 +230,19 @@ def mutual_info(data, norm=False, ci_level=None):
     
     # joint probabilities
     N = np.array(data).sum()
+
     pxy = np.array(data, dtype=float)/N
     
     # entropies    
     hx = stats.entropy(px)
     hy = stats.entropy(py)
     hxy = stats.entropy(pxy.flatten())
-    
+
     mi = -hxy + hx + hy
-    
+
     # normalized mutual info
     if norm:
-        if (hx == 0 or hy == 0 or mi == 0):
+        if (hx == 0) or (hy == 0) or (mi == 0):
             mi = 0
         else:
             mi = mi/min(hx, hy)
@@ -180,8 +250,9 @@ def mutual_info(data, norm=False, ci_level=None):
     # no confidence levels, return single measure
     if not ci_level:
         return mi
-    
-    # get asymptotic standard deviation for confidence interval 
+
+    # get asymptotic standard deviation for confidence interval
+    # Brown'75, "The asymptotic standard errors of some estimates of uncertainty in the two-way contingency table"
     std = 0
     for i in range(0, len(px)):
         for j in range(0, len(py)):
@@ -196,21 +267,28 @@ def mutual_info(data, norm=False, ci_level=None):
                 else:
                     # std for MI
                     std += pxy[i,j] * pow((log(pxy[i,j])-log(px[i])-log(py[j])), 2)
-    
+
     if norm:
         std = sqrt(std)
     else:
-        std = sqrt((std-pow(mi,2))/N)
-    
+        std = sqrt((std-pow(mi, 2))/N)
+
     if std != 0:
         # compute asymptotic confidence interval and p-value
-        ci = stats.norm.interval(ci_level, loc=mi, scale=std)
-        z = mi/std
-        pval = 2*stats.norm.sf(abs(z))
+        #ci = stats.norm.interval(ci_level, loc=mi, scale=std)
+        #z = mi/std
+        #pval = 2*stats.norm.sf(abs(z))
+
+        _, pval, _, _ = G_test(data)
+        #print G,pval2,z,pval,z**2,mi,std
+
+        ci = z_ci_from_p(mi, mi, pval, ci_level)
+
         return max(ci[0],0), min(ci[1],1), pval
     else:
         return mi, 0, 1
-    
+
+
 #
 # statistical parity measure
 #
@@ -223,9 +301,10 @@ def statistical_parity(data):
     tot = np.sum(data, axis=0)
     data = np.array(np.array(data, dtype=float)/tot, dtype='float')
     
-    sp =  0.5*sum(abs(data[:,0]-data[:,1]))
+    sp = 0.5*sum(abs(data[:,0]-data[:,1]))
     return sp
-    
+
+
 # 
 # Difference measure, possibly with confidence intervals
 #
@@ -261,7 +340,7 @@ def difference(data, ci_level=0.95):
         # standard deviations
         sigma_diff = sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2)
     
-        #confidence intervals
+        # confidence intervals
         ci_diff = stats.norm.interval(ci_level, loc=diff, scale=sigma_diff)
         
         z = diff/sigma_diff
@@ -270,7 +349,8 @@ def difference(data, ci_level=0.95):
         return max(ci_diff[0], -1), min(ci_diff[1], 1), pval
     else:
         return diff
-        
+
+
 # 
 # Ratio measure, possibly with confidence intervals
 #
@@ -306,15 +386,16 @@ def ratio(data, ci_level=0.95):
         # standard deviations
         sigma_log_ratio = sqrt(1.0/r1+1.0/r2-1.0/n1-1.0/n2)
         
-        #confidence intervals
+        # confidence intervals
         ci_log_ratio = stats.norm.interval(ci_level, loc=log(ratio), scale=sigma_log_ratio)
-        
+
         z = log(ratio)/sigma_log_ratio
         pval = 2*stats.norm.sf(abs(z))
-        
+
         return exp(ci_log_ratio[0]), exp(ci_log_ratio[1]), pval
     else:
         return ratio
+
 
 #
 # Computes the G_test
@@ -329,9 +410,9 @@ def G_test(data, correction=False):
     data = data[data.columns[(data != 0).any()]]
     data = data[(data.T != 0).any()]
 
-    return stats.chi2_contingency(data, correction=False, 
-                                    lambda_="log-likelihood")
-                                    
+    return stats.chi2_contingency(data, correction=False, lambda_="log-likelihood")
+
+
 #
 # Compute the conditional mutual information of two variables given a third
 #
@@ -339,9 +420,7 @@ def G_test(data, correction=False):
 #               information between the first and second dimensions, given the 
 #               third.
 #        
-def mi_cond(data): 
-    mi  = 0
-    
+def mi_cond(data):
     # total size of the data
     tot = sum(map(lambda group: group.sum().sum(), data))
     
@@ -349,7 +428,8 @@ def mi_cond(data):
     
     mi = G/(2.0*tot)
     return mi
-                                       
+
+
 #
 # Computes a conditional G-test
 #
@@ -370,6 +450,7 @@ def G_test_cond(data):
     
     return G, p_val
 
+
 #
 # Computes the exact Fisher test
 #
@@ -377,7 +458,8 @@ def G_test_cond(data):
 def Fisher_test(data):
     assert (data.shape == (2,2))
     return stats.fisher_exact(data)
-                                    
+
+
 #
 # standard deviation of mutual information (Basharin '59)
 #
@@ -407,6 +489,7 @@ def mi_sigma(data):
                     mi += pxy * (log(pxy)-log(px)-log(py))
     
     return sqrt((mi_sqr-pow(mi,2))/N)
+
 
 def cramer_v(data, ci_level=0.95):
     # remove all-zero columns/rows
@@ -467,23 +550,18 @@ def correlation(counts, ci_level=None):
         
         # inverse transform
         conf_corr = [tanh(conf_fisher[0]), tanh(conf_fisher[1])]
-        
-        return conf_corr[0], conf_corr[1], pval     
-        
+        return conf_corr[0], conf_corr[1], pval
     else:
         return abs(corr)
-
-
-# number of randomized samplings in the Monte Carlo test
-N_SAMPLES = 1000
 
 
 #
 # Perform a Monte-Carlo permutation test
 #
-# @args data    the contingency table to test
+# @args data        the contingency table to test
+# @args n_samples   the number of random permutations to perform
 #
-def permutation_test(data):
+def permutation_test(data, n_samples=1000):
     # observed statistic
     obs = G_test(data)[0]
     
@@ -521,12 +599,13 @@ def permutation_test(data):
     
     
     # perform N_SAMPLES randomized samplings
-    estimates = np.array(map(lambda x: run_permutation_test(list(pool),counts),range(N_SAMPLES)))
+    estimates = np.array(map(lambda x: run_permutation_test(list(pool),counts),range(n_samples)))
     
     # compute the two-sided p-value
     diffCount = len(np.where(estimates <= obs)[0])
-    p_val = 1.0 - (float(diffCount)/float(N_SAMPLES))
+    p_val = 1.0 - (float(diffCount)/float(n_samples))
     return p_val
+
 
 #
 # Bootstrap confidence interval computation
@@ -552,14 +631,6 @@ def bootstrap_ci(data, stat, num_samples=1000, ci_level=0.95):
     # with replacement from {0, 1, ..., n-1}. For each sample, rebuild a
     # contingency table and compute the stat.
     #
-    #stats = np.sort(np.apply_along_axis(lambda row: stat(row.reshape(dim)), 1, np.random.multinomial(n, probas, size=num_samples)))
-    #return (stats[int((alpha/2.0)*num_samples)], stats[int((1-alpha/2.0)*num_samples)])
-    
-    #
-    # Obtain `num_samples' random samples of `n' multinomial values, sampled
-    # with replacement from {0, 1, ..., n-1}. For each sample, rebuild a
-    # contingency table and compute the stat.
-    #
     temp = np.random.multinomial(n, probas, size=num_samples)
     bs_stats = np.apply_along_axis(lambda row: stat(row.reshape(dim)), 1, temp)
     
@@ -570,31 +641,6 @@ def bootstrap_ci(data, stat, num_samples=1000, ci_level=0.95):
     # get a confidence interval as (mean-z*std, mean+z*std)
     ci = stats.norm.interval(ci_level, loc=mean, scale=std)
     z = mean/std
-    #pval = 2*(1 - stats.norm.cdf(abs(z)))
     pval = 2*stats.norm.sf(abs(z))
-    
-    #print z, pval, pval2
-    
-    
-    return ci, pval
-    
-# Computes a confidence interval from a p-value, assuming asymptotic normality
-#
-# @args pval        the p-value
-# @args mean        the mean of the confidence interval (expected value of the asymptotic normal)
-# @args ci_level    confidence level for the interval
-#
-def ci_from_p(pval, mean, ci_level):
-    # get the z-statistic for a normal distribution test from the p-value
-    z = min(stats.norm.ppf(1-pval/2), 100)
-    
-    # get the standard deviation of the normal
-    std = abs(mean/z)
 
-    # compute a confidence interval around mean
-    ci = stats.norm.interval(ci_level, loc=mean, scale=std)
-    
-    print pval, z, std, ci
-    
-    return ci
-     
+    return ci, pval
