@@ -1,13 +1,1 @@
-* Use training model in testing for Regression
-    => Think about effect size, p-values for this
-
-* Try out permutation tests and bootstrap CIs for testing
-    => Different corrections for FDR
-    
 * Look for image-net datasets with Race, Gender, Age, etc.
-
-* Simplify the whole measure thing
-    => Since we have one measure copy per node, we can store results
-    => compute(): store results
-    => absolute effect: re-use result
-    => FDR: update measure attributes?

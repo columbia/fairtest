@@ -34,9 +34,9 @@ Launch pyspark and attach the fairtest code
 In the pyspark shell:
 
     import fairtest.spark.test_spark as test_spark
-    root, data = test_spark.build_tree(sc)
-    clusters, pretty_tree = test_spark.find_clusters(root, data, train_set=False)
-    test_spark.print_clusters(clusters, sort_by='effect')
+    root, data, measure = test_spark.build_tree(sc)
+    clusters, pretty_tree = test_spark.find_clusters(root, data, measure, train_set=False)
+    test_spark.print_clusters(clusters)
     test_spark.print_tree(pretty_tree, '../graphs/tree_spark.pdf')
     
 

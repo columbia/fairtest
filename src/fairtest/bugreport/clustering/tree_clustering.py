@@ -5,7 +5,7 @@ from fairtest.bugreport.statistics.fairness_measures import Measure
 import pandas as pd
 import numpy as np
 import ete2
-from copy import deepcopy
+from copy import deepcopy, copy
 
 
 #
@@ -259,8 +259,8 @@ def find_clusters_spark(topNode, data, measure=fm.NMI(ci_level=0.95), train_set=
             size = n
             cluster_data = data_node[[out, sens]]
 
-        # build a cluster object and store it        
-        clstr = Cluster(node.id(), feature_path, isleaf, isroot, stats, size, cluster_data)
+        # build a cluster object and store it
+        clstr = Cluster(node.id(), feature_path, isleaf, isroot, stats, size, copy(measure), cluster_data)
         clusters.append(clstr)
         
         # append the cluster size to the ete2 tree node for future printing

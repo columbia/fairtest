@@ -1,28 +1,5 @@
 import fairtest.bugreport.trees.categorical_tree as cat_tree
-import fairtest.bugreport.core.dataset as dataset
 import fairtest.bugreport.statistics.fairness_measures as fm
-
-TARGET = '__TARGET__'
-SENS = '__SENS__'
-
-
-#
-# Prepare the data for decision-tree building. Encode the sensitive feature and
-# output feature as a single feature.
-#
-# @args data    the dataset
-#
-def prepare_data(data):
-    data_copy = data.data_train.copy()
-    
-    # get the dimensions of the OUTPUT x SENSITIVE contingency table
-    target_dim = (len(data.encoders[data.OUT].classes_), len(data.encoders[data.SENS].classes_))
-    
-    # add a new target feature encoding the values in the contingency table
-    data_copy.insert(0, TARGET, target_dim[1]*data_copy[data.OUT] + data_copy[data.SENS])
-    data_copy = data_copy.drop([data.SENS, data.OUT], axis=1)
-    
-    return data_copy, target_dim
 
 
 #
