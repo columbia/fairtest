@@ -35,7 +35,8 @@ def prepare_data(data):
 # @args agg_type        The child-score aggregation method to use
 # @args conf            Confidence level for CIs
 #
-def train_tree(data, max_depth=5, min_leaf_size=100, measure=fm.NMI(ci_level=0.95), agg_type=cat_tree.ScoreParams.WEIGHTED_AVG):
+def train_tree(data, max_depth=5, min_leaf_size=100, measure=fm.NMI(ci_level=0.95),
+               agg_type=cat_tree.ScoreParams.WEIGHTED_AVG):
     # prepare the function call parameters
     params = {}
     params['dataset'] = data

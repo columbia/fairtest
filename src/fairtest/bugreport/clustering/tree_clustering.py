@@ -23,13 +23,14 @@ class Cluster:
     # @args size        the cluster size
     # @args data        any additional data required for fairness measures
     #
-    def __init__(self, num, path, isleaf, isroot, stats, size, data=None):
+    def __init__(self, num, path, isleaf, isroot, stats, size, clstr_measure=None, data=None):
         self.num = num
         self.path = path
         self.isleaf = isleaf
         self.isroot = isroot
         self.size = size
         self.stats = stats
+        self.clstr_measure = clstr_measure
         self.data = data
 
 
@@ -73,7 +74,7 @@ def update_cont_path(feature_path, feature, lower_bound=None, upper_bound=None):
 # @args data        the dataset object
 # @args train_set   if true, finds clusters in the training set
 #        
-def find_clusters_cat(tree, data, measure=fm.NMI(ci_level=0.95), train_set=False):
+def find_clusters_cat(tree, data, train_set=False):
     # list of clusters
     clusters = []
     
@@ -92,7 +93,9 @@ def find_clusters_cat(tree, data, measure=fm.NMI(ci_level=0.95), train_set=False
     for tree_node in tree.traverse("levelorder"):
         tree_node.add_features(id=node_id)
         node_id += 1
-    
+
+    measure_type = tree.measure.dataType
+
     #
     # Simple BFS to traverse the tree
     #
@@ -103,7 +106,7 @@ def find_clusters_cat(tree, data, measure=fm.NMI(ci_level=0.95), train_set=False
     def bfs(node, data_node, feature_path):
         is_root = node.is_root()
         is_leaf = node.is_leaf()
-        
+
         # current node
         if not is_root:
             feature = node.feature
@@ -125,7 +128,7 @@ def find_clusters_cat(tree, data, measure=fm.NMI(ci_level=0.95), train_set=False
                 feature_path[feature] = encoders[feature].inverse_transform([category])[0]
                 data_node = data_node[data_node[feature] == category]
 
-        if measure.dataType == Measure.DATATYPE_CT:
+        if measure_type == Measure.DATATYPE_CT:
             # categorical data
             # create an empty contingency table
             ct = pd.DataFrame(0, index=range(len(encoders[out].classes_)), columns=range(len(encoders[sens].classes_)))
@@ -142,7 +145,7 @@ def find_clusters_cat(tree, data, measure=fm.NMI(ci_level=0.95), train_set=False
             size = len(data_node)
             cluster_data = None
 
-        elif measure.dataType == Measure.DATATYPE_CORR:
+        elif measure_type == Measure.DATATYPE_CORR:
             # continuous data
             # get data statistics for correlation computation
             sum_x = data_node[out].sum()
@@ -162,10 +165,11 @@ def find_clusters_cat(tree, data, measure=fm.NMI(ci_level=0.95), train_set=False
             label_list = labels.tolist()
             stats = data_node[label_list + [sens]]
             size = len(data_node)
-            cluster_data = {'labels': label_list}
+            cluster_data = {'labels': label_list, 'data_node': data_node, 'sens': sens, 'encoder_sens': encoders[sens]}
         
         # build a cluster class and store it in the list
-        clstr = Cluster(node.id, feature_path, is_leaf, is_root, stats, size, cluster_data)
+        training_measure = node.measure
+        clstr = Cluster(node.id, feature_path, is_leaf, is_root, stats, size, training_measure, cluster_data)
         clusters.append(clstr)
         
         # recurse in children

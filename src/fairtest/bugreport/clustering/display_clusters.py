@@ -2,17 +2,17 @@ from StringIO import StringIO
 import prettytable
 from statsmodels.sandbox.stats.multicomp import multipletests
 import matplotlib.pyplot as plt
-import matplotlib.colors as colors
 import pandas as pd
 import numpy as np
+from copy import copy
 
 from fairtest.bugreport.statistics import fairness_measures as fm
-from fairtest.bugreport.statistics.fairness_measures import NMI
 
 # Filters
 FILTER_LEAVES_ONLY = 0
 FILTER_ALL = 1
-NODE_FILTERS = [FILTER_ALL, FILTER_LEAVES_ONLY]
+FILTER_ROOT_ONLY = 2
+NODE_FILTERS = [FILTER_ALL, FILTER_LEAVES_ONLY, FILTER_ROOT_ONLY]
 
 # Sorting Method
 SORT_BY_EFFECT = 0
@@ -30,47 +30,78 @@ SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG]
 # @args leaves_only consider tree leaves only
 # @args conf_level  level for confidence intervals
 #
-def bug_report(clusters, columns=None, measure=NMI(ci_level=0.95), sort_by=SORT_BY_EFFECT, node_filter=FILTER_LEAVES_ONLY, fdr=None):
-    #assert isinstance(measure, fm.Measure)
+def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
+               node_filter=FILTER_LEAVES_ONLY, new_measure=None, approx=True, fdr=None):
+
     assert sort_by in SORT_METHODS
     assert node_filter in NODE_FILTERS
 
+    if fdr:
+        fdr_alpha = 1-fdr
+    else:
+        fdr_alpha = None
+
+    if new_measure:
+        measure = new_measure
+        for cluster in clusters:
+            cluster.clstr_measure = copy(new_measure)
+    else:
+        measure = clusters[0].clstr_measure
+    measure_type = measure.dataType
+
+    # Filter the clusters to show (All or Leaves & Root)
+    if node_filter == FILTER_LEAVES_ONLY:
+        clusters = filter(lambda c: c.isleaf or c.isroot, clusters)
+    elif node_filter == FILTER_ROOT_ONLY:
+        clusters = filter(lambda c: c.isroot, clusters)
+
+    #
+    # Adjusted Confidence Interval (Bonferroni)
+    #
     # compute effect sizes and p-values
-    stats = map(lambda c: measure.compute(c.stats), clusters)
+    adj_ci_level = None
+    if fdr_alpha and measure.ci_level:
+        adj_ci_level = 1-(1-fdr_alpha)/len(clusters)
+        #print 'Adjusted CI level is {:.4f}'.format(adj_ci_level)
+
+    if measure.dataType == fm.Measure.DATATYPE_CORR:
+        stats = map(lambda c: c.clstr_measure.compute(c.stats, data=c.data['values'],
+                                                      approx=approx, adj_ci_level=adj_ci_level).stats, clusters)
+    else:
+        stats = map(lambda c: c.clstr_measure.compute(c.stats, approx=approx, adj_ci_level=adj_ci_level).stats,
+                    clusters)
 
     # For regression, we have multiple p-values per cluster (one per topK coefficient)
-    if isinstance(measure, fm.REGRESSION):
+    if measure_type == fm.Measure.DATATYPE_REG:
         stats = pd.concat(stats)
         stats_index = stats.index
         stats_columns = stats.columns
         stats = stats.values
 
     # correct p-values
-    if fdr:
-        pvals = map(lambda (low, high, p): max(p, 1e-180), stats)
-        _, pvals_corr, _, _ = multipletests(pvals, alpha=fdr, method='holm')
-        stats = [measure.ci_from_p(low, high, pval_corr) for ((low, high, _), pval_corr) in zip(stats, pvals_corr)]
+    if fdr_alpha:
+        pvals = map(lambda stat: max(stat[-1], 1e-180), stats)
+        _, pvals_corr, _, _ = multipletests(pvals, alpha=fdr_alpha, method='holm')
+        #stats = [clstr.clstr_measure.ci_from_p(low, high, pval_corr)
+        # for ((clstr, (low, high, _)), pval_corr) in zip(zipped, pvals_corr)]
+        stats = [np.append(stat[0:-1], pval_corr) for (stat, pval_corr) in zip(stats, pvals_corr)]
 
     # For regression, re-form the dataframes for each cluster
-    if isinstance(measure, fm.REGRESSION):
+    if measure_type == fm.Measure.DATATYPE_REG:
         stats = pd.DataFrame(stats, index=stats_index, columns=stats_columns)
         stats = np.array_split(stats, len(stats)/measure.topK)
 
     zipped = zip(clusters, stats)
-    
-    # Filter the clusters to show (All or Leaves & Root)
-    if node_filter == FILTER_LEAVES_ONLY:
-        zipped = filter(lambda (c, stat): c.isleaf or c.isroot, zipped)
-    
+
     # print global stats (root of tree)
     (root, root_stats) = filter(lambda (c, _): c.isroot, zipped)[0]
     print 'Global Population of size {}'.format(root.size)
     print
     
     # print a contingency table or correlation analysis
-    if measure.dataType == fm.Measure.DATATYPE_CT:
+    if measure_type == fm.Measure.DATATYPE_CT:
         print_cluster_ct(root, columns, root_stats, measure.__class__.__name__)
-    elif measure.dataType == fm.Measure.DATATYPE_CORR:
+    elif measure_type == fm.Measure.DATATYPE_CORR:
         print_cluster_corr(root, root_stats, measure.__class__.__name__)
     else:
         print_cluster_reg(root, root_stats, measure.__class__.__name__, sort_by=sort_by)
@@ -82,16 +113,16 @@ def bug_report(clusters, columns=None, measure=NMI(ci_level=0.95), sort_by=SORT_
 
     # sort by significance
     if sort_by == SORT_BY_SIG:
-        if isinstance(measure, fm.REGRESSION):
+        if measure_type == fm.Measure.DATATYPE_REG:
             # for regression, we sort by the p-value of the most significant coefficient
             zipped.sort(key=lambda (c, stats): min(stats['p-value']))
         else:
-            zipped.sort(key=lambda (c, (low, high, p)): p)
+            zipped.sort(key=lambda (c, stats): stats[-1])
 
     # sort by effect-size
     elif sort_by == SORT_BY_EFFECT:
         # get a normalized effect size and sort
-        zipped.sort(key=lambda (c, stats): measure.normalize_effect(stats), reverse=True)
+        zipped.sort(key=lambda (c, stats): c.clstr_measure.abs_effect(), reverse=True)
 
     # print clusters in order of relevance    
     for (cluster, cluster_stats) in zipped:
@@ -99,9 +130,9 @@ def bug_report(clusters, columns=None, measure=NMI(ci_level=0.95), sort_by=SORT_
         print 'Context = {}'.format(cluster.path)
         print
 
-        if measure.dataType == fm.Measure.DATATYPE_CT:
+        if measure_type == fm.Measure.DATATYPE_CT:
             print_cluster_ct(cluster, columns, cluster_stats, measure.__class__.__name__)
-        elif measure.dataType == fm.Measure.DATATYPE_CORR:
+        elif measure_type == fm.Measure.DATATYPE_CORR:
             print_cluster_corr(cluster, cluster_stats, measure.__class__.__name__)
         else:
             print_cluster_reg(cluster, cluster_stats, measure.__class__.__name__, sort_by=sort_by)
@@ -124,9 +155,13 @@ def print_cluster_ct(cluster, columns, cluster_stats, effect_name):
     print pt
     print 
 
-    (effect_low, effect_high, p_val) = cluster_stats
-    # print p-value and confidence interval of MI
-    print 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.format(p_val, effect_name, effect_low, effect_high)
+    if len(cluster_stats) == 3:
+        # print p-value and confidence interval of MI
+        (effect_low, effect_high, p_val) = cluster_stats
+        print 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.format(p_val, effect_name, effect_low, effect_high)
+    else:
+        effect, p_val = cluster_stats
+        print 'p-value = {:.2e} ; {} = {:.4f}'.format(p_val, effect_name, effect)
 
 
 def print_cluster_corr(cluster, cluster_stats, effect_name):
@@ -147,27 +182,59 @@ def print_cluster_corr(cluster, cluster_stats, effect_name):
     plt.ylabel(data.columns[0])
     plt.show()
 
-    (effect_low, effect_high, p_val) = cluster_stats
-    # print p-value and confidence interval of correlation
-    print 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.format(p_val, effect_name, effect_low, effect_high)
+    if len(cluster_stats) == 3:
+        # print p-value and confidence interval of correlation
+        (effect_low, effect_high, p_val) = cluster_stats
+        print 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.format(p_val, effect_name, effect_low, effect_high)
+    else:
+        effect, p_val = cluster_stats
+        print 'p-value = {:.2e} ; {} = {:.4f}'.format(p_val, effect_name, effect)
 
 
 def print_cluster_reg(cluster, stats, effect_name, sort_by='effect'):
-    effect = fm.REGRESSION(ci_level=1.0).normalize_effect(stats)
+    effect = cluster.clstr_measure.abs_effect()
+
     print 'Average (absolute) Log-Odds of top-{} labels: {}'.format(len(stats), effect)
     print
     labels = cluster.data['labels']
 
     stats.index = map(lambda idx: labels[idx], stats.index.values)
 
-    if sort_by == 'effect':
-        stats['effect'] = map(lambda (ci_low, ci_high): fm.z_effect(ci_low, ci_high), zip(stats['conf low'], stats['conf high']))
-        sorted_results = stats.sort(columns=['effect'], ascending=False)
-        sorted_results.drop('effect', axis=1)
+    if sort_by == SORT_BY_EFFECT:
+        if 'conf low' in stats.columns:
+            stats['effect'] = map(lambda (ci_low, ci_high): fm.z_effect(ci_low, ci_high),
+                                  zip(stats['conf low'], stats['conf high']))
+            sorted_results = stats.sort(columns=['effect'], ascending=False)
+            sorted_results.drop('effect', axis=1)
+        else:
+            sorted_results = stats.sort(columns=['coeff'], ascending=False)
     else:
         sorted_results = stats.sort(columns=['p-value'], ascending=True)
 
     print sorted_results
+    print
+
+    cluster_data = cluster.data['data_node']
+    sens = cluster.data['sens']
+    encoder = cluster.data['encoder_sens']
+
+    for label in sorted_results.index:
+        ct = pd.DataFrame(0, index=cluster_data[label].unique(), columns=range(len(encoder.classes_)))
+        # fill in available values
+        ct = ct.add(pd.crosstab(cluster_data[label], cluster_data[sens]), fill_value=0)
+
+        # replace numbers by original labels
+        ct.index.name = label
+        ct.columns = encoder.classes_
+        ct.columns.name = sens
+
+        output = StringIO()
+        rich_ct(ct).to_csv(output)
+        output.seek(0)
+        pt = prettytable.from_csv(output)
+
+        print pt
+        print
 
 
 #

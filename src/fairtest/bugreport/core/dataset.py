@@ -140,4 +140,5 @@ class Dataset:
     # @args seed        random seed for the split
     #
     def train_test_split(self, train_size, seed):
-        self.data_train, self.data_test = cross_validation.train_test_split(self.encoded_data, train_size=train_size, random_state=seed)
+        self.data_train, self.data_test = \
+            cross_validation.train_test_split(self.encoded_data, train_size=train_size, random_state=seed)

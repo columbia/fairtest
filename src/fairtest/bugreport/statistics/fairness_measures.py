@@ -7,7 +7,8 @@ from sklearn.linear_model import LogisticRegression
 import numpy as np
 import pandas as pd
 from math import sqrt, log, exp, atanh, tanh
-from collections import Counter
+import scikits.bootstrap as bs
+import rpy2.robjects as ro
 
 
 #
@@ -50,6 +51,8 @@ class Measure(object):
 
     def __init__(self, ci_level=0.95):
         self.ci_level = ci_level
+        self.stats = None
+        self.exact_ci = None
 
 
 #
@@ -57,23 +60,74 @@ class Measure(object):
 #
 class NMI(Measure):
     dataType = Measure.DATATYPE_CT
+    
+    def __init__(self, ci_level=None):
+        Measure.__init__(self, ci_level)
+        self.data = None
+    
+    def compute(self, data, approx=True, adj_ci_level=None):
+        self.data = data
+        ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
 
-    def compute(self, data):
-        return mutual_info(data, norm=True, ci_level=self.ci_level)
-        
-    def normalize_effect(self, res):
-        if self.ci_level:
-            (ci_low, ci_high, p) = res
-            return ci_low
+        if approx:
+            self.stats = mutual_info(data, norm=True, ci_level=ci_level)
         else:
-            return res
+            N = np.array(data).sum()
+            if N < 1000:
+                pval = permutation_test_ct(data)
+            else:
+                _, pval, _, _ = G_test(data)
+
+            if ci_level:
+                if N < 1000:
+                    ci_low, ci_high = bootstrap_ci_ct(data,
+                                                      lambda x: mutual_info(x, norm=True, ci_level=None, pval=False)[0],
+                                                      ci_level=ci_level)
+                else:
+                    ci_low, ci_high, _ = mutual_info(data, norm=True, ci_level=ci_level)
+
+                if pval > 1-ci_level:
+                    ci_low = 0
+
+                self.exact_ci = True
+                self.stats = (ci_low, ci_high, pval)
+            else:
+                mi, _ = mutual_info(data, norm=True, ci_level=None)
+                self.stats = mi, pval
+
+        return self
+        
+    def abs_effect(self):
+        return self.stats[0]
     
     def ci_from_p(self, ci_low, ci_high, pval):
         if pval == 1:
             return 0, 0, 1
-        
-        ci = z_ci_from_p(ci_low, ci_high, pval, self.ci_level)
-        return max(0, ci[0]), min(ci[1], 1), pval
+
+        if self.exact_ci:
+            return ci_low, ci_high, pval
+
+        sum_x = np.sum(self.data, axis=1)
+        sum_y = np.sum(self.data, axis=0)
+        N = np.array(self.data).sum()
+        hx = stats.entropy(sum_y)
+        hy = stats.entropy(sum_y)
+
+        df = (self.data.shape[0]-1)*(self.data.shape[1]-1)
+
+        G = special.chdtri(df, pval)
+
+        p_low = 1-(1-self.ci_level)/2
+        p_high= (1-self.ci_level)/2
+        G_low = special.chndtrinc(G, df, p_low)
+        G_high = special.chndtrinc(G, df, p_high)
+        ci = ((G_low+df)/(2.0*N), (G_high+df)/(2.0*N))
+        ci = map(lambda x: x/min(hx,hy), ci)
+
+        return ci[0], ci[1], pval
+
+    def __copy__(self):
+        return NMI(self.ci_level)
 
 
 #
@@ -82,22 +136,56 @@ class NMI(Measure):
 class CORR(Measure):
     dataType = Measure.DATATYPE_CORR
 
-    def compute(self, data):
-        return correlation(data, ci_level=self.ci_level)
+    def compute(self, corr_stats, data=None, approx=True, adj_ci_level=None):
+        ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
+
+        if approx:
+            self.stats = correlation(corr_stats, ci_level=ci_level)
+        else:
+            x = data[data.columns[1]]
+            y = data[data.columns[0]]
+            if len(x) < 1000:
+                pval = permutation_test_corr(x, y)
+            else:
+                #pval = stats.pearsonr(x, y)[1]
+                _, _, pval = correlation(corr_stats, ci_level)
+            if ci_level:
+                if len(x) < 1000:
+                    ci_low, ci_high = bootstrap_ci_corr(x, y, lambda x, y: stats.pearsonr(x, y)[0], ci_level=ci_level)
+                else:
+                    ci_low, ci_high, _ = correlation(corr_stats, ci_level)
+                if pval > 1-ci_level:
+                    if ci_low < 0 and ci_high < 0:
+                        ci_high = 0
+                    elif ci_low > 0 and ci_high > 0:
+                        ci_low = 0
+                self.exact_ci = True
+                self.stats = (ci_low, ci_high, pval)
+            else:
+                corr = stats.pearsonr(x, y)[0]
+                self.stats = (corr, pval)
+
+        return self
         
-    def normalize_effect(self, res):
+    def abs_effect(self):
         if self.ci_level:
-            (ci_low, ci_high, p) = res
+            (ci_low, ci_high, p) = self.stats
             return z_effect(ci_low, ci_high)
         else:
-            return abs(res)
-    
+            return abs(self.stats[0])
+
     def ci_from_p(self, ci_low, ci_high, pval):
         if pval == 1:
             return 0, 0, 1
-        
+
+        if self.exact_ci:
+            return ci_low, ci_high, pval
+
         ci = z_ci_from_p(ci_low, ci_high, pval, self.ci_level)
         return max(-1,ci[0]), min(ci[1],1), pval
+
+    def __copy__(self):
+        return CORR(self.ci_level)
 
 
 #
@@ -106,22 +194,53 @@ class CORR(Measure):
 class DIFF(Measure):
     dataType = Measure.DATATYPE_CT
 
-    def compute(self, data):
-        return difference(data, ci_level=self.ci_level)
-        
-    def normalize_effect(self, res):
+    def compute(self, data, approx=True, adj_ci_level=None):
+        ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
+
+        if approx:
+            self.stats = difference(data, ci_level=ci_level)
+        else:
+            N = np.array(data).sum()
+            if N < 5000:
+                pval = permutation_test_ct(data)
+            else:
+                _, pval, _, _ = G_test(data)
+
+            if ci_level:
+                ci_low, ci_high = bootstrap_ci_ct(data, lambda x: difference(x, ci_level=None), ci_level=ci_level)
+
+                if pval > 1-ci_level:
+                    if ci_low < 0 and ci_high < 0:
+                        ci_high = 0
+                    elif ci_low > 0 and ci_high > 0:
+                        ci_low = 0
+
+                self.exact_ci = True
+                self.stats = (ci_low, ci_high, pval)
+            else:
+                self.stats = difference(data, ci_level=ci_level)
+
+        return self
+
+    def abs_effect(self):
         if self.ci_level:
-            (ci_low, ci_high, p) = res
+            (ci_low, ci_high, p) = self.stats
             return z_effect(ci_low, ci_high)
         else:
-            return abs(res)
+            return abs(self.stats[0])
     
     def ci_from_p(self, ci_low, ci_high, pval):
         if pval == 1:
             return 0, 0, 1
-        
+
+        if self.exact_ci:
+            return ci_low, ci_high, pval
+
         ci = z_ci_from_p(ci_low, ci_high, pval, self.ci_level)
         return max(-1,ci[0]), min(ci[1],1), pval
+
+    def __copy__(self):
+        return DIFF(self.ci_level)
 
 
 #
@@ -130,22 +249,52 @@ class DIFF(Measure):
 class RATIO(Measure):
     dataType = Measure.DATATYPE_CT
 
-    def compute(self, data):
-        return ratio(data, ci_level=self.ci_level)
-        
-    def normalize_effect(self, res):
+    def compute(self, data, approx=True, adj_ci_level=None):
+        ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
+
+        if approx:
+            self.stats = ratio(data, ci_level=ci_level)
+        else:
+            N = np.array(data).sum()
+            if N < 5000:
+                pval = permutation_test_ct(data)
+            else:
+                _, pval, _, _ = G_test(data)
+
+            if ci_level:
+                ci_low, ci_high = bootstrap_ci_ct(data, lambda x: ratio(x, ci_level=None), ci_level=ci_level)
+                if pval > 1-ci_level:
+                    if ci_low < 1 and ci_high < 1:
+                        ci_high = 1
+                    elif ci_low > 1 and ci_high > 1:
+                        ci_low = 1
+
+                self.exact_ci = True
+                self.stats = (ci_low, ci_high, pval)
+            else:
+                self.stats = ratio(data, ci_level=ci_level)
+
+        return self
+
+    def abs_effect(self):
         if self.ci_level:
-            (ci_low, ci_high, p) = res
+            (ci_low, ci_high, p) = self.stats
             return z_effect(log(ci_low), log(ci_high))
         else:
-            return abs(log(res))
+            return abs(log(self.stats[0]))
     
     def ci_from_p(self, ci_low, ci_high, pval):
         if pval == 1:
             return 1, 1, 1
-        
+
+        if self.exact_ci:
+            return ci_low, ci_high, pval
+
         ci = z_ci_from_p(log(ci_low), log(ci_high), pval, self.ci_level)
         return exp(ci[0]), exp(ci[1]), pval
+
+    def __copy__(self):
+        return RATIO(self.ci_level)
 
 
 #
@@ -157,8 +306,14 @@ class REGRESSION(Measure):
     def __init__(self, ci_level=None, topK=10):
         Measure.__init__(self, ci_level)
         self.topK = topK
+        self.model = None
 
-    def compute(self, data):
+    def __copy__(self):
+        return REGRESSION(self.ci_level, self.topK)
+
+    def compute(self, data, approx=False, adj_ci_level=None):
+        ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
+
         y = data[data.columns[-1]]
         X = data[data.columns[0:-1]]
 
@@ -174,28 +329,51 @@ class REGRESSION(Measure):
         SE_est = np.sqrt(var_est)
         coeffs = reg.coef_[0].tolist()
 
-        if not self.ci_level:
-            return coeffs
-
         # compute confidence intervals and p-values for all coefficients
         results = pd.DataFrame(coeffs, columns=['coeff'])
         results['std err'] = SE_est
         results['z'] = abs(results['coeff']/results['std err'])
         results['p-value'] = 2*stats.norm.sf(results['z'])
-        ci_s = stats.norm.interval(self.ci_level, loc=results['coeff'], scale=results['std err'])
-        results['conf low'] = exp(ci_s[0])
-        results['conf high'] = exp(ci_s[1])
 
-        # compute a standardized effect size and return the topK coefficients
-        results['effect'] = map(lambda (ci_low, ci_high): z_effect(ci_low, ci_high), zip(results['conf low'], results['conf high']))
-        sorted_results = results.sort(columns=['effect'], ascending=False)
-        return sorted_results[['conf low', 'conf high', 'p-value']].head(self.topK)
+        if not ci_level:
+            if self.model:
+                top_labels = self.stats.index
+                self.stats = results[['coeff', 'p-value']].loc[top_labels]
+            else:
+                results['effect'] = map(lambda c: abs(c), results['coeff'])
+                sorted_results = results.sort(columns=['effect'], ascending=False)
+                self.stats = sorted_results[['coeff', 'p-value']].head(self.topK)
+                self.model = reg
+            return self
 
-    def normalize_effect(self, res):
-        if self.ci_level:
-            return np.mean(map(lambda (ci_low, ci_high, p): z_effect(ci_low, ci_high), res.values))
+        ci_s = stats.norm.interval(ci_level, loc=results['coeff'], scale=results['std err'])
+        results['conf low'] = ci_s[0]
+        results['conf high'] = ci_s[1]
+
+        if self.model:
+            top_labels = self.stats.index
+            print top_labels
+            self.stats = results[['conf low', 'conf high', 'p-value']].loc[top_labels]
         else:
-            return np.mean(abs(res))
+            # compute a standardized effect size and return the topK coefficients
+            results['effect'] = map(lambda (ci_low, ci_high): z_effect(ci_low, ci_high),
+                                    zip(results['conf low'], results['conf high']))
+            sorted_results = results.sort(columns=['effect'], ascending=False)
+            self.stats = sorted_results[['conf low', 'conf high', 'p-value']].head(self.topK)
+            self.model = reg
+        return self
+
+    def abs_effect(self):
+        if self.ci_level:
+            effects = np.array(map(lambda (ci_low, ci_high, pval): z_effect(ci_low, ci_high), self.stats.values))
+        else:
+            effects = np.array(map(lambda (coeff, pval): abs(coeff), self.stats.values))
+
+        non_nan = effects[~np.isnan(effects)]
+        if len(non_nan) == 0:
+            return -1
+        else:
+            return np.sum(non_nan)/len(effects)
 
     def ci_from_p(self, ci_low, ci_high, pval):
         if pval == 1:
@@ -212,7 +390,7 @@ class REGRESSION(Measure):
 # @args norm        whether the MI should be normalized
 # @args ci_level    level for confidence intervals (or None)
 #
-def mutual_info(data, norm=False, ci_level=None):
+def mutual_info(data, norm=False, ci_level=None, pval=True):
     if isinstance(data, pd.DataFrame):
         data = data.values
     
@@ -223,20 +401,14 @@ def mutual_info(data, norm=False, ci_level=None):
     # row/column sums
     sum_x = np.sum(data, axis=1)
     sum_y = np.sum(data, axis=0)
-        
-    # row/columns probabilities
-    px = np.array(sum_x, dtype=float)/sum(sum_x)
-    py = np.array(sum_y, dtype=float)/sum(sum_y)
     
     # joint probabilities
     N = np.array(data).sum()
-
-    pxy = np.array(data, dtype=float)/N
     
     # entropies    
-    hx = stats.entropy(px)
-    hy = stats.entropy(py)
-    hxy = stats.entropy(pxy.flatten())
+    hx = stats.entropy(sum_x)
+    hy = stats.entropy(sum_y)
+    hxy = stats.entropy(data.flatten())
 
     mi = -hxy + hx + hy
 
@@ -246,47 +418,32 @@ def mutual_info(data, norm=False, ci_level=None):
             mi = 0
         else:
             mi = mi/min(hx, hy)
-    
+
+    if pval:
+        G, pval, df, _ = G_test(data, correction=False)
+    else:
+        pval = 0
+
     # no confidence levels, return single measure
     if not ci_level:
-        return mi
+        return mi, pval
 
-    # get asymptotic standard deviation for confidence interval
-    # Brown'75, "The asymptotic standard errors of some estimates of uncertainty in the two-way contingency table"
-    std = 0
-    for i in range(0, len(px)):
-        for j in range(0, len(py)):
-            if data[i,j] != 0:
-                if norm:
-                    # std for normalized MI (Brown'75)
-                    if sum_y[j] != 0 and sum_x[i] != 0:
-                        if hx < hy and hx != 0:
-                            std += data[i,j]*(hx*log((1.0*data[i,j])/sum_y[j])+((hy-hxy)*log((1.0*sum_x[i])/N)))**2/(N**2*hx**4);
-                        elif hy != 0:
-                            std += data[i,j]*(hy*log((1.0*data[i,j])/sum_x[i])+((hx-hxy)*log((1.0*sum_y[j])/N)))**2/(N**2*hy**4);
-                else:
-                    # std for MI
-                    std += pxy[i,j] * pow((log(pxy[i,j])-log(px[i])-log(py[j])), 2)
+    #
+    # Compute confidence interval from chi-squared distribution
+    #
+    p_low = 1-(1-ci_level)/2
+    p_high= (1-ci_level)/2
+    G_low = special.chndtrinc(G, df, p_low)
+    G_high = special.chndtrinc(G, df, p_high)
+    ci = ((G_low+df)/(2.0*N), (G_high+df)/(2.0*N))
+
+    if pval > 1-ci_level:
+        ci = (0, ci[1])
 
     if norm:
-        std = sqrt(std)
-    else:
-        std = sqrt((std-pow(mi, 2))/N)
+        ci = map(lambda x: x/min(hx,hy), ci)
 
-    if std != 0:
-        # compute asymptotic confidence interval and p-value
-        #ci = stats.norm.interval(ci_level, loc=mi, scale=std)
-        #z = mi/std
-        #pval = 2*stats.norm.sf(abs(z))
-
-        _, pval, _, _ = G_test(data)
-        #print G,pval2,z,pval,z**2,mi,std
-
-        ci = z_ci_from_p(mi, mi, pval, ci_level)
-
-        return max(ci[0],0), min(ci[1],1), pval
-    else:
-        return mi, 0, 1
+    return max(ci[0], 0), min(ci[1], 1), pval
 
 
 #
@@ -301,7 +458,7 @@ def statistical_parity(data):
     tot = np.sum(data, axis=0)
     data = np.array(np.array(data, dtype=float)/tot, dtype='float')
     
-    sp = 0.5*sum(abs(data[:,0]-data[:,1]))
+    sp = 0.5*sum(abs(data[:, 0]-data[:, 1]))
     return sp
 
 
@@ -322,33 +479,32 @@ def difference(data, ci_level=0.95):
     
     # Difference measure
     diff = probas[1,0]-probas[1,1]
-    
+
+    # contingency table values
+    n1 = tot[0]
+    n2 = tot[1]
+    r1 = data[1][0]
+    r2 = data[1][1]
+
+    # proba of hired
+    p1 = (1.0*r1)/n1
+    p2 = (1.0*r2)/n2
+
+    # standard deviations
+    sigma_diff = sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2)
+    z = diff/sigma_diff
+    pval = 2*stats.norm.sf(abs(z))
+
     #
     # confidence levels as in Ruggieri et al. '10
     #
     if ci_level:
-        # contingency table values
-        n1 = tot[0]
-        n2 = tot[1]
-        r1 = data[1][0]
-        r2 = data[1][1]
-        
-        # proba of hired
-        p1 = (1.0*r1)/n1
-        p2 = (1.0*r2)/n2
-    
-        # standard deviations
-        sigma_diff = sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2)
-    
         # confidence intervals
         ci_diff = stats.norm.interval(ci_level, loc=diff, scale=sigma_diff)
-        
-        z = diff/sigma_diff
-        pval = 2*stats.norm.sf(abs(z))
 
         return max(ci_diff[0], -1), min(ci_diff[1], 1), pval
     else:
-        return diff
+        return diff, pval
 
 
 # 
@@ -372,29 +528,28 @@ def ratio(data, ci_level=0.95):
     
     # Slift measures
     ratio = probas[1,0]/probas[1,1]
+
+    # contingency table values
+    n1 = tot[0]
+    n2 = tot[1]
+    r1 = data[1][0]
+    r2 = data[1][1]
+
+    # standard deviations
+    sigma_log_ratio = sqrt(1.0/r1+1.0/r2-1.0/n1-1.0/n2)
+    z = log(ratio)/sigma_log_ratio
+    pval = 2*stats.norm.sf(abs(z))
     
     #
     # confidence levels as in Ruggieri et al. '10
     #
     if ci_level:
-        # contingency table values
-        n1 = tot[0]
-        n2 = tot[1]
-        r1 = data[1][0]
-        r2 = data[1][1]
-        
-        # standard deviations
-        sigma_log_ratio = sqrt(1.0/r1+1.0/r2-1.0/n1-1.0/n2)
-        
         # confidence intervals
         ci_log_ratio = stats.norm.interval(ci_level, loc=log(ratio), scale=sigma_log_ratio)
 
-        z = log(ratio)/sigma_log_ratio
-        pval = 2*stats.norm.sf(abs(z))
-
         return exp(ci_log_ratio[0]), exp(ci_log_ratio[1]), pval
     else:
-        return ratio
+        return ratio, pval
 
 
 #
@@ -516,7 +671,7 @@ def cramer_v(data, ci_level=0.95):
     p_high= (1-ci_level)/2
     chi_low = special.chndtrinc(chi2, df, p_low)
     chi_high = special.chndtrinc(chi2, df, p_high)
-    print chi_low, chi_high
+    # print chi_low, chi_high
     (cv_low, cv_high) = map(lambda x: sqrt((x+df)/(n*(min(dim[0], dim[1])-1))), (chi_low, chi_high))
     return (cv_low, cv_high)
 
@@ -524,12 +679,11 @@ def cramer_v(data, ci_level=0.95):
 #
 # Pearson correlation with confidence intervals
 #
-# @args counts      statistics for correlation computation (sum_x, sum_y, sum_x2, sum_y2, sum_xy, n)
+# @args counts      statistics for correlation computation (sum_x, sum_x2, sum_y, sum_y2, sum_xy, n)
 # @args ci_level    level for confidence intervals (or None)
 #
 def correlation(counts, ci_level=None):
     assert(len(counts) == 6)
-    
     sum_x = counts[0]
     sum_x2 = counts[1]
     sum_y = counts[2]
@@ -538,73 +692,21 @@ def correlation(counts, ci_level=None):
     n = counts[5]
     
     corr = (n*sum_xy - sum_x*sum_y)/(sqrt(n*sum_x2 - sum_x**2) * sqrt(n*sum_y2 - sum_y**2))
-    
+
+    # Fisher transform
+    fisher = atanh(corr)
+    std = 1.0/sqrt(n-3)
+    z = fisher/std
+    pval = 2*stats.norm.sf(abs(z))
+
     if ci_level:
-        # Fisher transform
-        fisher = atanh(corr)
-        std = 1.0/sqrt(n-3)
-        z = fisher/std
-        pval = 2*stats.norm.sf(abs(z))
-        
         conf_fisher = stats.norm.interval(ci_level, loc=fisher, scale=std)
         
         # inverse transform
         conf_corr = [tanh(conf_fisher[0]), tanh(conf_fisher[1])]
         return conf_corr[0], conf_corr[1], pval
     else:
-        return abs(corr)
-
-
-#
-# Perform a Monte-Carlo permutation test
-#
-# @args data        the contingency table to test
-# @args n_samples   the number of random permutations to perform
-#
-def permutation_test(data, n_samples=1000):
-    # observed statistic
-    obs = G_test(data)[0]
-    
-    data = np.array(data)
-    pool = []
-    
-    # create a list of all the outcomes
-    for i in range(len(data)):
-        pool.extend([i]*data[i].sum())
-    
-    # count the sensitive value frequencies
-    counts = data.sum(axis=0)
-    
-    #
-    # Sub-routine for permutation tests
-    #
-    # @args pool    a list of all outcomes
-    # @args counts  the number of elements to sample for each group
-    #    
-    def run_permutation_test(pool,counts):
-        np.random.shuffle(pool)
-        
-        ct = []
-        
-        # sample outcomes at random for each group
-        for count in counts:
-            ct.append(pool[0:count])
-            pool = pool[count:-1]
-        
-        assert not pool
-        
-        # create a new contingency table and test
-        ct = pd.DataFrame(map(lambda c: Counter(c), ct)).T
-        return G_test(ct)[0]
-    
-    
-    # perform N_SAMPLES randomized samplings
-    estimates = np.array(map(lambda x: run_permutation_test(list(pool),counts),range(n_samples)))
-    
-    # compute the two-sided p-value
-    diffCount = len(np.where(estimates <= obs)[0])
-    p_val = 1.0 - (float(diffCount)/float(n_samples))
-    return p_val
+        return abs(corr), pval
 
 
 #
@@ -615,32 +717,104 @@ def permutation_test(data, n_samples=1000):
 # @args num_samples Number of bootstrap samples to generate
 # @args ci_level    Confidence level for the interval       
 #
-def bootstrap_ci(data, stat, num_samples=1000, ci_level=0.95):
+def bootstrap_ci_ct(data, stat, num_samples=10000, ci_level=0.95):
     if isinstance(data, pd.DataFrame):
         data = data.values
-
+    
+    # data smoothing
+    data = data.copy()
+    data[data == 0] = 1
+    
+    stat_0 = stat(data)
     dim = data.shape
     data = data.flatten()
     n = data.sum()
 
-    probas = (1.0*data)/n
-    alpha = 1-ci_level
+    print 'Bootstrap on data of size {}'.format(n)
 
+    probas = (1.0*data)/n
+    
     #
     # Obtain `num_samples' random samples of `n' multinomial values, sampled
     # with replacement from {0, 1, ..., n-1}. For each sample, rebuild a
     # contingency table and compute the stat.
     #
     temp = np.random.multinomial(n, probas, size=num_samples)
-    bs_stats = np.apply_along_axis(lambda row: stat(row.reshape(dim)), 1, temp)
-    
-    # Use the stats to get an estimator of the mean and std of the stat
-    mean = np.mean(bs_stats)
-    std = np.std(bs_stats, ddof=1)
-    
-    # get a confidence interval as (mean-z*std, mean+z*std)
-    ci = stats.norm.interval(ci_level, loc=mean, scale=std)
-    z = mean/std
-    pval = 2*stats.norm.sf(abs(z))
+    bs_stats = [row.reshape(dim) for row in temp]
+    bs_stats = map(lambda ct: stat(ct), bs_stats)
 
-    return ci, pval
+    alpha = 1-ci_level
+    q_low = np.percentile(bs_stats, 100*alpha/2)
+    q_high = np.percentile(bs_stats, 100*(1-alpha/2))
+
+    ci = (q_low, q_high)
+    return ci
+
+
+def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
+    ci = bs.ci((x, y), stat, alpha=1-ci_level, n_samples=num_samples)
+    return ci
+
+
+def permutation_test_ct2(data, num_samples=10000):
+    if isinstance(data, pd.DataFrame):
+        data = data.values
+    
+    dim = data.shape    
+    data_x = []
+    data_y = []
+
+    stat_0 = metrics.mutual_info_score(None, None, contingency=data)
+    
+    for x in range(0, dim[0]):
+        for y in range(0, dim[1]):
+            data_x += [x]*data[x,y]
+            data_y += [y]*data[x,y]
+
+    print 'permutation test of size {}'.format(len(data_x))
+    z = data_x[:]
+    
+    k = 0
+    for i in range(num_samples):
+        np.random.shuffle(data_x)
+        k += stat_0 < metrics.mutual_info_score(data_x, data_y)
+
+    pval = (1.0*k) / num_samples
+    return max(pval, 1.0/num_samples)
+
+
+#
+# Monte-Carlo permutation test for a contingency table
+# Uses the R 'coin' package that can directly handle contingency tables instead
+# of having to convert into arrays x,y
+#
+# @args data        the contingency table
+# @args num_samples the number of random permutations to perform
+#
+def permutation_test_ct(data, num_samples=100000):
+    if isinstance(data, pd.DataFrame):
+        data = data.values
+
+    #print 'permutation test of size {}'.format(data.sum())
+
+    data = np.array(data, dtype='int')
+
+    ro.globalenv['ct'] = data
+    ro.r('res = chisq_test(as.table(ct), distribution=approximate(B={}))'.format(num_samples))
+    pval = ro.r('pvalue(res)')[0]
+    return max(pval, 1.0/num_samples)
+
+
+def permutation_test_corr(x, y, num_samples=10000):
+    x = np.array(x, dtype='float')
+    y = np.array(y, dtype='float')
+
+    obs_0, _ = stats.pearsonr(x, y)
+    k = 0
+    z = np.concatenate([x, y])
+    for j in range(num_samples):
+        np.random.shuffle(z)
+        k += abs(obs_0) < abs(stats.pearsonr(z[:len(x)], z[len(x):])[0])
+    pval = (1.0*k) / num_samples
+    return max(pval, 1.0/num_samples)
+
