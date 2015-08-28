@@ -74,7 +74,6 @@ class NMI(Measure):
 
         if len(data.shape) == 3:
             return self.compute_cond(data, approx, ci_level)
-
         if approx:
             self.stats = mutual_info(data, norm=True, ci_level=ci_level)
         else:
