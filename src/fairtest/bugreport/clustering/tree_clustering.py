@@ -82,6 +82,7 @@ def find_clusters_cat(tree, data, train_set=False):
     sens = data.SENS
     encoders = data.encoders
     labels = data.LABELS
+    expl = data.EXPL
     
     if train_set:
         data = data.data_train
@@ -95,6 +96,8 @@ def find_clusters_cat(tree, data, train_set=False):
         node_id += 1
 
     measure_type = tree.measure.dataType
+    if expl:
+        assert measure_type == fm.Measure.DATATYPE_CT
 
     #
     # Simple BFS to traverse the tree
@@ -130,20 +133,35 @@ def find_clusters_cat(tree, data, train_set=False):
 
         if measure_type == Measure.DATATYPE_CT:
             # categorical data
-            # create an empty contingency table
-            ct = pd.DataFrame(0, index=range(len(encoders[out].classes_)), columns=range(len(encoders[sens].classes_)))
 
-            # fill in available values
-            ct = ct.add(pd.crosstab(data_node[out], data_node[sens]), fill_value=0)
+            if not expl:
+                # create an empty contingency table
+                ct = pd.DataFrame(0, index=range(len(encoders[out].classes_)),
+                                  columns=range(len(encoders[sens].classes_)))
 
-            # replace numbers by original labels
-            ct.index = encoders[out].classes_
-            ct.index.name = out
-            ct.columns = encoders[sens].classes_
-            ct.columns.name = sens
-            stats = ct
+                # fill in available values
+                ct = ct.add(pd.crosstab(data_node[out], data_node[sens]), fill_value=0)
+
+                # replace numbers by original labels
+                ct.index = encoders[out].classes_
+                ct.index.name = out
+                ct.columns = encoders[sens].classes_
+                ct.columns.name = sens
+                stats = ct
+                cluster_data = None
+            else:
+                dim_expl = len(encoders[expl].classes_)
+                cts = [pd.DataFrame(0, index=range(len(encoders[out].classes_)),
+                                    columns=range(len(encoders[sens].classes_)))] * dim_expl
+
+                for (key, group) in data_node.groupby(expl):
+                    cts[key] = cts[key].add(pd.crosstab(group[out], group[sens]), fill_value=0).values
+
+                stats = np.array(cts)
+                cluster_data = {'expl': (expl, encoders[expl]), 'sens': (sens, encoders[sens]),
+                                'out': (out, encoders[out])}
+
             size = len(data_node)
-            cluster_data = None
 
         elif measure_type == Measure.DATATYPE_CORR:
             # continuous data

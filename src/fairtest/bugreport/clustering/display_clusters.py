@@ -142,18 +142,52 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
 
 def print_cluster_ct(cluster, columns, cluster_stats, effect_name):
     # pretty-print the contingency table
-    output = StringIO()
-    
+
+    shape = cluster.stats.shape
+
     if columns:
-        ct = cluster.stats[columns]
+        if len(shape) == 3:
+            ct = map(lambda c: c[columns], cluster.stats)
+        else:
+            ct = cluster.stats[columns]
     else:
         ct = cluster.stats
-    
-    rich_ct(ct).to_csv(output)
-    output.seek(0)
-    pt = prettytable.from_csv(output)
-    print pt
-    print 
+
+    if len(shape) == 2:
+        output = StringIO()
+        rich_ct(ct).to_csv(output)
+        output.seek(0)
+        pt = prettytable.from_csv(output)
+        print pt
+        print
+    else:
+        (expl, encoder_enc) = cluster.data['expl']
+        (sens, encoder_sens) = cluster.data['sens']
+        (out, encoder_out) = cluster.data['out']
+
+        for i in range(len(encoder_enc.classes_)):
+            if cluster.stats[i].sum() > 0:
+                size = cluster.stats[i].sum()
+                weight = (100.0*size)/cluster.size
+                print '{} = {} ({} - {:.2f}%):'.format(expl, encoder_enc.classes_[i], size, weight)
+
+
+                ct_measure = copy(cluster.clstr_measure)
+                (effect_low, effect_high, p_val) = ct_measure.compute(cluster.stats[i]).stats
+                print '{} (non-adjusted) = [{:.4f}, {:.4f}]'.format(effect_name, effect_low, effect_high)
+
+                ct = pd.DataFrame(cluster.stats[i])
+                ct.index = encoder_out.classes_
+                ct.index.name = out
+                ct.columns = encoder_sens.classes_
+                ct.columns.name = sens
+
+                output = StringIO()
+                rich_ct(ct).to_csv(output)
+                output.seek(0)
+                pt = prettytable.from_csv(output)
+                print pt
+                print
 
     if len(cluster_stats) == 3:
         # print p-value and confidence interval of MI

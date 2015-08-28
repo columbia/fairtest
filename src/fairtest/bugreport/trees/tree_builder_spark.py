@@ -64,7 +64,7 @@ def train_tree(sc, data, max_depth=5, min_leaf_size=100, measure=fm.NMI(ci_level
             max_arity = max(max_arity, len(encoders[col].classes_))
     
     # build all the parameters        
-    params = {}
+    params = dict()
     params['data'] = spark_rdd
     params['numClasses'] = target_dim[0]*target_dim[1]
     params['dimOut'] = target_dim[0]

@@ -69,6 +69,12 @@ class NMI(Measure):
         self.data = data
         ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
 
+        #print data
+        assert len(data.shape) == 2 or len(data.shape) == 3
+
+        if len(data.shape) == 3:
+            return self.compute_cond(data, approx, ci_level)
+
         if approx:
             self.stats = mutual_info(data, norm=True, ci_level=ci_level)
         else:
@@ -96,7 +102,34 @@ class NMI(Measure):
                 self.stats = mi, pval
 
         return self
-        
+
+    def compute_cond(self, data, approx, ci_level):
+        if isinstance(data, pd.DataFrame):
+            data = data.values()
+
+        data = np.array([d for d in data if d.sum() > 0])
+
+        N = data.sum()
+        G, pval, df = G_test_cond(data)
+        p_low = 1-(1-ci_level)/2
+        p_high= (1-ci_level)/2
+        G_low = special.chndtrinc(G, df, p_low)
+        G_high = special.chndtrinc(G, df, p_high)
+        ci = ((G_low+df)/(2.0*N), (G_high+df)/(2.0*N))
+
+        if pval > 1-ci_level:
+            ci = (0, ci[1])
+
+        weights = map(lambda d: d.sum(), data)
+        hxs = map(lambda d: stats.entropy(np.sum(d, axis=1)), data)
+        cond_hx = np.average(hxs, axis=None, weights=weights)
+        hys = map(lambda d: stats.entropy(np.sum(d, axis=0)), data)
+        cond_hy = np.average(hys, axis=None, weights=weights)
+
+        (ci_low, ci_high) = map(lambda x: x/min(cond_hx, cond_hy), ci)
+        self.stats = (ci_low, ci_high, pval)
+        return self
+
     def abs_effect(self):
         return self.stats[0]
     
@@ -603,7 +636,7 @@ def G_test_cond(data):
     df *= len(data)
     p_val = stats.chisqprob(G, df)
     
-    return G, p_val
+    return G, p_val, df
 
 
 #
@@ -730,7 +763,7 @@ def bootstrap_ci_ct(data, stat, num_samples=10000, ci_level=0.95):
     data = data.flatten()
     n = data.sum()
 
-    print 'Bootstrap on data of size {}'.format(n)
+    #print 'Bootstrap on data of size {}'.format(n)
 
     probas = (1.0*data)/n
     

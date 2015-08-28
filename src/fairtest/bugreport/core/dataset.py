@@ -4,6 +4,7 @@ import sklearn.cross_validation as cross_validation
 import sklearn.preprocessing as preprocessing
 import ast
 
+
 #
 # Class to represent a dataset and do some pre-processing
 #
@@ -18,6 +19,7 @@ class Dataset:
         self.OUT = None
         self.LABELS = None
         self.OUT_TYPE = None
+        self.EXPL = None
         self.encoders = None
         self.encoded_data = None
         self.data_train = None
@@ -79,7 +81,14 @@ class Dataset:
         # single feature or list of features for multi-labeled output
         self.OUT = feature
         self.OUT_TYPE = feature_type
-    
+
+    def set_explanatory_feature(self, feature):
+        assert self.original_data is not None
+        assert feature in self.original_data.columns
+
+        # single feature or list of features for multi-labeled output
+        self.EXPL = feature
+
     #
     # Pre-process and encode the data
     #
@@ -94,6 +103,8 @@ class Dataset:
         
         # keep all non-sensitive features
         self.encoded_data = self.original_data.drop([self.OUT, self.SENS], axis=1)
+        if self.EXPL:
+            self.encoded_data = self.encoded_data.drop(self.EXPL, axis=1)
 
         if binary:
             # one-hot-encoding
@@ -132,6 +143,11 @@ class Dataset:
             self.LABELS = labels
         else:
             self.encoded_data[self.OUT] = self.original_data[self.OUT]
+
+        if self.EXPL:
+            # encode explanatory feature
+            self.encoders[self.EXPL] = preprocessing.LabelEncoder()
+            self.encoded_data[self.EXPL] = self.encoders[self.EXPL].fit_transform(self.original_data[self.EXPL])
         
     #
     # Split the dataset into a training and a testing set

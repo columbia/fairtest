@@ -15,7 +15,7 @@ import fairtest.bugreport.statistics.fairness_measures as fm
 def train_tree(data, max_depth=5, min_leaf_size=100, measure=fm.NMI(ci_level=0.95),
                agg_type=cat_tree.ScoreParams.WEIGHTED_AVG):
     # prepare the function call parameters
-    params = {}
+    params = dict()
     params['dataset'] = data
     # params['dim'] = target_dim
     params['categorical'] = data.encoders.keys()

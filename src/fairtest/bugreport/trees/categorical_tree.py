@@ -69,22 +69,24 @@ class ScoreParams:
     MAX = 'MAX'
     AGG_TYPES = [WEIGHTED_AVG, AVG, MAX]
 
-    def __init__(self, measure, agg_type):
+    def __init__(self, measure, agg_type, expl=None):
         self.measure = measure
         self.agg_type = agg_type
+        self.expl = expl
 
 
 #
 # Split parameters
 #
 class SplitParams:
-    def __init__(self, targets, sens, dim, categorical, thresholds, min_leaf_size):
+    def __init__(self, targets, sens, dim, categorical, thresholds, min_leaf_size, expl=None):
         self.targets = targets
         self.sens = sens
         self.dim = dim
         self.categorical = categorical
         self.thresholds = thresholds
         self.min_leaf_size = min_leaf_size
+        self.expl = expl
 
 
 #
@@ -112,31 +114,43 @@ def build_tree(dataset, categorical, max_depth=5, min_leaf_size=100, measure=fm.
         targets = [dataset.OUT]
 
     sens = dataset.SENS
+    expl = dataset.EXPL
     features = data.columns.difference(targets).difference([sens])
+
+    if expl:
+        assert measure.dataType == fm.Measure.DATATYPE_CT
+        features = features.difference([expl])
 
     # check the data dimensions
     if isinstance(measure, fm.CORR):
-        dim = None
+        if expl:
+            dim = (len(dataset.encoders[expl].classes_), 6)
+        else:
+            dim = 6
     else:
         assert dataset.OUT_TYPE in ['cat', 'labeled'] and dataset.SENS_TYPE == 'cat'
         # get the dimensions of the OUTPUT x SENSITIVE contingency table
-        dim = (len(dataset.encoders[dataset.OUT].classes_), len(dataset.encoders[dataset.SENS].classes_))
+        if expl:
+            dim = (len(dataset.encoders[expl].classes_),
+                   len(dataset.encoders[dataset.OUT].classes_), len(dataset.encoders[dataset.SENS].classes_))
+        else:
+            dim = (len(dataset.encoders[dataset.OUT].classes_), len(dataset.encoders[dataset.SENS].classes_))
 
     # bin the continuous features
     cont_thresholds = find_thresholds(data, features, categorical, max_bins)
     
-    score_params = ScoreParams(measure, agg_type)
-    split_params = SplitParams(targets, sens, dim, categorical, cont_thresholds, min_leaf_size)
+    score_params = ScoreParams(measure, agg_type, expl)
+    split_params = SplitParams(targets, sens, dim, categorical, cont_thresholds, min_leaf_size, expl)
 
     # get a measure for the root
 
     if measure.dataType == Measure.DATATYPE_CT:
         target = targets[0]
-        stats = [count_values(zip(data[target], data[sens]), dim)[0]]
+        stats = [count_values(data, sens, target, expl, dim)[0]]
     elif measure.dataType == Measure.DATATYPE_CORR:
         target = targets[0]
         # compute summary statistics for each child
-        stats = [corr_values(np.array(data[target]), np.array(data[sens]))[0]]
+        stats = [corr_values(data, sens, target)[0]]
     else:
         # aggregate all the data for each child for regression
         stats = [data[targets+[sens]]]
@@ -230,16 +244,21 @@ def select_best_feature(node_data, features, split_params, score_params)  :
     categorical = split_params.categorical
     targets = split_params.targets
     sens = split_params.sens
-    
+    expl = split_params.expl
+
     # iterate over all available non-sensitive features
     for feature in features:
+        feature_list = [feature, sens] + targets
+        if expl:
+            feature_list.append(expl)
+
         # determine type of split
         if feature in categorical:
-            split_score, measures = test_cat_feature(node_data[[feature, sens] + targets],
+            split_score, measures = test_cat_feature(node_data[feature_list],
                                                      feature, split_params, score_params)
             threshold = None
         else:
-            split_score, threshold, measures = test_cont_feature(node_data[[feature, sens] + targets],
+            split_score, threshold, measures = test_cont_feature(node_data[feature_list],
                                                                  feature, split_params, score_params)
         
         # the feature produced no split and can be dropped for future sub-trees
@@ -262,12 +281,23 @@ def select_best_feature(node_data, features, split_params, score_params)  :
 # @args data    the data to count
 # @args dim     the dimensions of the contingency table
 #
-def count_values(data, dim):
+def count_values(data, sens, target, expl, dim):
     values = np.zeros(dim)
-    counter = Counter(data)
-    for i in range(dim[0]):
-        for j in range(dim[1]):
-            values[i,j] = counter.get((i,j), 0)
+
+    if expl:
+        groups = [zip(group[sens], group[target]) for (_, group) in data.groupby(expl)]
+        counters = [Counter(group) for group in groups]
+
+        for k in range(len(counters)):
+            for i in range(dim[1]):
+                for j in range(dim[2]):
+                    values[k,i,j] = counters[k].get((i,j), 0)
+
+    else:
+        counter = Counter(zip(data[sens], data[target]))
+        for i in range(dim[0]):
+            for j in range(dim[1]):
+                values[i,j] = counter.get((i,j), 0)
 
     return values, len(data)
 
@@ -278,9 +308,10 @@ def count_values(data, dim):
 # @args x   first dimension of data
 # @args y   second dimension of data
 #
-def corr_values(x, y):
+def corr_values(data, sens, target):
+    (x,y) = (np.array(data[sens]), np.array(data[target]))
     # sum(x), sum(x^2), sum(y), sum(y^2), sum(xy)
-    return np.array([x.sum(), np.dot(x, x), y.sum(), np.dot(y, y), np.dot(x, y), x.size]), x.size
+    return np.array([x.sum(), np.dot(x, x), y.sum(), np.dot(y, y), np.dot(x, y), x.size]), len(data)
 
 
 #
@@ -297,18 +328,18 @@ def test_cat_feature(node_data, feature, split_params, score_params):
     targets = split_params.targets
     sens = split_params.sens
     dim = split_params.dim
+    expl = split_params.expl
     min_leaf_size = split_params.min_leaf_size
     data_type = score_params.measure.dataType
 
     if data_type == Measure.DATATYPE_CT:
         target = targets[0]
         # build a contingency table for each child
-        ct = [(key, count_values(zip(group[target], group[sens]), dim)) for key, group in node_data.groupby(feature)]
+        ct = [(key, count_values(group, sens, target, expl, dim)) for key, group in node_data.groupby(feature)]
     elif data_type == Measure.DATATYPE_CORR:
         target = targets[0]
         # compute summary statistics for each child
-        ct = [(key, corr_values(np.array(group[target]), np.array(group[sens])))
-              for key, group in node_data.groupby(feature)]
+        ct = [(key, corr_values(group, sens, target)) for key, group in node_data.groupby(feature)]
     else:
         # aggregate all the data for each child for regression
         ct = [(key, (group[targets+[sens]], len(group))) for key, group in node_data.groupby(feature)]
@@ -335,9 +366,11 @@ def test_cat_feature(node_data, feature, split_params, score_params):
 # @args score_params   The split scoring parameters
 #
 def test_cont_feature(node_data, feature, split_params, score_params):
+    #print 'testing continuous feature {}'.format(feature)
     targets = split_params.targets
     sens = split_params.sens
     dim = split_params.dim
+    expl = split_params.expl
     min_leaf_size = split_params.min_leaf_size
     thresholds = split_params.thresholds[feature]
     data_type = score_params.measure.dataType
@@ -374,11 +407,11 @@ def test_cont_feature(node_data, feature, split_params, score_params):
     if data_type == Measure.DATATYPE_CT:
         target = targets[0]
         # aggregate all the target counts for each bin
-        temp = map(lambda (key, group): (key, count_values(zip(group[target], group[sens]), dim)), groups)
+        temp = map(lambda (key, group): (key, count_values(group, sens, target, expl, dim)), groups)
     elif data_type == Measure.DATATYPE_CORR:
         target = targets[0]
         # correlation score
-        temp = map(lambda (key, group): (key, corr_values(np.array(group[target]), np.array(group[sens]))), groups)
+        temp = map(lambda (key, group): (key, corr_values(group, sens, target)), groups)
 
     # get the indices of the bin thresholds
     keys, temp = zip(*temp)
@@ -389,13 +422,19 @@ def test_cont_feature(node_data, feature, split_params, score_params):
     
     # aggregate of target counts for the complete data
     total = reduce(operator.add, bins, np.zeros(dim))
-    
+
+    #print 'total = {}'.format(total)
+
     # split on the first threshold
     (data_left, size_left) = (bins[0], sizes[0])
     (data_right, size_right) = (total - data_left, total_size - size_left)
-    
+
+    #print 'data left = {}'.format(data_left)
+    #print 'data right = {}'.format(data_right)
+
     # check score if split is valid
     if (size_left >= min_leaf_size) and (size_right >= min_leaf_size):
+        #print 'testing threshold {}'.format(thresholds[keys[0]])
         split_score, measures = score([data_left, data_right], score_params)
         max_score = split_score
         best_threshold = thresholds[keys[0]]
@@ -406,10 +445,16 @@ def test_cont_feature(node_data, feature, split_params, score_params):
         (ct_i, size_i) = (bins[i], sizes[i])
         data_left += ct_i
         data_right -= ct_i
+
+        #print 'ct {} = {}'.format(i, ct_i)
+        #print 'data left {} = {}'.format(i, data_left)
+        #print 'data right {} = {}'.format(i, data_right)
+
         size_left += size_i
         size_right -= size_i
         
         if (size_left >= min_leaf_size) and (size_right >= min_leaf_size):
+            #print 'testing threshold {}'.format(thresholds[keys[i]])
             split_score, measures = score([data_left, data_right], score_params)
         
             if split_score > max_score:
@@ -433,6 +478,8 @@ def score(stats, score_params):
     measures = [copy(measure) for c in stats]
 
     zip_w_measure = zip(stats, measures)
+
+    #print stats
 
     # compute a score for each child
     #score_list = map(lambda (child, measure_copy): measure_copy.abs_effect(measure_copy.compute(child)), zip_w_measure)
