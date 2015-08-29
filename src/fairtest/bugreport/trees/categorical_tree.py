@@ -118,7 +118,7 @@ def build_tree(dataset, categorical, max_depth=5, min_leaf_size=100, measure=fm.
     features = data.columns.difference(targets).difference([sens])
 
     if expl:
-        assert measure.dataType == fm.Measure.DATATYPE_CT
+        assert isinstance(measure, fm.COND_NMI)
         features = features.difference([expl])
 
     # check the data dimensions
@@ -165,11 +165,11 @@ def build_tree(dataset, categorical, max_depth=5, min_leaf_size=100, measure=fm.
     #
     def rec_build_tree(node_data, node, pred, node_features, depth):
         node.add_features(size=len(node_data))
-        
+
         # make a new leaf
         if (depth == max_depth) or (len(node_features) == 0):
             return
-        
+
         # select the best feature to split on
         best_feature, threshold, to_drop, child_measures = \
             select_best_feature(node_data, node_features, split_params, score_params)
@@ -285,7 +285,7 @@ def count_values(data, sens, target, expl, dim):
     values = np.zeros(dim)
 
     if expl:
-        groups = [zip(group[sens], group[target]) for (_, group) in data.groupby(expl)]
+        groups = [zip(group[target], group[sens]) for (_, group) in data.groupby(expl)]
         counters = [Counter(group) for group in groups]
 
         for k in range(len(counters)):
@@ -294,7 +294,7 @@ def count_values(data, sens, target, expl, dim):
                     values[k,i,j] = counters[k].get((i,j), 0)
 
     else:
-        counter = Counter(zip(data[sens], data[target]))
+        counter = Counter(zip(data[target], data[sens]))
         for i in range(dim[0]):
             for j in range(dim[1]):
                 values[i,j] = counter.get((i,j), 0)
@@ -324,7 +324,6 @@ def corr_values(data, sens, target):
 #
 def test_cat_feature(node_data, feature, split_params, score_params):
     #print 'testing categorical feature {}'.format(feature)
-
     targets = split_params.targets
     sens = split_params.sens
     dim = split_params.dim
@@ -352,6 +351,7 @@ def test_cat_feature(node_data, feature, split_params, score_params):
     if len(ct) > 1:
         values, ct = zip(*ct)
         split_score, measures = score(ct, score_params)
+        #print split_score
         return split_score, dict(zip(values, measures))
     else:
         return split_score, None
@@ -479,12 +479,10 @@ def score(stats, score_params):
 
     zip_w_measure = zip(stats, measures)
 
-    #print stats
-
     # compute a score for each child
-    #score_list = map(lambda (child, measure_copy): measure_copy.abs_effect(measure_copy.compute(child)), zip_w_measure)
     score_list = map(lambda (child, measure_copy): measure_copy.compute(child, approx=True).abs_effect(), zip_w_measure)
-    
+    #print score_list
+
     # take the average or maximum of the child scores
     if agg_type == ScoreParams.WEIGHTED_AVG:
         totals = map(lambda group: group.sum().sum(), stats)

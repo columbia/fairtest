@@ -69,11 +69,6 @@ class NMI(Measure):
         self.data = data
         ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
 
-        #print data
-        assert len(data.shape) == 2 or len(data.shape) == 3
-
-        if len(data.shape) == 3:
-            return self.compute_cond(data, approx, ci_level)
         if approx:
             self.stats = mutual_info(data, norm=True, ci_level=ci_level)
         else:
@@ -100,33 +95,6 @@ class NMI(Measure):
                 mi, _ = mutual_info(data, norm=True, ci_level=None)
                 self.stats = mi, pval
 
-        return self
-
-    def compute_cond(self, data, approx, ci_level):
-        if isinstance(data, pd.DataFrame):
-            data = data.values()
-
-        data = np.array([d for d in data if d.sum() > 0])
-
-        N = data.sum()
-        G, pval, df = G_test_cond(data)
-        p_low = 1-(1-ci_level)/2
-        p_high= (1-ci_level)/2
-        G_low = special.chndtrinc(G, df, p_low)
-        G_high = special.chndtrinc(G, df, p_high)
-        ci = ((G_low+df)/(2.0*N), (G_high+df)/(2.0*N))
-
-        if pval > 1-ci_level:
-            ci = (0, ci[1])
-
-        weights = map(lambda d: d.sum(), data)
-        hxs = map(lambda d: stats.entropy(np.sum(d, axis=1)), data)
-        cond_hx = np.average(hxs, axis=None, weights=weights)
-        hys = map(lambda d: stats.entropy(np.sum(d, axis=0)), data)
-        cond_hy = np.average(hys, axis=None, weights=weights)
-
-        (ci_low, ci_high) = map(lambda x: x/min(cond_hx, cond_hy), ci)
-        self.stats = (ci_low, ci_high, pval)
         return self
 
     def abs_effect(self):
@@ -160,6 +128,48 @@ class NMI(Measure):
 
     def __copy__(self):
         return NMI(self.ci_level)
+
+
+class COND_NMI(Measure):
+    dataType = Measure.DATATYPE_CT
+
+    def __init__(self, ci_level=None):
+        Measure.__init__(self, ci_level)
+        self.data = None
+
+    def compute(self, data, approx=True, adj_ci_level=None):
+        self.data = data
+        ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
+
+        data = [ct.values if isinstance(ct, pd.DataFrame) else ct for ct in data]
+        data = np.array([d for d in data if d.sum() > 0])
+
+        N = data.sum()
+        G, pval, df = G_test_cond(data)
+        p_low = 1-(1-ci_level)/2
+        p_high= (1-ci_level)/2
+        G_low = special.chndtrinc(G, df, p_low)
+        G_high = special.chndtrinc(G, df, p_high)
+        ci = ((G_low+df)/(2.0*N), (G_high+df)/(2.0*N))
+
+        if pval > 1-ci_level:
+            ci = (0, ci[1])
+
+        weights = map(lambda d: d.sum(), data)
+        hxs = map(lambda d: stats.entropy(np.sum(d, axis=1)), data)
+        cond_hx = np.average(hxs, axis=None, weights=weights)
+        hys = map(lambda d: stats.entropy(np.sum(d, axis=0)), data)
+        cond_hy = np.average(hys, axis=None, weights=weights)
+
+        (ci_low, ci_high) = map(lambda x: x/min(cond_hx, cond_hy), ci)
+        self.stats = (ci_low, ci_high, pval)
+        return self
+
+    def abs_effect(self):
+        return self.stats[0]
+
+    def __copy__(self):
+        return COND_NMI(self.ci_level)
 
 
 #
@@ -425,10 +435,22 @@ class REGRESSION(Measure):
 def mutual_info(data, norm=False, ci_level=None, pval=True):
     if isinstance(data, pd.DataFrame):
         data = data.values
-    
-    # data smoothing
+
+    if pval:
+        G, pval, df, _ = G_test(data, correction=False)
+    else:
+        pval = 0
+
     data = data.copy()
-    data[data == 0] = 1
+    data = data[~np.all(data == 0, axis=1)]
+    data = data[:, ~np.all(data == 0, axis=0)]
+
+    shape = data.shape
+    if shape[0] < 2 or shape[1] < 2:
+        if ci_level:
+            return 0, 1, pval
+        else:
+            return 0, pval
     
     # row/column sums
     sum_x = np.sum(data, axis=1)
@@ -451,11 +473,6 @@ def mutual_info(data, norm=False, ci_level=None, pval=True):
         else:
             mi = mi/min(hx, hy)
 
-    if pval:
-        G, pval, df, _ = G_test(data, correction=False)
-    else:
-        pval = 0
-
     # no confidence levels, return single measure
     if not ci_level:
         return mi, pval
@@ -468,6 +485,9 @@ def mutual_info(data, norm=False, ci_level=None, pval=True):
     G_low = special.chndtrinc(G, df, p_low)
     G_high = special.chndtrinc(G, df, p_high)
     ci = ((G_low+df)/(2.0*N), (G_high+df)/(2.0*N))
+
+    #print data
+    #print pval, ci
 
     if pval > 1-ci_level:
         ci = (0, ci[1])
@@ -592,10 +612,14 @@ def ratio(data, ci_level=0.95):
 # 
 def G_test(data, correction=False):
     # remove all-zero columns/rows
-    if not isinstance(data, pd.DataFrame):
-        data = pd.DataFrame(data)
-    data = data[data.columns[(data != 0).any()]]
-    data = data[(data.T != 0).any()]
+    if isinstance(data, pd.DataFrame):
+        data = data.values
+
+    data = data[~np.all(data == 0, axis=1)]
+    data = data[:, ~np.all(data == 0, axis=0)]
+
+    if data.sum() == 0:
+        return 0, 1.0, 1, None
 
     return stats.chi2_contingency(data, correction=False, lambda_="log-likelihood")
 
@@ -736,6 +760,10 @@ def correlation(counts, ci_level=None):
         
         # inverse transform
         conf_corr = [tanh(conf_fisher[0]), tanh(conf_fisher[1])]
+
+        if np.isnan(conf_corr[0]) or np.isnan(conf_corr[1]) or np.isnan(pval):
+            return -1, 1, 1.0
+
         return conf_corr[0], conf_corr[1], pval
     else:
         return abs(corr), pval
@@ -752,11 +780,7 @@ def correlation(counts, ci_level=None):
 def bootstrap_ci_ct(data, stat, num_samples=10000, ci_level=0.95):
     if isinstance(data, pd.DataFrame):
         data = data.values
-    
-    # data smoothing
-    data = data.copy()
-    data[data == 0] = 1
-    
+
     stat_0 = stat(data)
     dim = data.shape
     data = data.flatten()

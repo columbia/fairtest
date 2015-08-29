@@ -155,11 +155,14 @@ def find_clusters_cat(tree, data, train_set=False):
                                     columns=range(len(encoders[sens].classes_)))] * dim_expl
 
                 for (key, group) in data_node.groupby(expl):
-                    cts[key] = cts[key].add(pd.crosstab(group[out], group[sens]), fill_value=0).values
+                    cts[key] = cts[key].add(pd.crosstab(group[out], group[sens]), fill_value=0)
+                    cts[key].index = encoders[out].classes_
+                    cts[key].index.name = out
+                    cts[key].columns = encoders[sens].classes_
+                    cts[key].columns.name = sens
 
                 stats = np.array(cts)
-                cluster_data = {'expl': (expl, encoders[expl]), 'sens': (sens, encoders[sens]),
-                                'out': (out, encoders[out])}
+                cluster_data = {'expl': (expl, encoders[expl])}
 
             size = len(data_node)
 
@@ -187,8 +190,10 @@ def find_clusters_cat(tree, data, train_set=False):
         
         # build a cluster class and store it in the list
         training_measure = node.measure
-        clstr = Cluster(node.id, feature_path, is_leaf, is_root, stats, size, training_measure, cluster_data)
-        clusters.append(clstr)
+
+        if is_root or training_measure.abs_effect() > 0:
+            clstr = Cluster(node.id, feature_path, is_leaf, is_root, stats, size, training_measure, cluster_data)
+            clusters.append(clstr)
         
         # recurse in children
         for child in node.get_children():
