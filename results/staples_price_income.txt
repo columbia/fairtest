@@ -1,55 +1,7 @@
 Sample Size: 988790
 Training Size: 247197
 Testing Size: 741593
-Bootstrap on data of size 835
-Bootstrap on data of size 559
-Bootstrap on data of size 483.0
-Bootstrap on data of size 501
-Bootstrap on data of size 764.0
-Bootstrap on data of size 813.0
-Bootstrap on data of size 484.0
-Bootstrap on data of size 648.0
-Bootstrap on data of size 615.0
-Bootstrap on data of size 854.0
-Bootstrap on data of size 616.0
-Bootstrap on data of size 398
-Bootstrap on data of size 417
-Bootstrap on data of size 790.0
-Bootstrap on data of size 972
-Bootstrap on data of size 659.0
-Bootstrap on data of size 718.0
-Bootstrap on data of size 975
-Bootstrap on data of size 650
-Bootstrap on data of size 589
-Bootstrap on data of size 541
-Bootstrap on data of size 686
-Bootstrap on data of size 315
-Bootstrap on data of size 773
-Bootstrap on data of size 749
-Bootstrap on data of size 461
-Bootstrap on data of size 551
-Bootstrap on data of size 673.0
-Bootstrap on data of size 780.0
-Bootstrap on data of size 818
-Bootstrap on data of size 991.0
-Bootstrap on data of size 798.0
-Bootstrap on data of size 978.0
-Bootstrap on data of size 447.0
-Bootstrap on data of size 479.0
-Bootstrap on data of size 986
-Bootstrap on data of size 826.0
-Bootstrap on data of size 340.0
-Bootstrap on data of size 740.0
-Bootstrap on data of size 749.0
-Bootstrap on data of size 820.0
-Bootstrap on data of size 471.0
-Bootstrap on data of size 452.0
-Bootstrap on data of size 540.0
-Bootstrap on data of size 896
-Bootstrap on data of size 590.0
-Bootstrap on data of size 606
-Bootstrap on data of size 463.0
-Bootstrap on data of size 341.0
+
 Global Population of size 741593
 
 +-------+---------------+---------------+---------------+----------------+----------------+----------------+---------------+---------------+-----------------+
