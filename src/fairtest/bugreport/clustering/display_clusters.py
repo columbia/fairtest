@@ -190,6 +190,15 @@ def print_cluster_ct(cluster, columns, cluster_stats, effect_name):
         print 'p-value = {:.2e} ; {} = {:.4f}'.format(p_val, effect_name, effect)
 
 
+def rand_jitter(arr):
+    stdev = .01*(max(arr)-min(arr))
+    return arr + np.random.randn(len(arr)) * stdev
+
+
+def jitter(x, y, s=20, c='b', marker='o', cmap=None, norm=None, vmin=None, vmax=None, alpha=None, linewidths=None, verts=None, hold=None, **kwargs):
+    return plt.scatter(rand_jitter(x), y, s=20, c='b', marker='o', cmap=None, norm=None, vmin=None, vmax=None, alpha=None, linewidths=None, verts=None, hold=None, **kwargs)
+
+
 def print_cluster_corr(cluster, cluster_stats, effect_name):
     # print correlation graph
     data = cluster.data['values']
@@ -197,7 +206,7 @@ def print_cluster_corr(cluster, cluster_stats, effect_name):
     out = data[data.columns[0]]
     sens = data[data.columns[1]]
 
-    #plt.scatter(sens, out, color='blue', edgecolor='none')
+    #jitter(sens, out, color='blue', edgecolor='none')
     m, b = np.polyfit(sens, out, 1)
     plt.plot(sens, m*sens + b, '-', color='green')
 

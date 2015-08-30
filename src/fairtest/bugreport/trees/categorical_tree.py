@@ -461,7 +461,8 @@ def test_cont_feature(node_data, feature, split_params, score_params):
                 max_score = split_score
                 best_threshold = thresholds[keys[i]]
                 best_measures = dict(zip(['left', 'right'], measures))
-
+    #if max_score:
+    #    print max_score, best_threshold, map(lambda m: m.stats[0], best_measures.values())
     return max_score, best_threshold, best_measures
 
 

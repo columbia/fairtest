@@ -23,24 +23,6 @@ def z_effect(ci_low, ci_high):
 
 
 #
-# Recompute an asymptotically normal confidence interval from a corrected p-value
-#
-# @args ci_low      Lower bound of the original confidence interval
-# @args ci_high     Upper bound of the original confidence interval
-# @args pval        The adjusted p-value
-# @args ci_level    The confidence level
-#
-def z_ci_from_p(ci_low, ci_high, pval, ci_level):
-    pval = max(pval, 1e-180)
-
-    z = abs(stats.norm.ppf(pval))
-    mean = ci_high-(ci_high-ci_low)/2
-    std = abs(mean/z)
-
-    return stats.norm.interval(ci_level, loc=mean, scale=std)
-
-
-#
 # Class representing a fairness measure
 #
 class Measure(object):
@@ -100,31 +82,8 @@ class NMI(Measure):
     def abs_effect(self):
         return self.stats[0]
     
-    def ci_from_p(self, ci_low, ci_high, pval):
-        if pval == 1:
-            return 0, 0, 1
-
-        if self.exact_ci:
-            return ci_low, ci_high, pval
-
-        sum_x = np.sum(self.data, axis=1)
-        sum_y = np.sum(self.data, axis=0)
-        N = np.array(self.data).sum()
-        hx = stats.entropy(sum_y)
-        hy = stats.entropy(sum_y)
-
-        df = (self.data.shape[0]-1)*(self.data.shape[1]-1)
-
-        G = special.chdtri(df, pval)
-
-        p_low = 1-(1-self.ci_level)/2
-        p_high= (1-self.ci_level)/2
-        G_low = special.chndtrinc(G, df, p_low)
-        G_high = special.chndtrinc(G, df, p_high)
-        ci = ((G_low+df)/(2.0*N), (G_high+df)/(2.0*N))
-        ci = map(lambda x: x/min(hx,hy), ci)
-
-        return ci[0], ci[1], pval
+    def __str__(self):
+        return 'NMI(confidence={})'.format(self.ci_level)
 
     def __copy__(self):
         return NMI(self.ci_level)
@@ -171,6 +130,9 @@ class COND_NMI(Measure):
     def __copy__(self):
         return COND_NMI(self.ci_level)
 
+    def __str__(self):
+        return 'Conditional NMI(confidence={})'.format(self.ci_level)
+
 
 #
 # Pearson Correlation measure
@@ -216,18 +178,11 @@ class CORR(Measure):
         else:
             return abs(self.stats[0])
 
-    def ci_from_p(self, ci_low, ci_high, pval):
-        if pval == 1:
-            return 0, 0, 1
-
-        if self.exact_ci:
-            return ci_low, ci_high, pval
-
-        ci = z_ci_from_p(ci_low, ci_high, pval, self.ci_level)
-        return max(-1,ci[0]), min(ci[1],1), pval
-
     def __copy__(self):
         return CORR(self.ci_level)
+
+    def __str__(self):
+        return 'Correlation(confidence={})'.format(self.ci_level)
 
 
 #
@@ -270,19 +225,12 @@ class DIFF(Measure):
             return z_effect(ci_low, ci_high)
         else:
             return abs(self.stats[0])
-    
-    def ci_from_p(self, ci_low, ci_high, pval):
-        if pval == 1:
-            return 0, 0, 1
-
-        if self.exact_ci:
-            return ci_low, ci_high, pval
-
-        ci = z_ci_from_p(ci_low, ci_high, pval, self.ci_level)
-        return max(-1,ci[0]), min(ci[1],1), pval
 
     def __copy__(self):
         return DIFF(self.ci_level)
+
+    def __str__(self):
+        return 'Difference(confidence={})'.format(self.ci_level)
 
 
 #
@@ -324,19 +272,12 @@ class RATIO(Measure):
             return z_effect(log(ci_low), log(ci_high))
         else:
             return abs(log(self.stats[0]))
-    
-    def ci_from_p(self, ci_low, ci_high, pval):
-        if pval == 1:
-            return 1, 1, 1
-
-        if self.exact_ci:
-            return ci_low, ci_high, pval
-
-        ci = z_ci_from_p(log(ci_low), log(ci_high), pval, self.ci_level)
-        return exp(ci[0]), exp(ci[1]), pval
 
     def __copy__(self):
         return RATIO(self.ci_level)
+
+    def __str__(self):
+        return 'Regression(confidence={})'.format(self.ci_level)
 
 
 #
@@ -417,12 +358,8 @@ class REGRESSION(Measure):
         else:
             return np.sum(non_nan)/len(effects)
 
-    def ci_from_p(self, ci_low, ci_high, pval):
-        if pval == 1:
-            return 0, 0, 1
-
-        ci = z_ci_from_p(ci_low, ci_high, pval, self.ci_level)
-        return ci[0], ci[1], pval
+    def __str__(self):
+        return 'Regression(confidence={}, topK={})'.format(self.ci_level, self.topK)
 
 
 # 
@@ -441,9 +378,11 @@ def mutual_info(data, norm=False, ci_level=None, pval=True):
     else:
         pval = 0
 
+    # data smoothing
     data = data.copy()
-    data = data[~np.all(data == 0, axis=1)]
-    data = data[:, ~np.all(data == 0, axis=0)]
+    data += 1
+    #data = data[~np.all(data == 0, axis=1)]
+    #data = data[:, ~np.all(data == 0, axis=0)]
 
     shape = data.shape
     if shape[0] < 2 or shape[1] < 2:
@@ -615,13 +554,15 @@ def G_test(data, correction=False):
     if isinstance(data, pd.DataFrame):
         data = data.values
 
-    data = data[~np.all(data == 0, axis=1)]
-    data = data[:, ~np.all(data == 0, axis=0)]
+    #data = data[~np.all(data == 0, axis=1)]
+    #data = data[:, ~np.all(data == 0, axis=0)]
+    data = data.copy()
+    data += 1
 
     if data.sum() == 0:
         return 0, 1.0, 1, None
 
-    return stats.chi2_contingency(data, correction=False, lambda_="log-likelihood")
+    return stats.chi2_contingency(data, correction=True, lambda_="log-likelihood")
 
 
 #
@@ -690,12 +631,12 @@ def mi_sigma(data):
     mi = 0
     for i in range(0, len(pxs)):
         px = pxs[i]
-        if(px != 0):
+        if px != 0:
             for j in range(0, len(pys)):
                 py = pys[j]
                 
                 pxy = pxys[i][j]
-                if (pxy != 0):
+                if pxy != 0:
                     mi_sqr += pxy * pow((log(pxy)-log(px)-log(py)), 2)
                     mi += pxy * (log(pxy)-log(px)-log(py))
     
@@ -781,10 +722,12 @@ def bootstrap_ci_ct(data, stat, num_samples=10000, ci_level=0.95):
     if isinstance(data, pd.DataFrame):
         data = data.values
 
-    stat_0 = stat(data)
     dim = data.shape
     data = data.flatten()
+    data += 1
     n = data.sum()
+
+
 
     #print 'Bootstrap on data of size {}'.format(n)
 
