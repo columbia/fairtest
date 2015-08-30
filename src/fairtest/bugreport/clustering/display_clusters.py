@@ -4,19 +4,21 @@ from statsmodels.sandbox.stats.multicomp import multipletests
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import subprocess
+import textwrap
 from copy import copy
 
 from fairtest.bugreport.statistics import fairness_measures as fm
 
 # Filters
-FILTER_LEAVES_ONLY = 0
-FILTER_ALL = 1
-FILTER_ROOT_ONLY = 2
+FILTER_LEAVES_ONLY = 'LEAVES_ONLY'
+FILTER_ALL = 'ALL'
+FILTER_ROOT_ONLY = 'ROOT ONLY'
 NODE_FILTERS = [FILTER_ALL, FILTER_LEAVES_ONLY, FILTER_ROOT_ONLY]
 
 # Sorting Method
-SORT_BY_EFFECT = 0
-SORT_BY_SIG = 1
+SORT_BY_EFFECT = 'EFFECT'
+SORT_BY_SIG = 'SIGNIFICANCE'
 SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG]
 
 
@@ -299,3 +301,23 @@ def rich_ct(ct):
     temp.loc['Total']['Total'] = '{} (100.0%)'.format(total)
     
     return temp
+
+
+def print_report_info(data, measure, tree_params, display_params):
+    print '='*80
+    print 'Commit Hash: \t{}'.format(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd='..').strip())
+    print
+    print 'Dataset: \t{}'.format(data.filepath)
+    print 'Training Size: \t{}'.format(len(data.data_train))
+    print 'Testing Size: \t{}'.format(len(data.data_test))
+    print 'Attributes: \t{}'.format("\n\t\t".join(textwrap.wrap(str(data.features.tolist()), 60)))
+    print 'Protected: \t{}'.format(data.SENS)
+    print 'Explanatory: \t{}'.format(data.EXPL)
+    print 'Target: \t{}'.format(data.OUT)
+    print
+    print 'Tree Params: \t{}'.format(tree_params)
+    print 'Metric: \t{}'.format(measure)
+    print
+    print 'Report Params: \t{}'.format(display_params)
+    print '='*80
+    print
