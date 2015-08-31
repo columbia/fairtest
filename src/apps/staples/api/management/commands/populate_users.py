@@ -47,9 +47,9 @@ class Command(BaseCommand):
             return 2
         elif 10000  <= income < 20000:
             return 3
-        elif 20000  <= income < 40000:
+        elif 20000  <= income < 50000:
             return 4
-        elif 40000  <= income < 80000:
+        elif 50000  <= income < 80000:
             return 5
         elif 80000  <= income < 160000:
             return 6
@@ -75,13 +75,15 @@ class Command(BaseCommand):
                     continue
                 uid = int(line.split(',')[0])
                 zipcode = str(line.split(',')[1])
-                sex = int(line.split(',')[2])
-                race = int(line.split(',')[3])
-                income = self._normalized_income(int(line.split(',')[4]))
+                city = str(line.split(',')[2])
+                state = str(line.split(',')[3])
+                sex = int(line.split(',')[4])
+                race = int(line.split(',')[5])
+                income = self._normalized_income(int(line.split(',')[6]))
             except IndexError as error:
                 print("Malformed line: <%s>" % line, file=sys.stderr)
                 continue
-            u = User(uid, zipcode, sex, race, income)
+            u = User(uid, zipcode, city, state, sex, race, income)
             u.save()
             print("User:%d saved"% (uid))
         transaction.commit()

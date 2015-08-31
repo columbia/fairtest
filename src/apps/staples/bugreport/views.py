@@ -86,8 +86,21 @@ def _get_price(user, location_dependency):
     if check_distance_from_store(user_location,
                                  competitor_stores_coordinates,
                                  20):
+        print("%s,%s,%s,%s,%s,%s,%s,%s" % ("near", user.zipcode,
+                                            user.city, user.state,
+                                            user.SEX_CHOICES[user.sex][1],
+                                            user.RACE_CHOICES[user.race - 1][1],
+                                            user.INCOME_CHOICES[user.income - 1][0]
+                                            , "low"), file=logfile)
         return price['low']
     else:
+        print("%s,%s,%s,%s,%s,%s,%s,%s" % ("far", user.zipcode,
+                                            user.city, user.state,
+                                            user.SEX_CHOICES[user.sex][1],
+                                            user.RACE_CHOICES[user.race - 1][1],
+                                            user.INCOME_CHOICES[user.income - 1][0]
+                                            , "high"), file=logfile)
+ 
         return price['high']
 
  #   elif check_distance_from_store(user_location,
@@ -143,12 +156,12 @@ def BugreportView(request,
         if delta > epsilon:
             flag = "red"
             content.append((attr_val, cur['low'], cur['high']))
-        print("attr_val:%s,delta:%.4f,total:%d,low:%d,high:%d,flag:%s,location_dependency:%d" %
-              (attr_val, delta, cur['high'] + cur['low'], cur['low'], cur['high'], flag, location_dependency),
-              file = logfile)
+        #print("attr_val:%s,delta:%.4f,total:%d,low:%d,high:%d,flag:%s,location_dependency:%d" %
+        #      (attr_val, delta, cur['high'] + cur['low'], cur['low'], cur['high'], flag, location_dependency),
+        #      file = logfile)
 
-    print("total:%d,low:%d,high:%d,discriminated:%d,location_dependency:%d" %
-          (total, total_low, total_high, len(content), location_dependency), file = logfile)
+    #print("total:%d,low:%d,high:%d,discriminated:%d,location_dependency:%d" %
+    #      (total, total_low, total_high, len(content), location_dependency), file = logfile)
 
     template = get_template('bugreport')
     return HttpResponse(template.render(Context({'content': content})))

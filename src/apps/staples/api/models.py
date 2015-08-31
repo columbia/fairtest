@@ -19,14 +19,16 @@ class User(models.Model):
             (1, 'income<5000'),
             (2, '5000<=income<10000'),
             (3, '10000<=income<20000'),
-            (4, '20000<=income<40000'),
-            (5, '40000<=income<80000'),
+            (4, '20000<=income<50000'),
+            (5, '50000<=income<80000'),
             (6, '80000<=income<160000'),
             (7, '160000<=income<320000'),
             (8, '320000<=income'),
             )
     uid = models.IntegerField(primary_key=True)
     zipcode = models.CharField(max_length=10)
+    city = models.CharField(max_length=60)
+    state = models.CharField(max_length=30)
     sex = models.IntegerField(choices=SEX_CHOICES)
     race = models.IntegerField(choices=RACE_CHOICES)
     income = models.IntegerField(choices=INCOME_CHOICES)
