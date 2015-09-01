@@ -2,11 +2,12 @@ from StringIO import StringIO
 import prettytable
 from statsmodels.sandbox.stats.multicomp import multipletests
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+import random
 import pandas as pd
 import numpy as np
 import subprocess
 import textwrap
-from copy import copy
 
 from fairtest.bugreport.statistics import fairness_measures as fm
 
@@ -14,12 +15,14 @@ from fairtest.bugreport.statistics import fairness_measures as fm
 FILTER_LEAVES_ONLY = 'LEAVES_ONLY'
 FILTER_ALL = 'ALL'
 FILTER_ROOT_ONLY = 'ROOT ONLY'
-NODE_FILTERS = [FILTER_ALL, FILTER_LEAVES_ONLY, FILTER_ROOT_ONLY]
+FILTER_BETTER_THAN_ANCESTORS = "BETTER_THAN_ANCESTORS"
+NODE_FILTERS = [FILTER_ALL, FILTER_LEAVES_ONLY, FILTER_ROOT_ONLY, FILTER_BETTER_THAN_ANCESTORS]
 
 # Sorting Method
 SORT_BY_EFFECT = 'EFFECT'
 SORT_BY_SIG = 'SIGNIFICANCE'
-SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG]
+SORT_BY_BETTER_THAN_ANCESTORS = 'BETTER THAN ANCESTORS'
+SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG, SORT_BY_BETTER_THAN_ANCESTORS]
 
 
 #
@@ -32,8 +35,7 @@ SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG]
 # @args leaves_only consider tree leaves only
 # @args conf_level  level for confidence intervals
 #
-def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
-               node_filter=FILTER_LEAVES_ONLY, new_measure=None, approx=True, fdr=None):
+def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT, node_filter=FILTER_LEAVES_ONLY, approx=True, fdr=None):
 
     assert sort_by in SORT_METHODS
     assert node_filter in NODE_FILTERS
@@ -43,12 +45,7 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
     else:
         fdr_alpha = None
 
-    if new_measure:
-        measure = new_measure
-        for cluster in clusters:
-            cluster.clstr_measure = copy(new_measure)
-    else:
-        measure = clusters[0].clstr_measure
+    measure = clusters[0].clstr_measure
     measure_type = measure.dataType
 
     # Filter the clusters to show (All or Leaves & Root)
@@ -60,15 +57,16 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
     #
     # Adjusted Confidence Interval (Bonferroni)
     #
-    # compute effect sizes and p-values
+    # Compute effect sizes and p-values
+    #
     adj_ci_level = None
     if fdr_alpha and measure.ci_level:
         adj_ci_level = 1-(1-fdr_alpha)/len(clusters)
-        #print 'Adjusted CI level is {:.4f}'.format(adj_ci_level)
 
     if measure.dataType == fm.Measure.DATATYPE_CORR:
-        stats = map(lambda c: c.clstr_measure.compute(c.stats, data=c.data['values'],
-                                                      approx=approx, adj_ci_level=adj_ci_level).stats, clusters)
+        stats = map(lambda c: c.clstr_measure.compute(c.stats, data=c.data['values'], approx=approx,
+                                                      adj_ci_level=adj_ci_level).stats, clusters)
+
     else:
         stats = map(lambda c: c.clstr_measure.compute(c.stats, approx=approx, adj_ci_level=adj_ci_level).stats,
                     clusters)
@@ -84,8 +82,6 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
     if fdr_alpha:
         pvals = map(lambda stat: max(stat[-1], 1e-180), stats)
         _, pvals_corr, _, _ = multipletests(pvals, alpha=fdr_alpha, method='holm')
-        #stats = [clstr.clstr_measure.ci_from_p(low, high, pval_corr)
-        # for ((clstr, (low, high, _)), pval_corr) in zip(zipped, pvals_corr)]
         stats = [np.append(stat[0:-1], pval_corr) for (stat, pval_corr) in zip(stats, pvals_corr)]
 
     # For regression, re-form the dataframes for each cluster
@@ -112,6 +108,16 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
 
     # Take all the non-root clusters
     zipped = filter(lambda (c, _): not c.isroot, zipped)
+
+    if node_filter == FILTER_BETTER_THAN_ANCESTORS:
+        effects = {}
+        for cluster in clusters:
+            if cluster.parent is None:
+                effects[cluster.num] = cluster.clstr_measure.abs_effect()
+            else:
+                effects[cluster.num] = max(cluster.clstr_measure.abs_effect(), effects[cluster.parent.num])
+
+        zipped = filter(lambda (c, _): c.clstr_measure.abs_effect() >= effects[c.num], zipped)
 
     # sort by significance
     if sort_by == SORT_BY_SIG:
@@ -198,7 +204,7 @@ def rand_jitter(arr):
 
 
 def jitter(x, y, s=20, c='b', marker='o', cmap=None, norm=None, vmin=None, vmax=None, alpha=None, linewidths=None, verts=None, hold=None, **kwargs):
-    return plt.scatter(rand_jitter(x), y, s=20, c='b', marker='o', cmap=None, norm=None, vmin=None, vmax=None, alpha=None, linewidths=None, verts=None, hold=None, **kwargs)
+    return plt.scatter(rand_jitter(x), rand_jitter(y), s=20, c='b', marker='o', cmap=None, norm=None, vmin=None, vmax=None, alpha=None, linewidths=None, verts=None, hold=None, **kwargs)
 
 
 def print_cluster_corr(cluster, cluster_stats, effect_name):
@@ -208,15 +214,23 @@ def print_cluster_corr(cluster, cluster_stats, effect_name):
     out = data[data.columns[0]]
     sens = data[data.columns[1]]
 
-    #jitter(sens, out, color='blue', edgecolor='none')
+    # avoid matplotlib overflow
+    if len(out) > 100000:
+        (out, sens) = zip(*random.sample(zip(out, sens), 100000))
+        out = np.array(out)
+        sens = np.array(sens)
+
     m, b = np.polyfit(sens, out, 1)
     plt.plot(sens, m*sens + b, '-', color='green')
 
-    plt.hexbin(sens, out, gridsize=20, cmap=plt.get_cmap('Blues'))
+    #jitter(sens, out, color='blue', edgecolor='none')
+    plt.hexbin(sens, out, gridsize=20, norm=colors.LogNorm(), cmap=plt.get_cmap('Blues'))
     plt.colorbar()
 
     plt.xlabel(data.columns[1])
     plt.ylabel(data.columns[0])
+    plt.xlim(np.min(sens)-0.2*np.std(sens), np.max(sens)+0.2*np.std(sens))
+    plt.ylim(np.min(out)-0.2*np.std(out), np.max(out)+0.2*np.std(out))
     plt.show()
 
     if len(cluster_stats) == 3:

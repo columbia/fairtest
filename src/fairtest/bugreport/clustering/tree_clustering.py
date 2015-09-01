@@ -23,11 +23,13 @@ class Cluster:
     # @args size        the cluster size
     # @args data        any additional data required for fairness measures
     #
-    def __init__(self, num, path, isleaf, isroot, stats, size, clstr_measure=None, data=None):
+    def __init__(self, num, path, isleaf, isroot, parent, stats, size, clstr_measure=None, data=None):
         self.num = num
         self.path = path
         self.isleaf = isleaf
         self.isroot = isroot
+        self.parent = parent
+        self.children = []
         self.size = size
         self.stats = stats
         self.clstr_measure = clstr_measure
@@ -106,7 +108,7 @@ def find_clusters_cat(tree, data, train_set=False):
     # @args data_node    the sub-dataset rooted at this node
     # @args feature_path The predicate path from the root to this node
     #
-    def bfs(node, data_node, feature_path):
+    def bfs(node, parent, data_node, feature_path):
         is_root = node.is_root()
         is_leaf = node.is_leaf()
 
@@ -191,16 +193,21 @@ def find_clusters_cat(tree, data, train_set=False):
         # build a cluster class and store it in the list
         training_measure = node.measure
 
-        if is_root or training_measure.abs_effect() > 0:
-            clstr = Cluster(node.id, feature_path, is_leaf, is_root, stats, size, training_measure, cluster_data)
-            clusters.append(clstr)
-        
+        # prune non-significant clusters
+        #if is_root or training_measure.abs_effect() > 0:
+        clstr = Cluster(node.id, feature_path, is_leaf, is_root, parent, stats, size, training_measure, cluster_data)
+        clusters.append(clstr)
+        if parent:
+            parent.children.append(clstr)
+        #else:
+        #    clstr = parent
+
         # recurse in children
         for child in node.get_children():
-            bfs(child, data_node, deepcopy(feature_path))
+            bfs(child, clstr, data_node, deepcopy(feature_path))
     
     # start bfs from the root with the full dataset and an empty path           
-    bfs(tree, data, {})
+    bfs(tree, None, data, {})
     return clusters
 
 
