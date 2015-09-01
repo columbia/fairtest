@@ -11,62 +11,126 @@ MSE impovement score variable into categorical variable from 0 to 5.
 @argv[2]: A file with user scores
 
 output: The join result
+
+References
+----------
+http://ampcamp.berkeley.edu/big-data-mini-course/movie-recommendation-with-mllib
 """
 import sys
-import itertools
 import statistics
-from math import sqrt
-from operator import add
-from os.path import join, isfile, dirname
+from os.path import isfile
 
-def parseUser(line):
+def parse_user(line):
     """
     Parses a user in MovieLens format userID::gender::age::occupation::zip
+
+    Parameters
+    ----------
+    line : str
+        The line that contains user information
+
+    Returns
+    -------
+    list : list
+        A list containing userID, gender, age, occupation, zip
     """
     fields = line.strip().split("::")
     return [str(fields[0]), str(fields[1]),
             str(fields[2]), str(fields[3]), str(fields[4])]
 
-def parseScore(line):
+def parse_score(line):
     """
     Parses a score record. Format: userId,movieType,mode,median,improvement
+
+    Parameters
+    ----------
+    line : str
+        The line that contains user information
+
+    Returns
+    -------
+    list : list
+        A list containing userID, movieType, mode, median, improvement
     """
     fields = line.strip().split(",")[:]
     return [str(fields[0]), str(fields[1]),
             str(fields[2]), str(fields[3]), str(fields[4])]
 
-def loadUsers(usersFile):
+def load_users(user_file):
     """
     Load ratings from file.
+
+    Parameters
+    ----------
+    user_file : str
+        The file that contain user information entries
+
+    Returns
+    -------
+    users : dict
+        A user dictionary in which userID is the key.
     """
-    if not isfile(usersFile):
-        print "File %s does not exist." % usersFile
+    if not isfile(user_file):
+        print "File %s does not exist." % user_file
         sys.exit(1)
-    f = open(usersFile, 'r')
+
+    f_in = open(user_file, 'r')
     users = {}
-    for line in f:
-        users[parseUser(line)[0]] = parseUser(line)[1:]
-    f.close()
+    for line in f_in:
+        users[parse_user(line)[0]] = parse_user(line)[1:]
+    f_in.close()
+
     return users
 
-def loadScores(scoresFile):
+def load_scores(scores_file):
     """
     Load ratings from file.
+
+    Parameters
+    ----------
+    scores_file : str
+        The file that contains the rating info
+
+    Returns
+    -------
+    scores : dict
+        A scores dictionary in which movieId is the key.
     """
-    if not isfile(scoresFile):
-        print "File %s does not exist." % scoresFile
+    if not isfile(scores_file):
+        print "File %s does not exist." % scores_file
         sys.exit(1)
 
     scores = {}
-    f = open(scoresFile, 'r')
-    for line in f:
-        scores[parseScore(line)[0]] = parseScore(line)[1:]
-    f.close()
+    f_in = open(scores_file, 'r')
+    for line in f_in:
+        scores[parse_score(line)[0]] = parse_score(line)[1:]
+    f_in.close()
+
     return scores
 
 def categorize(score, avg, stdev):
     """
     Turn a continous variable into categorical from 0 to 5
+
+    Parameters
+    ----------
+    score : float
+        Improvement score
+    avg : float
+        Average of improvements
+    stdev : float
+        Standard deviation of improvements
+
+    Returns
+    -------
+    int : int
+        Normalized improvement
+
+    Notes
+    -----
+    We may get rid of this function and let improvement be a continious
+    float variable.
+
     """
     if score < avg:
         return 0
@@ -84,20 +148,22 @@ def categorize(score, avg, stdev):
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print "Usage: %s UsersFile ScoresFile" % sys.argv[0]
+        print "Usage: %s user_file scores_file" % sys.argv[0]
         sys.exit(1)
 
     # load ratings and movie titles
-    UsersFile = sys.argv[1]
-    ScoresFile = sys.argv[2]
+    USER_FILE = sys.argv[1]
+    SCORE_FILE = sys.argv[2]
 
-    users = loadUsers(UsersFile)
-    scores = loadScores(ScoresFile)
+    users = load_users(USER_FILE)
+    scores = load_scores(SCORE_FILE)
 
-    avg = sum(map(lambda x: float(x[3]), scores.values())) / len(scores.values())
+    avg = sum(map(lambda x: float(x[3]), scores.values())) / \
+          len(scores.values())
     stdev = statistics.stdev(map(lambda x: float(x[3]), scores.values()))
 
     print "#userID,gender,age,occupation,zip,movieType,mode,median,improvement"
     for userId in scores:
         improvement = categorize(float(scores[userId][3]), avg, stdev)
-        print ','.join([userId] + users[userId][:] + scores[userId][:-1] + [str(improvement)])
+        print ','.join([userId] + users[userId][:] + \
+                       scores[userId][:-1] + [str(improvement)])

@@ -86,30 +86,19 @@ def _get_price(user, location_dependency):
     if check_distance_from_store(user_location,
                                  competitor_stores_coordinates,
                                  20):
-        print("%s,%s,%s,%s,%s,%s,%s,%s" % ("near", user.zipcode,
-                                            user.city, user.state,
-                                            user.SEX_CHOICES[user.sex][1],
-                                            user.RACE_CHOICES[user.race - 1][1],
-                                            user.INCOME_CHOICES[user.income - 1][0]
-                                            , "low"), file=logfile)
+        print("%s,%s,%s,%s,%s,%s,%s,%s" % \
+                ("near", user.zipcode, user.city, user.state,
+                 user.SEX_CHOICES[user.sex][1],
+                 user.RACE_CHOICES[user.race - 1][1],
+                 user.INCOME_CHOICES[user.income - 1][0], "low"), file=logfile)
         return price['low']
     else:
-        print("%s,%s,%s,%s,%s,%s,%s,%s" % ("far", user.zipcode,
-                                            user.city, user.state,
-                                            user.SEX_CHOICES[user.sex][1],
-                                            user.RACE_CHOICES[user.race - 1][1],
-                                            user.INCOME_CHOICES[user.income - 1][0]
-                                            , "high"), file=logfile)
- 
+        print("%s,%s,%s,%s,%s,%s,%s,%s" % \
+                ("far", user.zipcode, user.city, user.state,
+                 user.SEX_CHOICES[user.sex][1],
+                 user.RACE_CHOICES[user.race - 1][1],
+                 user.INCOME_CHOICES[user.income - 1][0], "high"), file=logfile)
         return price['high']
-
- #   elif check_distance_from_store(user_location,
- #                                  staples_stores_coordinates,
- #                                  20):
- #       return (price['high'] if randBinary(86) else price['low'])
- #   else:
- #       return (price['high'] if randBinary(67) else price['low'])
-
 
 def BugreportView(request,
                   location_dependency="100",
