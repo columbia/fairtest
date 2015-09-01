@@ -22,9 +22,9 @@ numpy, pandas, etc installed:
 Tell pyspark to look for freshly compiled classes (custom mllib):
 
     export SPARK_PREPEND_CLASSES=1
-    
+
 Compress the sources
-    
+
     zip -r src/fairtest.zip src/fairtest
 
 Launch pyspark and attach the fairtest code
@@ -38,7 +38,7 @@ In the pyspark shell:
     clusters, pretty_tree = test_spark.find_clusters(root, data, measure, train_set=False)
     test_spark.print_clusters(clusters)
     test_spark.print_tree(pretty_tree, '../graphs/tree_spark.pdf')
-    
+
 
 Non-SPARK
 =========
@@ -52,13 +52,17 @@ Launch IPython:
 Code Organisation
 =================
 
-src/fairtest/spark                  Test script for the Spark implementation
+* data: Demo datasets
 
-src/fairtest/bugreport/clustering   Module for extracting clusters from a tree
-                                    structure, and displaying them
-                                    
-src/fairtest/bugreport/core         Contains a class for representing a dataset
+* src/apps: Demo apps
 
-src/fairtest/bugreport/statistics   Code for statistical measures and tests
+* src/fairtest/tests: Test for spark and ipython implementations
 
-src/fairtest/bugreport/trees        Code for building trees
+* src/fairtest/bugreport/clustering:    Module for extracting clusters from a tree
+                                        structure, and displaying them
+
+* src/fairtest/bugreport/core:          Contains a class for representing a dataset
+
+* src/fairtest/bugreport/statistics:    Code for statistical measures
+
+* src/fairtest/bugreport/trees:         Code for building trees
