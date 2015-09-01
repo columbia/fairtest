@@ -62,6 +62,7 @@ class Dataset:
         assert feature in self.original_data.columns
 
         self.original_data = self.original_data.drop(feature, axis=1)
+        self.features = self.original_data.columns
 
     def set_sens_feature(self, feature, feature_type='cat'):
         """
