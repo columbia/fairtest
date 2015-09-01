@@ -58,11 +58,10 @@ Code Organisation
 
 * src/fairtest/tests: Test for spark and ipython implementations
 
-* src/fairtest/bugreport/clustering:    Module for extracting clusters from a tree
-                                        structure, and displaying them
+* src/fairtest/bugreport/clustering:    Package for extracting clusters and displaying them
 
-* src/fairtest/bugreport/core:          Contains a class for representing a dataset
+* src/fairtest/bugreport/core:          Package for representing a dataset
 
-* src/fairtest/bugreport/statistics:    Code for statistical measures
+* src/fairtest/bugreport/statistics:    Package for statistical measures
 
-* src/fairtest/bugreport/trees:         Code for building trees
+* src/fairtest/bugreport/trees:         Package for building trees
