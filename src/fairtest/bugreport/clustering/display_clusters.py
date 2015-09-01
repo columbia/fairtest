@@ -412,9 +412,9 @@ def print_report_info(data, measure, tree_params, display_params):
     print 'Training Size: \t{}'.format(len(data.data_train))
     print 'Testing Size: \t{}'.format(len(data.data_test))
     print 'Attributes: \t{}'.format("\n\t\t".join(textwrap.wrap(str(data.features.tolist()), 60)))
-    print 'Protected: \t{}'.format(data.SENS)
-    print 'Explanatory: \t{}'.format(data.EXPL)
-    print 'Target: \t{}'.format(data.OUT)
+    print 'Protected: \t{}'.format(data.sens)
+    print 'Explanatory: \t{}'.format(data.expl)
+    print 'Target: \t{}'.format(data.out)
     print
     print 'Tree Params: \t{}'.format(tree_params)
     print 'Metric: \t{}'.format(measure)
