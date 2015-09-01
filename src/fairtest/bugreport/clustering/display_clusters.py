@@ -1,3 +1,6 @@
+"""
+Module for discpaying clusters
+"""
 from StringIO import StringIO
 import prettytable
 from statsmodels.sandbox.stats.multicomp import multipletests
@@ -22,19 +25,27 @@ SORT_BY_SIG = 'SIGNIFICANCE'
 SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG]
 
 
-#
-# Print all the clusters sorted by relevance
-#
-# @args clusters    list of all clusters
-# @args sort_by     way to sort the clusters ('effect' => sort by lower bound
-#                   on the mutual information score; 'sig' => sort by significance
-#                   level)
-# @args leaves_only consider tree leaves only
-# @args conf_level  level for confidence intervals
-#
 def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
-               node_filter=FILTER_LEAVES_ONLY, new_measure=None, approx=True, fdr=None):
+               node_filter=FILTER_LEAVES_ONLY, new_measure=None,
+               approx=True, fdr=None):
+    """
+    Print all the clusters sorted by relevance
 
+    Parameters
+    -----------
+    clusters :
+        list of all clusters
+
+    sort_by :
+        way to sort the clusters ('effect' => sort by lower bound
+        on the mutual information score; 'sig' => sort by significance level)
+
+    leaves_only :
+        consider tree leaves only
+
+    conf_level :
+        level for confidence intervals
+    """
     assert sort_by in SORT_METHODS
     assert node_filter in NODE_FILTERS
 
@@ -67,13 +78,21 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
         #print 'Adjusted CI level is {:.4f}'.format(adj_ci_level)
 
     if measure.dataType == fm.Measure.DATATYPE_CORR:
-        stats = map(lambda c: c.clstr_measure.compute(c.stats, data=c.data['values'],
-                                                      approx=approx, adj_ci_level=adj_ci_level).stats, clusters)
+        stats = map(lambda c: c.clstr_measure.\
+                                    compute(c.stats,
+                                            data=c.data['values'],
+                                            approx=approx,
+                                            adj_ci_level=adj_ci_level).stats,
+                    clusters)
     else:
-        stats = map(lambda c: c.clstr_measure.compute(c.stats, approx=approx, adj_ci_level=adj_ci_level).stats,
+        stats = map(lambda c: c.clstr_measure.\
+                                    compute(c.stats,
+                                            approx=approx,
+                                            adj_ci_level=adj_ci_level).stats,
                     clusters)
 
-    # For regression, we have multiple p-values per cluster (one per topK coefficient)
+    # For regression, we have multiple p-values per cluster
+    # (one per topK coefficient)
     if measure_type == fm.Measure.DATATYPE_REG:
         stats = pd.concat(stats)
         stats_index = stats.index
@@ -83,10 +102,13 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
     # correct p-values
     if fdr_alpha:
         pvals = map(lambda stat: max(stat[-1], 1e-180), stats)
-        _, pvals_corr, _, _ = multipletests(pvals, alpha=fdr_alpha, method='holm')
+        _, pvals_corr, _, _ = multipletests(pvals,
+                                            alpha=fdr_alpha,
+                                            method='holm')
         #stats = [clstr.clstr_measure.ci_from_p(low, high, pval_corr)
         # for ((clstr, (low, high, _)), pval_corr) in zip(zipped, pvals_corr)]
-        stats = [np.append(stat[0:-1], pval_corr) for (stat, pval_corr) in zip(stats, pvals_corr)]
+        stats = [np.append(stat[0:-1], pval_corr)\
+                for (stat, pval_corr) in zip(stats, pvals_corr)]
 
     # For regression, re-form the dataframes for each cluster
     if measure_type == fm.Measure.DATATYPE_REG:
@@ -99,14 +121,15 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
     (root, root_stats) = filter(lambda (c, _): c.isroot, zipped)[0]
     print 'Global Population of size {}'.format(root.size)
     print
-    
+
     # print a contingency table or correlation analysis
     if measure_type == fm.Measure.DATATYPE_CT:
         print_cluster_ct(root, columns, root_stats, measure.__class__.__name__)
     elif measure_type == fm.Measure.DATATYPE_CORR:
         print_cluster_corr(root, root_stats, measure.__class__.__name__)
     else:
-        print_cluster_reg(root, root_stats, measure.__class__.__name__, sort_by=sort_by)
+        print_cluster_reg(root, root_stats,
+                          measure.__class__.__name__, sort_by=sort_by)
     print '='*80
     print
 
@@ -116,7 +139,8 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
     # sort by significance
     if sort_by == SORT_BY_SIG:
         if measure_type == fm.Measure.DATATYPE_REG:
-            # for regression, we sort by the p-value of the most significant coefficient
+            # for regression, we sort by the p-value of
+            # the most significant coefficient
             zipped.sort(key=lambda (c, stats): min(stats['p-value']))
         else:
             zipped.sort(key=lambda (c, stats): stats[-1])
@@ -124,43 +148,62 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
     # sort by effect-size
     elif sort_by == SORT_BY_EFFECT:
         # get a normalized effect size and sort
-        zipped.sort(key=lambda (c, stats): c.clstr_measure.abs_effect(), reverse=True)
+        zipped.sort(key=lambda (c, stats): c.clstr_measure.abs_effect(),
+                    reverse=True)
 
-    # print clusters in order of relevance    
+    # print clusters in order of relevance
     for (cluster, cluster_stats) in zipped:
         print 'Sub-Population of size {}'.format(cluster.size)
         print 'Context = {}'.format(cluster.path)
         print
 
         if measure_type == fm.Measure.DATATYPE_CT:
-            print_cluster_ct(cluster, columns, cluster_stats, measure.__class__.__name__)
+            print_cluster_ct(cluster, columns, cluster_stats,
+                             measure.__class__.__name__)
         elif measure_type == fm.Measure.DATATYPE_CORR:
-            print_cluster_corr(cluster, cluster_stats, measure.__class__.__name__)
+            print_cluster_corr(cluster, cluster_stats,
+                               measure.__class__.__name__)
         else:
-            print_cluster_reg(cluster, cluster_stats, measure.__class__.__name__, sort_by=sort_by)
+            print_cluster_reg(cluster, cluster_stats,
+                              measure.__class__.__name__, sort_by=sort_by)
         print '-'*80
         print
 
 
 def print_cluster_ct(cluster, columns, cluster_stats, effect_name):
-    # pretty-print the contingency table
+    """
+    pretty-print the contingency table
 
+    Parameters
+    ----------
+    cluster :
+        List of all clusters
+
+    columns :
+        Columns of contingency table
+
+    cluster_stats :
+        Statistics of the cluster
+
+    effect_name :
+        The effect to sort by
+    """
     shape = cluster.stats.shape
 
     if columns:
         if len(shape) == 3:
-            ct = map(lambda c: c[columns], cluster.stats)
+            contingency_table = map(lambda c: c[columns], cluster.stats)
         else:
-            ct = cluster.stats[columns]
+            contingency_table = cluster.stats[columns]
     else:
-        ct = cluster.stats
+        contingency_table = cluster.stats
 
     if len(shape) == 2:
         output = StringIO()
-        rich_ct(ct).to_csv(output)
+        rich_ct(contingency_table).to_csv(output)
         output.seek(0)
-        pt = prettytable.from_csv(output)
-        print pt
+        pretty_table = prettytable.from_csv(output)
+        print pretty_table
         print
     else:
         (expl, encoder_enc) = cluster.data['expl']
@@ -169,27 +212,32 @@ def print_cluster_ct(cluster, columns, cluster_stats, effect_name):
             if cluster.stats[i].values.sum() > 0:
                 size = cluster.stats[i].values.sum()
                 weight = (100.0*size)/cluster.size
-                print '{} = {} ({} - {:.2f}%):'.format(expl, encoder_enc.classes_[i], size, weight)
+                print '{} = {} ({} - {:.2f}%):'.\
+                        format(expl, encoder_enc.classes_[i], size, weight)
 
                 ct_measure = fm.NMI(ci_level=cluster.clstr_measure.ci_level)
-                (effect_low, effect_high, p_val) = ct_measure.compute(cluster.stats[i]).stats
-                print '{} (non-adjusted) = [{:.4f}, {:.4f}]'.format('MI', effect_low, effect_high)
+                (effect_low, effect_high, p_val) = \
+                        ct_measure.compute(cluster.stats[i]).stats
+                print '{} (non-adjusted) = [{:.4f}, {:.4f}]'.\
+                        format('MI', effect_low, effect_high)
 
-                ct = pd.DataFrame(cluster.stats[i])
+                contingency_table = pd.DataFrame(cluster.stats[i])
                 output = StringIO()
-                rich_ct(ct).to_csv(output)
+                rich_ct(contingency_table).to_csv(output)
                 output.seek(0)
-                pt = prettytable.from_csv(output)
-                print pt
+                pretty_table = prettytable.from_csv(output)
+                print pretty_table
                 print
 
     if len(cluster_stats) == 3:
         # print p-value and confidence interval of MI
         (effect_low, effect_high, p_val) = cluster_stats
-        print 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.format(p_val, effect_name, effect_low, effect_high)
+        print 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.\
+                format(p_val, effect_name, effect_low, effect_high)
     else:
         effect, p_val = cluster_stats
-        print 'p-value = {:.2e} ; {} = {:.4f}'.format(p_val, effect_name, effect)
+        print 'p-value = {:.2e} ; {} = {:.4f}'.\
+                format(p_val, effect_name, effect)
 
 
 def rand_jitter(arr):
@@ -197,12 +245,29 @@ def rand_jitter(arr):
     return arr + np.random.randn(len(arr)) * stdev
 
 
-def jitter(x, y, s=20, c='b', marker='o', cmap=None, norm=None, vmin=None, vmax=None, alpha=None, linewidths=None, verts=None, hold=None, **kwargs):
-    return plt.scatter(rand_jitter(x), y, s=20, c='b', marker='o', cmap=None, norm=None, vmin=None, vmax=None, alpha=None, linewidths=None, verts=None, hold=None, **kwargs)
+def jitter(x, y, s=20, c='b', marker='o', cmap=None,
+           norm=None, vmin=None, vmax=None, alpha=None, linewidths=None,
+           verts=None, hold=None, **kwargs):
+    return plt.scatter(rand_jitter(x), y, s=20, c='b', marker='o',
+                       cmap=None, norm=None, vmin=None, vmax=None, alpha=None,
+                       linewidths=None, verts=None, hold=None, **kwargs)
 
 
 def print_cluster_corr(cluster, cluster_stats, effect_name):
-    # print correlation graph
+    """
+    print correlation graph
+
+    Parameters
+    ----------
+    cluster :
+        List of all clusters
+
+    cluster_stats :
+        Statistics of the cluster
+
+    effect_name :
+        The effect to sort by
+    """
     data = cluster.data['values']
 
     out = data[data.columns[0]]
@@ -222,16 +287,36 @@ def print_cluster_corr(cluster, cluster_stats, effect_name):
     if len(cluster_stats) == 3:
         # print p-value and confidence interval of correlation
         (effect_low, effect_high, p_val) = cluster_stats
-        print 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.format(p_val, effect_name, effect_low, effect_high)
+        print 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.\
+                format(p_val, effect_name, effect_low, effect_high)
     else:
         effect, p_val = cluster_stats
-        print 'p-value = {:.2e} ; {} = {:.4f}'.format(p_val, effect_name, effect)
+        print 'p-value = {:.2e} ; {} = {:.4f}'.\
+                format(p_val, effect_name, effect)
 
 
 def print_cluster_reg(cluster, stats, effect_name, sort_by='effect'):
+    """
+    Print regression graph
+
+    Parameters
+    ----------
+    cluster :
+        List of all clusters
+
+    columns :
+        Columns of contingency table
+
+    cluster_stats :
+        Statistics of the cluster
+
+    effect_name :
+        The effect to sort by
+    """
     effect = cluster.clstr_measure.abs_effect()
 
-    print 'Average (absolute) Log-Odds of top-{} labels: {}'.format(len(stats), effect)
+    print 'Average (absolute) Log-Odds of top-{} labels: {}'.\
+            format(len(stats), effect)
     print
     labels = cluster.data['labels']
 
@@ -256,54 +341,70 @@ def print_cluster_reg(cluster, stats, effect_name, sort_by='effect'):
     encoder = cluster.data['encoder_sens']
 
     for label in sorted_results.index:
-        ct = pd.DataFrame(0, index=cluster_data[label].unique(), columns=range(len(encoder.classes_)))
+        contingency_table = pd.DataFrame(0, index=cluster_data[label].unique(),
+                                         columns=range(len(encoder.classes_)))
         # fill in available values
-        ct = ct.add(pd.crosstab(cluster_data[label], cluster_data[sens]), fill_value=0)
+        contingency_table = contingency_table.\
+                add(pd.crosstab(cluster_data[label], cluster_data[sens]),
+                    fill_value=0)
 
         # replace numbers by original labels
-        ct.index.name = label
-        ct.columns = encoder.classes_
-        ct.columns.name = sens
+        contingency_table.index.name = label
+        contingency_table.columns = encoder.classes_
+        contingency_table.columns.name = sens
 
         output = StringIO()
-        rich_ct(ct).to_csv(output)
+        rich_ct(contingency_table).to_csv(output)
         output.seek(0)
-        pt = prettytable.from_csv(output)
+        pretty_table = prettytable.from_csv(output)
 
-        print pt
+        print prettytable
         print
 
 
-#
-# Build a rich contingency table with proportions and marginals
-#     
-# @args ct  the contingency table
-#   
-def rich_ct(ct):
+def rich_ct(contingency_table):
+    """
+    Build a rich contingency table with proportions and marginals
 
+    Parameters
+    ----------
+    contingency_table :
+
+    Returns
+    -------
+    temp :
+        Enhanced contingency table
+
+    """
     # for each output, add its percentage over each sensitive group
-    temp = ct.copy().astype(object)
-    for col in ct.columns:
-        tot_col = sum(ct[col])
-        for row in ct.index:
-            val = ct.loc[row][col]
+    temp = contingency_table.copy().astype(object)
+    for col in contingency_table.columns:
+        tot_col = sum(contingency_table[col])
+        for row in contingency_table.index:
+            val = contingency_table.loc[row][col]
             percent = (100.0*val)/tot_col
             temp.loc[row][col] = '{} ({:.1f}%)'.format(val, percent)
-    
-    total = ct.sum().sum()
-    
+
+    total = contingency_table.sum().sum()
+
     # add marginals
-    sum_col = ct.sum(axis=1)
-    temp.insert(len(temp.columns), 'Total', map(lambda val: '{} ({:.1f}%)'.format(val, (100.0*val)/total) , sum_col))
-    sum_row = ct.sum(axis=0)
+    sum_col = contingency_table.sum(axis=1)
+    temp.insert(len(temp.columns), 'Total',
+                map(lambda val: '{} ({:.1f}%)'.\
+                        format(val, (100.0*val)/total), sum_col))
+    sum_row = contingency_table.sum(axis=0)
     sum_row['Total'] = total
-    temp.loc['Total'] = map(lambda val: '{} ({:.1f}%)'.format(val, (100.0*val)/total) , sum_row)
+    temp.loc['Total'] = map(lambda val: '{} ({:.1f}%)'.\
+                                format(val, (100.0*val)/total), sum_row)
     temp.loc['Total']['Total'] = '{} (100.0%)'.format(total)
-    
+
     return temp
 
 
 def print_report_info(data, measure, tree_params, display_params):
+    """
+    Prints reports information
+    """
     print '='*80
     print 'Commit Hash: \t{}'.format(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd='..').strip())
     print
