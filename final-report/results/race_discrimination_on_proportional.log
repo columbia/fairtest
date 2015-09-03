@@ -1,9 +1,0 @@
-attr_val:1,delta:0.0370,total:625665,low:576987,high:48678,flag:green,location_dependency:100
-attr_val:3,delta:0.0512,total:124500,low:122116,high:2384,flag:red,location_dependency:100
-attr_val:2,delta:0.0148,total:175410,low:166340,high:9070,flag:green,location_dependency:100
-attr_val:5,delta:0.0411,total:47880,low:46693,high:1187,flag:green,location_dependency:100
-attr_val:4,delta:0.1304,total:7178,low:5790,high:1388,flag:red,location_dependency:100
-attr_val:7,delta:0.0180,total:10407,low:9927,high:480,flag:green,location_dependency:100
-attr_val:6,delta:0.0046,total:1663,low:1549,high:114,flag:green,location_dependency:100
-attr_val:8,delta:0.0235,total:7297,low:6660,high:637,flag:green,location_dependency:100
-total:1000000,low:936062,high:63938,discriminated:2,location_dependency:100

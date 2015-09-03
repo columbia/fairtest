@@ -15,6 +15,10 @@ the median decade of the movies recommended.
 @argv[3]: A folder to move rendered templates
 
 output: A batch of rendered templates with users' movie ratings
+
+References
+----------
+http://ampcamp.berkeley.edu/big-data-mini-course/movie-recommendation-with-mllib
 """
 import os
 import sys
@@ -23,41 +27,73 @@ import statistics
 from math import sqrt
 from operator import add
 from collections import Counter
-from os.path import join, isfile, dirname
+from os.path import join, isfile
 
 from pyspark import SparkConf, SparkContext
 from pyspark.mllib.recommendation import ALS
 
-def parseRating(line):
+def parse_rating(line):
     """
-    Parses a rating record in MovieLens format userId::movieId::rating::timestamp .
+    Parses a rating record in MovieLens format
+    user_id::movie_id::rating::timestamp
+
+    Parameters
+    ----------
+    line : str
+        A line that contains movie rating info
+
+    Returns
+    -------
+    tuple : tuple
+        A tuple containing userID, movie_id, and rating
     """
     fields = line.strip().split("::")
-    return long(fields[3]) % 10, (int(fields[0]), int(fields[1]), float(fields[2]))
+    return long(fields[3]) % 10, (int(fields[0]), \
+           int(fields[1]), float(fields[2]))
 
-def parseMovie(line):
+def parse_movie(line):
     """
-    Parses a movie record in MovieLens format movieId::movieTitle::movieType .
+    Parses a movie record in MovieLens format movie_id::movieTitle
+
+    Parameters
+    ----------
+    line : str
+        A line that contains movie info
+
+    Returns
+    -------
+    tuple : tuple
+        A tuple containing movie_id and movieTitle
     """
     fields = line.strip().split("::")
     return int(fields[0]), fields[1] + ': ' + fields[2]
 
-def loadRatings(ratingsFile):
+def load_ratings(ratings_file):
     """
     Load ratings from file.
+
+    Parameters
+    ----------
+    retings_file : str
+        The name of a file to be loaded
+
+    Returns
+    -------
+    ratings : dict
+        A dictionary with user ratings information.
     """
-    if not isfile(ratingsFile):
-        print "File %s does not exist." % ratingsFile
+    if not isfile(ratings_file):
+        print "File %s does not exist." % ratings_file
         sys.exit(1)
-    f = open(ratingsFile, 'r')
-    ratings = filter(lambda r: r[2] > 0, [parseRating(line)[1] for line in f])
-    f.close()
+    f_in = open(ratings_file, 'r')
+    ratings = filter(lambda r: r[2] > 0, [parse_rating(line)[1] for line in f_in])
+    f_in.close()
     if not ratings:
         return ''
     else:
         return ratings
 
-def computeRmse(model, data, n):
+def compute_rmse(model, data, n):
     """
     Compute RMSE (Root Mean Squared Error).
     """
@@ -65,51 +101,55 @@ def computeRmse(model, data, n):
     predictionsAndRatings = predictions.map(lambda x: ((x[0], x[1]), x[2])) \
       .join(data.map(lambda x: ((x[0], x[1]), x[2]))) \
       .values()
-    return sqrt(predictionsAndRatings.map(lambda x: (x[0] - x[1]) ** 2).reduce(add) / float(n))
+    return sqrt(predictionsAndRatings.map(lambda x: (x[0] - x[1]) ** 2).\
+            reduce(add) / float(n))
 
 if __name__ == "__main__":
-    if (len(sys.argv) != 4):
+    if len(sys.argv) != 4:
         print "Usage: /path/to/spark/bin/spark-submit --driver-memory 2g " + \
           "MovieLensALS.py movieLensDataDir personalRatingsbatch outputFile"
         sys.exit(1)
 
     # set up environment
-    conf = SparkConf() \
+    CONF = SparkConf() \
       .setAppName("MovieLensALS")
-    sc = SparkContext(conf=conf)
+    SC = SparkContext(CONF=CONF)
 
     # load ratings and movie titles
-    movieLensHomeDir = sys.argv[1]
+    MOVIELENS_HOMEDIRE = sys.argv[1]
 
     # ratings is an RDD of (last digit of timestamp, (userId, movieId, rating))
-    ratings = sc.textFile(join(movieLensHomeDir, "ratings.dat")).map(parseRating)
+    ratings = SC.textFile(join(MOVIELENS_HOMEDIRE, "ratings.dat")).\
+            map(parse_rating)
 
     # movies is an RDD of (movieId, movieTitle)
-    movies = dict(sc.textFile(join(movieLensHomeDir, "movies.dat")).map(parseMovie).collect())
+    MOVIES = dict(SC.textFile(join(MOVIELENS_HOMEDIRE, "movies.dat")).\
+            map(parse_movie).collect())
 
-    fOut = open(sys.argv[3], 'w')
+    f_out = open(sys.argv[3], 'w')
 
     counter = 0
     for fileName in os.listdir(sys.argv[2]):
         counter += 1
 
         # load personal ratings
-        myRatings = loadRatings(join(sys.argv[2], fileName))
+        myRatings = load_ratings(join(sys.argv[2], fileName))
 
         if not myRatings:
             continue
 
         userId = myRatings[0][0]
         myRatings = [(0, x[1], x[2]) for x in myRatings]
-        myRatingsRDD = sc.parallelize(myRatings, 1)
+        myRatingsRDD = SC.parallelize(myRatings, 1)
 
         numRatings = ratings.count()
         numUsers = ratings.values().map(lambda r: r[0]).distinct().count()
         numMovies = ratings.values().map(lambda r: r[1]).distinct().count()
 
-        # split ratings into train (60%), validation (20%), and test (20%) based on the 
-        # last digit of the timestamp, add myRatings to train, and cache them
-        # training, validation, test are all RDDs of (userId, movieId, rating)
+        # split ratings into train (60%), validation (20%), and test (20%)
+        # based on the last digit of the timestamp, add myRatings to train, and
+        # cache them training, validation, test are all RDDs
+        # of (userId, movieId, rating)
         numPartitions = 4
         training = ratings.filter(lambda x: x[0] < 6) \
           .values() \
@@ -141,25 +181,29 @@ if __name__ == "__main__":
 
         for rank, lmbda, numIter in itertools.product(ranks, lambdas, numIters):
             model = ALS.train(training, rank, numIter, lmbda)
-            validationRmse = computeRmse(model, validation, numValidation)
-            if (validationRmse < bestValidationRmse):
+            validationRmse = compute_rmse(model, validation, numValidation)
+            if validationRmse < bestValidationRmse:
                 bestModel = model
                 bestValidationRmse = validationRmse
                 bestRank = rank
                 bestLambda = lmbda
                 bestNumIter = numIter
 
-        testRmse = computeRmse(bestModel, test, numTest)
+        testRmse = compute_rmse(bestModel, test, numTest)
 
-        # compare the best model with a naive baseline that always returns the mean rating
+        # compare the best model with a naive baseline that always
+        # returns the mean rating
         meanRating = training.union(validation).map(lambda x: x[2]).mean()
-        baselineRmse = sqrt(test.map(lambda x: (meanRating - x[2]) ** 2).reduce(add) / numTest)
+        baselineRmse = sqrt(test.map(lambda x: (meanRating - x[2]) ** 2).\
+                reduce(add) / numTest)
         improvement = (baselineRmse - testRmse) / baselineRmse * 100
 
         # make personalized recommendations
         myRatedMovieIds = set([x[1] for x in myRatings])
-        candidates = sc.parallelize([m for m in movies if m not in myRatedMovieIds])
-        predictions = bestModel.predictAll(candidates.map(lambda x: (0, x))).collect()
+        candidates = SC.\
+                parallelize([m for m in MOVIES if m not in myRatedMovieIds])
+        predictions = bestModel.predictAll(candidates.map(lambda x: (0, x)))\
+                .collect()
         recommendations = sorted(predictions, key=lambda x: x[2], reverse=True)[:50]
         if not recommendations:
             continue
@@ -169,27 +213,25 @@ if __name__ == "__main__":
         movieDates = []
         for i in xrange(len(recommendations)):
             try:
-                movieTypes += (movies[recommendations[i][1]]).encode('ascii', 'ignore').split(": ")[1].split("|")[:]
-                movieDates.append(int((movies[recommendations[i][1]]).encode('ascii', 'ignore').split(": ")[0][-5:][:4]))
+                movieTypes += (MOVIES[recommendations[i][1]]).\
+                        encode('ascii', 'ignore').split(": ")[1].split("|")[:]
+                movieDates.append(int((MOVIES[recommendations[i][1]]).\
+                        encode('ascii', 'ignore').split(": ")[0][-5:][:4]))
             # In case if misparsed line int() raises exception
             except Exception, error:
                 continue
 
-        movieDecades = map(lambda l: ((l % 100) / 10 ) * 10, movieDates)
+        movieDecades = map(lambda l: ((l % 100) / 10) * 10, movieDates)
 
-        print >> fOut, "%d,%s,%d,%d,%.2f" % (myRatings[0][0],
-                                # Avoid statistics.mode; StatisticsError is
-                                # raised if there is not one most common value
-                                Counter(movieTypes).most_common(1)[0][0],
-                                Counter(movieDecades).most_common(1)[0][0],
-                                int(statistics.median(movieDecades)),
-                                improvement
-                                )
-        print "%d,%d,%s,%d,%d,%.2f" % (counter,
-                                myRatings[0][0],
-                                Counter(movieTypes).most_common(1)[0][0],
-                                Counter(movieDecades).most_common(1)[0][0],
-                                int(statistics.median(movieDecades)),
-                                improvement
-                                )
-    sc.stop()
+        print >> f_out, "%d,%s,%d,%d,%.2f" %\
+                (myRatings[0][0], Counter(movieTypes).most_common(1)[0][0],
+                 Counter(movieDecades).most_common(1)[0][0],
+                 int(statistics.median(movieDecades)),
+                 improvement)
+        print "%d,%d,%s,%d,%d,%.2f" %\
+              (counter, myRatings[0][0],
+               Counter(movieTypes).most_common(1)[0][0],
+               Counter(movieDecades).most_common(1)[0][0],
+               int(statistics.median(movieDecades)),
+               improvement)
+    SC.stop()

@@ -17,23 +17,24 @@ from fairtest.bugreport.trees.categorical_tree import ScoreParams as SP
 #
 def build_tree(sc):
     RANDOM_SEED = 0
-    
+
     data = dataset.Dataset()
     data.load_data_csv('../data/adult/adult.csv')
     data.drop_feature('fnlwgt')
-    
+
     data.set_sens_feature('sex', feature_type='cat')
     data.set_output_feature('predicted-income', feature_type='cat')
-    
+
     data.encode_data(binary=False)
     data.train_test_split(train_size=0.25, seed=RANDOM_SEED)
-    
+
     print '-- Data loaded and encoded --'
-    
+
     import imp
     imp.reload(tree_builder)
-    
-    tree, measure = tree_builder.train_tree(sc, data, max_depth=5, min_leaf_size=100, agg=SP.AVG)
+
+    tree, measure = tree_builder.train_tree(sc, data, max_depth=5,
+                                            min_leaf_size=100, agg=SP.AVG)
     print '-- {} --'.format(tree)
     root = tree._java_model.topNode()
     return root, data, measure
@@ -48,7 +49,8 @@ def build_tree(sc):
 #                   the test set.
 #
 def find_clusters(root, data, measure, train_set=False):
-    clusters, pretty_tree = tc.find_clusters_spark(root, data, measure, train_set)
+    clusters, pretty_tree = tc.find_clusters_spark(root, data,
+                                                   measure, train_set)
     return clusters, pretty_tree
 
 
@@ -57,9 +59,10 @@ def find_clusters(root, data, measure, train_set=False):
 #
 # @args clusters   The list of clusters
 # @args sort_by    How to sort the clusters ('effect' or 'sig')
-#    
+#
 def print_clusters(clusters, sort_by=dc.SORT_BY_EFFECT):
-    dc.bug_report(clusters, sort_by=sort_by, node_filter=dc.FILTER_ALL, approx=True, fdr=0.05)
+    dc.bug_report(clusters, sort_by=sort_by,
+                  node_filter=dc.FILTER_ALL, approx=True, fdr=0.05)
 
 
 #
