@@ -128,7 +128,7 @@ class Dataset:
             self.encoders[self.OUT] = preprocessing.LabelEncoder()
             self.encoded_data[self.OUT] = self.encoders[self.OUT].fit_transform(self.original_data[self.OUT])
         elif self.OUT_TYPE == 'labeled':
-
+            assert len(self.original_data[self.SENS].unique()) == 2
             # evaluate labels as a list (there is probably a better way to do this)
             labeled_data = map(lambda s: ast.literal_eval(s), self.original_data[self.OUT])
 

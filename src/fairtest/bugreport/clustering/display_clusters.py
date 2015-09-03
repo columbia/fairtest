@@ -262,6 +262,7 @@ def print_cluster_reg(cluster, stats, effect_name, sort_by='effect'):
     else:
         sorted_results = stats.sort(columns=['p-value'], ascending=True)
 
+    pd.set_option('display.max_rows', cluster.clstr_measure.topK)
     print sorted_results
     print
 

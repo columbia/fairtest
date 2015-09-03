@@ -300,7 +300,7 @@ class REGRESSION(Measure):
         y = data[data.columns[-1]]
         X = data[data.columns[0:-1]]
 
-        # print 'Regressing from {}...{} to {}'.format(data.columns[0], data.columns[-2], data.columns[-1])
+        #print 'Regressing from {}...{} to {}'.format(data.columns[0], data.columns[-2], data.columns[-1])
 
         reg = LogisticRegression()
         reg.fit(X, y)
@@ -335,7 +335,6 @@ class REGRESSION(Measure):
 
         if self.model:
             top_labels = self.stats.index
-            print top_labels
             self.stats = results[['conf low', 'conf high', 'p-value']].loc[top_labels]
         else:
             # compute a standardized effect size and return the topK coefficients
