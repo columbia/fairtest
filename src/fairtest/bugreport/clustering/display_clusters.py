@@ -1,16 +1,17 @@
 """
-Module for discpaying clusters
+Module for displaying clusters
 """
 from StringIO import StringIO
 import prettytable
 from statsmodels.sandbox.stats.multicomp import multipletests
 import matplotlib.pyplot as plt
 from sets import Set
+import matplotlib.colors as colors
+import random
 import pandas as pd
 import numpy as np
 import subprocess
 import textwrap
-from copy import copy
 
 from fairtest.bugreport.statistics import fairness_measures as fm
 
@@ -18,13 +19,14 @@ from fairtest.bugreport.statistics import fairness_measures as fm
 FILTER_LEAVES_ONLY = 'LEAVES_ONLY'
 FILTER_ALL = 'ALL'
 FILTER_ROOT_ONLY = 'ROOT ONLY'
-NODE_FILTERS = [FILTER_ALL, FILTER_LEAVES_ONLY, FILTER_ROOT_ONLY]
+FILTER_BETTER_THAN_ANCESTORS = "BETTER_THAN_ANCESTORS"
+NODE_FILTERS = [FILTER_ALL, FILTER_LEAVES_ONLY, FILTER_ROOT_ONLY, FILTER_BETTER_THAN_ANCESTORS]
 
 # Sorting Method
 SORT_BY_EFFECT = 'EFFECT'
 SORT_BY_SIG = 'SIGNIFICANCE'
-SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG]
-
+SORT_BY_BETTER_THAN_ANCESTORS = 'BETTER THAN ANCESTORS'
+SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG, SORT_BY_BETTER_THAN_ANCESTORS]
 
 
 def print_context(context):
@@ -104,11 +106,15 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
         way to sort the clusters ('effect' => sort by lower bound
         on the mutual information score; 'sig' => sort by significance level)
 
-    leaves_only :
-        consider tree leaves only
+    node_filter :
+        way to sort the clusters
 
-    conf_level :
-        level for confidence intervals
+    approx :
+        whether to use approximate asymptotic statistical measures
+        or exact methods
+
+    fdr :
+        false discovery rate
     """
     assert sort_by in SORT_METHODS
     assert node_filter in NODE_FILTERS
@@ -118,12 +124,7 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
     else:
         fdr_alpha = None
 
-    if new_measure:
-        measure = new_measure
-        for cluster in clusters:
-            cluster.clstr_measure = copy(new_measure)
-    else:
-        measure = clusters[0].clstr_measure
+    measure = clusters[0].clstr_measure
     measure_type = measure.dataType
 
     # Filter the clusters to show (All or Leaves & Root)
@@ -135,11 +136,11 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
     #
     # Adjusted Confidence Interval (Bonferroni)
     #
-    # compute effect sizes and p-values
+    # Compute effect sizes and p-values
+    #
     adj_ci_level = None
     if fdr_alpha and measure.ci_level:
         adj_ci_level = 1-(1-fdr_alpha)/len(clusters)
-        #print 'Adjusted CI level is {:.4f}'.format(adj_ci_level)
 
     if measure.dataType == fm.Measure.DATATYPE_CORR:
         stats = map(lambda c: c.clstr_measure.\
@@ -169,8 +170,6 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
         _, pvals_corr, _, _ = multipletests(pvals,
                                             alpha=fdr_alpha,
                                             method='holm')
-        #stats = [clstr.clstr_measure.ci_from_p(low, high, pval_corr)
-        # for ((clstr, (low, high, _)), pval_corr) in zip(zipped, pvals_corr)]
         stats = [np.append(stat[0:-1], pval_corr)\
                 for (stat, pval_corr) in zip(stats, pvals_corr)]
 
@@ -191,7 +190,7 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
 
     # print a contingency table or correlation analysis
     if measure_type == fm.Measure.DATATYPE_CT:
-        print_cluster_ct(root, columns, root_stats, measure.__class__.__name__)
+        print_cluster_ct(root, root_stats, measure.__class__.__name__)
     elif measure_type == fm.Measure.DATATYPE_CORR:
         print_cluster_corr(root, root_stats, measure.__class__.__name__)
     else:
@@ -202,6 +201,16 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
 
     # Take all the non-root clusters
     zipped = filter(lambda (c, _): not c.isroot, zipped)
+
+    if node_filter == FILTER_BETTER_THAN_ANCESTORS:
+        effects = {}
+        for cluster in clusters:
+            if cluster.parent is None:
+                effects[cluster.num] = cluster.clstr_measure.abs_effect()
+            else:
+                effects[cluster.num] = max(cluster.clstr_measure.abs_effect(), effects[cluster.parent.num])
+
+        zipped = filter(lambda (c, _): c.clstr_measure.abs_effect() >= effects[c.num], zipped)
 
     # sort by significance
     if sort_by == SORT_BY_SIG:
@@ -239,7 +248,7 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
             _context.append(temp)
 
         if measure_type == fm.Measure.DATATYPE_CT:
-            print_cluster_ct(cluster, columns, cluster_stats,
+            print_cluster_ct(cluster, cluster_stats,
                              measure.__class__.__name__)
         elif measure_type == fm.Measure.DATATYPE_CORR:
             print_cluster_corr(cluster, cluster_stats,
@@ -254,7 +263,7 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
         print_context(_context)
 
 
-def print_cluster_ct(cluster, columns, cluster_stats, effect_name):
+def print_cluster_ct(cluster, cluster_stats, effect_name):
     """
     pretty-print the contingency table
 
@@ -262,9 +271,6 @@ def print_cluster_ct(cluster, columns, cluster_stats, effect_name):
     ----------
     cluster :
         List of all clusters
-
-    columns :
-        Columns of contingency table
 
     cluster_stats :
         Statistics of the cluster
@@ -274,13 +280,7 @@ def print_cluster_ct(cluster, columns, cluster_stats, effect_name):
     """
     shape = cluster.stats.shape
 
-    if columns:
-        if len(shape) == 3:
-            contingency_table = map(lambda c: c[columns], cluster.stats)
-        else:
-            contingency_table = cluster.stats[columns]
-    else:
-        contingency_table = cluster.stats
+    contingency_table = cluster.stats
 
     if len(shape) == 2:
         output = StringIO()
@@ -357,15 +357,23 @@ def print_cluster_corr(cluster, cluster_stats, effect_name):
     out = data[data.columns[0]]
     sens = data[data.columns[1]]
 
-    #jitter(sens, out, color='blue', edgecolor='none')
+    # avoid matplotlib overflow
+    if len(out) > 100000:
+        (out, sens) = zip(*random.sample(zip(out, sens), 100000))
+        out = np.array(out)
+        sens = np.array(sens)
+
     m, b = np.polyfit(sens, out, 1)
     plt.plot(sens, m*sens + b, '-', color='green')
 
-    plt.hexbin(sens, out, gridsize=20, cmap=plt.get_cmap('Blues'))
+    #jitter(sens, out, color='blue', edgecolor='none')
+    plt.hexbin(sens, out, gridsize=20, norm=colors.LogNorm(), cmap=plt.get_cmap('Blues'))
     plt.colorbar()
 
     plt.xlabel(data.columns[1])
     plt.ylabel(data.columns[0])
+    plt.xlim(np.min(sens)-0.2*np.std(sens), np.max(sens)+0.2*np.std(sens))
+    plt.ylim(np.min(out)-0.2*np.std(out), np.max(out)+0.2*np.std(out))
     plt.show()
 
     if len(cluster_stats) == 3:
@@ -388,14 +396,14 @@ def print_cluster_reg(cluster, stats, effect_name, sort_by='effect'):
     cluster :
         List of all clusters
 
-    columns :
-        Columns of contingency table
-
-    cluster_stats :
+    stats :
         Statistics of the cluster
 
     effect_name :
         The effect to sort by
+
+    sort_by :
+        The way regression coefficients should be sorted
     """
     effect = cluster.clstr_measure.abs_effect()
 
@@ -417,6 +425,7 @@ def print_cluster_reg(cluster, stats, effect_name, sort_by='effect'):
     else:
         sorted_results = stats.sort(columns=['p-value'], ascending=True)
 
+    pd.set_option('display.max_rows', cluster.clstr_measure.topK)
     print sorted_results
     print
 
@@ -442,7 +451,7 @@ def print_cluster_reg(cluster, stats, effect_name, sort_by='effect'):
         output.seek(0)
         pretty_table = prettytable.from_csv(output)
 
-        print prettytable
+        print pretty_table
         print
 
 
@@ -452,7 +461,7 @@ def rich_ct(contingency_table):
 
     Parameters
     ----------
-    contingency_table :
+    contingency_table : the contingency table
 
     Returns
     -------

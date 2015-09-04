@@ -104,6 +104,14 @@ class Dataset:
         self.out_type = feature_type
 
     def set_explanatory_feature(self, feature):
+        """
+        Set an explanatory feature
+
+        Parameters
+        ----------
+        feature :
+            the explanatory feature
+        """
         assert self.original_data is not None
         assert feature in self.original_data.columns
 
@@ -152,6 +160,7 @@ class Dataset:
 
         if self.out_type == 'cat':
             # encode output feature as numbers 
+
             self.encoders[self.out] = preprocessing.LabelEncoder()
             self.encoded_data[self.out] = self.encoders[self.out].\
                     fit_transform(self.original_data[self.out])

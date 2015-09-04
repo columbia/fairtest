@@ -27,21 +27,29 @@ class Cluster:
     isroot :
         if the cluster is the tree root
 
+    parent :
+        the parent of this node
+
     stats :
         the statistics for this cluster
 
     size :
         the cluster size
 
+    clstr_measure :
+        the measure associated with this cluster
+
     data :
         any additional data required for fairness measures
     """
-    def __init__(self, num, path, isleaf, isroot,
+    def __init__(self, num, path, isleaf, isroot, parent,
                  stats, size, clstr_measure=None, data=None):
         self.num = num
         self.path = path
         self.isleaf = isleaf
         self.isroot = isroot
+        self.parent = parent
+        self.children = []
         self.size = size
         self.stats = stats
         self.clstr_measure = clstr_measure
@@ -125,7 +133,7 @@ def find_clusters_cat(tree, data, train_set=False):
     if expl:
         assert measure_type == fm.Measure.DATATYPE_CT
 
-    def bfs(node, data_node, feature_path):
+    def bfs(node, parent, data_node, feature_path):
         """
         Simple BFS to traverse the tree
 
@@ -133,6 +141,9 @@ def find_clusters_cat(tree, data, train_set=False):
         ----------
         node :
             the current node
+
+        parent :
+            the parent node
 
         data_node :
             the sub-dataset rooted at this node
@@ -233,17 +244,18 @@ def find_clusters_cat(tree, data, train_set=False):
         # build a cluster class and store it in the list
         training_measure = node.measure
 
+        # prune non-significant clusters
         if is_root or training_measure.abs_effect() > 0:
-            clstr = Cluster(node.id, feature_path, is_leaf, is_root,
+            clstr = Cluster(node.id, feature_path, is_leaf, is_root, parent,
                             stats, size, training_measure, cluster_data)
             clusters.append(clstr)
 
         # recurse in children
         for child in node.get_children():
-            bfs(child, data_node, deepcopy(feature_path))
+            bfs(child, clstr, data_node, deepcopy(feature_path))
 
     # start bfs from the root with the full dataset and an empty path
-    bfs(tree, data, {})
+    bfs(tree, None, data, {})
     return clusters
 
 

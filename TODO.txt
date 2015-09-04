@@ -1,1 +1,15 @@
 * Look for image-net datasets with Race, Gender, Age, etc.
+
+* Dataset: Set protected attributes list (with type, and measure?)
+* Run Experiment:
+    - load data
+    for PA in PAs:
+        - encode data
+        - train tree
+        - get clusters
+        - store (PA, cluster list)
+    
+    - get CIs for all PAs
+    - correct p-values for all PAs
+    - display results for all PAs (filename+_PA_TARGET)
+    

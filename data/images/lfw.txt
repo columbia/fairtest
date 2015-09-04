@@ -1,4 +1,3 @@
-#imageName, label
 Aaron_Eckhart_0001.jpg::Windsor tie 0.309884
 Aaron_Eckhart_0001.jpg::bolo tie, bolo, bola tie, bola 0.164506
 Aaron_Eckhart_0001.jpg::suit, suit of clothes 0.15914

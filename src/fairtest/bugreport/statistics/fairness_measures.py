@@ -111,6 +111,9 @@ class NMI(Measure):
 
 
 class CondNMI(Measure):
+    """
+    Conditional Mutual Information
+    """
     dataType = Measure.DATATYPE_CT
 
     def __init__(self, ci_level=None):
@@ -370,7 +373,8 @@ class REGRESSION(Measure):
 
         if self.model:
             top_labels = self.stats.index
-            print top_labels
+
+            #print top_labels
             self.stats = results[['conf low', 'conf high', 'p-value']].\
                     loc[top_labels]
         else:
@@ -419,6 +423,9 @@ def mutual_info(data, norm=False, ci_level=None, pval=True):
 
     ci_level :
         level for confidence intervals (or None)
+
+    pval :
+        whether a p-value should be computed
 
     Returns
     -------
@@ -647,7 +654,7 @@ def ratio(data, ci_level=0.95):
         return ratio, pval
 
 
-def G_test(data, correction=False):
+def G_test(data, correction=True):
     """
     Computes the G_test
 
@@ -681,7 +688,7 @@ def G_test(data, correction=False):
         return 0, 1.0, 1, None
 
     return stats.chi2_contingency(data,
-                                  correction=True,
+                                  correction=correction,
                                   lambda_="log-likelihood")
 
 
