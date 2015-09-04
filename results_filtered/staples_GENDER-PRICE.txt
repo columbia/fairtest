@@ -1,0 +1,36 @@
+================================================================================
+Commit Hash: 	e42f97fec44b5394b8f33d1b99b4a9ba1f9a5fee
+
+Dataset: 	../data/staples/staples.csv
+Training Size: 	494435
+Testing Size: 	494436
+Attributes: 	['city', 'state', 'gender', 'race', 'income', 'price']
+Protected: 	gender
+Explanatory: 	None
+Target: 	price
+
+Tree Params: 	{'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'AVG'}
+Metric: 	NMI(confidence=0.95)
+
+Report Params: 	{'node_filter': 'BETTER_THAN_ANCESTORS', 'fdr': 0.05, 'verbose': True, 'approx': False, 'sort_by': 'EFFECT'}
+================================================================================
+
+Global Population of size 494436
+
++-------+----------------+----------------+-----------------+
+| price |       F        |       M        |      Total      |
++-------+----------------+----------------+-----------------+
+|  high |  14472 (5.8%)  |  14696 (6.0%)  |   29168 (5.9%)  |
+|  low  | 236538 (94.2%) | 228730 (94.0%) |  465268 (94.1%) |
+| Total | 251010 (50.8%) | 243426 (49.2%) | 494436 (100.0%) |
++-------+----------------+----------------+-----------------+
+
+p-value = 2.39e-03 ; NMI = [0.0000, 0.0002]
+================================================================================
+
+Hierarchical printing of subpopulations (summary)
+
+================================================================================
+
+ Context = {} ; Effect = 7.29302202606e-06
+--------------------------------------------------------------------------------

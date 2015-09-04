@@ -49,6 +49,7 @@ class Cluster:
         self.isleaf = isleaf
         self.isroot = isroot
         self.parent = parent
+        self.children = []
         self.size = size
         self.stats = stats
         self.clstr_measure = clstr_measure
@@ -248,6 +249,8 @@ def find_clusters_cat(tree, data, train_set=False):
         if is_root or training_measure.abs_effect() > 0:
             clstr = Cluster(node.id, feature_path, is_leaf, is_root, parent,
                         stats, size, training_measure, cluster_data)
+            if parent:
+                parent.children.append(clstr)
             clusters.append(clstr)
             ancestor_ptr = clstr
 

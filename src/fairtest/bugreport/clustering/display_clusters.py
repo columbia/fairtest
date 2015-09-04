@@ -29,7 +29,7 @@ SORT_BY_SIG = 'SIGNIFICANCE'
 SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG]
 
 
-def print_summary(context):
+def print_summary(all_clusters, displ_clusters):
     """
     Hierarchical printing of context
     """
@@ -37,55 +37,17 @@ def print_summary(context):
     print
     print "="*80
     print
-    print context
-    #initialize local map of list
-    _context = []
-    for i in range(0, max(map(len, context))):
-        _context.append([])
-    # append context using a hierarchical fashion
-    # based of the number of features of each dictionary
-    for d in context:
-         _context[len(d.keys()) - 1].append(d)
 
-    # iterate for all dictional lenghts
-    for i in range(len(_context)-1):
-        for d1 in _context[i]:
-            # find all dictionary supersets (subpopulations) and
-            # drop those whose score is lower than their parents
-            for j in range(i + 1, len(_context)):
-                for d2 in _context[j]:
-                    set1 = Set([d1[k] for k in d1 if k not in ['ci_low', 'size']])
-                    set2 = Set([d2[k] for k in d1 if k not in ['ci_low', 'size']])
-                    if set2.issuperset(set1) and d2['ci_low'] < d1['ci_low']:
-                        _context[j].remove(d2)
+    root = filter(lambda c: c.isroot, all_clusters)[0]
 
-    # iterate for all dictional lenghts
-    for i in range(len(_context)-1):
-        for d1 in _context[i]:
-            # find all dictionary supersets (subpopulations) and
-            # drop those whose score is lower than their parents
-            for j in range(i + 1, len(_context)):
-                for d2 in _context[j]:
-                    set1 = Set([d1[k] for k in d1 if k not in ['ci_low', 'size']])
-                    set2 = Set([d2[k] for k in d1 if k not in ['ci_low', 'size']])
-                    if set2.issuperset(set1) and d2['ci_low'] < d1['ci_low']:
-                        _context[j].remove(d2)
+    def recurse(node, indent):
+        if node.num in displ_clusters:
+            print '{} Context = {} ; Effect = {}'.format(' '*indent, node.path, node.clstr_measure.stats[0])
+            indent += 2
+        for child in node.children:
+            recurse(child, indent)
 
-    # iterate over the remaining context and do some ordered printing
-    for i in range(len(_context)-1):
-        for d1 in _context[i]:
-            spaces = 0
-            print "%s%s" % (spaces * " ", d1)
-
-            for j in range(i + 1, len(_context)):
-                spaces += 3
-                for d2 in _context[j]:
-                    set1 = Set([d1[k] for k in d1 if k not in ['ci_low', 'size']])
-                    set2 = Set([d2[k] for k in d1 if k not in ['ci_low', 'size']])
-
-                    if set2.issuperset(set1):
-                        print "%s%s" % (spaces * " ", d2)
-                        _context[j].remove(d2)
+    recurse(root, 0)
 
     print '-'*80
     print
@@ -93,7 +55,7 @@ def print_summary(context):
 
 def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
                node_filter=FILTER_LEAVES_ONLY, new_measure=None,
-               approx=True, fdr=None, verbose=False):
+               approx=True, fdr=None):
     """
     Print all the clusters sorted by relevance
 
@@ -202,6 +164,9 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
     # Take all the non-root clusters
     zipped = filter(lambda (c, _): not c.isroot, zipped)
 
+    #
+    # Only keep sub-populations that lead to a better bias
+    #
     if node_filter == FILTER_BETTER_THAN_ANCESTORS:
         effects = {}
         for cluster in clusters:
@@ -227,25 +192,14 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
         zipped.sort(key=lambda (c, stats): c.clstr_measure.abs_effect(),
                     reverse=True)
 
-    _context = []
+    displ_clusters = [root.num] + [x[0].num for x in zipped]
+
     # print clusters in order of relevance
     for (cluster, cluster_stats) in zipped:
-
-        # when confidence intervals are used, drop populations
-        # with strictly lower bias than the global population
-        if len(root_stats) == 3 and not verbose:
-            if cluster_stats[0] < root_effect_high:
-                break
 
         print 'Sub-Population of size {}'.format(cluster.size)
         print 'Context = {}'.format(cluster.path)
         print
-
-        if len(root_stats) == 3:
-            temp = copy(cluster.path)
-            temp.update({'ci_low': cluster_stats[0]})
-            temp.update({'size': cluster.size})
-            _context.append(temp)
 
         if measure_type == fm.Measure.DATATYPE_CT:
             print_cluster_ct(cluster, cluster_stats,
@@ -259,8 +213,7 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
         print '-'*80
         print
 
-    #if len(root_stats) == 3:
-    #    print_summary(_context)
+    print_summary(clusters, displ_clusters)
 
 
 def print_cluster_ct(cluster, cluster_stats, effect_name):
