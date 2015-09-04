@@ -247,7 +247,7 @@ def find_clusters_cat(tree, data, train_set=False):
         # prune non-significant clusters
         if is_root or training_measure.abs_effect() > 0:
             clstr = Cluster(node.id, feature_path, is_leaf, is_root, parent,
-                            stats, size, training_measure, cluster_data)
+                        stats, size, training_measure, cluster_data)
             clusters.append(clstr)
             ancestor_ptr = clstr
 

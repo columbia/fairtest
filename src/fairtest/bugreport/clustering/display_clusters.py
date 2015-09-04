@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 import subprocess
 import textwrap
+from copy import copy
 
 from fairtest.bugreport.statistics import fairness_measures as fm
 
@@ -36,7 +37,7 @@ def print_summary(context):
     print
     print "="*80
     print
-
+    print context
     #initialize local map of list
     _context = []
     for i in range(0, max(map(len, context))):
@@ -241,7 +242,7 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
         print
 
         if len(root_stats) == 3:
-            temp = cluster.path
+            temp = copy(cluster.path)
             temp.update({'ci_low': cluster_stats[0]})
             temp.update({'size': cluster.size})
             _context.append(temp)
@@ -258,8 +259,8 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
         print '-'*80
         print
 
-    if len(root_stats) == 3:
-        print_summary(_context)
+    #if len(root_stats) == 3:
+    #    print_summary(_context)
 
 
 def print_cluster_ct(cluster, cluster_stats, effect_name):
@@ -414,10 +415,8 @@ def print_cluster_reg(cluster, stats, effect_name, sort_by='effect'):
 
     if sort_by == SORT_BY_EFFECT:
         if 'conf low' in stats.columns:
-            #stats['effect'] = map(lambda (ci_low, ci_high): fm.z_effect(ci_low, ci_high),
-            #                      zip(stats['conf low'], stats['conf high']))
+            #stats = stats[stats['conf low'] > 0]
             sorted_results = stats.sort(columns=['conf low'], ascending=False)
-           # sorted_results = sorted_results.drop('effect', axis=1)
         else:
             sorted_results = stats.sort(columns=['coeff'], ascending=False)
     else:
