@@ -28,11 +28,11 @@ SORT_BY_SIG = 'SIGNIFICANCE'
 SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG]
 
 
-def print_context(context):
+def print_summary(context):
     """
     Hierarchical printing of context
     """
-    print "Hierarchical printing of contexts - subpopulations"
+    print "Hierarchical printing of subpopulations (summary)"
     print
     print "="*80
     print
@@ -53,9 +53,9 @@ def print_context(context):
             # drop those whose score is lower than their parents
             for j in range(i + 1, len(_context)):
                 for d2 in _context[j]:
-                    set1 = Set([d1[k] for k in d1 if k not in ['score', 'size']])
-                    set2 = Set([d2[k] for k in d1 if k not in ['score', 'size']])
-                    if set2.issuperset(set1) and d2['score'] < d1['score']:
+                    set1 = Set([d1[k] for k in d1 if k not in ['ci_low', 'size']])
+                    set2 = Set([d2[k] for k in d1 if k not in ['ci_low', 'size']])
+                    if set2.issuperset(set1) and d2['ci_low'] < d1['ci_low']:
                         _context[j].remove(d2)
 
     # iterate for all dictional lenghts
@@ -65,9 +65,9 @@ def print_context(context):
             # drop those whose score is lower than their parents
             for j in range(i + 1, len(_context)):
                 for d2 in _context[j]:
-                    set1 = Set([d1[k] for k in d1 if k not in ['score', 'size']])
-                    set2 = Set([d2[k] for k in d1 if k not in ['score', 'size']])
-                    if set2.issuperset(set1) and d2['score'] < d1['score']:
+                    set1 = Set([d1[k] for k in d1 if k not in ['ci_low', 'size']])
+                    set2 = Set([d2[k] for k in d1 if k not in ['ci_low', 'size']])
+                    if set2.issuperset(set1) and d2['ci_low'] < d1['ci_low']:
                         _context[j].remove(d2)
 
     # iterate over the remaining context and do some ordered printing
@@ -79,8 +79,8 @@ def print_context(context):
             for j in range(i + 1, len(_context)):
                 spaces += 3
                 for d2 in _context[j]:
-                    set1 = Set([d1[k] for k in d1 if k not in ['score', 'size']])
-                    set2 = Set([d2[k] for k in d1 if k not in ['score', 'size']])
+                    set1 = Set([d1[k] for k in d1 if k not in ['ci_low', 'size']])
+                    set2 = Set([d2[k] for k in d1 if k not in ['ci_low', 'size']])
 
                     if set2.issuperset(set1):
                         print "%s%s" % (spaces * " ", d2)
@@ -207,7 +207,8 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
             if cluster.parent is None:
                 effects[cluster.num] = cluster.clstr_measure.abs_effect()
             else:
-                effects[cluster.num] = max(cluster.clstr_measure.abs_effect(), effects[cluster.parent.num])
+                effects[cluster.num] = max(cluster.clstr_measure.abs_effect(),
+                                           effects[cluster.parent.num])
         zipped = filter(lambda (c, _): c.clstr_measure.abs_effect() >= effects[c.num], zipped)
 
     # sort by significance
@@ -241,7 +242,7 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
 
         if len(root_stats) == 3:
             temp = cluster.path
-            temp.update({'score': cluster_stats[0]})
+            temp.update({'ci_low': cluster_stats[0]})
             temp.update({'size': cluster.size})
             _context.append(temp)
 
@@ -258,7 +259,7 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
         print
 
     if len(root_stats) == 3:
-        print_context(_context)
+        print_summary(_context)
 
 
 def print_cluster_ct(cluster, cluster_stats, effect_name):
