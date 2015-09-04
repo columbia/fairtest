@@ -322,7 +322,7 @@ class REGRESSION(Measure):
     def __init__(self, ci_level=None, topK=10):
         Measure.__init__(self, ci_level)
         self.topK = topK
-        self.model = None
+        self.type = None
 
     def __copy__(self):
         return REGRESSION(self.ci_level, self.topK)
@@ -330,54 +330,44 @@ class REGRESSION(Measure):
     def compute(self, data, approx=False, adj_ci_level=None):
         ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
 
-        y = data[data.columns[-1]]
-        X = data[data.columns[0:-1]]
+        # regression not yet trained
+        if not self.type:
+            y = data[data.columns[-1]]
+            X = data[data.columns[0:-1]]
 
-        # print 'Regressing from {}...{} to {}'.\
-        #         format(data.columns[0], data.columns[-2], data.columns[-1])
+            # print 'Regressing from {}...{} to {}'.\
+            #         format(data.columns[0], data.columns[-2], data.columns[-1])
 
-        reg = LogisticRegression()
-        reg.fit(X, y)
-        y_pred = reg.predict(X)
+            reg = LogisticRegression()
+            reg.fit(X, y)
+            y_pred = reg.predict(X)
 
-        # approximate the standard errors for all regression coefficients
-        mse = np.mean((y - y_pred.T)**2)
-        var_est = mse * np.diag(np.linalg.pinv(np.dot(X.T, X)))
-        SE_est = np.sqrt(var_est)
-        coeffs = reg.coef_[0].tolist()
+            # approximate the standard errors for all regression coefficients
+            mse = np.mean((y - y_pred.T)**2)
+            var_est = mse * np.diag(np.linalg.pinv(np.dot(X.T, X)))
+            SE_est = np.sqrt(var_est)
+            coeffs = reg.coef_[0].tolist()
 
-        # compute confidence intervals and p-values for all coefficients
-        results = pd.DataFrame(coeffs, columns=['coeff'])
-        results['std err'] = SE_est
-        results['z'] = abs(results['coeff']/results['std err'])
-        results['p-value'] = 2*stats.norm.sf(results['z'])
+            # compute confidence intervals and p-values for all coefficients
+            results = pd.DataFrame(coeffs, columns=['coeff'])
+            results['std err'] = SE_est
+            results['z'] = abs(results['coeff']/results['std err'])
+            results['p-value'] = 2*stats.norm.sf(results['z'])
 
-        if not ci_level:
-            if self.model:
-                top_labels = self.stats.index
-                self.stats = results[['coeff', 'p-value']].loc[top_labels]
-            else:
+            if not ci_level:
                 results['effect'] = map(lambda c: abs(c), results['coeff'])
                 sorted_results = results.sort(columns=['effect'],
                                               ascending=False)
-                self.stats = sorted_results[['coeff', 'p-value']].\
-                        head(self.topK)
-                self.model = reg
-            return self
+                self.stats = sorted_results[['coeff', 'p-value']].head(self.topK)
+                self.type = "Regression"
+                return self
 
-        ci_s = stats.norm.interval(ci_level,
-                                   loc=results['coeff'],
-                                   scale=results['std err'])
-        results['conf low'] = ci_s[0]
-        results['conf high'] = ci_s[1]
+            ci_s = stats.norm.interval(ci_level,
+                                       loc=results['coeff'],
+                                       scale=results['std err'])
+            results['conf low'] = ci_s[0]
+            results['conf high'] = ci_s[1]
 
-        if self.model:
-            top_labels = self.stats.index
-
-            #print top_labels
-            self.stats = results[['conf low', 'conf high', 'p-value']].\
-                    loc[top_labels]
-        else:
             # compute a standardized effect size
             # and return the topK coefficients
             results['effect'] = \
@@ -386,23 +376,37 @@ class REGRESSION(Measure):
             sorted_results = results.sort(columns=['effect'], ascending=False)
             self.stats = sorted_results[['conf low', 'conf high', 'p-value']].\
                     head(self.topK)
-            self.model = reg
-        return self
+            self.type = "Regression"
+            return self
+        else:
+            # model was already trained, get the top labels
+            top_labels = self.stats.index
+            #print top_labels
+
+            for idx in top_labels:
+                self.stats.loc[idx] = mutual_info(pd.crosstab(data[data.columns[idx]], data[data.columns[-1]]),
+                                                  norm=True, ci_level=ci_level)
+            #print self.stats
+            self.type = "MI"
+            return self
 
     def abs_effect(self):
-        if self.ci_level:
-            effects = \
-                    np.array(map(lambda (ci_low, ci_high, pval): z_effect(ci_low, ci_high),
-                                 self.stats.values))
-        else:
-            effects = np.array(map(lambda (coeff, pval): abs(coeff),
-                                   self.stats.values))
+        if self.type == "Regression":
+            if self.ci_level:
+                effects = \
+                        np.array(map(lambda (ci_low, ci_high, pval): z_effect(ci_low, ci_high),
+                                     self.stats.values))
+            else:
+                effects = np.array(map(lambda (coeff, pval): abs(coeff),
+                                       self.stats.values))
 
-        non_nan = effects[~np.isnan(effects)]
-        if len(non_nan) == 0:
-            return -1
+            non_nan = effects[~np.isnan(effects)]
+            if len(non_nan) == 0:
+                return -1
+            else:
+                return np.sum(non_nan)/len(effects)
         else:
-            return np.sum(non_nan)/len(effects)
+            return np.mean(map(lambda stat: stat[0], self.stats.values))
 
     def __str__(self):
         return 'Regression(confidence={}, topK={})'.\
@@ -555,6 +559,14 @@ def difference(data, ci_level=0.95):
     pval :
         the corresponding p-value
     """
+
+    # check if data is degenerate
+    if data.shape == (1,1) or data.shape == (1,2) or data.shape == (2,1):
+        if ci_level:
+            return 0, 0, 1.0
+        else:
+            return 0, 1.0
+
     assert data.shape == (2, 2)
     if isinstance(data, pd.DataFrame):
         data = data.values
@@ -616,6 +628,13 @@ def ratio(data, ci_level=0.95):
     pval :
         the corresponding p-value
     """
+    # check if data is degenerate
+    if data.shape == (1,1) or data.shape == (1,2) or data.shape == (2,1):
+        if ci_level:
+            return 1, 1, 1.0
+        else:
+            return 1, 1.0
+
     assert data.shape == (2, 2)
     if isinstance(data, pd.DataFrame):
         data = data.values
@@ -679,10 +698,10 @@ def G_test(data, correction=True):
     if isinstance(data, pd.DataFrame):
         data = data.values
 
-    #data = data[~np.all(data == 0, axis=1)]
-    #data = data[:, ~np.all(data == 0, axis=0)]
-    data = data.copy()
-    data += 1
+    data = data[~np.all(data == 0, axis=1)]
+    data = data[:, ~np.all(data == 0, axis=0)]
+    #data = data.copy()
+    #data += 1
 
     if data.sum() == 0:
         return 0, 1.0, 1, None

@@ -49,7 +49,6 @@ class Cluster:
         self.isleaf = isleaf
         self.isroot = isroot
         self.parent = parent
-        self.children = []
         self.size = size
         self.stats = stats
         self.clstr_measure = clstr_measure
@@ -244,15 +243,17 @@ def find_clusters_cat(tree, data, train_set=False):
         # build a cluster class and store it in the list
         training_measure = node.measure
 
+        ancestor_ptr = parent
         # prune non-significant clusters
         if is_root or training_measure.abs_effect() > 0:
             clstr = Cluster(node.id, feature_path, is_leaf, is_root, parent,
                             stats, size, training_measure, cluster_data)
             clusters.append(clstr)
+            ancestor_ptr = clstr
 
         # recurse in children
         for child in node.get_children():
-            bfs(child, clstr, data_node, deepcopy(feature_path))
+            bfs(child, ancestor_ptr, data_node, deepcopy(feature_path))
 
     # start bfs from the root with the full dataset and an empty path
     bfs(tree, None, data, {})

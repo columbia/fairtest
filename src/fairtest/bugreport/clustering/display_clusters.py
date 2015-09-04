@@ -24,8 +24,7 @@ NODE_FILTERS = [FILTER_ALL, FILTER_LEAVES_ONLY, FILTER_ROOT_ONLY, FILTER_BETTER_
 # Sorting Method
 SORT_BY_EFFECT = 'EFFECT'
 SORT_BY_SIG = 'SIGNIFICANCE'
-SORT_BY_BETTER_THAN_ANCESTORS = 'BETTER THAN ANCESTORS'
-SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG, SORT_BY_BETTER_THAN_ANCESTORS]
+SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG]
 
 
 def bug_report(clusters, sort_by=SORT_BY_EFFECT,
@@ -142,7 +141,6 @@ def bug_report(clusters, sort_by=SORT_BY_EFFECT,
                 effects[cluster.num] = cluster.clstr_measure.abs_effect()
             else:
                 effects[cluster.num] = max(cluster.clstr_measure.abs_effect(), effects[cluster.parent.num])
-
         zipped = filter(lambda (c, _): c.clstr_measure.abs_effect() >= effects[c.num], zipped)
 
     # sort by significance
@@ -323,8 +321,7 @@ def print_cluster_reg(cluster, stats, effect_name, sort_by='effect'):
     """
     effect = cluster.clstr_measure.abs_effect()
 
-    print 'Average (absolute) Log-Odds of top-{} labels: {}'.\
-            format(len(stats), effect)
+    print 'Average MI of top-{} labels: {}'.format(len(stats), effect)
     print
     labels = cluster.data['labels']
 
@@ -332,10 +329,10 @@ def print_cluster_reg(cluster, stats, effect_name, sort_by='effect'):
 
     if sort_by == SORT_BY_EFFECT:
         if 'conf low' in stats.columns:
-            stats['effect'] = map(lambda (ci_low, ci_high): fm.z_effect(ci_low, ci_high),
-                                  zip(stats['conf low'], stats['conf high']))
-            sorted_results = stats.sort(columns=['effect'], ascending=False)
-            sorted_results.drop('effect', axis=1)
+            #stats['effect'] = map(lambda (ci_low, ci_high): fm.z_effect(ci_low, ci_high),
+            #                      zip(stats['conf low'], stats['conf high']))
+            sorted_results = stats.sort(columns=['conf low'], ascending=False)
+           # sorted_results = sorted_results.drop('effect', axis=1)
         else:
             sorted_results = stats.sort(columns=['coeff'], ascending=False)
     else:
