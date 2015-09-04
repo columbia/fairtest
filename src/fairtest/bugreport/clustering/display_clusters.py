@@ -5,6 +5,7 @@ from StringIO import StringIO
 import prettytable
 from statsmodels.sandbox.stats.multicomp import multipletests
 import matplotlib.pyplot as plt
+from sets import Set
 import pandas as pd
 import numpy as np
 import subprocess
@@ -25,9 +26,72 @@ SORT_BY_SIG = 'SIGNIFICANCE'
 SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG]
 
 
+
+def print_context(context):
+    """
+    Hierarchical printing of context
+    """
+    print "Hierarchical printing of contexts - subpopulations"
+    print
+    print "="*80
+    print
+
+    #initialize local map of list
+    _context = []
+    for i in range(0, max(map(len, context))):
+        _context.append([])
+    # append context using a hierarchical fashion
+    # based of the number of features of each dictionary
+    for d in context:
+         _context[len(d.keys()) - 1].append(d)
+
+    # iterate for all dictional lenghts
+    for i in range(len(_context)-1):
+        for d1 in _context[i]:
+            # find all dictionary supersets (subpopulations) and
+            # drop those whose score is lower than their parents
+            for j in range(i + 1, len(_context)):
+                for d2 in _context[j]:
+                    set1 = Set([d1[k] for k in d1 if k not in ['score', 'size']])
+                    set2 = Set([d2[k] for k in d1 if k not in ['score', 'size']])
+                    if set2.issuperset(set1) and d2['score'] < d1['score']:
+                        _context[j].remove(d2)
+
+    # iterate for all dictional lenghts
+    for i in range(len(_context)-1):
+        for d1 in _context[i]:
+            # find all dictionary supersets (subpopulations) and
+            # drop those whose score is lower than their parents
+            for j in range(i + 1, len(_context)):
+                for d2 in _context[j]:
+                    set1 = Set([d1[k] for k in d1 if k not in ['score', 'size']])
+                    set2 = Set([d2[k] for k in d1 if k not in ['score', 'size']])
+                    if set2.issuperset(set1) and d2['score'] < d1['score']:
+                        _context[j].remove(d2)
+
+    # iterate over the remaining context and do some ordered printing
+    for i in range(len(_context)-1):
+        for d1 in _context[i]:
+            spaces = 0
+            print "%s%s" % (spaces * " ", d1)
+
+            for j in range(i + 1, len(_context)):
+                spaces += 3
+                for d2 in _context[j]:
+                    set1 = Set([d1[k] for k in d1 if k not in ['score', 'size']])
+                    set2 = Set([d2[k] for k in d1 if k not in ['score', 'size']])
+
+                    if set2.issuperset(set1):
+                        print "%s%s" % (spaces * " ", d2)
+                        _context[j].remove(d2)
+
+    print '-'*80
+    print
+
+
 def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
                node_filter=FILTER_LEAVES_ONLY, new_measure=None,
-               approx=True, fdr=None):
+               approx=True, fdr=None, verbose=False):
     """
     Print all the clusters sorted by relevance
 
@@ -122,6 +186,9 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
     print 'Global Population of size {}'.format(root.size)
     print
 
+    if len(root_stats) == 3:
+        (_, root_effect_high, _) = root_stats
+
     # print a contingency table or correlation analysis
     if measure_type == fm.Measure.DATATYPE_CT:
         print_cluster_ct(root, columns, root_stats, measure.__class__.__name__)
@@ -151,11 +218,25 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
         zipped.sort(key=lambda (c, stats): c.clstr_measure.abs_effect(),
                     reverse=True)
 
+    _context = []
     # print clusters in order of relevance
     for (cluster, cluster_stats) in zipped:
+
+        # when confidence intervals are used, drop populations
+        # with strictly lower bias than the global population
+        if len(root_stats) == 3 and not verbose:
+            if cluster_stats[0] < root_effect_high:
+                break
+
         print 'Sub-Population of size {}'.format(cluster.size)
         print 'Context = {}'.format(cluster.path)
         print
+
+        if len(root_stats) == 3:
+            temp = cluster.path
+            temp.update({'score': cluster_stats[0]})
+            temp.update({'size': cluster.size})
+            _context.append(temp)
 
         if measure_type == fm.Measure.DATATYPE_CT:
             print_cluster_ct(cluster, columns, cluster_stats,
@@ -168,6 +249,9 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
                               measure.__class__.__name__, sort_by=sort_by)
         print '-'*80
         print
+
+    if len(root_stats) == 3:
+        print_context(_context)
 
 
 def print_cluster_ct(cluster, columns, cluster_stats, effect_name):
