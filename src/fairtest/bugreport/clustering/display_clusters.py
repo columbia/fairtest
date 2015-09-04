@@ -42,7 +42,8 @@ def print_summary(all_clusters, displ_clusters):
 
     def recurse(node, indent):
         if node.num in displ_clusters:
-            print '{} Context = {} ; Effect = {}'.format(' '*indent, node.path, node.clstr_measure.stats[0])
+            print '{} Context = {} ; Effect = {} ; Size = {}'.\
+                    format(' '*indent, node.path, node.clstr_measure.stats[0], node.size)
             indent += 2
         for child in node.children:
             recurse(child, indent)
