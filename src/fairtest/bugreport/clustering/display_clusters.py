@@ -5,15 +5,12 @@ from StringIO import StringIO
 import prettytable
 from statsmodels.sandbox.stats.multicomp import multipletests
 import matplotlib.pyplot as plt
-from sets import Set
 import matplotlib.colors as colors
 import random
 import pandas as pd
 import numpy as np
 import subprocess
 import textwrap
-from copy import copy
-
 from fairtest.bugreport.statistics import fairness_measures as fm
 
 # Filters
@@ -21,7 +18,8 @@ FILTER_LEAVES_ONLY = 'LEAVES_ONLY'
 FILTER_ALL = 'ALL'
 FILTER_ROOT_ONLY = 'ROOT ONLY'
 FILTER_BETTER_THAN_ANCESTORS = "BETTER_THAN_ANCESTORS"
-NODE_FILTERS = [FILTER_ALL, FILTER_LEAVES_ONLY, FILTER_ROOT_ONLY, FILTER_BETTER_THAN_ANCESTORS]
+NODE_FILTERS = [FILTER_ALL, FILTER_LEAVES_ONLY,
+                FILTER_ROOT_ONLY, FILTER_BETTER_THAN_ANCESTORS]
 
 # Sorting Method
 SORT_BY_EFFECT = 'EFFECT'
@@ -32,6 +30,14 @@ SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG]
 def print_summary(all_clusters, displ_clusters):
     """
     Hierarchical printing of context
+
+    Parameters
+    -----------
+    all_clusters :
+        list of all clusters
+
+    displ_clusters :
+        list of all clusters that were displayed
     """
     print "Hierarchical printing of subpopulations (summary)"
     print
@@ -42,7 +48,9 @@ def print_summary(all_clusters, displ_clusters):
 
     def recurse(node, indent):
         if node.num in displ_clusters:
-            print '{} Context = {} ; Effect = {}'.format(' '*indent, node.path, node.clstr_measure.stats[0])
+            print '{} Context = {} ; CI = [{:.4f}, {:.4f}]'.\
+                format(' '*indent, node.path,
+                       node.clstr_measure.stats[0], node.clstr_measure.stats[1])
             indent += 2
         for child in node.children:
             recurse(child, indent)
@@ -53,8 +61,7 @@ def print_summary(all_clusters, displ_clusters):
     print
 
 
-def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
-               node_filter=FILTER_LEAVES_ONLY, new_measure=None,
+def bug_report(clusters, sort_by=SORT_BY_EFFECT, node_filter=FILTER_LEAVES_ONLY,
                approx=True, fdr=None):
     """
     Print all the clusters sorted by relevance
@@ -175,7 +182,9 @@ def bug_report(clusters, columns=None, sort_by=SORT_BY_EFFECT,
             else:
                 effects[cluster.num] = max(cluster.clstr_measure.abs_effect(),
                                            effects[cluster.parent.num])
-        zipped = filter(lambda (c, _): c.clstr_measure.abs_effect() >= effects[c.num], zipped)
+        zipped = filter(lambda (c, _):
+                        c.clstr_measure.abs_effect() >= effects[c.num] and
+                        c.clstr_measure.abs_effect() > 0, zipped)
 
     # sort by significance
     if sort_by == SORT_BY_SIG:
@@ -320,7 +329,8 @@ def print_cluster_corr(cluster, cluster_stats, effect_name):
     plt.plot(sens, m*sens + b, '-', color='green')
 
     #jitter(sens, out, color='blue', edgecolor='none')
-    plt.hexbin(sens, out, gridsize=20, norm=colors.LogNorm(), cmap=plt.get_cmap('Blues'))
+    plt.hexbin(sens, out,
+               gridsize=20, norm=colors.LogNorm(), cmap=plt.get_cmap('Blues'))
     plt.colorbar()
 
     plt.xlabel(data.columns[1])
@@ -342,7 +352,7 @@ def print_cluster_corr(cluster, cluster_stats, effect_name):
 
 def print_cluster_reg(cluster, stats, effect_name, sort_by='effect'):
     """
-    Print regression graph
+    Print regression stats
 
     Parameters
     ----------
@@ -449,12 +459,14 @@ def print_report_info(data, measure, tree_params, display_params):
     Prints reports information
     """
     print '='*80
-    print 'Commit Hash: \t{}'.format(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd='..').strip())
+    print 'Commit Hash: \t{}'.format(
+        subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd='..').strip())
     print
     print 'Dataset: \t{}'.format(data.filepath)
     print 'Training Size: \t{}'.format(len(data.data_train))
     print 'Testing Size: \t{}'.format(len(data.data_test))
-    print 'Attributes: \t{}'.format("\n\t\t".join(textwrap.wrap(str(data.features.tolist()), 60)))
+    print 'Attributes: \t{}'.format("\n\t\t".join(
+        textwrap.wrap(str(data.features.tolist()), 60)))
     print 'Protected: \t{}'.format(data.sens)
     print 'Explanatory: \t{}'.format(data.expl)
     print 'Target: \t{}'.format(data.out)

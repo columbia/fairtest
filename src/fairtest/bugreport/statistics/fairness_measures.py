@@ -79,11 +79,11 @@ class NMI(Measure):
             if ci_level:
                 if N < 1000:
                     ci_low, ci_high = \
-                            bootstrap_ci_ct(data,
-                                            lambda x: mutual_info(x, norm=True,
-                                                                  ci_level=None,
-                                                                  pval=False)[0],
-                                            ci_level=ci_level)
+                        bootstrap_ci_ct(data,
+                                        lambda x: mutual_info(x, norm=True,
+                                                              ci_level=None,
+                                                              p=False)[0],
+                                        ci_level=ci_level)
                 else:
                     ci_low, ci_high, _ = mutual_info(data,
                                                      norm=True,
@@ -92,7 +92,6 @@ class NMI(Measure):
                 if pval > 1-ci_level:
                     ci_low = 0
 
-                self.exact_ci = True
                 self.stats = (ci_low, ci_high, pval)
             else:
                 mi, _ = mutual_info(data, norm=True, ci_level=None)
@@ -112,7 +111,7 @@ class NMI(Measure):
 
 class CondNMI(Measure):
     """
-    Conditional Mutual Information
+    Conditional Mutual Information Measure
     """
     dataType = Measure.DATATYPE_CT
 
@@ -124,28 +123,36 @@ class CondNMI(Measure):
         self.data = data
         ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
 
-        data = [ct.values if isinstance(ct, pd.DataFrame)\
-                          else ct for ct in data]
-        data = np.array([d for d in data if d.sum() > 0])
-        N = data.sum()
-        G, pval, df = G_test_cond(data)
-        p_low = 1-(1-ci_level)/2
-        p_high = (1-ci_level)/2
-        G_low = special.chndtrinc(G, df, p_low)
-        G_high = special.chndtrinc(G, df, p_high)
-        ci = ((G_low+df)/(2.0*N), (G_high+df)/(2.0*N))
+        if approx:
+            self.stats = cond_mutual_info(data, norm=True, ci_level=ci_level)
+        else:
+            N = np.max([np.array(ct).sum() for ct in np.array(data)])
+            if N < 1000:
+                pval = permutation_test_ct_cond(data)
+            else:
+                _, pval, _ = G_test_cond(data)
 
-        if pval > 1-ci_level:
-            ci = (0, ci[1])
+            if ci_level:
+                if N < 1000:
+                    ci_low, ci_high = \
+                        bootstrap_ci_ct_cond(data,
+                                             lambda x:
+                                             cond_mutual_info(x, norm=True,
+                                                              ci_level=None,
+                                                              p=False)[0],
+                                             ci_level=ci_level)
+                else:
+                    ci_low, ci_high, _ = cond_mutual_info(data, norm=True,
+                                                          ci_level=ci_level)
 
-        weights = map(lambda d: d.sum(), data)
-        hxs = map(lambda d: stats.entropy(np.sum(d, axis=1)), data)
-        cond_hx = np.average(hxs, axis=None, weights=weights)
-        hys = map(lambda d: stats.entropy(np.sum(d, axis=0)), data)
-        cond_hy = np.average(hys, axis=None, weights=weights)
+                if pval > 1-ci_level:
+                    ci_low = 0
 
-        (ci_low, ci_high) = map(lambda x: x/min(cond_hx, cond_hy), ci)
-        self.stats = (ci_low, ci_high, pval)
+                self.stats = (ci_low, ci_high, pval)
+            else:
+                mi, _ = cond_mutual_info(data, norm=True, ci_level=None)
+                self.stats = mi, pval
+
         return self
 
     def abs_effect(self):
@@ -175,14 +182,13 @@ class CORR(Measure):
             if len(x) < 1000:
                 pval = permutation_test_corr(x, y)
             else:
-                #pval = stats.pearsonr(x, y)[1]
                 _, _, pval = correlation(corr_stats, ci_level)
             if ci_level:
                 if len(x) < 1000:
                     ci_low, ci_high = \
-                            bootstrap_ci_corr(x, y,
-                                              lambda x, y: stats.pearsonr(x, y)[0],
-                                              ci_level=ci_level)
+                        bootstrap_ci_corr(x, y,
+                                          lambda x,y: stats.pearsonr(x, y)[0],
+                                          ci_level=ci_level)
                 else:
                     ci_low, ci_high, _ = correlation(corr_stats, ci_level)
                 if pval > 1-ci_level:
@@ -225,7 +231,7 @@ class DIFF(Measure):
             self.stats = difference(data, ci_level=ci_level)
         else:
             N = np.array(data).sum()
-            if N < 5000:
+            if N < 1000:
                 pval = permutation_test_ct(data)
             else:
                 _, pval, _, _ = G_test(data)
@@ -276,7 +282,7 @@ class RATIO(Measure):
             self.stats = ratio(data, ci_level=ci_level)
         else:
             N = np.array(data).sum()
-            if N < 5000:
+            if N < 1000:
                 pval = permutation_test_ct(data)
             else:
                 _, pval, _, _ = G_test(data)
@@ -336,7 +342,7 @@ class REGRESSION(Measure):
             X = data[data.columns[0:-1]]
 
             # print 'Regressing from {}...{} to {}'.\
-            #         format(data.columns[0], data.columns[-2], data.columns[-1])
+            #        format(data.columns[0], data.columns[-2], data.columns[-1])
 
             reg = LogisticRegression()
             reg.fit(X, y)
@@ -358,7 +364,8 @@ class REGRESSION(Measure):
                 results['effect'] = map(lambda c: abs(c), results['coeff'])
                 sorted_results = results.sort(columns=['effect'],
                                               ascending=False)
-                self.stats = sorted_results[['coeff', 'p-value']].head(self.topK)
+                self.stats = sorted_results[['coeff',
+                                             'p-value']].head(self.topK)
                 self.type = "Regression"
                 return self
 
@@ -381,21 +388,21 @@ class REGRESSION(Measure):
         else:
             # model was already trained, get the top labels
             top_labels = self.stats.index
-            #print top_labels
 
             for idx in top_labels:
-                self.stats.loc[idx] = mutual_info(pd.crosstab(data[data.columns[idx]], data[data.columns[-1]]),
-                                                  norm=True, ci_level=ci_level)
-            #print self.stats
+                self.stats.loc[idx] = \
+                    mutual_info(pd.crosstab(data[data.columns[idx]],
+                                            data[data.columns[-1]]),
+                                norm=True, ci_level=ci_level)
             self.type = "MI"
             return self
 
     def abs_effect(self):
         if self.type == "Regression":
             if self.ci_level:
-                effects = \
-                        np.array(map(lambda (ci_low, ci_high, pval): z_effect(ci_low, ci_high),
-                                     self.stats.values))
+                effects = np.array(map(
+                    lambda (ci_low, ci_high, pval): z_effect(ci_low, ci_high),
+                    self.stats.values))
             else:
                 effects = np.array(map(lambda (coeff, pval): abs(coeff),
                                        self.stats.values))
@@ -413,7 +420,7 @@ class REGRESSION(Measure):
                 format(self.ci_level, self.topK)
 
 
-def mutual_info(data, norm=False, ci_level=None, pval=True):
+def mutual_info(data, norm=False, ci_level=None, p=True):
     """
     mutual information with or without normalization and confidence intervals
 
@@ -428,8 +435,9 @@ def mutual_info(data, norm=False, ci_level=None, pval=True):
     ci_level :
         level for confidence intervals (or None)
 
-    pval :
-        whether a p-value should be computed
+    p :
+        whether a p-value should be computed (for efficiency reasons when
+        bootstrapping)
 
     Returns
     -------
@@ -446,20 +454,19 @@ def mutual_info(data, norm=False, ci_level=None, pval=True):
     ----------
     https://en.wikipedia.org/wiki/Mutual_information
     """
+    assert not p or ci_level
 
     if isinstance(data, pd.DataFrame):
         data = data.values
 
-    if pval:
-        G, pval, df, _ = G_test(data, correction=False)
+    if p:
+        G, pval, df, _ = G_test(data)
     else:
         pval = 0
 
     # data smoothing
     data = data.copy()
     data += 1
-    #data = data[~np.all(data == 0, axis=1)]
-    #data = data[:, ~np.all(data == 0, axis=0)]
 
     shape = data.shape
     if shape[0] < 2 or shape[1] < 2:
@@ -499,9 +506,6 @@ def mutual_info(data, norm=False, ci_level=None, pval=True):
     G_low = special.chndtrinc(G, df, p_low)
     G_high = special.chndtrinc(G, df, p_high)
     ci = ((G_low+df)/(2.0*N), (G_high+df)/(2.0*N))
-
-    #print data
-    #print pval, ci
 
     if pval > 1-ci_level:
         ci = (0, ci[1])
@@ -673,7 +677,7 @@ def ratio(data, ci_level=0.95):
         return ratio, pval
 
 
-def G_test(data, correction=True):
+def G_test(data, correction=False):
     """
     Computes the G_test
 
@@ -700,8 +704,6 @@ def G_test(data, correction=True):
 
     data = data[~np.all(data == 0, axis=1)]
     data = data[:, ~np.all(data == 0, axis=0)]
-    #data = data.copy()
-    #data += 1
 
     if data.sum() == 0:
         return 0, 1.0, 1, None
@@ -711,7 +713,7 @@ def G_test(data, correction=True):
                                   lambda_="log-likelihood")
 
 
-def mi_cond(data):
+def cond_mutual_info(data, norm=False, ci_level=None, p=True):
     """
     Compute the conditional mutual information of two variables given a third
 
@@ -721,22 +723,78 @@ def mi_cond(data):
         A 3-dimensional table. This method computes the mutual
         information between the first and second dimensions, given the third.
 
+    norm :
+        whether the MI should be normalized
+
+    ci_level :
+        level for confidence intervals (or None)
+
+    p :
+        whether a p-value should be computed (for efficiency reasons when
+        bootstrapping)
+
     Returns
     -------
-    mi :
-        conditional mutual information
+    max :
+        upper bound of confidence interval
+
+    min :
+        lower bound of confidence interval
+
+    pval :
+        the corresponding p-value
 
     References
     ----------
-    https://en.wikipedia.org/wiki/Mutual_information
+    https://en.wikipedia.org/wiki/Conditional_mutual_information
     """
-    # total size of the data
-    tot = sum(map(lambda group: group.sum().sum(), data))
 
-    G, _ = G_test_cond(data)
+    assert not p or ci_level
 
-    mi = G/(2.0*tot)
-    return mi
+    data = [ct.values if isinstance(ct, pd.DataFrame) else ct for ct in data]
+    data = np.array([d for d in data if d.sum() > 0])
+
+    N = data.sum()
+
+    if p:
+        G, pval, df = G_test_cond(data)
+    else:
+        pval = 0
+
+    weights = map(lambda d: d.sum(), data)
+    hxs = map(lambda d: stats.entropy(np.sum(d, axis=1)), data)
+    cond_hx = np.average(hxs, axis=None, weights=weights)
+    hys = map(lambda d: stats.entropy(np.sum(d, axis=0)), data)
+    cond_hy = np.average(hys, axis=None, weights=weights)
+    hxys = map(lambda d: stats.entropy(d.flatten()), data)
+    cond_hxy = np.average(hxys, axis=None, weights=weights)
+
+    mi = -cond_hxy + cond_hx + cond_hy
+
+    # normalized mutual info
+    if norm:
+        if (cond_hx == 0) or (cond_hy == 0) or (mi == 0):
+            mi = 0
+        else:
+            mi = mi/min(cond_hx, cond_hy)
+
+    # no confidence levels, return single measure
+    if not ci_level:
+        return mi, pval
+
+    p_low = 1-(1-ci_level)/2
+    p_high = (1-ci_level)/2
+    G_low = special.chndtrinc(G, df, p_low)
+    G_high = special.chndtrinc(G, df, p_high)
+    ci = ((G_low+df)/(2.0*N), (G_high+df)/(2.0*N))
+
+    if pval > 1-ci_level:
+        ci = (0, ci[1])
+
+    if norm:
+        ci = map(lambda x: x/min(cond_hx, cond_hy), ci)
+
+    return max(ci[0], 0), min(ci[1], 1), pval
 
 
 def G_test_cond(data):
@@ -886,7 +944,7 @@ def cramer_v(data, ci_level=0.95):
     # print chi_low, chi_high
     (cv_low, cv_high) = map(lambda x: sqrt((x+df)/(n*(min(dim[0], dim[1])-1))),
                             (chi_low, chi_high))
-    return (cv_low, cv_high)
+    return cv_low, cv_high
 
 
 def correlation(counts, ci_level=None):
@@ -950,7 +1008,7 @@ def correlation(counts, ci_level=None):
 
 def bootstrap_ci_ct(data, stat, num_samples=10000, ci_level=0.95):
     """
-    Bootstrap confidence interval computation
+    Bootstrap confidence interval computation on a contingency table
 
     Parameters
     ----------
@@ -1000,39 +1058,142 @@ def bootstrap_ci_ct(data, stat, num_samples=10000, ci_level=0.95):
     return ci
 
 
+def bootstrap_ci_ct_cond(data, stat, num_samples=10000, ci_level=0.95):
+    """
+    Bootstrap confidence interval computation on a 3-way contingency table
+
+    Parameters
+    ----------
+    data :
+        Contingency table collected from independent samples
+
+    stat :
+        Statistic to bootstrap. Takes a contingency table as argument
+
+    num_samples :
+        Number of bootstrap samples to generate
+
+    ci_level :
+        Confidence level for the interval
+
+    Returns
+    -------
+    ci :
+        the confidence interval
+
+    References
+    ----------
+    """
+    data = np.array([ct.values if isinstance(ct, pd.DataFrame)
+                     else ct for ct in data])
+
+    dim = data.shape
+    data = [ct.flatten()+1 for ct in data]
+
+    probas = [(1.0*ct)/ct.sum() for ct in data]
+
+    # Obtain `num_samples' random samples of `n' multinomial values, sampled
+    # with replacement from {0, 1, ..., n-1}. For each sample, rebuild a
+    # contingency table and compute the stat.
+    temp = np.dstack([np.random.multinomial(data[i].sum(),
+                                            probas[i],
+                                            size=num_samples)
+                      for i in range(dim[0])])
+    bs_stats = [row.reshape(dim) for row in temp]
+    bs_stats = map(lambda ct: stat(ct), bs_stats)
+
+    alpha = 1-ci_level
+    q_low = np.percentile(bs_stats, 100*alpha/2)
+    q_high = np.percentile(bs_stats, 100*(1-alpha/2))
+
+    ci = (q_low, q_high)
+    return ci
+
+
 def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
+    """
+    Bootstrap confidence interval computation for correlation
+
+    Parameters
+    ----------
+    x :
+        Values for the first dimension
+
+    y :
+        Values for the second dimension
+
+    stat :
+        Statistic to bootstrap. Takes values (x,y) as argument
+
+    num_samples :
+        Number of bootstrap samples to generate
+
+    ci_level :
+        Confidence level for the interval
+
+    Returns
+    -------
+    ci :
+        the confidence interval
+
+    References
+    ----------
+    """
     ci = bs.ci((x, y), stat, alpha=1-ci_level, n_samples=num_samples)
     return ci
 
 
-def permutation_test_ct2(data, num_samples=10000):
-    if isinstance(data, pd.DataFrame):
-        data = data.values
+def permutation_test_ct_cond(data, num_samples=10000):
+    """
+    Monte-Carlo permutation test for a 3-way contingency table
+
+    Parameters
+    ----------
+    data :
+        the contingency table
+
+    num_samples :
+        the number of random permutations to perform
+
+    Returns
+    -------
+    p :
+        the p-value
+
+    References
+    ----------
+    https://en.wikipedia.org/wiki/Resampling_(statistics)
+    """
+    data = np.array([ct.values if isinstance(ct, pd.DataFrame)
+                     else ct for ct in data])
 
     dim = data.shape
-    data_x = []
-    data_y = []
+    data_x = [[] for ct in data]
+    data_y = [[] for ct in data]
 
-    stat_0 = metrics.mutual_info_score(None, None, contingency=data)
+    stat_0 = cond_mutual_info(data, norm=False, ci_level=None, p=False)[0]
 
-    for x in range(0, dim[0]):
-        for y in range(0, dim[1]):
-            data_x += [x]*data[x, y]
-            data_y += [y]*data[x, y]
-
-    print 'permutation test of size {}'.format(len(data_x))
-    z = data_x[:]
+    for e in range(0, dim[0]):
+        for x in range(0, dim[1]):
+            for y in range(0, dim[2]):
+                data_x[e] += [x]*data[e, x, y]
+                data_y[e] += [y]*data[e, x, y]
 
     k = 0
+    N = data.sum()
     for i in range(num_samples):
-        np.random.shuffle(data_x)
-        k += stat_0 < metrics.mutual_info_score(data_x, data_y)
+        mi_cond = 0
+        for e in range(0, dim[0]):
+            np.random.shuffle(data_x[e])
+            mi_cond += (1.0*len(data_x[e]))/N * \
+                       metrics.mutual_info_score(data_x[e], data_y[e])
+        k += stat_0 < mi_cond
 
     pval = (1.0*k) / num_samples
     return max(pval, 1.0/num_samples)
 
 
-def permutation_test_ct(data, num_samples=100000):
+def permutation_test_ct(data, num_samples=10000):
     """
     Monte-Carlo permutation test for a contingency table
 
@@ -1046,6 +1207,8 @@ def permutation_test_ct(data, num_samples=100000):
 
     Returns
     -------
+    p :
+        the p-value
 
     Notes
     -----
@@ -1064,13 +1227,36 @@ def permutation_test_ct(data, num_samples=100000):
     data = np.array(data, dtype='int')
 
     ro.globalenv['ct'] = data
-    ro.r('res = chisq_test(as.table(ct), distribution=approximate(B={}))'.\
-            format(num_samples))
+    ro.r('res = chisq_test(as.table(ct), distribution=approximate(B={}))'.
+         format(num_samples))
     pval = ro.r('pvalue(res)')[0]
     return max(pval, 1.0/num_samples)
 
 
 def permutation_test_corr(x, y, num_samples=10000):
+    """
+    Monte-Carlo permutation test for correlation
+
+    Parameters
+    ----------
+    x :
+        Values for the first dimension
+
+    y :
+        Values for the second dimension
+
+    num_samples :
+        the number of random permutations to perform
+
+    Returns
+    -------
+    p :
+        the p-value
+
+    References
+    ----------
+    https://en.wikipedia.org/wiki/Resampling_(statistics)
+    """
     x = np.array(x, dtype='float')
     y = np.array(y, dtype='float')
 

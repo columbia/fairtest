@@ -184,14 +184,12 @@ def find_clusters_cat(tree, data, train_set=False):
             if not expl:
                 # create an empty contingency table
                 contigency_table = \
-                        pd.DataFrame(0,
-                                     index=range(len(encoders[out].classes_)),
-                                     columns=range(len(encoders[sens].classes_)))
+                    pd.DataFrame(0, index=range(len(encoders[out].classes_)),
+                                 columns=range(len(encoders[sens].classes_)))
 
                 # fill in available values
-                contigency_table = contigency_table.\
-                        add(pd.crosstab(data_node[out], data_node[sens]),
-                            fill_value=0)
+                contigency_table = contigency_table.add(
+                    pd.crosstab(data_node[out], data_node[sens]), fill_value=0)
 
                 # replace numbers by original labels
                 contigency_table.index = encoders[out].classes_
@@ -203,12 +201,12 @@ def find_clusters_cat(tree, data, train_set=False):
             else:
                 dim_expl = len(encoders[expl].classes_)
                 cts = [pd.DataFrame(0, index=range(len(encoders[out].classes_)),
-                                    columns=range(len(encoders[sens].classes_)))] * dim_expl
+                                    columns=range(len(encoders[sens].classes_)))
+                       ] * dim_expl
 
                 for (key, group) in data_node.groupby(expl):
-                    cts[key] = \
-                            cts[key].add(pd.crosstab(group[out], group[sens]),
-                                         fill_value=0)
+                    cts[key] = cts[key].add(
+                        pd.crosstab(group[out], group[sens]), fill_value=0)
                     cts[key].index = encoders[out].classes_
                     cts[key].index.name = out
                     cts[key].columns = encoders[sens].classes_
@@ -244,15 +242,15 @@ def find_clusters_cat(tree, data, train_set=False):
         # build a cluster class and store it in the list
         training_measure = node.measure
 
-        ancestor_ptr = parent
+        #ancestor_ptr = parent
         # prune non-significant clusters
-        if is_root or training_measure.abs_effect() > 0:
-            clstr = Cluster(node.id, feature_path, is_leaf, is_root, parent,
-                        stats, size, training_measure, cluster_data)
-            if parent:
-                parent.children.append(clstr)
-            clusters.append(clstr)
-            ancestor_ptr = clstr
+        #if is_root or training_measure.abs_effect() > 0:
+        clstr = Cluster(node.id, feature_path, is_leaf, is_root, parent,
+                    stats, size, training_measure, cluster_data)
+        if parent:
+            parent.children.append(clstr)
+        clusters.append(clstr)
+        ancestor_ptr = clstr
 
         # recurse in children
         for child in node.get_children():
