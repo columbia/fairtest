@@ -1,6 +1,6 @@
 #
 #
-# Contains 6 sets of results for staples data.
+# Contains 6 sets of results for staples.
 #
 # 1) Protected: race, Target: price
 # 2) Protected: income, Target: price

@@ -1,6 +1,6 @@
 #
 #
-# Contains sets of results for staples data.
+# Contains sets of results for the recommender.
 #
 # 1) Protected: age, Target: median, Metric: CORR
 # 2) Protected: gender, Target: median, Metric: NMI
