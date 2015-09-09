@@ -1,5 +1,5 @@
 ================================================================================
-Commit Hash: 	9e9dc15e168318cd01ee3f651f8fd410a9d6d6fc
+Commit Hash: 	a48bf778c4de4d28a5202242bade1e083b098475
 
 Dataset: 	../data/berkeley/berkeley.csv
 Training Size: 	2212
@@ -12,7 +12,7 @@ Target: 	accepted
 Tree Params: 	{'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'AVG'}
 Metric: 	Conditional NMI(confidence=0.95)
 
-Report Params: 	{'node_filter': 'BETTER_THAN_ANCESTORS', 'fdr': 0.05, 'approx': False, 'sort_by': 'EFFECT'}
+Report Params: 	{'node_filter': 'ALL', 'fdr': 0.05, 'approx': False, 'sort_by': 'EFFECT'}
 ================================================================================
 
 Global Population of size 2213
@@ -77,5 +77,12 @@ MI (non-adjusted) = [0.0000, 0.0445]
 |  Total   | 158 (53.0%) | 140 (47.0%) | 298 (100.0%) |
 +----------+-------------+-------------+--------------+
 
-p-value = 2.11e-02 ; CondNMI = [0.0026, 0.0141]
+p-value = 1.16e-02 ; CondNMI = [0.0106, 0.0315]
 ================================================================================
+
+Hierarchical printing of subpopulations (summary)
+
+================================================================================
+
+ Context = {} ; CI = [0.0106, 0.0315]
+--------------------------------------------------------------------------------

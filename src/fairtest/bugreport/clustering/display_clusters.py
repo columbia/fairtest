@@ -48,9 +48,15 @@ def print_summary(all_clusters, displ_clusters):
 
     def recurse(node, indent):
         if node.num in displ_clusters:
-            print '{} Context = {} ; CI = [{:.4f}, {:.4f}]'.\
-                format(' '*indent, node.path,
-                       node.clstr_measure.stats[0], node.clstr_measure.stats[1])
+            if node.clstr_measure.dataType != fm.Measure.DATATYPE_REG:
+                print '{} Context = {} ; CI = [{:.4f}, {:.4f}]'.\
+                    format(' '*indent, node.path,
+                           node.clstr_measure.stats[0],
+                           node.clstr_measure.stats[1])
+            else:
+                print '{} Context = {} ; Avg Effect = {:.4f}'.\
+                    format(' '*indent, node.path,
+                           node.clstr_measure.abs_effect())
             indent += 2
         for child in node.children:
             recurse(child, indent)
@@ -378,7 +384,6 @@ def print_cluster_reg(cluster, stats, effect_name, sort_by='effect'):
 
     if sort_by == SORT_BY_EFFECT:
         if 'conf low' in stats.columns:
-            #stats = stats[stats['conf low'] > 0]
             sorted_results = stats.sort(columns=['conf low'], ascending=False)
         else:
             sorted_results = stats.sort(columns=['coeff'], ascending=False)

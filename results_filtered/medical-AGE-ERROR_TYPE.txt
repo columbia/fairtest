@@ -1,59 +1,60 @@
 ================================================================================
-Commit Hash: 	9e9dc15e168318cd01ee3f651f8fd410a9d6d6fc
+Commit Hash: 	a48bf778c4de4d28a5202242bade1e083b098475
 
-Dataset: 	../data/medical/predictions2.csv
+Dataset: 	../data/medical/predictions_bin_4_25.csv
 Training Size: 	43179
 Testing Size: 	43179
-Attributes: 	['Average Charlson Index', 'Max Charlson Index', 'Min
-		Charlson Index', 'Range Charlson Index', 'Stdev Charlson
-		Index', 'Suppressed Claims', 'Known Length Of Stay',
-		'Supressed Length Of Stay', 'Unknown Length Of Stay',
-		'Average Length Of Stay', 'Max Length Of Stay', 'Min Length
-		Of Stay', 'Stdev Length Of Stay', 'Average Payment Delay',
-		'Max Payment Delay', 'Min Payment Delay', 'Stdev Payment
-		Delay', 'Average Drug Count', 'Max Drug Count', 'Min Drug
-		Count', 'No Drug Count', 'Drug Months', 'Average Days Since
-		First Service', 'Max Days Since First Service', 'Min Days
-		Since First Service', 'Range Days Since First Service',
-		'Stdev Days Since First Service', 'Average Lab Count', 'Max
-		Lab Count', 'Min Lab Count', 'No Lab Count', 'Lab Months',
-		'Number Of Claims', 'Number of Primary Care Physicians',
-		'Number of Places Where Treated', 'Number of Primary
-		Condition Groups', 'Number of Procedure Groups', 'Number of
-		Providers', 'Number of Specialities', 'Number of Vendors',
-		'Condition MSC2a3', 'Condition TRAUMA', 'Condition HEART2',
-		'Condition RENAL3', 'Condition ROAMI', 'Condition MISCL5',
-		'Condition ODaBNCA', 'Condition UTI', 'Condition COPD',
-		'Condition GYNEC1', 'Condition CANCRB', 'Condition METAB3',
-		'Condition FXDISLC', 'Condition AMI', 'Condition PRGNCY',
-		'Condition HEMTOL', 'Condition HEART4', 'Condition SEIZURE',
-		'Condition APPCHOL', 'Condition CHF', 'Condition GYNECA',
-		'Condition NULL', 'Condition ARTHSPIN', 'Condition PNEUM',
-		'Condition RENAL2', 'Condition GIOBSENT', 'Condition
-		STROKE', 'Condition CANCRA', 'Condition FLaELEC', 'Condition
-		MISCL1', 'Condition HIPFX', 'Condition METAB1', 'Condition
-		PERVALV', 'Condition NEUMENT', 'Condition LIVERDZ',
-		'Condition CATAST', 'Condition CANCRM', 'Condition PERINTL',
-		'Condition PNCRDZ', 'Condition RENAL1', 'Condition SEPSIS',
-		'Condition RESPR4', 'Condition MISCHRT', 'Condition SKNAUT',
-		'Condition GIBLEED', 'Condition INFEC4', 'Treatment Code
-		EM', 'Treatment Code SGS', 'Treatment Code SEOA', 'Treatment
-		Code SRS', 'Treatment Code SNS', 'Treatment Code SAS',
-		'Treatment Code SUS', 'Treatment Code NULL', 'Treatment Code
-		SMCD', 'Treatment Code SO', 'Treatment Code PL', 'Treatment
-		Code MED', 'Treatment Code SCS', 'Treatment Code RAD',
-		'Treatment Code SDS', 'Treatment Code SIS', 'Treatment Code
-		SMS', 'Treatment Code ANES', 'Treated at Office', 'Treated
-		at Independent Lab', 'Treated at Urgent Care', 'Treated at
-		Outpatient Hospital', 'Treated at Inpatient Hospital',
-		'Treated at Ambulance', 'Treated at Other', 'Treated at
-		Home', 'Treated at NULL', 'Speciality Internal', 'Speciality
-		Obstetrics and Gynecology', 'Speciality Anesthesiology',
-		'Speciality Pathology', 'Speciality NULL', 'Speciality
-		Laboratory', 'Speciality General Practice', 'Speciality
-		Surgery', 'Speciality Diagnostic Imaging', 'Speciality
-		Emergency', 'Speciality Other', 'Speciality Pediatrics',
-		'Speciality Rehabilitation', 'Age', 'Gender', 'Prediction']
+Attributes: 	['Average Charlson Index', 'Average Days Since First
+		Service', 'Average Drug Count', 'Average Lab Count',
+		'Average Length Of Stay', 'Average Payment Delay',
+		'Condition AMI', 'Condition APPCHOL', 'Condition ARTHSPIN',
+		'Condition CANCRA', 'Condition CANCRB', 'Condition CANCRM',
+		'Condition CATAST', 'Condition CHF', 'Condition COPD',
+		'Condition FLaELEC', 'Condition FXDISLC', 'Condition
+		GIBLEED', 'Condition GIOBSENT', 'Condition GYNEC1',
+		'Condition GYNECA', 'Condition HEART2', 'Condition HEART4',
+		'Condition HEMTOL', 'Condition HIPFX', 'Condition INFEC4',
+		'Condition LIVERDZ', 'Condition METAB1', 'Condition METAB3',
+		'Condition MISCHRT', 'Condition MISCL1', 'Condition MISCL5',
+		'Condition MSC2a3', 'Condition NEUMENT', 'Condition NULL',
+		'Condition ODaBNCA', 'Condition PERINTL', 'Condition
+		PERVALV', 'Condition PNCRDZ', 'Condition PNEUM', 'Condition
+		PRGNCY', 'Condition RENAL1', 'Condition RENAL2', 'Condition
+		RENAL3', 'Condition RESPR4', 'Condition ROAMI', 'Condition
+		SEIZURE', 'Condition SEPSIS', 'Condition SKNAUT', 'Condition
+		STROKE', 'Condition TRAUMA', 'Condition UTI', 'Drug Months',
+		'Known Length Of Stay', 'Lab Months', 'Max Charlson Index',
+		'Max Days Since First Service', 'Max Drug Count', 'Max Lab
+		Count', 'Max Length Of Stay', 'Max Payment Delay', 'Min
+		Charlson Index', 'Min Days Since First Service', 'Min Drug
+		Count', 'Min Lab Count', 'Min Length Of Stay', 'Min Payment
+		Delay', 'No Drug Count', 'No Lab Count', 'Number Of Claims',
+		'Number Of Providers', 'Number Of Specialties', 'Number of
+		Places Where Treated', 'Number of Primary Condition Groups',
+		'Number of Primary Physicians', 'Number of Procedure
+		Groups', 'Number of Vendors', 'Range Charlson IndexI_range',
+		'Range Days Since First Service', 'Speciality
+		Anesthesiology', 'Speciality Diagnostic Imaging',
+		'Speciality Emergency', 'Speciality General Practice',
+		'Speciality Internal', 'Speciality Laboratory', 'Speciality
+		NULL', 'Speciality Obstetrics and Gynecology', 'Speciality
+		Other', 'Speciality Pathology', 'Speciality Pediatrics',
+		'Speciality Rehabilitation', 'Speciality Surgery', 'Stdev
+		Charlson Index', 'Stdev Days Since First Service', 'Stdev
+		Length Of Stay', 'Stdev Payment Delay', 'Suppressed Claims',
+		'Supressed Length Of Stay', 'Treated at Ambulance', 'Treated
+		at Home', 'Treated at Independent Lab', 'Treated at
+		Inpatient Hospital', 'Treated at NULL', 'Treated at Office',
+		'Treated at Other', 'Treated at Outpatient Hospital',
+		'Treated at Urgent Care', 'Treatment Code ANES', 'Treatment
+		Code EM', 'Treatment Code MED', 'Treatment Code NULL',
+		'Treatment Code PL', 'Treatment Code RAD', 'Treatment Code
+		SAS', 'Treatment Code SCS', 'Treatment Code SDS', 'Treatment
+		Code SEOA', 'Treatment Code SGS', 'Treatment Code SIS',
+		'Treatment Code SMCD', 'Treatment Code SMS', 'Treatment Code
+		SNS', 'Treatment Code SO', 'Treatment Code SRS', 'Treatment
+		Code SUS', 'Unknown Length Of Stay', 'Age', 'Gender',
+		'Prediction']
 Protected: 	Age
 Explanatory: 	None
 Target: 	Prediction
@@ -90,7 +91,7 @@ Context = {'Gender': 'male', 'Speciality Emergency': (0.5, inf), 'Treatment Code
 |   Total    | 224 (30.4%) | 304 (41.3%) | 208 (28.3%) | 736 (100.0%) |
 +------------+-------------+-------------+-------------+--------------+
 
-p-value = 2.10e-04 ; NMI = [0.1121, 0.2598]
+p-value = 2.30e-03 ; NMI = [0.1136, 0.2596]
 --------------------------------------------------------------------------------
 
 Sub-Population of size 1899
@@ -165,5 +166,18 @@ Context = {'Condition RESPR4': (-inf, 2.5], 'Speciality Emergency': (-inf, 0.5],
 |   Total    | 516 (36.4%) | 664 (46.8%) | 239 (16.8%) | 1419 (100.0%) |
 +------------+-------------+-------------+-------------+---------------+
 
-p-value = 5.37e-22 ; NMI = [0.0463, 0.1615]
+p-value = 5.85e-22 ; NMI = [0.0463, 0.1615]
+--------------------------------------------------------------------------------
+
+Hierarchical printing of subpopulations (summary)
+
+================================================================================
+
+ Context = {} ; CI = [0.0416, 0.0550]
+   Context = {'Condition RESPR4': (-inf, 2.5], 'Speciality Emergency': (-inf, 0.5], 'Treated at Inpatient Hospital': (-inf, 2.5], 'Speciality Pediatrics': (-inf, 8.5], 'Treated at Office': (-inf, 0.5]} ; CI = [0.0463, 0.1615]
+   Context = {'Condition RESPR4': (2.5, inf), 'Speciality Emergency': (-inf, 0.5]} ; CI = [0.0577, 0.1532]
+   Context = {'Speciality Emergency': (0.5, inf)} ; CI = [0.0603, 0.0919]
+     Context = {'Gender': 'male', 'Speciality Emergency': (0.5, inf), 'Treated at Urgent Care': (-inf, 1.5], 'Condition FXDISLC': (-inf, 0.5]} ; CI = [0.0678, 0.1806]
+     Context = {'Speciality Emergency': (0.5, inf), 'Treatment Code SDS': (-inf, 0.5], 'Treated at Urgent Care': (1.5, inf)} ; CI = [0.0959, 0.1923]
+       Context = {'Gender': 'male', 'Speciality Emergency': (0.5, inf), 'Treatment Code SDS': (-inf, 0.5], 'Treated at Urgent Care': (1.5, inf)} ; CI = [0.1136, 0.2596]
 --------------------------------------------------------------------------------

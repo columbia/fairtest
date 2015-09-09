@@ -187,7 +187,7 @@ class CORR(Measure):
                 if len(x) < 1000:
                     ci_low, ci_high = \
                         bootstrap_ci_corr(x, y,
-                                          lambda x,y: stats.pearsonr(x, y)[0],
+                                          lambda x,y: min(1,max(-1,stats.pearsonr(x, y)[0])),
                                           ci_level=ci_level)
                 else:
                     ci_low, ci_high, _ = correlation(corr_stats, ci_level)
@@ -1139,7 +1139,8 @@ def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
     References
     ----------
     """
-    ci = bs.ci((x, y), stat, alpha=1-ci_level, n_samples=num_samples)
+    ci = bs.ci((np.array(x), np.array(y)), stat,
+               alpha=1-ci_level, n_samples=num_samples)
     return ci
 
 
