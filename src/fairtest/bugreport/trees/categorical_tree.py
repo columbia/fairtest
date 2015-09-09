@@ -267,10 +267,9 @@ def build_tree(dataset,
         else:
             # categorical split
             for val in node_data[best_feature].unique():
-                data_child = node_data[node_data[best_feature] == val]
 
-                if len(data_child) >= min_leaf_size:
-
+                # check if this child was pruned or not
+                if val in child_measures:
                     # predicate for the current sub-tree
                     new_pred = "{} = {}".format(best_feature, val)
 
@@ -281,6 +280,7 @@ def build_tree(dataset,
                                        category=val,
                                        measure=child_measures[val])
 
+                    data_child = node_data[node_data[best_feature] == val]
                     # recursively build the tree
                     rec_build_tree(data_child, child, pred+[new_pred],
                                    node_features.drop(to_drop + [best_feature]),
@@ -682,7 +682,9 @@ def score(stats, score_params):
     zip_w_measure = zip(stats, measures)
 
     # compute a score for each child
-    score_list = map(lambda (child, measure_copy): measure_copy.compute(child, approx=True).abs_effect(), zip_w_measure)
+    score_list = map(lambda (child, measure_copy):
+                     measure_copy.compute(child, approx=True).abs_effect(),
+                     zip_w_measure)
 
     # take the average or maximum of the child scores
     if agg_type == ScoreParams.WEIGHTED_AVG:
