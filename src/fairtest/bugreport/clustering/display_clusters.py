@@ -116,7 +116,10 @@ def bug_report(clusters, sort_by=SORT_BY_EFFECT, node_filter=FILTER_LEAVES_ONLY,
     #
     adj_ci_level = None
     if fdr_alpha and measure.ci_level:
-        adj_ci_level = 1-(1-fdr_alpha)/len(clusters)
+        if measure_type == fm.Measure.DATATYPE_REG:
+            adj_ci_level = 1-(1-fdr_alpha)/(len(clusters)*measure.topK)
+        else:
+            adj_ci_level = 1-(1-fdr_alpha)/len(clusters)
 
     if measure.dataType == fm.Measure.DATATYPE_CORR:
         stats = map(lambda c: c.clstr_measure.\
@@ -306,6 +309,10 @@ def jitter(x, y, s=20, c='b', marker='o', cmap=None,
                        linewidths=None, verts=None, hold=None, **kwargs)
 
 
+# type of correlation plot ("BOXPLOT", "JITTER" or "HEXBIN")
+CORR_PLOT = 'BOXPLOT'
+
+
 def print_cluster_corr(cluster, cluster_stats, effect_name):
     """
     print correlation graph
@@ -335,10 +342,17 @@ def print_cluster_corr(cluster, cluster_stats, effect_name):
     m, b = np.polyfit(sens, out, 1)
     plt.plot(sens, m*sens + b, '-', color='green')
 
-    #jitter(sens, out, color='blue', edgecolor='none')
-    plt.hexbin(sens, out,
-               gridsize=20, norm=colors.LogNorm(), cmap=plt.get_cmap('Blues'))
-    plt.colorbar()
+    if CORR_PLOT == 'JITTER':
+        jitter(sens, out, color='blue', edgecolor='none')
+    elif CORR_PLOT == 'HEXBIN':
+        plt.hexbin(sens, out, gridsize=20, norm=colors.LogNorm(),
+                   cmap=plt.get_cmap('Blues'))
+        plt.colorbar()
+    elif CORR_PLOT == 'BOXPLOT':
+        grouped = data.groupby(data.columns[1])
+        keys = [key for (key, group) in grouped]
+        groups = [group[data.columns[0]].values for (key, group) in grouped]
+        plt.boxplot(groups, positions=keys, widths=3)
 
     plt.xlabel(data.columns[1])
     plt.ylabel(data.columns[0])

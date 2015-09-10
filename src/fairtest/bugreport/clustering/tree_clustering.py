@@ -183,20 +183,19 @@ def find_clusters_cat(tree, data, train_set=False):
 
             if not expl:
                 # create an empty contingency table
-                contigency_table = \
-                    pd.DataFrame(0, index=range(len(encoders[out].classes_)),
-                                 columns=range(len(encoders[sens].classes_)))
+                ct = pd.DataFrame(0, index=range(len(encoders[out].classes_)),
+                                  columns=range(len(encoders[sens].classes_)))
 
                 # fill in available values
-                contigency_table = contigency_table.add(
-                    pd.crosstab(data_node[out], data_node[sens]), fill_value=0)
+                ct = ct.add(pd.crosstab(data_node[out], data_node[sens]),
+                            fill_value=0)
 
                 # replace numbers by original labels
-                contigency_table.index = encoders[out].classes_
-                contigency_table.index.name = out
-                contigency_table.columns = encoders[sens].classes_
-                contigency_table.columns.name = sens
-                stats = contigency_table
+                ct.index = encoders[out].classes_
+                ct.index.name = out
+                ct.columns = encoders[sens].classes_
+                ct.columns.name = sens
+                stats = ct
                 cluster_data = None
             else:
                 dim_expl = len(encoders[expl].classes_)
