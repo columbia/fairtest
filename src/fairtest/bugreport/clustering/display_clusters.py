@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 import subprocess
 import textwrap
+import os
 from fairtest.bugreport.statistics import fairness_measures as fm
 
 # Filters
@@ -464,8 +465,11 @@ def print_report_info(data, measure, tree_params, display_params):
     Prints reports information
     """
     print '='*80
-    print 'Commit Hash: \t{}'.format(
-        subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd='..').strip())
+    if os.path.exists('../.git'):
+        print 'Commit Hash: \t{}'.format(
+            subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd='..').strip())
+    else:
+        print 'Commit Hash: Not A Git Repository'
     print
     print 'Dataset: \t{}'.format(data.filepath)
     print 'Training Size: \t{}'.format(len(data.data_train))
