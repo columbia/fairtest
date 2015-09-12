@@ -4,7 +4,7 @@ import numpy as np
 from statsmodels.sandbox.stats.multicomp import multipletests
 
 
-def compute_stats(experiments, approx, fdr):
+def compute_all_stats(experiments, approx, fdr):
         if fdr:
             fdr_alpha = 1-fdr
         else:
@@ -21,6 +21,8 @@ def compute_stats(experiments, approx, fdr):
         adj_ci_level = None
         if fdr_alpha:
             adj_ci_level = 1-(1-fdr_alpha)/total_hypotheses
+
+        print experiments
 
         all_stats = {sens: compute_stats(exp, approx, adj_ci_level)
                      for (sens, exp) in experiments.iteritems()}
@@ -65,6 +67,7 @@ def num_hypotheses(clusters):
 
 
 def compute_stats(clusters, approx, adj_ci_level):
+
     measure = clusters[0].clstr_measure
     if measure.dataType == fm.Measure.DATATYPE_CORR:
         stats = map(lambda c: c.clstr_measure.

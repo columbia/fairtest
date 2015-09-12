@@ -96,7 +96,7 @@ class Fairtest:
 
         # find discrimination contexts for each sensitive feature
         for sens in self.sens_features:
-
+            print 'TRAINING WITH SENSITIVE FEATURE {}'.format(sens)
             # TODO use provided measure if available
             # get a default measure
             measure = get_measure(self.feature_info[sens], self.output,
@@ -145,7 +145,7 @@ class Fairtest:
                                        prune_insignificant)
 
         # compute p-values and confidence intervals with FDR correction
-        self.stats = multitest.compute_stats(self.contexts, approx, fdr)
+        self.stats = multitest.compute_all_stats(self.contexts, approx, fdr)
 
     def report(self, filename,
                sort_by=displ.SORT_BY_EFFECT,
