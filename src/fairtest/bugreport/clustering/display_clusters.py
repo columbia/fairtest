@@ -50,14 +50,16 @@ def print_summary(all_clusters, displ_clusters):
     def recurse(node, indent):
         if node.num in displ_clusters:
             if node.clstr_measure.dataType != fm.Measure.DATATYPE_REG:
-                print '{} Context = {} ; CI = [{:.4f}, {:.4f}]'.\
+                print '{} Context = {} ; CI = [{:.4f}, {:.4f}] ; Size = {}'.\
                     format(' '*indent, node.path,
                            node.clstr_measure.stats[0],
-                           node.clstr_measure.stats[1])
+                           node.clstr_measure.stats[1],
+                           node.size)
             else:
-                print '{} Context = {} ; Avg Effect = {:.4f}'.\
+                print '{} Context = {} ; Avg Effect = {:.4f} ; Size = {}'.\
                     format(' '*indent, node.path,
-                           node.clstr_measure.abs_effect())
+                           node.clstr_measure.abs_effect(),
+                           node.size)
             indent += 2
         for child in node.children:
             recurse(child, indent)
