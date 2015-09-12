@@ -224,8 +224,8 @@ def build_tree(dataset,
         if not best_feature:
             return
 
-        # print 'splitting on {} with threshold {} at pred {}'.\
-        #   format(best_feature, threshold, pred)
+        # print 'splitting on {} (score={}) with threshold {} at pred {}'.\
+        #   format(best_feature, split_score, threshold, pred)
 
         if threshold:
             # binary split
@@ -318,7 +318,7 @@ def select_best_feature(node_data, features, split_params,
         The best feature
 
     best_threshold :
-        The best threshol
+        The best threshold
 
     to_drop :
         A List of features to drop
@@ -359,8 +359,10 @@ def select_best_feature(node_data, features, split_params,
                                       split_params,
                                       score_params)
 
+        #print 'feature {}: score {}'.format(feature, split_score)
+
         # the feature produced no split and can be dropped for future sub-trees
-        if not split_score:
+        if not split_score or np.isnan(split_score):
             to_drop.append(feature)
             continue
 
@@ -484,7 +486,7 @@ def test_cat_feature(node_data, feature, split_params, score_params):
     split_score :
         the score of the current split
     """
-    #print 'testing categorical feature {}'.format(feature)
+    # print 'testing categorical feature {}'.format(feature)
     targets = split_params.targets
     sens = split_params.sens
     dim = split_params.dim
@@ -516,7 +518,7 @@ def test_cat_feature(node_data, feature, split_params, score_params):
     if len(contigency_table) > 1:
         values, contigency_table = zip(*contigency_table)
         split_score, measures = score(contigency_table, score_params)
-        #print split_score
+        # print split_score
         return split_score, dict(zip(values, measures))
     else:
         return split_score, None
@@ -551,7 +553,7 @@ def test_cont_feature(node_data, feature, split_params, score_params):
     best_measures :
         best measures
     """
-    #print 'testing continuous feature {}'.format(feature)
+    # print 'testing continuous feature {}'.format(feature)
     targets = split_params.targets
     sens = split_params.sens
     dim = split_params.dim
@@ -629,8 +631,10 @@ def test_cont_feature(node_data, feature, split_params, score_params):
 
     # check score if split is valid
     if (size_left >= min_leaf_size) and (size_right >= min_leaf_size):
-        #print 'testing threshold {}'.format(thresholds[keys[0]])
         split_score, measures = score([data_left, data_right], score_params)
+        # print 'testing threshold {}'.format(thresholds[keys[0]])
+        # print 'score = {}'.format(split_score)
+
         max_score = split_score
         best_threshold = thresholds[keys[0]]
         best_measures = dict(zip(['left', 'right'], measures))
@@ -649,8 +653,9 @@ def test_cont_feature(node_data, feature, split_params, score_params):
         size_right -= size_i
 
         if (size_left >= min_leaf_size) and (size_right >= min_leaf_size):
-            #print 'testing threshold {}'.format(thresholds[keys[i]])
             split_score, measures = score([data_left, data_right], score_params)
+            # print 'testing threshold {}'.format(thresholds[keys[i]])
+            # print 'score = {}'.format(split_score)
 
             if split_score > max_score:
                 max_score = split_score
