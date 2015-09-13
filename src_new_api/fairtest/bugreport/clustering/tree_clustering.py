@@ -173,9 +173,9 @@ def find_clusters_cat(tree, data, features_info, sens, expl, output,
                 # create an empty contingency table
                 ct = pd.DataFrame(0, index=range(output.arity),
                                   columns=range(features_info[sens].arity))
-
                 # fill in available values
-                ct = ct.add(pd.crosstab(data_node[targets[0]], data_node[sens]),
+                ct = ct.add(pd.crosstab(np.array(data_node[targets[0]]),
+                                        np.array(data_node[sens])),
                             fill_value=0)
 
                 # replace numbers by original labels
@@ -192,7 +192,8 @@ def find_clusters_cat(tree, data, features_info, sens, expl, output,
 
                 for (key, group) in data_node.groupby(expl):
                     cts[key] = cts[key].add(
-                        pd.crosstab(group[targets[0]], group[sens]), fill_value=0)
+                        pd.crosstab(np.array(group[targets[0]]),
+                                    np.array(group[sens])), fill_value=0)
                     #cts[key].index = encoders[out].classes_
                     #cts[key].index.name = out
                     #cts[key].columns = encoders[sens].classes_

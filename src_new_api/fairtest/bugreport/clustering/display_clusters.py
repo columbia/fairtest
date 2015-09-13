@@ -404,10 +404,10 @@ def print_cluster_reg(cluster, stats, effect_name, namer, sort_by='effect'):
     sens = namer.sens
 
     for label in sorted_results.index:
-        ct = pd.DataFrame(0, index=cluster_data[label].unique(),
-                                         columns=[0,1])
+        ct = pd.DataFrame(0, index=cluster_data[label].unique(), columns=[0,1])
         # fill in available values
-        ct = ct.add(pd.crosstab(cluster_data[label], cluster_data[sens]),
+        ct = ct.add(pd.crosstab(np.array(cluster_data[label]),
+                                np.array(cluster_data[sens])),
                     fill_value=0)
 
         # replace numbers by original labels
