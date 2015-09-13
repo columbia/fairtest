@@ -6,6 +6,8 @@ from fairtest.bugreport.clustering import tree_clustering as tc
 from fairtest.bugreport.clustering import display_clusters as displ
 from fairtest.bugreport.statistics import fairness_measures as fm
 from fairtest.bugreport.statistics import multiple_testing as multitest
+from sklearn import preprocessing as preprocessing
+from sklearn import cross_validation as cross_validation
 
 import pandas as pd
 import numpy as np
@@ -15,9 +17,8 @@ class Fairtest:
     """
     The main class
     """
-    def __init__(self, feature_info, output_info, measures={},
-                 max_depth=5, min_leaf_size=100, agg_type="AVG", max_bins=10,
-                 topk=50, ci_level=0.95):
+    def __init__(self, data, sens, target, expl=None, measures={},
+                 train_size=0.5, topk=50, ci_level=0.95, random_state=None):
         """
         Initialize a FairTest experiment
 
@@ -54,32 +55,50 @@ class Fairtest:
         """
 
         # TODO validate input
-
-        self.output = output_info
-        self.max_depth = max_depth
-        self.min_leaf_size = min_leaf_size
-        self.agg_type = agg_type
-        self.max_bins = max_bins
         self.topk = topk
         self.ci_level = ci_level
         self.measures = measures
-
         self.trained_trees = {}
         self.contexts = {}
         self.stats = {}
 
+        data = pd.DataFrame(data)
+
+        self.encoders = {}
+        for column in data.columns:
+            if data.dtypes[column] == np.object:
+                self.encoders[column] = preprocessing.LabelEncoder()
+                data[column] = self.encoders[column].fit_transform(data[column])
+
+        self.feature_info = {}
+        for col in data.columns.drop(target):
+            ftype = 'sens' if col in sens \
+                else 'expl' if col in expl \
+                else 'context'
+            arity = None if col not in self.encoders \
+                else len(self.encoders[col].classes_)
+            self.feature_info[col] = Feature(ftype, arity)
+
         # get the names of the sensitive features
-        self.sens_features = [f.name for f in feature_info if f.ftype == 'sens']
+        self.sens_features = [name for (name, f) in self.feature_info.items()
+                              if f.ftype == 'sens']
 
         # get the name of the explanatory feature (if any)
-        expl_list = [f.name for f in feature_info if f.ftype == 'expl']
+        expl_list = [name for (name, f) in self.feature_info.items()
+                     if f.ftype == 'expl']
         self.expl = expl_list[0] if expl_list else None
 
-        # store a dictionary to easily access feature information
-        self.feature_info = {f.name: f for f in feature_info}
-        self.feature_names = [f.name for f in feature_info]
+        try:
+            target_arity = len(self.encoders[target].classes_)
+        except:
+            target_arity = None
+        self.output = Target(np.asarray([target]).flatten(), arity=target_arity)
 
-    def train(self, x, y):
+        self.train_set, self.test_set = \
+            cross_validation.train_test_split(data, train_size=train_size,
+                                              random_state=random_state)
+
+    def train(self, max_depth=5, min_leaf_size=100, agg_type="AVG", max_bins=10):
         """
         Forms hypotheses about discrimination contexts
 
@@ -94,7 +113,7 @@ class Fairtest:
         # TODO validate input
 
         # create a Pandas DataFrame with columns index by feature name
-        data = prepare_data(x, y, self.feature_names, self.output)
+        data = self.train_set
 
         # find discrimination contexts for each sensitive feature
         for sens in self.sens_features:
@@ -110,11 +129,11 @@ class Fairtest:
 
             tree = builder.train_tree(data, self.feature_info, sens,
                                       self.expl, self.output, measure,
-                                      self.max_depth,self.min_leaf_size,
-                                      self.agg_type, self.max_bins)
+                                      max_depth, min_leaf_size,
+                                      agg_type, max_bins)
             self.trained_trees[sens] = tree
 
-    def test(self, x, y, prune_insignificant=False, approx=True, fdr=0.05):
+    def test(self, prune_insignificant=False, approx=True, fdr=0.05):
         """
         Tests formed hypotheses about discrimination
 
@@ -140,7 +159,7 @@ class Fairtest:
         # TODO validate input, check that tree was trained
 
         # create a Pandas DataFrame with columns index by feature name
-        data = prepare_data(x, y, self.feature_names, self.output)
+        data = self.test_set
 
         # prepare testing data for all hypotheses
         for sens in self.sens_features:
@@ -155,7 +174,7 @@ class Fairtest:
 
     def report(self, filename,
                sort_by=displ.SORT_BY_EFFECT,
-               filter_by=displ.FILTER_BETTER_THAN_ANCESTORS, encoders=None):
+               filter_by=displ.FILTER_BETTER_THAN_ANCESTORS):
         """
         Output a FairTest bug report for each sensitive feature
 
@@ -180,8 +199,8 @@ class Fairtest:
         for sens in self.sens_features:
             stats = self.stats[sens]
             clusters = self.contexts[sens]
-            displ.bug_report(clusters, stats, sens, self.expl, self.output, sort_by,
-                             filter_by, encoders)
+            displ.bug_report(clusters, stats, sens, self.expl, self.output,
+                             sort_by, filter_by, self.encoders)
 
 
 def measure_from_string(m_str, ci_level, topk):
@@ -215,21 +234,6 @@ def get_measure(sens, out, ci_level, topk, expl):
         assert not out.arity >= 2
         return fm.CORR(ci_level=ci_level)
 
-
-def prepare_data(x, y, feature_names, output):
-    x = pd.DataFrame(np.array(x))
-    x.columns = feature_names
-    y = pd.DataFrame(np.array(y))
-    y.columns = output.names
-
-    #
-    # Concatenate things for now. In the future we might look into keeping
-    # x and y separate, so that we can handle sparse y
-    #
-    data = pd.concat([x, y], axis=1)
-    return data
-
-
 class Feature:
     """
     Class holding information about user features
@@ -238,15 +242,14 @@ class Feature:
     # types of user features
     TYPES = ['context', 'sens', 'expl']
 
-    def __init__(self, name, ftype, arity=None):
+    def __init__(self, ftype, arity=None):
         assert ftype in Feature.TYPES
-        self.name = name
         self.ftype = ftype
         self.arity = arity
 
     def __repr__(self):
-        return "%s(name=%s, type=%s, arity=%s)" \
-               % (self.__class__.__name__, self.name, self.ftype, self.arity)
+        return "%s(type=%s, arity=%s)" \
+               % (self.__class__.__name__, self.ftype, self.arity)
 
 
 class Target:

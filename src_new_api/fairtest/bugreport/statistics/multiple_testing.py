@@ -22,8 +22,6 @@ def compute_all_stats(experiments, approx, fdr):
         if fdr_alpha:
             adj_ci_level = 1-(1-fdr_alpha)/total_hypotheses
 
-        print experiments
-
         all_stats = {sens: compute_stats(exp, approx, adj_ci_level)
                      for (sens, exp) in experiments.iteritems()}
 
