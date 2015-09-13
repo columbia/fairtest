@@ -15,16 +15,16 @@ from fairtest.bugreport.statistics import fairness_measures as fm
 from fairtest.bugreport.clustering import tree_clustering as tc
 
 # Filters
-FILTER_LEAVES_ONLY = 'LEAVES_ONLY'
-FILTER_ALL = 'ALL'
-FILTER_ROOT_ONLY = 'ROOT ONLY'
-FILTER_BETTER_THAN_ANCESTORS = "BETTER_THAN_ANCESTORS"
+FILTER_LEAVES_ONLY = 'leaves'
+FILTER_ALL = 'all'
+FILTER_ROOT_ONLY = 'root'
+FILTER_BETTER_THAN_ANCESTORS = "better_than_ancestors"
 NODE_FILTERS = [FILTER_ALL, FILTER_LEAVES_ONLY,
                 FILTER_ROOT_ONLY, FILTER_BETTER_THAN_ANCESTORS]
 
 # Sorting Method
-SORT_BY_EFFECT = 'EFFECT'
-SORT_BY_SIG = 'SIGNIFICANCE'
+SORT_BY_EFFECT = 'effect'
+SORT_BY_SIG = 'significance'
 SORT_METHODS = [SORT_BY_EFFECT, SORT_BY_SIG]
 
 

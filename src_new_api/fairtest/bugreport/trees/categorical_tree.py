@@ -82,12 +82,13 @@ class ScoreParams:
     Split-scoring parameters
     """
     # Child-score aggregation (weighted average, average or max)
-    WEIGHTED_AVG = 'WEIGHTED_AVG'
-    AVG = 'AVG'
-    MAX = 'MAX'
+    WEIGHTED_AVG = 'weighted_avg'
+    AVG = 'avg'
+    MAX = 'max'
     AGG_TYPES = [WEIGHTED_AVG, AVG, MAX]
 
     def __init__(self, measure, agg_type):
+        assert agg_type in ScoreParams.AGG_TYPES
         self.measure = measure
         self.agg_type = agg_type
 
