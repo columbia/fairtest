@@ -61,6 +61,9 @@ class Fairtest:
         self.trained_trees = {}
         self.contexts = {}
         self.stats = {}
+        self.train_params = {}
+        self.test_params = {}
+        self.display_params = {}
 
         data = pd.DataFrame(data)
 
@@ -115,6 +118,11 @@ class Fairtest:
         # create a Pandas DataFrame with columns index by feature name
         data = self.train_set
 
+        self.train_params = {'max_depth': max_depth,
+                             'min_leaf_size': min_leaf_size,
+                             'agg_type': agg_type,
+                             'max_bins': max_bins}
+
         # find discrimination contexts for each sensitive feature
         for sens in self.sens_features:
             print 'TRAINING WITH SENSITIVE FEATURE {}'.format(sens)
@@ -133,7 +141,7 @@ class Fairtest:
                                       agg_type, max_bins)
             self.trained_trees[sens] = tree
 
-    def test(self, prune_insignificant=False, approx=True, fdr=0.05):
+    def test(self, prune_insignificant=True, approx=True, fdr=0.05):
         """
         Tests formed hypotheses about discrimination
 
@@ -158,6 +166,10 @@ class Fairtest:
         """
         # TODO validate input, check that tree was trained
 
+        self.test_params = {'prune_insignificant': prune_insignificant,
+                            'approx': approx,
+                            'fdr': fdr}
+
         # create a Pandas DataFrame with columns index by feature name
         data = self.test_set
 
@@ -172,7 +184,7 @@ class Fairtest:
         # compute p-values and confidence intervals with FDR correction
         self.stats = multitest.compute_all_stats(self.contexts, approx, fdr)
 
-    def report(self, filename,
+    def report(self, dataname, filename,
                sort_by=displ.SORT_BY_EFFECT,
                filter_by=displ.FILTER_BETTER_THAN_ANCESTORS):
         """
@@ -194,7 +206,22 @@ class Fairtest:
             printing)
         """
 
+        self.display_params = {'sort_by': sort_by,
+                               'filter_by': filter_by
+                               }
+
         # TODO validate input, output reports to files instead of stdout
+
+        train_size = len(self.train_set)
+        test_size = len(self.test_set)
+        sensitive = self.sens_features
+        contextual = [name for (name, f) in self.feature_info.items()
+                      if f.ftype == 'context']
+
+        displ.print_report_info(dataname, train_size, test_size, sensitive,
+                                contextual, self.expl, self.output.names,
+                                self.train_params, self.test_params,
+                                self.display_params)
 
         for sens in self.sens_features:
             stats = self.stats[sens]

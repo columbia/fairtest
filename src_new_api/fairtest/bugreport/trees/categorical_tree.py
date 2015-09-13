@@ -144,10 +144,10 @@ def build_tree(data, feature_info, sens, expl, output, measure, max_depth,
 
     # Check if there are multiple labeled outputs
     targets = data.columns[-output.num_labels:].tolist()
-    print 'targets = {}'.format(targets)
+    # print 'targets = {}'.format(targets)
 
     features = set(data.columns.tolist())-set([sens, expl])-set(targets)
-    print 'contextual features = {}'.format(features)
+    # print 'contextual features = {}'.format(features)
 
     if expl:
         assert isinstance(measure, fm.CondNMI)
@@ -166,12 +166,12 @@ def build_tree(data, feature_info, sens, expl, output, measure, max_depth,
         else:
             dim = (output.arity, feature_info[sens].arity)
 
-    print 'dim = {}'.format(dim)
+    # print 'dim = {}'.format(dim)
 
     # bin the continuous features
     cont_thresholds = find_thresholds(data, features, feature_info, max_bins)
 
-    print 'thresholds = {}'.format(cont_thresholds)
+    # print 'thresholds = {}'.format(cont_thresholds)
 
     score_params = ScoreParams(measure, agg_type)
     split_params = SplitParams(targets, sens, expl, dim, feature_info,
@@ -211,8 +211,8 @@ def build_tree(data, feature_info, sens, expl, output, measure, max_depth,
         if best_feature is None:
             return
 
-        print 'splitting on {} (score={}) with threshold {} at pred {}'.\
-           format(best_feature, split_score, threshold, pred)
+        # print 'splitting on {} (score={}) with threshold {} at pred {}'.\
+        #   format(best_feature, split_score, threshold, pred)
 
         if threshold:
             # binary split

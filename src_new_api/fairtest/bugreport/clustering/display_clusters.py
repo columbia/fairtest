@@ -463,7 +463,8 @@ def rich_ct(contingency_table):
     return temp
 
 
-def print_report_info(data, measure, tree_params, display_params):
+def print_report_info(dataset, train_size, test_size, sensitive, contextual,
+                      expl, target, train_params, test_params, display_params):
     """
     Prints reports information
     """
@@ -474,18 +475,17 @@ def print_report_info(data, measure, tree_params, display_params):
     else:
         print 'Commit Hash: Not A Git Repository'
     print
-    print 'Dataset: \t{}'.format(data.filepath)
-    print 'Training Size: \t{}'.format(len(data.data_train))
-    print 'Testing Size: \t{}'.format(len(data.data_test))
-    print 'Attributes: \t{}'.format("\n\t\t".join(
-        textwrap.wrap(str(data.features.tolist()), 60)))
-    print 'Protected: \t{}'.format(data.sens)
-    print 'Explanatory: \t{}'.format(data.expl)
-    print 'Target: \t{}'.format(data.out)
+    print 'Dataset: {}'.format(dataset)
+    print 'Train Size: {}'.format(train_size)
+    print 'Test Size: {}'.format(test_size)
+    print 'S: {}'.format(sensitive)
+    print 'X: {}'.format("\n\t".join(
+        textwrap.wrap(str(contextual), 60)))
+    print 'E: {}'.format(expl)
+    print 'O: {}'.format(target)
     print
-    print 'Tree Params: \t{}'.format(tree_params)
-    print 'Metric: \t{}'.format(measure)
-    print
+    print 'Train Params: \t{}'.format(train_params)
+    print 'Test Params: \t{}'.format(test_params)
     print 'Report Params: \t{}'.format(display_params)
     print '='*80
     print
