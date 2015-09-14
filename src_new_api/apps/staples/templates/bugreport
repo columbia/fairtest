@@ -1,0 +1,18 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_modify %}
+ 
+{% block content %}
+<table class="table table-compact table-bordered">
+  <thead>
+  {% for attr_val, low, high in content %}
+  <tr>
+    <td>Statistical parity condition is violated for population with protected attribute value {{attr_val}}.
+      Distribution of outputs is {{low}}:{{high}} (low:high)</td>
+  </tr>
+  {% endfor %}
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+{% endblock content %}
+
