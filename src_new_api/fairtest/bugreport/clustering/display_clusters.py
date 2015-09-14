@@ -258,7 +258,7 @@ def print_cluster_ct(cluster, cluster_stats, effect_name, namer, output_stream):
 
         ct_measure = fm.NMI(ci_level=cluster.clstr_measure.ci_level)
         (effect_low, effect_high, p_val) = \
-                ct_measure.compute(global_ct).stats
+                ct_measure.compute(global_ct, approx=False).stats
         print '{} (non-adjusted) = [{:.4f}, {:.4f}]'.\
                 format('MI', effect_low, effect_high)
 
@@ -285,7 +285,7 @@ def print_cluster_ct(cluster, cluster_stats, effect_name, namer, output_stream):
 
                 ct_measure = fm.NMI(ci_level=cluster.clstr_measure.ci_level)
                 (effect_low, effect_high, p_val) = \
-                        ct_measure.compute(cluster.stats[i]).stats
+                        ct_measure.compute(cluster.stats[i], approx=False).stats
                 print >> output_stream, '{} (non-adjusted) = [{:.4f}, {:.4f}]'.\
                         format('MI', effect_low, effect_high)
 

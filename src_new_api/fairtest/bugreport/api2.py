@@ -107,6 +107,8 @@ class Experiment:
             cross_validation.train_test_split(data, train_size=train_size,
                                               random_state=random_state)
 
+        np.random.seed(random_state)
+
     def train(self, max_depth=5, min_leaf_size=100, score_aggregation="avg", max_bins=10):
         """
         Form hypotheses about discrimination contexts for each protected feature
