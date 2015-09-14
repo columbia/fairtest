@@ -365,6 +365,7 @@ def print_cluster_corr(cluster, cluster_stats, effect_name, namer,
         min_key_diff = min([keys[i + 1]-keys[i] for i in xrange(len(keys)-1)])
         plt.boxplot(groups, positions=keys, widths=(1.0*min_key_diff)/2)
 
+    plt.rcParams.update({'font.size': 16})
     plt.xlabel(data.columns[1])
     plt.ylabel(data.columns[0])
     plt.xlim(np.min(sens)-0.2*np.std(sens), np.max(sens)+0.2*np.std(sens))
