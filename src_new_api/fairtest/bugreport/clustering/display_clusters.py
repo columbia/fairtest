@@ -242,38 +242,33 @@ def print_cluster_ct(cluster, cluster_stats, effect_name, namer, output_stream):
 
     if not namer.expl:
         ct = cluster.stats
-        output = StringIO()
         ct.index = namer.get_target_vals(out, len(ct.index))
         ct.index.name = out
         ct.columns = namer.get_sens_feature_vals(len(ct.columns))
         ct.columns.name = namer.sens
-        rich_ct(ct).to_csv(output)
-        output.seek(0)
-        pretty_table = prettytable.from_csv(output)
-        pretty_table.padding_width = 0
-        print >> output_stream, pretty_table
+        print >> output_stream, pretty_ct(ct)
         print >> output_stream
     else:
         global_ct = reduce(lambda x, y: x+y, cluster.stats)
 
         ct_measure = fm.NMI(ci_level=cluster.clstr_measure.ci_level)
-        (effect_low, effect_high, p_val) = \
-                ct_measure.compute(global_ct, approx=False).stats
-        print '{} (non-adjusted) = [{:.4f}, {:.4f}]'.\
-                format('MI', effect_low, effect_high)
+        if cluster.clstr_measure.ci_level:
+            (effect_low, effect_high, p_val) = \
+                    ct_measure.compute(global_ct, approx=False).stats
+            print '{} (non-adjusted) = [{:.4f}, {:.4f}]'.\
+                    format('NMI', effect_low, effect_high)
+        else:
+            (effect, p_val) = ct_measure.compute(global_ct, approx=False).stats
+            print '{} (non-adjusted) = {:.4f}'.\
+                    format('NMI', effect)
 
         ct = pd.DataFrame(global_ct)
         ct.index = namer.get_target_vals(out, len(ct.index))
         ct.index.name = out
         ct.columns = namer.get_sens_feature_vals(len(ct.columns))
         ct.columns.name = namer.sens
-        output = StringIO()
-        rich_ct(ct).to_csv(output)
-        output.seek(0)
-        pretty_table = prettytable.from_csv(output)
-        pretty_table.padding_width = 0
-        print pretty_table
-        print
+        print >> output_stream, pretty_ct(ct)
+        print >> output_stream
 
         expl_values = namer.get_expl_feature_vals(len(cluster_stats))
         for i in range(len(cluster.stats)):
@@ -284,22 +279,23 @@ def print_cluster_ct(cluster, cluster_stats, effect_name, namer, output_stream):
                     format(namer.expl, expl_values[i], size, weight)
 
                 ct_measure = fm.NMI(ci_level=cluster.clstr_measure.ci_level)
-                (effect_low, effect_high, p_val) = \
-                        ct_measure.compute(cluster.stats[i], approx=False).stats
-                print >> output_stream, '{} (non-adjusted) = [{:.4f}, {:.4f}]'.\
-                        format('MI', effect_low, effect_high)
+
+                if cluster.clstr_measure.ci_level:
+                    (effect_low, effect_high, p_val) = \
+                            ct_measure.compute(cluster.stats[i], approx=False).stats
+                    print >> output_stream, '{} (non-adjusted) = [{:.4f}, {:.4f}]'.\
+                            format('NMI', effect_low, effect_high)
+                else:
+                    (effect, p_val) = ct_measure.compute(cluster.stats[i], approx=False).stats
+                    print '{} (non-adjusted) = {:.4f}'.\
+                            format('NMI', effect)
 
                 ct = pd.DataFrame(cluster.stats[i])
                 ct.index = namer.get_target_vals(out, len(ct.index))
                 ct.index.name = out
                 ct.columns = namer.get_sens_feature_vals(len(ct.columns))
                 ct.columns.name = namer.sens
-                output = StringIO()
-                rich_ct(ct).to_csv(output)
-                output.seek(0)
-                pretty_table = prettytable.from_csv(output)
-                pretty_table.padding_width = 0
-                print >> output_stream, pretty_table
+                print >> output_stream, pretty_ct(ct)
                 print >> output_stream
 
     if len(cluster_stats) == 3:
@@ -441,13 +437,19 @@ def print_cluster_reg(cluster, stats, effect_name, namer, output_stream,
         ct.columns = namer.get_sens_feature_vals(2)
         ct.columns.name = sens
 
-        output = StringIO()
-        rich_ct(ct).to_csv(output)
-        output.seek(0)
-        pretty_table = prettytable.from_csv(output)
-        pretty_table.padding_width = 0
-        print >> output_stream, pretty_table
+        print >> output_stream, pretty_ct(ct)
         print >> output_stream
+
+
+def pretty_ct(ct):
+    output = StringIO()
+    rich_ct(ct).to_csv(output)
+    output.seek(0)
+    pretty_table = prettytable.from_csv(output)
+    pretty_table.padding_width = 0
+    pretty_table.align = 'r'
+    pretty_table.align[pretty_table.field_names[0]] = 'c'
+    return pretty_table
 
 
 def rich_ct(contingency_table):
@@ -464,22 +466,29 @@ def rich_ct(contingency_table):
         Enhanced contingency table
 
     """
+    total = contingency_table.sum().sum()
+
     # for each output, add its percentage over each sensitive group
     temp = contingency_table.copy().astype(object)
     for col in contingency_table.columns:
         tot_col = sum(contingency_table[col])
+
+        # largest percentage in the column
+        max_percent_len = len('{:.1f}'.format((100.0*tot_col)/total))
         for row in contingency_table.index:
             val = contingency_table.loc[row][col]
             percent = (100.0*val)/tot_col
-            temp.loc[row][col] = '{}({:.1f}%)'.format(val, percent)
-
-    total = contingency_table.sum().sum()
+            percent_len = len('{:.1f}'.format(percent))
+            delta = max_percent_len - percent_len
+            temp.loc[row][col] = '{}{}({:.1f}%)'.format(val, ' '*delta, percent)
 
     # add marginals
     sum_col = contingency_table.sum(axis=1)
-    temp.insert(len(temp.columns), 'Total',
-                map(lambda val: '{}({:.1f}%)'.\
-                        format(val, (100.0*val)/total), sum_col))
+    lens = map(lambda val: len('{:.1f}'.format((100.0*val)/total)),
+                           sum_col)
+
+    temp.insert(len(temp.columns), 'Total', map(lambda (val, l): '{}{}({:.1f}%)'.
+                    format(val, ' '*(5-l), (100.0*val)/total), zip(sum_col, lens)))
     sum_row = contingency_table.sum(axis=0)
     sum_row['Total'] = total
     temp.loc['Total'] = map(lambda val: '{}({:.1f}%)'.\

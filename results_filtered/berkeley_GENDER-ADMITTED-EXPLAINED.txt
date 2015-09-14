@@ -1,5 +1,5 @@
 ================================================================================
-Commit Hash: 	072ac811abf0469ba0669644555fce7f18a9d675
+Commit Hash: 	c042abbe25faf6c9dc67f0d1d5ffc5e1faddf38c
 
 Dataset: berkeley.csv
 Train Size: 2212
@@ -14,12 +14,12 @@ Test Params: 	{'prune_insignificant': False, 'approx': False, 'fdr': 0.05}
 Report Params: 	{'filter_by': None, 'sort_by': 'significance'}
 ================================================================================
 
-BUG REPORT FOR SENSITIVE FEATURE gender:
+Report of associations on Si = gender:
 Association metric: Conditional NMI(confidence=0.95)
 
 Global Population of size 2213
 
-MI (non-adjusted) = [0.0097, 0.0287]
+MI (non-adjusted) = [0.0094, 0.0283]
 +--------+----------+-----------+------------+
 |accepted|  Female  |    Male   |   Total    |
 +--------+----------+-----------+------------+
@@ -29,7 +29,7 @@ MI (non-adjusted) = [0.0097, 0.0287]
 +--------+----------+-----------+------------+
 
 > department = A ; size 490 (22.14%):
-MI (non-adjusted) = [0.0102, 0.0865]
+MI (non-adjusted) = [0.0068, 0.0683]
 +--------+---------+----------+-----------+
 |accepted|  Female |   Male   |   Total   |
 +--------+---------+----------+-----------+
@@ -39,7 +39,7 @@ MI (non-adjusted) = [0.0102, 0.0865]
 +--------+---------+----------+-----------+
 
 > department = B ; size 279 (12.61%):
-MI (non-adjusted) = [0.0000, 0.0568]
+MI (non-adjusted) = [0.0000, 0.0404]
 +--------+--------+----------+-----------+
 |accepted| Female |   Male   |   Total   |
 +--------+--------+----------+-----------+
@@ -49,7 +49,7 @@ MI (non-adjusted) = [0.0000, 0.0568]
 +--------+--------+----------+-----------+
 
 > department = C ; size 474 (21.42%):
-MI (non-adjusted) = [0.0000, 0.0168]
+MI (non-adjusted) = [0.0000, 0.0153]
 +--------+----------+----------+-----------+
 |accepted|  Female  |   Male   |   Total   |
 +--------+----------+----------+-----------+
@@ -59,7 +59,7 @@ MI (non-adjusted) = [0.0000, 0.0168]
 +--------+----------+----------+-----------+
 
 > department = D ; size 369 (16.67%):
-MI (non-adjusted) = [0.0000, 0.0155]
+MI (non-adjusted) = [0.0000, 0.0136]
 +--------+----------+----------+-----------+
 |accepted|  Female  |   Male   |   Total   |
 +--------+----------+----------+-----------+
@@ -69,7 +69,7 @@ MI (non-adjusted) = [0.0000, 0.0155]
 +--------+----------+----------+-----------+
 
 > department = E ; size 303 (13.69%):
-MI (non-adjusted) = [0.0000, 0.0341]
+MI (non-adjusted) = [0.0000, 0.0318]
 +--------+----------+----------+-----------+
 |accepted|  Female  |   Male   |   Total   |
 +--------+----------+----------+-----------+
@@ -79,7 +79,7 @@ MI (non-adjusted) = [0.0000, 0.0341]
 +--------+----------+----------+-----------+
 
 > department = F ; size 298 (13.47%):
-MI (non-adjusted) = [0.0000, 0.0445]
+MI (non-adjusted) = [0.0000, 0.0328]
 +--------+----------+----------+-----------+
 |accepted|  Female  |   Male   |   Total   |
 +--------+----------+----------+-----------+
@@ -88,7 +88,7 @@ MI (non-adjusted) = [0.0000, 0.0445]
 | Total  |158(53.0%)|140(47.0%)|298(100.0%)|
 +--------+----------+----------+-----------+
 
-p-value = 9.80e-03 ; CondNMI = [0.0105, 0.0311]
+p-value = 9.10e-03 ; CondNMI = [0.0105, 0.0311]
 ================================================================================
 
 Hierarchical printing of subpopulations (summary)

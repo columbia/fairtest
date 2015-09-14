@@ -459,7 +459,7 @@ def mutual_info(data, norm=False, ci_level=None, p=True):
     ----------
     https://en.wikipedia.org/wiki/Mutual_information
     """
-    assert not p or ci_level
+    assert p or not ci_level
 
     if isinstance(data, pd.DataFrame):
         data = data.values
@@ -757,9 +757,25 @@ def cond_mutual_info(data, norm=False, ci_level=None, p=True):
     ----------
     https://en.wikipedia.org/wiki/Conditional_mutual_information
     """
+    assert p or not ci_level
 
-    assert not p or ci_level
+    if p:
+        G, pval, _ = G_test_cond(data)
+    else:
+        pval = 0
 
+    weights = map(lambda d: d.sum(), data)
+    mis = map(lambda d: mutual_info(d, norm, ci_level, p), data)
+
+    if ci_level:
+        mis = map(lambda mi: mi[0:-1], mis)
+        (cond_mi_low, cond_mi_high) = np.average(mis, axis=0, weights=weights)
+        return cond_mi_low, cond_mi_high, pval
+    else:
+        mis = map(lambda mi: mi[0], mis)
+        cond_mi = np.average(mis, axis=None, weights=weights)
+        return cond_mi, pval
+    '''
     data = [ct.values if isinstance(ct, pd.DataFrame) else ct for ct in data]
     data = np.array([d for d in data if d.sum() > 0])
 
@@ -804,6 +820,7 @@ def cond_mutual_info(data, norm=False, ci_level=None, p=True):
         ci = map(lambda x: x/min(cond_hx, cond_hy), ci)
 
     return max(ci[0], 0), min(ci[1], 1), pval
+    '''
 
 
 def G_test_cond(data):
@@ -1101,9 +1118,7 @@ def bootstrap_ci_ct_cond(data, stat, num_samples=10000, ci_level=0.95):
 
     probas = [(1.0*ct)/ct.sum() for ct in data]
 
-    # Obtain `num_samples' random samples of `n' multinomial values, sampled
-    # with replacement from {0, 1, ..., n-1}. For each sample, rebuild a
-    # contingency table and compute the stat.
+    # Resample for each explanatory group
     temp = np.dstack([np.random.multinomial(data[i].sum(),
                                             probas[i],
                                             size=num_samples)

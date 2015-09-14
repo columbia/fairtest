@@ -70,6 +70,7 @@ class Experiment:
         self.train_params = {}
         self.test_params = {}
         self.display_params = {}
+        self.random_state = random_state
 
         data = pd.DataFrame(data)
 
@@ -106,8 +107,6 @@ class Experiment:
         self.train_set, self.test_set = \
             cross_validation.train_test_split(data, train_size=train_size,
                                               random_state=random_state)
-
-        np.random.seed(random_state)
 
     def train(self, max_depth=5, min_leaf_size=100, score_aggregation="avg", max_bins=10):
         """
@@ -148,10 +147,7 @@ class Experiment:
         for sens in self.sens_features:
             print 'TRAINING WITH SENSITIVE FEATURE {} ...'.format(sens)
 
-            if sens in self.measures:
-                measure = self.measures[sens]
-                # TODO validate the choice of measure
-            else:
+            if sens not in self.measures:
                 # get a default measure
                 self.measures[sens] = get_measure(self.feature_info[sens], self.output,
                                       self.ci_level, self.topk, self.expl)
@@ -204,6 +200,7 @@ class Experiment:
 
         print 'RUNNING {} HYPOTHESIS TESTS...'.format(num_contexts)
         # compute p-values and confidence intervals with FDR correction
+        np.random.seed(self.random_state)
         self.stats = multitest.compute_all_stats(self.contexts, approx_stats, fdr)
 
     def report(self, dataname, output_dir=None,
@@ -268,6 +265,7 @@ class Experiment:
             print
             stats = self.stats[sens]
             clusters = self.contexts[sens]
+            np.random.seed(self.random_state)
             displ.bug_report(clusters, stats, sens, self.expl, self.output,
                              output_stream, sort_by, filter_by, self.encoders)
 
