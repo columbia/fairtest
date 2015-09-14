@@ -245,15 +245,37 @@ def print_cluster_ct(cluster, cluster_stats, effect_name, namer):
         rich_ct(ct).to_csv(output)
         output.seek(0)
         pretty_table = prettytable.from_csv(output)
+        pretty_table.padding_width = 0
         print pretty_table
         print
     else:
+        global_ct = reduce(lambda x, y: x+y, cluster.stats)
+
+        ct_measure = fm.NMI(ci_level=cluster.clstr_measure.ci_level)
+        (effect_low, effect_high, p_val) = \
+                ct_measure.compute(global_ct).stats
+        print '{} (non-adjusted) = [{:.4f}, {:.4f}]'.\
+                format('MI', effect_low, effect_high)
+
+        ct = pd.DataFrame(global_ct)
+        ct.index = namer.get_target_vals(out, len(ct.index))
+        ct.index.name = out
+        ct.columns = namer.get_sens_feature_vals(len(ct.columns))
+        ct.columns.name = namer.sens
+        output = StringIO()
+        rich_ct(ct).to_csv(output)
+        output.seek(0)
+        pretty_table = prettytable.from_csv(output)
+        pretty_table.padding_width = 0
+        print pretty_table
+        print
+
         expl_values = namer.get_expl_feature_vals(len(cluster_stats))
         for i in range(len(cluster.stats)):
             if cluster.stats[i].sum() > 0:
                 size = cluster.stats[i].sum()
                 weight = (100.0*size)/cluster.size
-                print '{} = {} ({} - {:.2f}%):'.\
+                print '> {} = {} ; size {} ({:.2f}%):'.\
                     format(namer.expl, expl_values[i], size, weight)
 
                 ct_measure = fm.NMI(ci_level=cluster.clstr_measure.ci_level)
@@ -271,6 +293,7 @@ def print_cluster_ct(cluster, cluster_stats, effect_name, namer):
                 rich_ct(ct).to_csv(output)
                 output.seek(0)
                 pretty_table = prettytable.from_csv(output)
+                pretty_table.padding_width = 0
                 print pretty_table
                 print
 
@@ -419,7 +442,7 @@ def print_cluster_reg(cluster, stats, effect_name, namer, sort_by='effect'):
         rich_ct(ct).to_csv(output)
         output.seek(0)
         pretty_table = prettytable.from_csv(output)
-
+        pretty_table.padding_width = 0
         print pretty_table
         print
 
@@ -445,20 +468,20 @@ def rich_ct(contingency_table):
         for row in contingency_table.index:
             val = contingency_table.loc[row][col]
             percent = (100.0*val)/tot_col
-            temp.loc[row][col] = '{} ({:.1f}%)'.format(val, percent)
+            temp.loc[row][col] = '{}({:.1f}%)'.format(val, percent)
 
     total = contingency_table.sum().sum()
 
     # add marginals
     sum_col = contingency_table.sum(axis=1)
     temp.insert(len(temp.columns), 'Total',
-                map(lambda val: '{} ({:.1f}%)'.\
+                map(lambda val: '{}({:.1f}%)'.\
                         format(val, (100.0*val)/total), sum_col))
     sum_row = contingency_table.sum(axis=0)
     sum_row['Total'] = total
-    temp.loc['Total'] = map(lambda val: '{} ({:.1f}%)'.\
+    temp.loc['Total'] = map(lambda val: '{}({:.1f}%)'.\
                                 format(val, (100.0*val)/total), sum_row)
-    temp.loc['Total']['Total'] = '{} (100.0%)'.format(total)
+    temp.loc['Total']['Total'] = '{}(100.0%)'.format(total)
 
     return temp
 

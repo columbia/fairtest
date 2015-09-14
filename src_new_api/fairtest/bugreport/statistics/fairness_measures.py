@@ -40,7 +40,7 @@ def z_effect(ci_low, ci_high):
 
 
 APPROX_LIMIT_BS_MI = sys.maxint
-APPROX_LIMIT_BS = 1000
+APPROX_LIMIT_BS = sys.maxint
 APPROX_LIMIT_PVAL = 1000
 
 

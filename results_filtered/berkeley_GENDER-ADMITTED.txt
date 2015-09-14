@@ -1,19 +1,21 @@
 ================================================================================
-Commit Hash: 	a48bf778c4de4d28a5202242bade1e083b098475
+Commit Hash: 	072ac811abf0469ba0669644555fce7f18a9d675
 
-Dataset: 	../data/berkeley/berkeley.csv
-Training Size: 	2212
-Testing Size: 	2213
-Attributes: 	['gender', 'department', 'accepted']
-Protected: 	gender
-Explanatory: 	None
-Target: 	accepted
+Dataset: berkeley.csv
+Train Size: 2212
+Test Size: 2213
+S: ['gender']
+X: ['department']
+E: None
+O: ['accepted']
 
-Tree Params: 	{'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'AVG'}
-Metric: 	NMI(confidence=0.95)
-
-Report Params: 	{'node_filter': 'ALL', 'fdr': 0.05, 'approx': False, 'sort_by': 'EFFECT'}
+Train Params: 	{'max_bins': 10, 'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'avg'}
+Test Params: 	{'prune_insignificant': False, 'approx': False, 'fdr': 0.05}
+Report Params: 	{'filter_by': None, 'sort_by': 'effect'}
 ================================================================================
+
+BUG REPORT FOR SENSITIVE FEATURE gender:
+Association metric: NMI(confidence=0.95)
 
 Global Population of size 2213
 
@@ -25,7 +27,7 @@ Global Population of size 2213
 |  Total   | 910 (41.1%) | 1303 (58.9%) | 2213 (100.0%) |
 +----------+-------------+--------------+---------------+
 
-p-value = 2.43e-12 ; NMI = [0.0073, 0.0334]
+p-value = 2.43e-12 ; NMI = [0.0071, 0.0324]
 ================================================================================
 
 Sub-Population of size 490
@@ -39,7 +41,7 @@ Context = {'department': 'A'}
 |  Total   | 60 (12.2%) | 430 (87.8%) | 490 (100.0%) |
 +----------+------------+-------------+--------------+
 
-p-value = 6.00e-03 ; NMI = [0.0014, 0.0871]
+p-value = 4.02e-03 ; NMI = [0.0021, 0.0843]
 --------------------------------------------------------------------------------
 
 Sub-Population of size 474
@@ -53,7 +55,7 @@ Context = {'department': 'C'}
 |  Total   | 303 (63.9%) | 171 (36.1%) | 474 (100.0%) |
 +----------+-------------+-------------+--------------+
 
-p-value = 1.00e+00 ; NMI = [0.0000, 0.0231]
+p-value = 1.00e+00 ; NMI = [0.0000, 0.0234]
 --------------------------------------------------------------------------------
 
 Sub-Population of size 303
@@ -67,7 +69,7 @@ Context = {'department': 'E'}
 |  Total   | 201 (66.3%) | 102 (33.7%) | 303 (100.0%) |
 +----------+-------------+-------------+--------------+
 
-p-value = 1.00e+00 ; NMI = [0.0000, 0.0484]
+p-value = 1.00e+00 ; NMI = [0.0000, 0.0487]
 --------------------------------------------------------------------------------
 
 Sub-Population of size 369
@@ -81,7 +83,7 @@ Context = {'department': 'D'}
 |  Total   | 178 (48.2%) | 191 (51.8%) | 369 (100.0%) |
 +----------+-------------+-------------+--------------+
 
-p-value = 1.00e+00 ; NMI = [0.0000, 0.0240]
+p-value = 1.00e+00 ; NMI = [0.0000, 0.0212]
 --------------------------------------------------------------------------------
 
 Sub-Population of size 298
@@ -95,7 +97,7 @@ Context = {'department': 'F'}
 |  Total   | 158 (53.0%) | 140 (47.0%) | 298 (100.0%) |
 +----------+-------------+-------------+--------------+
 
-p-value = 1.00e+00 ; NMI = [0.0000, 0.0559]
+p-value = 1.00e+00 ; NMI = [0.0000, 0.0531]
 --------------------------------------------------------------------------------
 
 Sub-Population of size 279
@@ -109,18 +111,18 @@ Context = {'department': 'B'}
 |  Total   | 10 (3.6%) | 269 (96.4%) | 279 (100.0%) |
 +----------+-----------+-------------+--------------+
 
-p-value = 1.00e+00 ; NMI = [0.0000, 0.0686]
+p-value = 1.00e+00 ; NMI = [0.0000, 0.0666]
 --------------------------------------------------------------------------------
 
 Hierarchical printing of subpopulations (summary)
 
 ================================================================================
 
- Context = {} ; CI = [0.0073, 0.0334]
-   Context = {'department': 'C'} ; CI = [0.0000, 0.0231]
-   Context = {'department': 'A'} ; CI = [0.0014, 0.0871]
-   Context = {'department': 'E'} ; CI = [0.0000, 0.0484]
-   Context = {'department': 'D'} ; CI = [0.0000, 0.0240]
-   Context = {'department': 'F'} ; CI = [0.0000, 0.0559]
-   Context = {'department': 'B'} ; CI = [0.0000, 0.0686]
+ Context = {} ; CI = [0.0071, 0.0324]
+   Context = {'department': 'C'} ; CI = [0.0000, 0.0234]
+   Context = {'department': 'A'} ; CI = [0.0021, 0.0843]
+   Context = {'department': 'E'} ; CI = [0.0000, 0.0487]
+   Context = {'department': 'D'} ; CI = [0.0000, 0.0212]
+   Context = {'department': 'F'} ; CI = [0.0000, 0.0531]
+   Context = {'department': 'B'} ; CI = [0.0000, 0.0666]
 --------------------------------------------------------------------------------

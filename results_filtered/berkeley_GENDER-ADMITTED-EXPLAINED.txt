@@ -1,23 +1,34 @@
 ================================================================================
-Commit Hash: 	a48bf778c4de4d28a5202242bade1e083b098475
+Commit Hash: 	072ac811abf0469ba0669644555fce7f18a9d675
 
-Dataset: 	../data/berkeley/berkeley.csv
-Training Size: 	2212
-Testing Size: 	2213
-Attributes: 	['gender', 'department', 'accepted']
-Protected: 	gender
-Explanatory: 	department
-Target: 	accepted
+Dataset: berkeley.csv
+Train Size: 2212
+Test Size: 2213
+S: ['gender']
+X: []
+E: department
+O: ['accepted']
 
-Tree Params: 	{'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'AVG'}
-Metric: 	Conditional NMI(confidence=0.95)
-
-Report Params: 	{'node_filter': 'ALL', 'fdr': 0.05, 'approx': False, 'sort_by': 'EFFECT'}
+Train Params: 	{'max_bins': 10, 'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'avg'}
+Test Params: 	{'prune_insignificant': False, 'approx': False, 'fdr': 0.05}
+Report Params: 	{'filter_by': None, 'sort_by': 'effect'}
 ================================================================================
+
+BUG REPORT FOR SENSITIVE FEATURE gender:
+Association metric: Conditional NMI(confidence=0.95)
 
 Global Population of size 2213
 
-department = A (490 - 22.14%):
+MI (non-adjusted) = [0.0097, 0.0287]
++----------+-------------+--------------+---------------+
+| accepted |    Female   |     Male     |     Total     |
++----------+-------------+--------------+---------------+
+|    No    | 615 (67.6%) | 680 (52.2%)  |  1295 (58.5%) |
+|   Yes    | 295 (32.4%) | 623 (47.8%)  |  918 (41.5%)  |
+|  Total   | 910 (41.1%) | 1303 (58.9%) | 2213 (100.0%) |
++----------+-------------+--------------+---------------+
+
+> department = A (490 - 22.14%):
 MI (non-adjusted) = [0.0102, 0.0865]
 +----------+------------+-------------+--------------+
 | accepted |   Female   |     Male    |    Total     |
@@ -27,7 +38,7 @@ MI (non-adjusted) = [0.0102, 0.0865]
 |  Total   | 60 (12.2%) | 430 (87.8%) | 490 (100.0%) |
 +----------+------------+-------------+--------------+
 
-department = B (279 - 12.61%):
+> department = B (279 - 12.61%):
 MI (non-adjusted) = [0.0000, 0.0568]
 +----------+-----------+-------------+--------------+
 | accepted |   Female  |     Male    |    Total     |
@@ -37,7 +48,7 @@ MI (non-adjusted) = [0.0000, 0.0568]
 |  Total   | 10 (3.6%) | 269 (96.4%) | 279 (100.0%) |
 +----------+-----------+-------------+--------------+
 
-department = C (474 - 21.42%):
+> department = C (474 - 21.42%):
 MI (non-adjusted) = [0.0000, 0.0168]
 +----------+-------------+-------------+--------------+
 | accepted |    Female   |     Male    |    Total     |
@@ -47,7 +58,7 @@ MI (non-adjusted) = [0.0000, 0.0168]
 |  Total   | 303 (63.9%) | 171 (36.1%) | 474 (100.0%) |
 +----------+-------------+-------------+--------------+
 
-department = D (369 - 16.67%):
+> department = D (369 - 16.67%):
 MI (non-adjusted) = [0.0000, 0.0155]
 +----------+-------------+-------------+--------------+
 | accepted |    Female   |     Male    |    Total     |
@@ -57,7 +68,7 @@ MI (non-adjusted) = [0.0000, 0.0155]
 |  Total   | 178 (48.2%) | 191 (51.8%) | 369 (100.0%) |
 +----------+-------------+-------------+--------------+
 
-department = E (303 - 13.69%):
+> department = E (303 - 13.69%):
 MI (non-adjusted) = [0.0000, 0.0341]
 +----------+-------------+-------------+--------------+
 | accepted |    Female   |     Male    |    Total     |
@@ -67,7 +78,7 @@ MI (non-adjusted) = [0.0000, 0.0341]
 |  Total   | 201 (66.3%) | 102 (33.7%) | 303 (100.0%) |
 +----------+-------------+-------------+--------------+
 
-department = F (298 - 13.47%):
+> department = F (298 - 13.47%):
 MI (non-adjusted) = [0.0000, 0.0445]
 +----------+-------------+-------------+--------------+
 | accepted |    Female   |     Male    |    Total     |
@@ -77,12 +88,12 @@ MI (non-adjusted) = [0.0000, 0.0445]
 |  Total   | 158 (53.0%) | 140 (47.0%) | 298 (100.0%) |
 +----------+-------------+-------------+--------------+
 
-p-value = 1.16e-02 ; CondNMI = [0.0106, 0.0315]
+p-value = 1.00e-02 ; CondNMI = [0.0107, 0.0311]
 ================================================================================
 
 Hierarchical printing of subpopulations (summary)
 
 ================================================================================
 
- Context = {} ; CI = [0.0106, 0.0315]
+ Context = {} ; CI = [0.0107, 0.0311]
 --------------------------------------------------------------------------------

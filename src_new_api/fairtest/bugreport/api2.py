@@ -18,7 +18,7 @@ class Experiment:
     A FairTest experiment
     """
     def __init__(self, data, protected, output, expl=None, measures={},
-                 train_size=0.5, topk=50, ci_level=0.95, random_state=None):
+                 train_size=0.5, topk=60, ci_level=0.95, random_state=None):
         """
         Initialize a FairTest experiment
 
@@ -141,21 +141,22 @@ class Experiment:
 
         # find discrimination contexts for each sensitive feature
         for sens in self.sens_features:
-            print 'TRAINING WITH SENSITIVE FEATURE {}'.format(sens)
+            print 'TRAINING WITH SENSITIVE FEATURE {} ...'.format(sens)
 
             if sens in self.measures:
                 measure = self.measures[sens]
                 # TODO validate the choice of measure
             else:
                 # get a default measure
-                measure = get_measure(self.feature_info[sens], self.output,
+                self.measures[sens] = get_measure(self.feature_info[sens], self.output,
                                       self.ci_level, self.topk, self.expl)
 
             tree = builder.train_tree(data, self.feature_info, sens,
-                                      self.expl, self.output, measure,
+                                      self.expl, self.output, self.measures[sens],
                                       max_depth, min_leaf_size,
                                       score_aggregation, max_bins)
             self.trained_trees[sens] = tree
+            print ""
 
     def test(self, prune_insignificant=True, approx_stats=True, fdr=0.05):
         """
@@ -186,6 +187,7 @@ class Experiment:
         # create a Pandas DataFrame with columns index by feature name
         data = self.test_set
 
+        num_contexts = 0
         # prepare testing data for all hypotheses
         for sens in self.sens_features:
             tree = self.trained_trees[sens]
@@ -193,7 +195,9 @@ class Experiment:
                 = tc.find_clusters_cat(tree, data, self.feature_info,
                                        sens, self.expl, self.output,
                                        prune_insignificant)
+            num_contexts += len(self.contexts[sens])
 
+        print 'RUNNING {} HYPOTHESIS TESTS...'.format(num_contexts)
         # compute p-values and confidence intervals with FDR correction
         self.stats = multitest.compute_all_stats(self.contexts, approx_stats, fdr)
 
@@ -242,10 +246,14 @@ class Experiment:
                                 self.display_params)
 
         for sens in self.sens_features:
+            print 'Report of associations on Si = {}:'.format(sens)
+            print 'Association metric: {}'.format(self.measures[sens])
+            print
             stats = self.stats[sens]
             clusters = self.contexts[sens]
             displ.bug_report(clusters, stats, sens, self.expl, self.output,
                              sort_by, filter_by, self.encoders)
+            print ""
 
 
 def measure_from_string(m_str, ci_level, topk):
