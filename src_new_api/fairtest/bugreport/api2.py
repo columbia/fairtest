@@ -9,8 +9,11 @@ from fairtest.bugreport.statistics import multiple_testing as multitest
 from sklearn import preprocessing as preprocessing
 from sklearn import cross_validation as cross_validation
 
+from os import path
+
 import pandas as pd
 import numpy as np
+import sys
 
 
 class Experiment:
@@ -197,7 +200,7 @@ class Experiment:
         # compute p-values and confidence intervals with FDR correction
         self.stats = multitest.compute_all_stats(self.contexts, approx_stats, fdr)
 
-    def report(self, dataname, output_dir,
+    def report(self, dataname, output_dir=None,
                sort_by=displ.SORT_BY_EFFECT,
                filter_by=displ.FILTER_BETTER_THAN_ANCESTORS):
         """
@@ -209,7 +212,9 @@ class Experiment:
             name of the dataset used in the experiment
 
         output_dir :
-            directory to which bug reports shall be output
+            directory to which bug reports shall be output.
+            Should be an absolute path. Default is None and
+            report are sent to stdout.
 
         sort_by :
             method used to sort bugs in each report. Either "effect" to sort by
@@ -228,7 +233,17 @@ class Experiment:
                                'filter_by': filter_by
                                }
 
-        # TODO validate input, output reports to files instead of stdout
+        # TODO validate inputs
+        if not output_dir:
+            output_stream = sys.stdout
+        elif not path.isdir(output_dir):
+            raise IOError("Directory \"%s\" does not exist" % output_dir)
+        else:
+            try:
+                filename = path.join(output_dir, "report_" + dataname + ".txt")
+                output_stream = open(filename, "w+")
+            except IOError:
+                print "Error: Cannot open file: %s for writting" % (output_file)
 
         train_size = len(self.train_set)
         test_size = len(self.test_set)
@@ -239,13 +254,13 @@ class Experiment:
         displ.print_report_info(dataname, train_size, test_size, sensitive,
                                 contextual, self.expl, self.output.names,
                                 self.train_params, self.test_params,
-                                self.display_params)
+                                self.display_params, output_stream)
 
         for sens in self.sens_features:
             stats = self.stats[sens]
             clusters = self.contexts[sens]
             displ.bug_report(clusters, stats, sens, self.expl, self.output,
-                             sort_by, filter_by, self.encoders)
+                             output_stream, sort_by, filter_by, self.encoders)
 
 
 def measure_from_string(m_str, ci_level, topk):

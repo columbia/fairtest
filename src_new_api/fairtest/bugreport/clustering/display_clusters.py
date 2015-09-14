@@ -60,7 +60,7 @@ class Namer:
         return range(default)
 
 
-def print_summary(all_clusters, displ_clusters, namer):
+def print_summary(all_clusters, displ_clusters, namer, output_stream):
     """
     Hierarchical printing of context
 
@@ -72,22 +72,22 @@ def print_summary(all_clusters, displ_clusters, namer):
     displ_clusters :
         list of all clusters that were displayed
     """
-    print "Hierarchical printing of subpopulations (summary)"
-    print
-    print "="*80
-    print
+    print >> output_stream, "Hierarchical printing of subpopulations (summary)"
+    print >> output_stream
+    print >> output_stream, "="*80
+    print >> output_stream
 
     root = filter(lambda c: c.isroot, all_clusters)[0]
 
     def recurse(node, indent):
         if node.num in displ_clusters:
             if node.clstr_measure.dataType != fm.Measure.DATATYPE_REG:
-                print '{} Context = {} ; CI = [{:.4f}, {:.4f}]'.\
+                print >> output_stream, '{} Context = {} ; CI = [{:.4f}, {:.4f}]'.\
                     format(' '*indent, print_context(node.path, namer),
                            node.clstr_measure.stats[0],
                            node.clstr_measure.stats[1])
             else:
-                print '{} Context = {} ; Avg Effect = {:.4f}'.\
+                print >> output_stream, '{} Context = {} ; Avg Effect = {:.4f}'.\
                     format(' '*indent, node.path,
                            node.clstr_measure.abs_effect())
             indent += 2
@@ -96,12 +96,13 @@ def print_summary(all_clusters, displ_clusters, namer):
 
     recurse(root, 0)
 
-    print '-'*80
-    print
+    print >> output_stream, '-'*80
+    print >> output_stream
 
 
-def bug_report(clusters, stats, sens, expl, output, sort_by=SORT_BY_EFFECT,
-               node_filter=FILTER_LEAVES_ONLY, encoders=None):
+def bug_report(clusters, stats, sens, expl, output, output_stream,
+               sort_by=SORT_BY_EFFECT, node_filter=FILTER_LEAVES_ONLY,
+               encoders=None):
     """
     Print all the clusters sorted by relevance
 
@@ -135,22 +136,25 @@ def bug_report(clusters, stats, sens, expl, output, sort_by=SORT_BY_EFFECT,
 
     # print global stats (root of tree)
     (root, root_stats) = filter(lambda (c, _): c.isroot, zipped)[0]
-    print 'Global Population of size {}'.format(root.size)
-    print
+    print >> output_stream, 'Global Population of size {}'.format(root.size)
+    print >> output_stream
 
     if len(root_stats) == 3:
         (_, root_effect_high, _) = root_stats
 
     # print a contingency table or correlation analysis
     if measure_type == fm.Measure.DATATYPE_CT:
-        print_cluster_ct(root, root_stats, measure.__class__.__name__, namer)
+        print_cluster_ct(root, root_stats, measure.__class__.__name__, namer,
+                         output_stream)
     elif measure_type == fm.Measure.DATATYPE_CORR:
-        print_cluster_corr(root, root_stats, measure.__class__.__name__, namer)
+        print_cluster_corr(root, root_stats, measure.__class__.__name__, namer,
+                           output_stream)
     else:
         print_cluster_reg(root, root_stats,
-                          measure.__class__.__name__, namer, sort_by=sort_by)
-    print '='*80
-    print
+                          measure.__class__.__name__, namer, output_stream,
+                          sort_by=sort_by)
+    print >> output_stream, '='*80
+    print >> output_stream
 
     # Take all the non-root clusters
     zipped = filter(lambda (c, _): not c.isroot, zipped)
@@ -190,23 +194,24 @@ def bug_report(clusters, stats, sens, expl, output, sort_by=SORT_BY_EFFECT,
     # print clusters in order of relevance
     for (cluster, cluster_stats) in zipped:
 
-        print 'Sub-Population of size {}'.format(cluster.size)
-        print 'Context = {}'.format(print_context(cluster.path, namer))
-        print
+        print >> output_stream, 'Sub-Population of size {}'.format(cluster.size)
+        print >> output_stream, 'Context = {}'.format(print_context(cluster.path, namer))
+        print >> output_stream
 
         if measure_type == fm.Measure.DATATYPE_CT:
             print_cluster_ct(cluster, cluster_stats,
-                             measure.__class__.__name__, namer)
+                             measure.__class__.__name__, namer, output_stream)
         elif measure_type == fm.Measure.DATATYPE_CORR:
             print_cluster_corr(cluster, cluster_stats,
-                               measure.__class__.__name__, namer)
+                               measure.__class__.__name__, namer, output_stream)
         else:
             print_cluster_reg(cluster, cluster_stats,
-                              measure.__class__.__name__, namer, sort_by=sort_by)
-        print '-'*80
-        print
+                              measure.__class__.__name__, namer, output_stream,
+                              sort_by=sort_by)
+        print >> output_stream, '-'*80
+        print >> output_stream
 
-    print_summary(clusters, displ_clusters, namer)
+    print_summary(clusters, displ_clusters, namer, output_stream)
 
 
 def print_context(path, namer):
@@ -218,7 +223,7 @@ def print_context(path, namer):
     return new_path
 
 
-def print_cluster_ct(cluster, cluster_stats, effect_name, namer):
+def print_cluster_ct(cluster, cluster_stats, effect_name, namer, output_stream):
     """
     pretty-print the contingency table
 
@@ -245,21 +250,21 @@ def print_cluster_ct(cluster, cluster_stats, effect_name, namer):
         rich_ct(ct).to_csv(output)
         output.seek(0)
         pretty_table = prettytable.from_csv(output)
-        print pretty_table
-        print
+        print >> output_stream, pretty_table
+        print >> output_stream
     else:
         expl_values = namer.get_expl_feature_vals(len(cluster_stats))
         for i in range(len(cluster.stats)):
             if cluster.stats[i].sum() > 0:
                 size = cluster.stats[i].sum()
                 weight = (100.0*size)/cluster.size
-                print '{} = {} ({} - {:.2f}%):'.\
+                print >> output_stream, '{} = {} ({} - {:.2f}%):'.\
                     format(namer.expl, expl_values[i], size, weight)
 
                 ct_measure = fm.NMI(ci_level=cluster.clstr_measure.ci_level)
                 (effect_low, effect_high, p_val) = \
                         ct_measure.compute(cluster.stats[i]).stats
-                print '{} (non-adjusted) = [{:.4f}, {:.4f}]'.\
+                print >> output_stream, '{} (non-adjusted) = [{:.4f}, {:.4f}]'.\
                         format('MI', effect_low, effect_high)
 
                 ct = pd.DataFrame(cluster.stats[i])
@@ -271,17 +276,17 @@ def print_cluster_ct(cluster, cluster_stats, effect_name, namer):
                 rich_ct(ct).to_csv(output)
                 output.seek(0)
                 pretty_table = prettytable.from_csv(output)
-                print pretty_table
-                print
+                print >> output_stream, pretty_table
+                print >> output_stream
 
     if len(cluster_stats) == 3:
         # print p-value and confidence interval of MI
         (effect_low, effect_high, p_val) = cluster_stats
-        print 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.\
+        print >> output_stream, 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.\
                 format(p_val, effect_name, effect_low, effect_high)
     else:
         effect, p_val = cluster_stats
-        print 'p-value = {:.2e} ; {} = {:.4f}'.\
+        print >> output_stream, 'p-value = {:.2e} ; {} = {:.4f}'.\
                 format(p_val, effect_name, effect)
 
 
@@ -302,7 +307,8 @@ def jitter(x, y, s=20, c='b', marker='o', cmap=None,
 CORR_PLOT = 'BOXPLOT'
 
 
-def print_cluster_corr(cluster, cluster_stats, effect_name, namer):
+def print_cluster_corr(cluster, cluster_stats, effect_name, namer,
+                       output_stream):
     """
     print correlation graph
 
@@ -353,15 +359,16 @@ def print_cluster_corr(cluster, cluster_stats, effect_name, namer):
     if len(cluster_stats) == 3:
         # print p-value and confidence interval of correlation
         (effect_low, effect_high, p_val) = cluster_stats
-        print 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.\
+        print >> output_stream, 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.\
                 format(p_val, effect_name, effect_low, effect_high)
     else:
         effect, p_val = cluster_stats
-        print 'p-value = {:.2e} ; {} = {:.4f}'.\
+        print >> output_stream, 'p-value = {:.2e} ; {} = {:.4f}'.\
                 format(p_val, effect_name, effect)
 
 
-def print_cluster_reg(cluster, stats, effect_name, namer, sort_by='effect'):
+def print_cluster_reg(cluster, stats, effect_name, namer, output_stream,
+                      sort_by='effect'):
     """
     Print regression stats
 
@@ -381,8 +388,8 @@ def print_cluster_reg(cluster, stats, effect_name, namer, sort_by='effect'):
     """
     effect = cluster.clstr_measure.abs_effect()
 
-    print 'Average MI of top-{} labels: {}'.format(len(stats), effect)
-    print
+    print >> output_stream, 'Average MI of top-{} labels: {}'.format(len(stats), effect)
+    print >> output_stream
     labels = namer.output.names
 
     stats = stats.copy()
@@ -397,8 +404,8 @@ def print_cluster_reg(cluster, stats, effect_name, namer, sort_by='effect'):
         sorted_results = stats.sort(columns=['p-value'], ascending=True)
 
     pd.set_option('display.max_rows', cluster.clstr_measure.topK)
-    print sorted_results
-    print
+    print >> output_stream, sorted_results
+    print >> output_stream
 
     cluster_data = cluster.data['data_node']
     sens = namer.sens
@@ -420,8 +427,8 @@ def print_cluster_reg(cluster, stats, effect_name, namer, sort_by='effect'):
         output.seek(0)
         pretty_table = prettytable.from_csv(output)
 
-        print pretty_table
-        print
+        print >> output_stream, pretty_table
+        print >> output_stream
 
 
 def rich_ct(contingency_table):
@@ -464,28 +471,29 @@ def rich_ct(contingency_table):
 
 
 def print_report_info(dataset, train_size, test_size, sensitive, contextual,
-                      expl, target, train_params, test_params, display_params):
+                      expl, target, train_params, test_params, display_params,
+                      output_stream):
     """
     Prints reports information
     """
-    print '='*80
+    print >> output_stream, '='*80
     if os.path.exists('../.git'):
-        print 'Commit Hash: \t{}'.format(
+        print >> output_stream, 'Commit Hash: \t{}'.format(
             subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd='..').strip())
     else:
-        print 'Commit Hash: Not A Git Repository'
-    print
-    print 'Dataset: {}'.format(dataset)
-    print 'Train Size: {}'.format(train_size)
-    print 'Test Size: {}'.format(test_size)
-    print 'S: {}'.format(sensitive)
-    print 'X: {}'.format("\n\t".join(
+        print >> output_stream, 'Commit Hash: Not A Git Repository'
+    print >> output_stream
+    print >> output_stream, 'Dataset: {}'.format(dataset)
+    print >> output_stream, 'Train Size: {}'.format(train_size)
+    print >> output_stream, 'Test Size: {}'.format(test_size)
+    print >> output_stream, 'S: {}'.format(sensitive)
+    print >> output_stream, 'X: {}'.format("\n\t".join(
         textwrap.wrap(str(contextual), 60)))
-    print 'E: {}'.format(expl)
-    print 'O: {}'.format(target)
-    print
-    print 'Train Params: \t{}'.format(train_params)
-    print 'Test Params: \t{}'.format(test_params)
-    print 'Report Params: \t{}'.format(display_params)
-    print '='*80
-    print
+    print >> output_stream, 'E: {}'.format(expl)
+    print >> output_stream, 'O: {}'.format(target)
+    print >> output_stream
+    print >> output_stream, 'Train Params: \t{}'.format(train_params)
+    print >> output_stream, 'Test Params: \t{}'.format(test_params)
+    print >> output_stream, 'Report Params: \t{}'.format(display_params)
+    print >> output_stream, '='*80
+    print >> output_stream
