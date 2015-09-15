@@ -8,7 +8,6 @@ from fairtest.bugreport.statistics.fairness_measures import Measure
 import pydot
 import operator
 import numpy as np
-import pandas as pd
 from collections import Counter
 from ete2 import Tree
 from sklearn.externals import six
@@ -244,7 +243,9 @@ def build_tree(data, feature_info, sens, expl, output, measure, max_depth,
                            node_features-set(to_drop), depth+1, split_score)
             rec_build_tree(data_right, right_child, pred+[pred_right],
                            node_features-set(to_drop), depth+1, split_score)
+
         else:
+            threads = []
             # categorical split
             for val in node_data[best_feature].unique():
 
@@ -267,7 +268,9 @@ def build_tree(data, feature_info, sens, expl, output, measure, max_depth,
                                 node_features-set(to_drop + [best_feature]),
                                 depth+1, split_score)
 
+
     rec_build_tree(data, tree, [], features, 0, 0)
+
     return tree
 
 
@@ -338,7 +341,7 @@ def select_best_feature(node_data, features, split_params,
                     test_cont_feature(node_data[feature_list], feature,
                                       split_params, score_params)
 
-        #print 'feature {}: score {}'.format(feature_idx, split_score)
+        # print 'feature {}: score {}'.format(feature, split_score)
 
         # the feature produced no split and can be dropped for future sub-trees
         if not split_score or np.isnan(split_score):

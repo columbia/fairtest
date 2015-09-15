@@ -359,7 +359,8 @@ def select_best_feature(node_data, features, split_params,
                                       split_params,
                                       score_params)
 
-        #print 'feature {}: score {}'.format(feature, split_score)
+
+        # print 'feature {}: score {}'.format(feature, split_score)
 
         # the feature produced no split and can be dropped for future sub-trees
         if not split_score or np.isnan(split_score):
@@ -553,7 +554,8 @@ def test_cont_feature(node_data, feature, split_params, score_params):
     best_measures :
         best measures
     """
-    # print 'testing continuous feature {}'.format(feature)
+    print 'testing continuous feature {}'.format(feature)
+    sys.stdout.flush()
     targets = split_params.targets
     sens = split_params.sens
     dim = split_params.dim

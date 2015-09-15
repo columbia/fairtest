@@ -1250,6 +1250,10 @@ def permutation_test_ct(data, num_samples=100000):
     # print 'permutation test of size {}'.format(data.sum())
 
     data = np.array(data, dtype='int')
+    if len(data.shape) != 2:
+        return 1
+    if data.shape[0] < 2 or data.shape[1] < 2:
+        return 1
 
     ro.globalenv['ct'] = data
     ro.r('res = chisq_test(as.table(ct), distribution=approximate(B={}))'.

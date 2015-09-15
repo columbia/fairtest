@@ -10,6 +10,7 @@ from sklearn import preprocessing as preprocessing
 from sklearn import cross_validation as cross_validation
 
 from os import path
+from copy import copy
 
 import pandas as pd
 import numpy as np
@@ -153,7 +154,7 @@ class Experiment:
                                       self.ci_level, self.topk, self.expl)
 
             tree = builder.train_tree(data, self.feature_info, sens,
-                                      self.expl, self.output, self.measures[sens],
+                                      self.expl, self.output, copy(self.measures[sens]),
                                       max_depth, min_leaf_size,
                                       score_aggregation, max_bins)
             self.trained_trees[sens] = tree
