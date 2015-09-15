@@ -1,25 +1,27 @@
 .PHONY: clean
+INPUT_FOLDER=/home/vatlidak/repos/fairtest/data/
+OUTPUT_FOLDER=.
 
 all: adult berkeley recommender staples benchmark
 
 adult:
-	./make_adult.py /home/vatlidak/repos/fairtest/data/adult/adult.csv > results_adult.txt
+	./make_adult.py $(INPUT_FOLDER)/adult/adult.csv > $(OUTPUT_FOLDER)/results_adult.txt
 
 berkeley:
-	./make_berkeley.py /home/vatlidak/repos/fairtest/data/berkeley/berkeley.csv > results_berkeley.txt
+	./make_berkeley.py $(INPUT_FOLDER)/berkeley/berkeley.csv > $(OUTPUT_FOLDER)/results_berkeley.txt
 
 recommender:
-	./make_recommender.py /home/vatlidak/repos/fairtest/data/recommender/recommendations.csv > results_recommender.txt
+	./make_recommender.py $(INPUT_FOLDER)/recommender/recommendations.csv > $(OUTPUT_FOLDER)/results_recommender.txt
 
 benchmark:
-	./make_benchmark.py /home/vatlidak/repos/fairtest/data/benchmark/benchmark.csv > results_benchmark.txt
+	./make_benchmark.py $(INPUT_FOLDER)/benchmark/benchmark.csv > $(OUTPUT_FOLDER)/results_benchmark.txt
 
 staples:
-	./make_staples.py /home/vatlidak/repos/fairtest/data/staples/staples.csv > results_staples.txt
+	./make_staples.py $(INPUT_FOLDER)/staples/staples.csv > $(OUTPUT_FOLDER)/results_staples.txt
 
 clean:
-	rm -f results_recommender.txt
-	rm -f results_benchmark.txt
-	rm -f results_staples.txt
-	rm -f results_berkeley.txt
-	rm -f results_adult.txt
+	rm -f $(OUTPUT_FOLDER)/results_recommender.txt
+	rm -f $(OUTPUT_FOLDER)/results_benchmark.txt
+	rm -f $(OUTPUT_FOLDER)/results_staples.txt
+	rm -f $(OUTPUT_FOLDER)/results_berkeley.txt
+	rm -f $(OUTPUT_FOLDER)/results_adult.txt
