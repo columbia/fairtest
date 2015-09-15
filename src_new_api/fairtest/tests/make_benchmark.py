@@ -20,7 +20,7 @@ def main(argv=sys.argv):
 
     # Instanciate the experiment
     FT1 = api.Experiment(data, SENS, TARGET, EXPL,
-                         measures={'race':'NMI', 'income': 'NMI'})
+                         measures={'race':'NMI', 'income': 'NMI'}, random_state=0)
     # Train the classifier
     FT1.train()
 
