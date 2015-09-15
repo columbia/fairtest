@@ -149,11 +149,19 @@ class Experiment:
 
             if sens not in self.measures:
                 # get a default measure
-                self.measures[sens] = get_measure(self.feature_info[sens], self.output,
-                                      self.ci_level, self.topk, self.expl)
+                self.measures[sens] = get_measure(self.feature_info[sens],
+                                                  self.output, self.ci_level,
+                                                  self.topk, self.expl)
+            elif sens in self.measures and isinstance(self.measures[sens], str):
+                # get specified measure
+                self.measures[sens] = measure_from_string(self.measures[sens],
+                                                          self.ci_level,
+                                                          self.topk)
+
 
             tree = builder.train_tree(data, self.feature_info, sens,
-                                      self.expl, self.output, self.measures[sens],
+                                      self.expl, self.output,
+                                      self.measures[sens],
                                       max_depth, min_leaf_size,
                                       score_aggregation, max_bins)
             self.trained_trees[sens] = tree
