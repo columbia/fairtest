@@ -1,0 +1,5 @@
+django
+djangorestframework
+markdown
+django-filter
+django-csvimport

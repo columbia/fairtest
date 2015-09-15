@@ -23,7 +23,7 @@ def data_from_csv(filename, to_drop=[]):
                            na_values="?")
 
         for attribute in to_drop:
-            data.drop(attribute, axis=1)
+            data = data.drop(attribute, axis=1)
 
     except IOError:
         print "Error: Cannot open file \"%s\"" % filename

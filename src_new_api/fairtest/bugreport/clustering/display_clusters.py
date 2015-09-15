@@ -82,10 +82,11 @@ def print_summary(all_clusters, displ_clusters, namer, output_stream):
     def recurse(node, indent):
         if node.num in displ_clusters:
             if node.clstr_measure.dataType != fm.Measure.DATATYPE_REG:
-                print >> output_stream, '{} Context = {} ; CI = [{:.4f}, {:.4f}]'.\
+                print >> output_stream, '{} Context = {} ; CI = [{:.4f}, {:.4f}] ; Size = {}'.\
                     format(' '*indent, print_context(node.path, namer),
                            node.clstr_measure.stats[0],
-                           node.clstr_measure.stats[1])
+                           node.clstr_measure.stats[1],
+                           node.size)
             else:
                 print >> output_stream, '{} Context = {} ; Avg Effect = {:.4f}'.\
                     format(' '*indent, node.path,
