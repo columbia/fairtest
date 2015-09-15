@@ -468,7 +468,7 @@ def test_cat_feature(node_data, feature, split_params, score_params):
     split_score :
         the score of the current split
     """
-    #print 'testing categorical feature {}'.format(feature_idx)
+    # print 'testing categorical feature {}'.format(feature)
     sens = split_params.sens
     dim = split_params.dim
     expl = split_params.expl
@@ -489,6 +489,11 @@ def test_cat_feature(node_data, feature, split_params, score_params):
         child_stats = [(key, (group[targets+[sens]], len(group)))
                        for key, group in node_data.groupby(feature)]
 
+
+    N = len(node_data)
+    N_children = sum([size for (key, (group, size))
+                   in child_stats if size >= min_leaf_size])
+
     # prune small sub-trees
     child_stats = [(key, group) for (key, (group, size))
                    in child_stats if size >= min_leaf_size]
@@ -497,8 +502,9 @@ def test_cat_feature(node_data, feature, split_params, score_params):
     # compute the split score
     if len(child_stats) > 1:
         values, child_stats = zip(*child_stats)
-        split_score, measures = score(child_stats, score_params)
-        #print split_score
+        split_score, measures = score(child_stats, score_params, frac=(1.0*N_children/N))
+
+        # print split_score
         return split_score, dict(zip(values, measures))
     else:
         return split_score, None
@@ -641,7 +647,7 @@ def test_cont_feature(node_data, feature, split_params, score_params):
     return max_score, best_threshold, best_measures
 
 
-def score(stats, score_params):
+def score(stats, score_params, frac=1):
     """
     Compute the score for a split
 
@@ -665,13 +671,15 @@ def score(stats, score_params):
                      measure_copy.compute(child, approx=True).abs_effect(),
                      zip_w_measure)
 
+    # print score_list
+
     # take the average or maximum of the child scores
     if agg_type == ScoreParams.WEIGHTED_AVG:
         totals = map(lambda group: group.sum().sum(), stats)
         probas = map(lambda tot: (1.0*tot)/sum(totals), totals)
-        return np.dot(score_list, probas), measures
+        return frac * np.dot(score_list, probas), measures
     elif agg_type == ScoreParams.AVG:
-        return np.mean(score_list), measures
+        return frac * np.mean(score_list), measures
     elif agg_type == ScoreParams.MAX:
         return max(score_list), measures
 

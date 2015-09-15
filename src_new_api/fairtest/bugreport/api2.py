@@ -146,7 +146,7 @@ class Experiment:
 
         # find discrimination contexts for each sensitive feature
         for sens in self.sens_features:
-            # print 'TRAINING WITH SENSITIVE FEATURE {} ...'.format(sens)
+            print 'TRAINING WITH SENSITIVE FEATURE {} ...'.format(sens)
 
             if sens not in self.measures:
                 # get a default measure
@@ -158,7 +158,6 @@ class Experiment:
                 self.measures[sens] = measure_from_string(self.measures[sens],
                                                           self.ci_level,
                                                           self.topk)
-
 
             tree = builder.train_tree(data, self.feature_info, sens,
                                       self.expl, self.output, copy(self.measures[sens]),
