@@ -3,6 +3,7 @@ from fairtest.bugreport import api2 as api
 from fairtest.bugreport.helpers import prepare
 from fairtest.bugreport.clustering import display_clusters
 
+from time import time
 import sys
 
 def main(argv=sys.argv):
@@ -20,16 +21,25 @@ def main(argv=sys.argv):
     TARGET = 'accepted'
 
     # Instanciate the experiment
+    t1 = time()
     FT1 = api.Experiment(data, SENS, TARGET, EXPL)
 
     # Train the classifier
+    t2 = time()
     FT1.train()
 
     # Evaluate on the testing set
+    t3 = time()
     FT1.test()
 
     # Create the report
+    t4 = time()
     FT1.report("berkeley", filter_by=display_clusters.FILTER_ALL)
+
+    t5 = time()
+    print "Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
+            % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
+
 
 
 def usage(argv):

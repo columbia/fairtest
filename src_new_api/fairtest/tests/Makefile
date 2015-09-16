@@ -1,8 +1,8 @@
 .PHONY: clean
-INPUT_FOLDER=/home/vatlidak/repos/fairtest/data/
+INPUT_FOLDER=/home/vatlidak/repos/fairtest/data
 OUTPUT_FOLDER=.
 
-all: adult berkeley recommender staples benchmark
+all: adult berkeley recommender staples benchmark medical overfeat
 
 adult:
 	./make_adult.py $(INPUT_FOLDER)/adult/adult.csv > $(OUTPUT_FOLDER)/results_adult.txt
@@ -19,9 +19,18 @@ benchmark:
 staples:
 	./make_staples.py $(INPUT_FOLDER)/staples/staples.csv > $(OUTPUT_FOLDER)/results_staples.txt
 
+medical:
+	./make_medical.py $(INPUT_FOLDER)/medical/predictions_bin_4_25.csv >  $(OUTPUT_FOLDER)/results_medical.txt
+
+overfeat:
+	./make_overfeat.py $(INPUT_FOLDER)/images/overfeat_raw.txt >  $(OUTPUT_FOLDER)/results_overfeat.txt
+
+
 clean:
 	rm -f $(OUTPUT_FOLDER)/results_recommender.txt
 	rm -f $(OUTPUT_FOLDER)/results_benchmark.txt
 	rm -f $(OUTPUT_FOLDER)/results_staples.txt
 	rm -f $(OUTPUT_FOLDER)/results_berkeley.txt
 	rm -f $(OUTPUT_FOLDER)/results_adult.txt
+	rm -f $(OUTPUT_FOLDER)/results_medical.txt
+	rm -f $(OUTPUT_FOLDER)/results_overfeat.txt
