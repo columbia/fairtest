@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 from fairtest.bugreport import api2 as api
 from fairtest.bugreport.helpers import prepare
-
 from time import time
+
+import pandas as pd
+import sklearn.preprocessing as preprocessing
+
 import sys
+import ast
 
 def main(argv=sys.argv):
 
@@ -12,12 +16,21 @@ def main(argv=sys.argv):
 
     # Preapre data into FairTest friendly format
     FILENAME = argv[1]
-    data = prepare.data_from_csv(FILENAME)
+    data = prepare.data_from_csv(FILENAME, sep='\\t')
 
-    # Initializing parameters for experiment
+    TARGET = 'Labels'
+    SENS = ['Race']
     EXPL = []
-    SENS = ['race', 'income']
-    TARGET = 'price'
+    labeled_data = map(lambda s: ast.literal_eval(s), data[TARGET])
+    for l in labeled_data:
+        assert len(l) == 5
+    label_encoder = preprocessing.MultiLabelBinarizer()
+    labeled_data = label_encoder.fit_transform(labeled_data)
+    labels = label_encoder.classes_
+    df_labels = pd.DataFrame(labeled_data, columns=labels)
+    data = pd.concat([data.drop(TARGET, axis=1), df_labels], axis=1)
+    TARGET = labels.tolist()
+ 
 
     # Instanciate the experiment
     t1 = time()
@@ -34,7 +47,7 @@ def main(argv=sys.argv):
 
     # Create the report
     t4 = time()
-    FT1.report("benchmark")
+    FT1.report("overfeat")
 
     t5 = time()
 

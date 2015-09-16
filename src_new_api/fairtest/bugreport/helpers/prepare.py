@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 
-def data_from_csv(filename, to_drop=[]):
+def data_from_csv(filename, sep=None, header=0, to_drop=[]):
     """
     Load data from csv into a FairTest friendly format
 
@@ -19,7 +19,12 @@ def data_from_csv(filename, to_drop=[]):
         during loading the data
     """
     try:
-        data = pd.read_csv(filename, header=0, sep=r'\s*,\s*', engine='python',
+        if sep:
+            _sep = sep
+        else:
+            _sep = r'\s*,\s*'
+
+        data = pd.read_csv(filename, header=header, sep=_sep, engine='python',
                            na_values="?")
 
         for attribute in to_drop:
