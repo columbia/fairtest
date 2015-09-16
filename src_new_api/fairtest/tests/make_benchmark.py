@@ -11,7 +11,8 @@ def main(argv=sys.argv):
 
     # Preapre data into FairTest friendly format
     FILENAME = argv[1]
-    data = prepare.data_from_csv(FILENAME, ['city'])
+    data = prepare.data_from_csv(FILENAME)
+    print data.columns
 
     # Initializing parameters for experiment
     EXPL = []

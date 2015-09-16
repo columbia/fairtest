@@ -659,6 +659,7 @@ def score(stats, score_params, frac=1):
     score_params :
         Split scoring parameters
     """
+
     measure = score_params.measure
     agg_type = score_params.agg_type
 

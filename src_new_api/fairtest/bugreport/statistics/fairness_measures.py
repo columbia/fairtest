@@ -111,8 +111,8 @@ class NMI(Measure):
     def __str__(self):
         return 'NMI(confidence={})'.format(self.ci_level)
 
-    def __copy__(self):
-        return NMI(self.ci_level)
+    #def __copy__(self):
+    #    return NMI(self.ci_level)
 
 
 class CondNMI(Measure):
@@ -164,8 +164,8 @@ class CondNMI(Measure):
     def abs_effect(self):
         return self.stats[0]
 
-    def __copy__(self):
-        return CondNMI(self.ci_level)
+    #def __copy__(self):
+    #    return CondNMI(self.ci_level)
 
     def __str__(self):
         return 'Conditional NMI(confidence={})'.format(self.ci_level)
@@ -217,8 +217,8 @@ class CORR(Measure):
         else:
             return abs(self.stats[0])
 
-    def __copy__(self):
-        return CORR(self.ci_level)
+    #def __copy__(self):
+    #    return CORR(self.ci_level)
 
     def __str__(self):
         return 'Correlation(confidence={})'.format(self.ci_level)
@@ -267,8 +267,8 @@ class DIFF(Measure):
         else:
             return abs(self.stats[0])
 
-    def __copy__(self):
-        return DIFF(self.ci_level)
+    #def __copy__(self):
+    #    return DIFF(self.ci_level)
 
     def __str__(self):
         return 'Difference(confidence={})'.format(self.ci_level)
@@ -316,8 +316,8 @@ class RATIO(Measure):
         else:
             return abs(log(self.stats[0]))
 
-    def __copy__(self):
-        return RATIO(self.ci_level)
+    #def __copy__(self):
+    #    return RATIO(self.ci_level)
 
     def __str__(self):
         return 'Regression(confidence={})'.format(self.ci_level)
@@ -334,8 +334,8 @@ class REGRESSION(Measure):
         self.topK = topK
         self.type = None
 
-    def __copy__(self):
-        return REGRESSION(self.ci_level, self.topK)
+    #def __copy__(self):
+    #    return REGRESSION(self.ci_level, self.topK)
 
     def compute(self, data, approx=False, adj_ci_level=None):
         ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
@@ -1256,9 +1256,8 @@ def permutation_test_ct(data, num_samples=100000):
         return 1
 
     ro.globalenv['ct'] = data
-    ro.r('res = chisq_test(as.table(ct), distribution=approximate(B={}))'.
-         format(num_samples))
-    pval = ro.r('pvalue(res)')[0]
+    pval = ro.r('chisq.test(ct, simulate.p.value = TRUE, B = {})$p.value'.
+                format(num_samples))[0]
     return max(pval, 1.0/num_samples)
 
 

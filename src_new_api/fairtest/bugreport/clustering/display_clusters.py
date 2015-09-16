@@ -450,7 +450,7 @@ def pretty_ct(ct):
     pretty_table = prettytable.from_csv(output)
     pretty_table.padding_width = 0
     pretty_table.align = 'r'
-    pretty_table.align[pretty_table.field_names[0]] = 'c'
+    pretty_table.align[pretty_table.field_names[0]] = 'l'
     return pretty_table
 
 
@@ -476,26 +476,26 @@ def rich_ct(contingency_table):
         tot_col = sum(contingency_table[col])
 
         # largest percentage in the column
-        max_percent_len = len('{:.1f}'.format((100.0*tot_col)/total))
+        max_percent_len = len('{:.0f}'.format((100.0*tot_col)/total))
         for row in contingency_table.index:
             val = contingency_table.loc[row][col]
             percent = (100.0*val)/tot_col
-            percent_len = len('{:.1f}'.format(percent))
+            percent_len = len('{:.0f}'.format(percent))
             delta = max_percent_len - percent_len
-            temp.loc[row][col] = '{}{}({:.1f}%)'.format(val, ' '*delta, percent)
+            temp.loc[row][col] = '{}{}({:.0f}%)'.format(val, ' '*delta, percent)
 
     # add marginals
     sum_col = contingency_table.sum(axis=1)
-    lens = map(lambda val: len('{:.1f}'.format((100.0*val)/total)),
+    lens = map(lambda val: len('{:.0f}'.format((100.0*val)/total)),
                            sum_col)
 
-    temp.insert(len(temp.columns), 'Total', map(lambda (val, l): '{}{}({:.1f}%)'.
-                    format(val, ' '*(5-l), (100.0*val)/total), zip(sum_col, lens)))
+    temp.insert(len(temp.columns), 'Total', map(lambda (val, l): '{}{}({:.0f}%)'.
+                    format(val, ' '*(3-l), (100.0*val)/total), zip(sum_col, lens)))
     sum_row = contingency_table.sum(axis=0)
     sum_row['Total'] = total
-    temp.loc['Total'] = map(lambda val: '{}({:.1f}%)'.\
+    temp.loc['Total'] = map(lambda val: '{}({:.0f}%)'.\
                                 format(val, (100.0*val)/total), sum_row)
-    temp.loc['Total']['Total'] = '{}(100.0%)'.format(total)
+    temp.loc['Total']['Total'] = '{}(100%)'.format(total)
 
     return temp
 

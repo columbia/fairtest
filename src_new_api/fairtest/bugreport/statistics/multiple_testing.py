@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 from statsmodels.sandbox.stats.multicomp import multipletests
 
-# from multiprocessing import Process
-# from Queue import Queue
+from multiprocessing import Process
+from Queue import Queue
 
 
 def compute_all_stats(experiments, approx, fdr):
@@ -67,41 +67,54 @@ def num_hypotheses(clusters):
         return len(clusters)
 
 
+def thread_compute(c, measure, approx, adj_ci_level, queue, idx):
+    if measure.dataType == fm.Measure.DATATYPE_CORR:
+        stats = c.clstr_measure.compute(c.stats, data=c.data['values'],
+                                        approx=approx,
+                                        adj_ci_level=adj_ci_level).stats
+    else:
+        stats = c.clstr_measure.compute(c.stats, approx=approx,
+                                        adj_ci_level=adj_ci_level).stats
+
+    queue.put(idx, stats)
+
+
 def compute_stats(clusters, approx, adj_ci_level):
 
     measure = clusters[0].clstr_measure
+
     if measure.dataType == fm.Measure.DATATYPE_CORR:
 
         stats = map(lambda c: c.clstr_measure.
                     compute(c.stats, data=c.data['values'], approx=approx,
                             adj_ci_level=adj_ci_level).stats, clusters)
 
-        # TODO try to parallelize at some point
-        '''
-        def thread_compute_corr(c, approx, adj_ci_level, queue, idx):
-            queue.put((idx, c.clstr_measure.
-                    compute(c.stats, data=c.data['values'], approx=approx,
-                            adj_ci_level=adj_ci_level).stats))
-        queue = Queue()
-        threads = []
-        for idx,c in enumerate(clusters):
-            t = Thread(target=thread_compute_corr, args=(c, approx, adj_ci_level, queue, idx))
-            threads.append(t)
-
-        for t in threads:
-            t.start()
-
-        for t in threads:
-            t.join()
-
-        dict = {idx: stat for (idx,stat) in queue}
-        stats = [dict[key] for key in sorted(dict)]
-        '''
-
     else:
         stats = map(lambda c: c.clstr_measure.
                     compute(c.stats, approx=approx,
                             adj_ci_level=adj_ci_level).stats, clusters)
+    '''
+
+    queue = Queue()
+    threads = []
+    for idx, c in enumerate(clusters):
+        t = Process(target=thread_compute, args=(c, measure, approx, adj_ci_level, queue, idx))
+        threads.append(t)
+
+    for idx, t in enumerate(threads):
+        t.start()
+
+    for idx, t in enumerate(threads):
+        t.join()
+
+    dict = {}
+
+    for i in range(len(clusters)):
+        (idx, stat) = queue.get()
+        dict[idx] = stat
+    stats = [dict[key] for key in sorted(dict)]
+    print stats
+    '''
 
     # For regression, we have multiple p-values per cluster
     # (one per topK coefficient)

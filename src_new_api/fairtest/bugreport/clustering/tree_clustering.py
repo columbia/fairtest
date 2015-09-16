@@ -225,7 +225,7 @@ def find_clusters_cat(tree, data, features_info, sens, expl, output,
             cluster_data = {'data_node': data_node}
 
         # build a cluster class and store it in the list
-        training_measure = node.measure
+        training_measure = copy(node.measure)
 
         ancestor_ptr = parent
         # prune non-significant clusters
