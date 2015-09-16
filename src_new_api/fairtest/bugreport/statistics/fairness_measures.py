@@ -368,6 +368,7 @@ class REGRESSION(Measure):
                 results['effect'] = map(lambda c: abs(c), results['coeff'])
                 sorted_results = results.sort(columns=['effect'],
                                               ascending=False)
+
                 self.stats = sorted_results[['coeff',
                                              'p-value']].head(self.topK)
                 self.type = "Regression"
@@ -1134,7 +1135,7 @@ def bootstrap_ci_ct_cond(data, stat, num_samples=10000, ci_level=0.95):
     return ci
 
 
-def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
+def bootstrap_ci_corr2(x, y, stat, num_samples=10000, ci_level=0.95):
     """
     Bootstrap confidence interval computation for correlation
 
@@ -1166,6 +1167,18 @@ def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
     ci = bs.ci((np.array(x), np.array(y)), stat,
                alpha=1-ci_level, n_samples=num_samples)
     return ci
+
+
+def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
+    data = np.array(zip(x, y))
+    n = len(data)
+    idxs = np.random.randint(0, n, (num_samples, n))
+    samples = map(lambda idx: data[idx], idxs)
+    bs_stats = map(lambda sample: stat(sample[:,0], sample[:,1]), samples)
+    alpha = 1-ci_level
+    q_low = np.percentile(bs_stats, 100*alpha/2)
+    q_high = np.percentile(bs_stats, 100*(1-alpha/2))
+    return (q_low, q_high)
 
 
 def permutation_test_ct_cond(data, num_samples=10000):
@@ -1244,8 +1257,10 @@ def permutation_test_ct(data, num_samples=100000):
     ----------
     https://en.wikipedia.org/wiki/Resampling_(statistics)
     """
-    if isinstance(data, pd.DataFrame):
-        data = data.values
+    if not isinstance(data, pd.DataFrame):
+        data = pd.DataFrame(data)
+    data = data[data.columns[(data != 0).any()]]
+    data = data[(data.T != 0).any()]
 
     # print 'permutation test of size {}'.format(data.sum())
 
@@ -1258,6 +1273,51 @@ def permutation_test_ct(data, num_samples=100000):
     ro.globalenv['ct'] = data
     pval = ro.r('chisq.test(ct, simulate.p.value = TRUE, B = {})$p.value'.
                 format(num_samples))[0]
+    return max(pval, 1.0/num_samples)
+
+
+def permutation_test_ct2(data, num_samples=10000):
+    """
+    Monte-Carlo permutation test for a 2-way contingency table
+
+    Parameters
+    ----------
+    data :
+        the contingency table
+
+    num_samples :
+        the number of random permutations to perform
+
+    Returns
+    -------
+    p :
+        the p-value
+
+    References
+    ----------
+    https://en.wikipedia.org/wiki/Resampling_(statistics)
+    """
+    if isinstance(data, pd.DataFrame):
+        data = np.array(data)
+
+    dim = data.shape
+    data_x = []
+    data_y = []
+
+    for x in range(0, dim[0]):
+        for y in range(0, dim[1]):
+            data_x += [x]*data[x, y]
+            data_y += [y]*data[x, y]
+
+    stat_0 = metrics.mutual_info_score(data_x, data_y)
+
+    k = 0
+    for i in range(num_samples):
+        np.random.shuffle(data_x)
+        mi = metrics.mutual_info_score(data_x, data_y)
+        k += stat_0 < mi
+
+    pval = (1.0*k) / num_samples
     return max(pval, 1.0/num_samples)
 
 

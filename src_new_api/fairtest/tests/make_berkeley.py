@@ -16,7 +16,7 @@ def main(argv=sys.argv):
     data = prepare.data_from_csv(FILENAME)
 
     # Initializing parameters for experiment
-    EXPL = []
+    EXPL = ['department']
     SENS = ['gender']
     TARGET = 'accepted'
 
@@ -30,7 +30,7 @@ def main(argv=sys.argv):
 
     # Evaluate on the testing set
     t3 = time()
-    FT1.test()
+    FT1.test(approx_stats=False)
 
     # Create the report
     t4 = time()

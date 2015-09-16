@@ -211,6 +211,7 @@ if __name__ == "__main__":
         myRatings = [(userId, x[1], x[2]) for x in myRatings]
         movieTypes = []
         movieDates = []
+        movieNames = []
         for i in xrange(len(recommendations)):
             try:
                 movieTypes += (MOVIES[recommendations[i][1]]).\

@@ -8,6 +8,9 @@ from fairtest.bugreport.statistics import fairness_measures as fm
 from fairtest.bugreport.statistics import multiple_testing as multitest
 from sklearn import preprocessing as preprocessing
 from sklearn import cross_validation as cross_validation
+import rpy2.robjects as ro
+from rpy2.robjects import numpy2ri
+numpy2ri.activate()
 
 from os import path
 from copy import copy
@@ -71,7 +74,11 @@ class Experiment:
         self.train_params = {}
         self.test_params = {}
         self.display_params = {}
-        self.random_state = random_state
+        if random_state:
+            self.random_state = random_state
+        else:
+            self.random_state = 0
+        ro.r('set.seed({})'.format(self.random_state))
 
         data = pd.DataFrame(data)
 
@@ -159,8 +166,8 @@ class Experiment:
                                                           self.ci_level,
                                                           self.topk)
 
-            tree = builder.train_tree(data, self.feature_info, sens,
-                                      self.expl, self.output, copy(self.measures[sens]),
+            tree = builder.train_tree(data, self.feature_info, sens, self.expl,
+                                      self.output, copy(self.measures[sens]),
                                       max_depth, min_leaf_size,
                                       score_aggregation, max_bins)
             self.trained_trees[sens] = tree

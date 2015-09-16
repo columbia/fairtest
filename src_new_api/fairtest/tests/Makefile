@@ -19,8 +19,11 @@ benchmark:
 staples:
 	./make_staples.py $(INPUT_FOLDER)/staples/staples.csv > $(OUTPUT_FOLDER)/results_staples.txt
 
-medical:
-	./make_medical.py $(INPUT_FOLDER)/medical/predictions_bin_4_25.csv >  $(OUTPUT_FOLDER)/results_medical.txt
+medical_bin:
+	./make_medical_bin.py $(INPUT_FOLDER)/medical/predictions_bin_4_25.csv >  $(OUTPUT_FOLDER)/results_medical.txt
+	
+medical_reg:
+	./make_medical_reg.py $(INPUT_FOLDER)/medical/predictions_reg_25.csv >  $(OUTPUT_FOLDER)/results_medical.txt
 
 overfeat:
 	./make_overfeat.py $(INPUT_FOLDER)/images/overfeat_raw.txt >  $(OUTPUT_FOLDER)/results_overfeat.txt
@@ -32,5 +35,6 @@ clean:
 	rm -f $(OUTPUT_FOLDER)/results_staples.txt
 	rm -f $(OUTPUT_FOLDER)/results_berkeley.txt
 	rm -f $(OUTPUT_FOLDER)/results_adult.txt
-	rm -f $(OUTPUT_FOLDER)/results_medical.txt
+	rm -f $(OUTPUT_FOLDER)/results_medical_bin.txt
+	rm -f $(OUTPUT_FOLDER)/results_medical_reg.txt
 	rm -f $(OUTPUT_FOLDER)/results_overfeat.txt

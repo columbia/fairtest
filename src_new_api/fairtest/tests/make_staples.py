@@ -29,7 +29,7 @@ def main(argv=sys.argv):
 
     # Evaluate on the testing set
     t3 = time()
-    FT1.test()
+    FT1.test(approx_stats=False)
 
     # Create the report
     t4 = time()
@@ -51,7 +51,7 @@ def main(argv=sys.argv):
     FT2.train()
 
     # Evaluate on the testing set
-    FT2.test()
+    FT2.test(approx_stats=False)
 
     # Create the report
     FT2.report("staples2")
@@ -67,7 +67,7 @@ def main(argv=sys.argv):
     FT3.train()
 
     # Evaluate on the testing set
-    FT3.test()
+    FT3.test(approx_stats=False)
 
     # Create the report
     FT3.report("staples3")
