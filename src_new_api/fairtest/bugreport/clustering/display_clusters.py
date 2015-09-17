@@ -11,6 +11,7 @@ import numpy as np
 import subprocess
 import textwrap
 import os
+import re
 from fairtest.bugreport.statistics import fairness_measures as fm
 from fairtest.bugreport.clustering import tree_clustering as tc
 
@@ -435,7 +436,7 @@ def print_cluster_reg(cluster, stats, effect_name, namer, output_stream,
                     fill_value=0)
 
         # replace numbers by original labels
-        ct.index.name = label
+        ct.index.name = re.sub('\W+', ' ', label)
         ct.columns = namer.get_sens_feature_vals(2)
         ct.columns.name = sens
 

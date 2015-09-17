@@ -346,11 +346,13 @@ class REGRESSION(Measure):
             X = data[data.columns[0:-1]]
 
             # print 'Regressing from {}...{} to {}'.\
-            #        format(data.columns[0], data.columns[-2], data.columns[-1])
+            #         format(data.columns[0], data.columns[-2], data.columns[-1])
 
             reg = LogisticRegression()
             reg.fit(X, y)
             y_pred = reg.predict(X)
+
+            # print reg.coef_[0]
 
             # approximate the standard errors for all regression coefficients
             mse = np.mean((y - y_pred.T)**2)
@@ -386,6 +388,12 @@ class REGRESSION(Measure):
                     map(lambda (ci_low, ci_high): z_effect(ci_low, ci_high),
                         zip(results['conf low'], results['conf high']))
             sorted_results = results.sort(columns=['effect'], ascending=False)
+
+            # temp = sorted_results.copy()
+            # temp.index =
+            #       map(lambda x: data.columns[x], sorted_results.index.values)
+            # print temp
+
             self.stats = sorted_results[['conf low', 'conf high', 'p-value']].\
                     head(self.topK)
             self.type = "Regression"
