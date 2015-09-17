@@ -20,6 +20,25 @@ import sys
 import statistics
 from os.path import isfile
 
+def parse_zipcode(line):
+    """
+    Parses a zipcode zipcode,city,state,...
+
+    Parameters
+    ----------
+    line : str
+        The line that containing zipcode info
+
+    Returns
+    -------
+    list : list
+        A list containing zipcode, city, state
+    """
+    fields = line.strip().split(",")
+    return [str(fields[0]), str(fields[1]),
+            str(fields[2])]
+
+
 def parse_user(line):
     """
     Parses a user in MovieLens format userID::gender::age::occupation::zip
@@ -75,6 +94,8 @@ def load_users(user_file):
         sys.exit(1)
 
     f_in = open(user_file, 'r')
+    # drop header
+    f_in.next()
     users = {}
     for line in f_in:
         users[parse_user(line)[0]] = parse_user(line)[1:]
@@ -102,68 +123,68 @@ def load_scores(scores_file):
 
     scores = {}
     f_in = open(scores_file, 'r')
+    # drop header
+    f_in.next()
     for line in f_in:
         scores[parse_score(line)[0]] = parse_score(line)[1:]
     f_in.close()
 
     return scores
 
-def categorize(score, avg, stdev):
+
+def load_zipcode(zipcodes_file):
     """
-    Turn a continous variable into categorical from 0 to 5
+    Load ratings from file.
 
     Parameters
     ----------
-    score : float
-        Improvement score
-    avg : float
-        Average of improvements
-    stdev : float
-        Standard deviation of improvements
+    scores_file : str
+        The file that contains the rating info
 
     Returns
     -------
-    int : int
-        Normalized improvement
-
-    Notes
-    -----
-    We may get rid of this function and let improvement be a continious
-    float variable.
-
+    scores : dict
+        A scores dictionary in which movieId is the key.
     """
-    if score < avg:
-        return 0
-    if score < avg - stdev and score >= avg - 2 * stdev:
-        return 1
-    if score < avg and  score >= avg - stdev:
-        return 2
-    if score < avg + stdev and score >= avg:
-        return 3
-    if score < avg + 2 * stdev and score >= avg + stdev:
-        return 4
-    if score >= avg + 2 * stdev:
-        return 5
+    if not isfile(zipcodes_file):
+        print "File %s does not exist." % zipcodes_file
+        sys.exit(1)
+
+    zipcodes = {}
+    f_in = open(zipcodes_file, 'r')
+    # drop header
+    f_in.next()
+    for line in f_in:
+        zipcodes[parse_zipcode(line)[0]] = parse_zipcode(line)[1:]
+    f_in.close()
+
+    return zipcodes
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print "Usage: %s user_file scores_file" % sys.argv[0]
+    if len(sys.argv) != 4:
+        print "Usage: %s user_file scores_file zipcodes" % sys.argv[0]
         sys.exit(1)
 
     # load ratings and movie titles
     USER_FILE = sys.argv[1]
-    SCORE_FILE = sys.argv[2]
+    ZIPCODE_FILE = sys.argv[2]
+    SCORE_FILE = sys.argv[3]
 
     users = load_users(USER_FILE)
+    zipcodes = load_zipcode(ZIPCODE_FILE)
     scores = load_scores(SCORE_FILE)
 
-    avg = sum(map(lambda x: float(x[3]), scores.values())) / \
-          len(scores.values())
-    stdev = statistics.stdev(map(lambda x: float(x[3]), scores.values()))
 
-    print "userID\tgender\tage\toccupation\tzip\tmovieType\tmode\tmedian\timprovement\tLabels"
+    print "userID\tgender\tage\toccupation\tzip\tcity\tstate\tmovieType\tmode\tmedian\timprovement\tLabels"
     for userId in scores:
-        improvement = categorize(float(scores[userId][3]), avg, stdev)
-        print '\t'.join([userId] + users[userId][:] + \
-                       scores[userId][:] )
+        zipcode =  users[userId][3]
+        if zipcode not in zipcodes:
+            city = "-"
+            state = "-"
+        else:
+            city = zipcodes[zipcode][0]
+            state = zipcodes[zipcode][1]
+
+        print '\t'.join([userId] + users[userId][:] + [city, state] + \
+                       scores[userId][:])
