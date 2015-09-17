@@ -351,7 +351,7 @@ class REGRESSION(Measure):
             reg = LogisticRegression()
             reg.fit(X, y)
             y_pred = reg.predict(X)
-
+            print metrics.classification_report(y, y_pred)
             # print reg.coef_[0]
 
             # approximate the standard errors for all regression coefficients
@@ -362,6 +362,7 @@ class REGRESSION(Measure):
 
             # compute confidence intervals and p-values for all coefficients
             results = pd.DataFrame(coeffs, columns=['coeff'])
+
             results['std err'] = SE_est
             results['z'] = abs(results['coeff']/results['std err'])
             results['p-value'] = 2*stats.norm.sf(results['z'])
@@ -369,10 +370,10 @@ class REGRESSION(Measure):
             if not ci_level:
                 results['effect'] = map(lambda c: abs(c), results['coeff'])
                 sorted_results = results.sort(columns=['effect'],
-                                              ascending=False)
+                                          ascending=False)
 
-                self.stats = sorted_results[['coeff',
-                                             'p-value']].head(self.topK)
+                self.stats = \
+                    sorted_results[['coeff', 'p-value']].head(self.topK)
                 self.type = "Regression"
                 return self
 
@@ -396,6 +397,7 @@ class REGRESSION(Measure):
 
             self.stats = sorted_results[['conf low', 'conf high', 'p-value']].\
                     head(self.topK)
+            print self.stats
             self.type = "Regression"
             return self
         else:
