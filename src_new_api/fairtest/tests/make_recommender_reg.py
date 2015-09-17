@@ -39,7 +39,6 @@ def main(argv=sys.argv):
     t1 = time()
     FT1 = api.Experiment(data, SENS, TARGET, EXPL,
                          measures={'gender': 'Reg'},
-                         train_size=0.25,
                          random_state=0)
     # Train the classifier
     t2 = time()
@@ -83,7 +82,6 @@ def main(argv=sys.argv):
 #    t1 = time()
 #    FT2 = api.Experiment(data, SENS, TARGET, EXPL,
 #                         measures={'age': 'Reg'},
-#                         train_size=0.25,
 #                         random_state=0)
 #    # Train the classifier
 #    t2 = time()
