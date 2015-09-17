@@ -21,7 +21,7 @@ function parse_report_metric() {
   local _metric="$2"
   echo  "#set,init,train,test"
   cat ${_report}_* | grep -w "Instantiation" | grep -w "${_metric}" |\
-        tr ':' ',' | cut -f2,6,8,10 -d','
+        tr ':' ',' | cut -f2,4,6,8 -d','
 }
 
 function convert_to_percentage() {
