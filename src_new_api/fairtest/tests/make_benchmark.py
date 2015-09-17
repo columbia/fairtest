@@ -16,13 +16,13 @@ def main(argv=sys.argv):
 
     # Initializing parameters for experiment
     EXPL = []
-    SENS = ['race', 'income']
+    SENS = ['race']
     TARGET = 'price'
 
     # Instanciate the experiment
     t1 = time()
     FT1 = api.Experiment(data, SENS, TARGET, EXPL,
-                         measures={'race':'NMI', 'income': 'NMI'},
+                         measures={'race':'NMI'},
                          random_state=0)
     # Train the classifier
     t2 = time()
@@ -38,7 +38,7 @@ def main(argv=sys.argv):
 
     t5 = time()
 
-    print "Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
+    print "NMI:Benchmark-Race-Price:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
             % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
 
 def usage(argv):

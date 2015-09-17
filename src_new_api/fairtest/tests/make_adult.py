@@ -21,7 +21,9 @@ def main(argv=sys.argv):
 
     # Instanciate the experiment
     t1 = time()
-    FT1 = api.Experiment(data, SENS, TARGET, EXPL)
+    FT1 = api.Experiment(data, SENS, TARGET, EXPL,
+                         measures={'sex':'NMI'},
+                         random_state=0)
 
     # Train the classifier
     t2 = time()
@@ -36,8 +38,11 @@ def main(argv=sys.argv):
     FT1.report("adult")
 
     t5 = time()
-    print "Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
+    print "NMI:Adult-Sex-Income:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
             % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
+    print "-" * 80
+    print
+
 
 
 def usage(argv):

@@ -35,7 +35,7 @@ def main(argv=sys.argv):
     # Instanciate the experiment
     t1 = time()
     FT1 = api.Experiment(data, SENS, TARGET, EXPL,
-                         measures={'race':'NMI', 'income': 'NMI'},
+                         measures={'Race':'Reg'},
                          random_state=0)
     # Train the classifier
     t2 = time()
@@ -51,8 +51,11 @@ def main(argv=sys.argv):
 
     t5 = time()
 
-    print "Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
+    print "Regression:Overfeat-Race-Label:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
             % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
+    print "-" * 80
+    print
+
 
 def usage(argv):
     print "Usage:%s <filename>" % argv[0]
