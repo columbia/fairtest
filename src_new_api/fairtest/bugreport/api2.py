@@ -153,7 +153,7 @@ class Experiment:
 
         # find discrimination contexts for each sensitive feature
         for sens in self.sens_features:
-            # print 'TRAINING WITH SENSITIVE FEATURE {} ...'.format(sens)
+            print 'TRAINING WITH SENSITIVE FEATURE {} ...'.format(sens)
 
             if sens not in self.measures:
                 # get a default measure
@@ -281,8 +281,10 @@ class Experiment:
             clusters = self.contexts[sens]
             np.random.seed(self.random_state)
             # dirty nasty hack for the benchmark
-            return displ.bug_report(clusters, stats, sens, self.expl, self.output,
+            txt = displ.bug_report(clusters, stats, sens, self.expl, self.output,
                              output_stream, sort_by, filter_by, self.encoders)
+            if len(self.sens_features) == 1:
+                return txt
 
 
 def measure_from_string(m_str, ci_level, topk):

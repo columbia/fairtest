@@ -1,0 +1,46 @@
+================================================================================
+Commit Hash: 	6dac7a5bb6b121d52e41af3fc60b617f3fd4dd4c
+
+Dataset: movies.txt
+Train Size: 3020
+Test Size: 3020
+S: ['gender', 'age']
+X: ['occupation']
+E: None
+O: ['avgScore']
+
+Train Params: 	{'max_bins': 10, 'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'avg'}
+Test Params: 	{'prune_insignificant': True, 'approx': False, 'fdr': 0.05}
+Report Params: 	{'filter_by': 'better_than_ancestors', 'sort_by': 'effect'}
+================================================================================
+
+Report of associations on Si = gender:
+Association metric: Correlation(confidence=0.95)
+
+Global Population of size 3020
+
+p-value = 1.25e-03 ; CORR = [0.0177, 0.1205]
+================================================================================
+
+Hierarchical printing of subpopulations (summary)
+
+================================================================================
+
+ Context = {} ; CI = [0.0177, 0.1205] ; Size = 3020
+--------------------------------------------------------------------------------
+
+Report of associations on Si = age:
+Association metric: Correlation(confidence=0.95)
+
+Global Population of size 3020
+
+p-value = 1.44e-14 ; CORR = [0.0936, 0.1947]
+================================================================================
+
+Hierarchical printing of subpopulations (summary)
+
+================================================================================
+
+ Context = {} ; CI = [0.0936, 0.1947] ; Size = 3020
+--------------------------------------------------------------------------------
+

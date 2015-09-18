@@ -93,7 +93,7 @@ def print_summary(all_clusters, displ_clusters, namer, output_stream):
                 context_list.append(print_context(node.path, namer))
             else:
                 print >> output_stream, '{} Context = {} ; Avg Effect = {:.4f}'.\
-                    format(' '*indent, node.path,
+                    format(' '*indent, print_context(node.path, namer),
                            node.clstr_measure.abs_effect())
                 context_list.append(print_context(node.path, namer))
             indent += 2
@@ -375,10 +375,14 @@ def print_cluster_corr(cluster, cluster_stats, effect_name, namer,
         plt.boxplot(groups, positions=keys, widths=(1.0*min_key_diff)/2)
 
     plt.rcParams.update({'font.size': 16})
+    if namer.sens in namer.encoders:
+        ax = plt.gca()
+        ax.set_xticklabels(namer.get_sens_feature_vals(len(data[data.columns[1]].unique())))
+    else:
+        plt.xlim(np.min(sens)-0.2*np.std(sens), np.max(sens)+0.2*np.std(sens))
+        plt.ylim(np.min(out)-0.2*np.std(out), np.max(out)+0.2*np.std(out))
     plt.xlabel(data.columns[1])
     plt.ylabel(data.columns[0])
-    plt.xlim(np.min(sens)-0.2*np.std(sens), np.max(sens)+0.2*np.std(sens))
-    plt.ylim(np.min(out)-0.2*np.std(out), np.max(out)+0.2*np.std(out))
     plt.show()
 
     if len(cluster_stats) == 3:
