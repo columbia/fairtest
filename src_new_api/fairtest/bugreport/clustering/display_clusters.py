@@ -81,6 +81,7 @@ def print_summary(all_clusters, displ_clusters, namer, output_stream):
     root = filter(lambda c: c.isroot, all_clusters)[0]
 
     context_list = []
+
     def recurse(node, indent):
         if node.num in displ_clusters:
             if node.clstr_measure.dataType != fm.Measure.DATATYPE_REG:
@@ -105,6 +106,7 @@ def print_summary(all_clusters, displ_clusters, namer, output_stream):
     print >> output_stream
 
     return context_list
+
 
 def bug_report(clusters, stats, sens, expl, output, output_stream,
                sort_by=SORT_BY_EFFECT, node_filter=FILTER_LEAVES_ONLY,
@@ -162,8 +164,9 @@ def bug_report(clusters, stats, sens, expl, output, output_stream,
     print >> output_stream, '='*80
     print >> output_stream
 
-    # Take all the non-root clusters
-    zipped = filter(lambda (c, _): not c.isroot, zipped)
+    # Take all the non-root clusters that are significant
+    zipped = filter(lambda (c, _):
+                    not c.isroot and c.clstr_measure.abs_effect > 0, zipped)
 
     #
     # Only keep sub-populations that lead to a better bias

@@ -28,7 +28,8 @@ def compute_all_stats(experiments, approx, fdr):
         all_stats = {sens: compute_stats(exp, approx, adj_ci_level)
                      for (sens, exp) in sorted(experiments.iteritems())}
 
-        all_pvals = [max(stat[-1], 1e-180) for exp_stats in all_stats.values() for stat in exp_stats['stats'] ]
+        all_pvals = [max(stat[-1], 1e-180) for exp_stats in all_stats.values()
+                     for stat in exp_stats['stats']]
 
         # correct p-values
         if fdr_alpha:

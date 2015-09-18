@@ -344,7 +344,7 @@ def select_best_feature(node_data, features, split_params,
         # print 'feature {}: score {}'.format(feature, split_score)
 
         # the feature produced no split and can be dropped for future sub-trees
-        if not split_score or np.isnan(split_score):
+        if split_score is None or np.isnan(split_score):
             to_drop.append(feature)
             continue
 
