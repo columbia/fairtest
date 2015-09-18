@@ -80,6 +80,7 @@ def print_summary(all_clusters, displ_clusters, namer, output_stream):
 
     root = filter(lambda c: c.isroot, all_clusters)[0]
 
+    context_list = []
     def recurse(node, indent):
         if node.num in displ_clusters:
             if node.clstr_measure.dataType != fm.Measure.DATATYPE_REG:
@@ -88,10 +89,12 @@ def print_summary(all_clusters, displ_clusters, namer, output_stream):
                            node.clstr_measure.stats[0],
                            node.clstr_measure.stats[1],
                            node.size)
+                context_list.append(print_context(node.path, namer))
             else:
                 print >> output_stream, '{} Context = {} ; Avg Effect = {:.4f}'.\
                     format(' '*indent, node.path,
                            node.clstr_measure.abs_effect())
+                context_list.append(print_context(node.path, namer))
             indent += 2
         for child in node.children:
             recurse(child, indent)
@@ -101,6 +104,7 @@ def print_summary(all_clusters, displ_clusters, namer, output_stream):
     print >> output_stream, '-'*80
     print >> output_stream
 
+    return context_list
 
 def bug_report(clusters, stats, sens, expl, output, output_stream,
                sort_by=SORT_BY_EFFECT, node_filter=FILTER_LEAVES_ONLY,
@@ -213,7 +217,7 @@ def bug_report(clusters, stats, sens, expl, output, output_stream,
         print >> output_stream, '-'*80
         print >> output_stream
 
-    print_summary(clusters, displ_clusters, namer, output_stream)
+    return print_summary(clusters, displ_clusters, namer, output_stream)
 
 
 def print_context(path, namer):

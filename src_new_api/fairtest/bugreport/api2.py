@@ -153,7 +153,7 @@ class Experiment:
 
         # find discrimination contexts for each sensitive feature
         for sens in self.sens_features:
-            print 'TRAINING WITH SENSITIVE FEATURE {} ...'.format(sens)
+            # print 'TRAINING WITH SENSITIVE FEATURE {} ...'.format(sens)
 
             if sens not in self.measures:
                 # get a default measure
@@ -171,7 +171,7 @@ class Experiment:
                                       max_depth, min_leaf_size,
                                       score_aggregation, max_bins)
             self.trained_trees[sens] = tree
-            print ""
+            # print ""
 
     def test(self, prune_insignificant=True, approx_stats=True, fdr=0.05):
         """
@@ -212,7 +212,7 @@ class Experiment:
                                        prune_insignificant)
             num_contexts += len(self.contexts[sens])
 
-        print 'RUNNING {} HYPOTHESIS TESTS...'.format(num_contexts)
+        # print 'RUNNING {} HYPOTHESIS TESTS...'.format(num_contexts)
         # compute p-values and confidence intervals with FDR correction
         np.random.seed(self.random_state)
         self.stats = multitest.compute_all_stats(self.contexts, approx_stats, fdr)
@@ -274,13 +274,14 @@ class Experiment:
                                 self.display_params, output_stream)
 
         for sens in self.sens_features:
-            print 'Report of associations on Si = {}:'.format(sens)
-            print 'Association metric: {}'.format(self.measures[sens])
-            print
+            print >> output_stream, 'Report of associations on Si = {}:'.format(sens)
+            print >> output_stream, 'Association metric: {}'.format(self.measures[sens])
+            print >> output_stream
             stats = self.stats[sens]
             clusters = self.contexts[sens]
             np.random.seed(self.random_state)
-            displ.bug_report(clusters, stats, sens, self.expl, self.output,
+            # dirty nasty hack for the benchmark
+            return displ.bug_report(clusters, stats, sens, self.expl, self.output,
                              output_stream, sort_by, filter_by, self.encoders)
 
 
