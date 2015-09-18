@@ -20,8 +20,7 @@ from random import shuffle, randint, seed
 import os
 import sys
 import multiprocessing
-
-RANDOM_SEED = 0
+from datetime import datetime
 
 
 def parse_line(line):
@@ -74,8 +73,6 @@ def load_file(file_name):
     Helper loading file in mem. and mapping to dictionaries
     """
     f = open(file_name, "r")
-
-    seed(RANDOM_SEED)
 
     # create a state_race dictionary with the sizes of each combination
     _sizes_dict = {}
@@ -133,6 +130,11 @@ def do_benchmark((classes, pool, guard_lines)):
     """
     results = {}
     BASE_FILENAME = "/tmp/temp_fairtest"
+
+    MICROSECONDS = int((datetime.now() - datetime(1970, 1, 1)).total_seconds() * 10**6)
+    # keep last digits of this very large number
+    RANDOM_SEED = MICRRSECONDS % 10**8
+    seed(RANDOM_SEED)
 
     # iterate for various effects
     for effect in [2.5, 5, 10, 15, 20]:
@@ -257,7 +259,7 @@ def parse_results(results, iterations):
         for result in results:
             merged.append(map(lambda x: x[1], sorted(result[effect].items())))
         aggregate = map(sum, zip(*merged))
-        average = map(lambda x: x/iterations, aggregate)
+        average = map(lambda x: float(x)/float(iterations), aggregate)
         stats.append(average)
 
     # print stats
@@ -271,7 +273,7 @@ def parse_results(results, iterations):
 
         print "%s" % sorted(map(lambda x:x[1], results[0].items())[0].keys())[result],
         for effect in range(len(stats)):
-            print ",%s" % stats[effect][result],
+            print ",%.2f" % stats[effect][result],
         print
 
 
