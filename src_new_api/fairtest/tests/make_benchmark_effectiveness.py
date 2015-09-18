@@ -16,7 +16,12 @@ from fairtest.bugreport.helpers import prepare
 from time import time
 from copy import deepcopy
 from random import shuffle, randint, seed
+
+import os
 import sys
+import multiprocessing
+
+RANDOM_SEED = 0
 
 
 def parse_line(line):
@@ -64,15 +69,12 @@ def round(key):
     return None
 
 
-def main(argv=sys.argv):
+def load_file(file_name):
+    """
+    Helper loading file in mem. and mapping to dictionaries
+    """
+    f = open(file_name, "r")
 
-    if len(argv) != 2:
-        usage(argv)
-
-    FILENAME = argv[1]
-    f = open(FILENAME, "r")
-
-    RANDOM_SEED = 0
     seed(RANDOM_SEED)
 
     # create a state_race dictionary with the sizes of each combination
@@ -105,10 +107,10 @@ def main(argv=sys.argv):
     # being the keys, and all the user attributes as the dictionary items
     # so that we don't read disk blocks in the main loop
     pool = {}
-    f = open(FILENAME, "r")
+    f = open(file_name, "r")
     f.next()
 
-    lines1 = 0
+    lines = 0
     for line in f:
         state = parse_line(line)[0]
         gender = parse_line(line)[1]
@@ -120,26 +122,37 @@ def main(argv=sys.argv):
         if state_race not in pool:
             pool[state_race] = []
         pool[state_race].append(state + "," + gender + "," + race + "," + income + "," +  price)
-        lines1 += 1
+        lines += 1
 
-    FILENAME = "/tmp/temp_fairtest.txt"
+    return classes, pool, lines
+
+
+def do_benchmark((classes, pool, guard_lines)):
+    """
+    main method doing the benchmark
+    """
+    results = {}
+    BASE_FILENAME = "/tmp/temp_fairtest"
 
     # iterate for various effects
-    for effect in [5, 10, 15, 20]:
+    for effect in [2.5, 5, 10, 15, 20]:
+        results[effect]  = {}
 
         _classes = deepcopy(classes)
         # iterate for  various population sizes
         # sorted numericaly by population size.
         for _class in map(str, sorted(map(int, _classes.keys()))):
 
-            f_temp = open(FILENAME, "w+")
+            random_suffix = str(randint(1,999999))
+            current_filename = BASE_FILENAME + random_suffix
+            f_temp = open(current_filename , "w+")
             print >> f_temp, "state,gender,race,income,price"
 
             selected = []
             _pool = deepcopy(pool)
             shuffle(_classes[_class])
 
-            lines2 = 0
+            lines = 0
             for i in range(0, 10):
                 state_race = _classes[_class].pop()
 
@@ -159,7 +172,7 @@ def main(argv=sys.argv):
                         price = "low" if randint(1, 100) <= 50 - effect else "high"
 
                     print >> f_temp, "%s,%s,%s,%s,%s" % (state, gender, race, income, price)
-                    lines2 += 1
+                    lines += 1
 
                 del _pool[state_race]
 
@@ -171,19 +184,19 @@ def main(argv=sys.argv):
                 for entry in _pool[state_race]:
                     price = "low" if randint(1, 100) <= 50 else "high"
                     print >> f_temp, "%s,%s,%s,%s,%s" % (entry.split(",")[0],
-                                              entry.split(",")[1],
-                                              entry.split(",")[2],
-                                              entry.split(",")[3],
-                                              price)
-                    lines2 += 1
+                                                         entry.split(",")[1],
+                                                         entry.split(",")[2],
+                                                         entry.split(",")[3],
+                                                         price)
+                    lines += 1
 
             f_temp.close()
-
             # protect from random bugs that appear after 3a.m. ;-)
-            assert lines1 == lines2
+            assert guard_lines == lines
 
-            # Preapre data into FairTest friendly format
-            data = prepare.data_from_csv(FILENAME)
+            # Prepare data into FairTest friendly format
+            data = prepare.data_from_csv(current_filename)
+            os.remove(current_filename)
 
             # Initializing parameters for experiment
             EXPL = []
@@ -206,7 +219,8 @@ def main(argv=sys.argv):
 
             # Create the report
             # Create the report
-            context_list = FT1.report("benchmark", "/tmp", filter_by='all')
+            context_list = FT1.report("benchmark_" + random_suffix,
+                                      "/tmp", filter_by='all')
 
             #print selected
             #print context_list
@@ -223,11 +237,67 @@ def main(argv=sys.argv):
                         selected.remove(state_race)
                         found += 1
 
-            print "effect:%s,size:%s,found:%s/10" % (str(effect), str(_class), str(found))
+            # print "effect:%s,size:%s,found:%s/10" % (str(effect), str(_class), str(found))
+            results[effect][int(_class)] = found
+            # print results
+        # end of iterations on classes of certain effect
+    #end of iterations on effects
+    return results
+
+
+def parse_results(results, iterations):
+    """
+    Helper parsing the results and converting into csv format
+    """
+
+    stats = []
+
+    for effect in sorted(results[0]):
+        merged = []
+        for result in results:
+            merged.append(map(lambda x: x[1], sorted(result[effect].items())))
+        aggregate = map(sum, zip(*merged))
+        average = map(lambda x: x/iterations, aggregate)
+        stats.append(average)
+
+    # print stats
+
+    print "#size",
+    for effect in sorted(results[0]):
+        print ",effect-%s" % effect,
+    print
+
+    for result in range(len(stats[0])):
+
+        print "%s" % sorted(map(lambda x:x[1], results[0].items())[0].keys())[result],
+        for effect in range(len(stats)):
+            print ",%s" % stats[effect][result],
+        print
+
+
+def main(argv=sys.argv):
+    """
+    Entry point -- will try to parallelize
+    """
+    if len(argv) != 3:
+        usage(argv)
+
+    FILENAME = argv[1]
+    ITERATIONS = int(argv[2])
+
+    classes, pool, lines = load_file(FILENAME)
+
+    P = multiprocessing.Pool(multiprocessing.cpu_count())
+    results = P.map_async(do_benchmark, [(classes, pool, lines)]*ITERATIONS)
+    results = results.get()
+    P.close()
+    P.join()
+
+    parse_results(results, ITERATIONS)
 
 
 def usage(argv):
-    print "Usage:%s <filename>" % argv[0]
+    print "Usage:%s <filename> <iterations>" % argv[0]
     exit(-1)
 
 if __name__ == '__main__':
