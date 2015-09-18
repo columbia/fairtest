@@ -133,7 +133,7 @@ def do_benchmark((classes, pool, guard_lines)):
 
     MICROSECONDS = int((datetime.now() - datetime(1970, 1, 1)).total_seconds() * 10**6)
     # keep last digits of this very large number
-    RANDOM_SEED = MICRRSECONDS % 10**8
+    RANDOM_SEED = MICROSECONDS % 10**8
     seed(RANDOM_SEED)
 
     # iterate for various effects
@@ -289,7 +289,7 @@ def main(argv=sys.argv):
 
     classes, pool, lines = load_file(FILENAME)
 
-    P = multiprocessing.Pool(multiprocessing.cpu_count())
+    P = multiprocessing.Pool(multiprocessing.cpu_count() + 2)
     results = P.map_async(do_benchmark, [(classes, pool, lines)]*ITERATIONS)
     results = results.get()
     P.close()
