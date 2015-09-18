@@ -311,8 +311,8 @@ def get_measure(sens, out, ci_level, topk, expl):
     elif sens.arity and out.arity:
         return fm.NMI(ci_level=ci_level)
     else:
-        assert not sens.arity >= 2
-        assert not out.arity >= 2
+        assert not sens.arity > 2
+        assert not out.arity > 2
         return fm.CORR(ci_level=ci_level)
 
 

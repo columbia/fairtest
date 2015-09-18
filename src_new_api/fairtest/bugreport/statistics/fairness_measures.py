@@ -351,7 +351,7 @@ class REGRESSION(Measure):
             reg = LogisticRegression()
             reg.fit(X, y)
             y_pred = reg.predict(X)
-            print metrics.classification_report(y, y_pred)
+            # print metrics.classification_report(y, y_pred)
             # print reg.coef_[0]
 
             # approximate the standard errors for all regression coefficients
@@ -397,7 +397,7 @@ class REGRESSION(Measure):
 
             self.stats = sorted_results[['conf low', 'conf high', 'p-value']].\
                     head(self.topK)
-            print self.stats
+            # print self.stats
             self.type = "Regression"
             return self
         else:
