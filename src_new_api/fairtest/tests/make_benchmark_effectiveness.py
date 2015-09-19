@@ -45,7 +45,7 @@ def round(key):
     DELTA = 0.2
     DELTA_HIGH = 0.25
     key = int(key)
-    '''
+    
     SIZE = 100
     if key in range(int(SIZE*(1 - DELTA)), int(SIZE*(1 + DELTA))+1):
         return str(SIZE)
@@ -61,7 +61,7 @@ def round(key):
     SIZE = 2000
     if key in range(int(SIZE*(1 - DELTA_HIGH)), int(SIZE*(1 + DELTA_HIGH))+1):
         return str(SIZE)
-    '''
+    
     SIZE = 5000
     if key in range(int(SIZE*(1 - DELTA_HIGH)), int(SIZE*(1 + DELTA_HIGH))+1):
         return str(SIZE)
