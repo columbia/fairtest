@@ -214,7 +214,7 @@ def build_tree(data, feature_info, sens, expl, output, measure, max_depth,
             return
 
         # print 'splitting on {} (score={}) with threshold {} at pred {}'.\
-        #    format(best_feature, split_score, threshold, pred)
+        #     format(best_feature, split_score, threshold, pred)
 
         if threshold:
             # binary split

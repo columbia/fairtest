@@ -94,10 +94,13 @@ def load_file(file_name):
             _sizes_dict[state_race] = 0
         _sizes_dict[state_race] += 1
     
+    # filter states with a single race
     for state in states:
         all_races = [state+"_"+race for race in races]
         all_sizes = [_sizes_dict.get(state_race, 0) for state_race in all_races]
-        if len(all_sizes) < 2 or sorted(all_sizes, reverse=True)[1] < 150:
+        
+        # check that the second most frequent race is large enough
+        if len(all_sizes) < 2 or sorted(all_sizes, reverse=True)[1] < 300:
             for state_race in all_races:
                 _sizes_dict.pop(state_race, None) 
     
@@ -112,6 +115,11 @@ def load_file(file_name):
             if round(key) not in classes:
                 classes[round(key)] = []
             classes[round(key)].append(sizes_dict[key])
+            
+    '''
+    for key in classes:
+        print key + ": " + str(len(classes[key]))
+    '''
     
     # reload the file and keep a dictionary with state_gender combinations
     # being the keys, and all the user attributes as the dictionary items
@@ -256,9 +264,9 @@ def do_benchmark((classes, pool, guard_lines)):
                         selected.remove(state_race)
                         found += 1
 
-            # print "effect:%s,size:%s,found:%s/10" % (str(effect), str(_class), str(found))
+            #print "effect:%s,size:%s,found:%s/10" % (str(effect), str(_class), str(found))
             results[effect][int(_class)] = found
-            # print 'not found: {}'.format(selected)
+            #print 'not found: {}'.format(selected)
             # print results
         # end of iterations on classes of certain effect
     #end of iterations on effects
