@@ -379,8 +379,8 @@ def print_cluster_corr(cluster, cluster_stats, effect_name, namer,
         ax = plt.gca()
         ax.set_xticklabels(namer.get_sens_feature_vals(len(data[data.columns[1]].unique())))
     else:
-        plt.xlim(np.min(sens)-0.2*np.std(sens), np.max(sens)+0.2*np.std(sens))
-        plt.ylim(np.min(out)-0.2*np.std(out), np.max(out)+0.2*np.std(out))
+        plt.xlim(np.min(sens)-0.4*np.std(sens), np.max(sens)+0.4*np.std(sens))
+        plt.ylim(np.min(out)-0.4*np.std(out), np.max(out)+0.4*np.std(out))
     plt.xlabel(data.columns[1])
     plt.ylabel(data.columns[0])
     plt.show()

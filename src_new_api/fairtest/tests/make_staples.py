@@ -31,7 +31,7 @@ def main(argv=sys.argv):
 
     # Evaluate on the testing set
     t3 = time()
-    FT1.test(approx_stats=False)
+    FT1.test(approx_stats=False, prune_insignificant=True)
 
     # Create the report
     t4 = time()
@@ -42,39 +42,6 @@ def main(argv=sys.argv):
             % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
     print "-" * 80
     print
-
-
-    data = prepare.data_from_csv(FILENAME, to_drop=['zipcode', 'distance'])
-
-    # Initializing parameters for experiment
-    EXPL = []
-    SENS = ['race']
-    TARGET = 'price'
-
-    # Instanciate the experiment
-    t1 = time()
-    FT2 = api.Experiment(data, SENS, TARGET, EXPL,
-                         measures={'race':'NMI'},
-                         random_state=0)
-
-    # Train the classifier
-    t2 = time()
-    FT2.train()
-
-    # Evaluate on the testing set
-    t3 = time()
-    FT2.test(approx_stats=False)
-
-    # Create the report
-    t4 = time()
-    FT2.report("staples2")
-
-    t5 = time()
-    print "NMI:Staples-Race-Price:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
-            % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
-    print "-" * 80
-    print
-
 
 
 def usage(argv):

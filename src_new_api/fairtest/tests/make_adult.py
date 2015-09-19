@@ -31,7 +31,7 @@ def main(argv=sys.argv):
 
     # Evaluate on the testing set
     t3 = time()
-    FT1.test(approx_stats=False)
+    FT1.test(approx_stats=False, prune_insignificant=True)
 
     # Create the report
     t4 = time()

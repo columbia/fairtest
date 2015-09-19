@@ -12,18 +12,19 @@ def main(argv=sys.argv):
 
     # Preapre data into FairTest friendly format
     FILENAME = argv[1]
-    data = prepare.data_from_csv(FILENAME, to_drop=['userID', 'city', 'zip',
-                                            'movieType', 'mode', 'improvement'])
+    data = prepare.data_from_csv(FILENAME, sep='\t',
+    to_drop=['userID', 'RMSE', 'Labels'])
 
     # Initializing parameters for experiment
-    EXPL = []
+    dataname = 'movies.txt'
     SENS = ['age']
-    TARGET = 'median'
+    TARGET = 'avgScore'
+    EXPL = []
 
     # Instanciate the experiment
     t1 = time()
     FT1 = api.Experiment(data, SENS, TARGET, EXPL,
-                         measures={'age':'Corr'},
+                         topk = 10,
                          random_state=0)
     # Train the classifier
     t2 = time()
@@ -31,46 +32,47 @@ def main(argv=sys.argv):
 
     # Evaluate on the testing set
     t3 = time()
-    FT1.test(approx_stats=False)
+    FT1.test(approx_stats=False, prune_insignificant=True)
 
     # Create the report
     t4 = time()
-    FT1.report("recommender1")
+    FT1.report("recommender_test")
 
     t5 = time()
-    print "Correlation:Recommender-Age-Median:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
+    print "Correlation:Recommender-Age-AvgScore:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
             % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
     print "-" * 80
     print
-
-
-    data = prepare.data_from_csv(FILENAME, to_drop=['userID', 'city', 'zip',
-                                            'movieType', 'mode', 'improvement'])
-
-    # Initializing parameters for experiment
+    
+    '''
+        Error Profiling
+    '''
+    
+    data = prepare.data_from_csv(FILENAME, sep='\t',
+    to_drop=['userID', 'avgScore', 'Labels'])
+    SENS = ['age']
+    TARGET = 'RMSE'
     EXPL = []
-    SENS = ['gender']
-    TARGET = 'median'
 
     # Instanciate the experiment
     t1 = time()
-    FT2 = api.Experiment(data, SENS, TARGET, EXPL,
-                         measures={'gender': 'Corr'},
+    FT1 = api.Experiment(data, SENS, TARGET, EXPL,
+                         topk = 10,
                          random_state=0)
     # Train the classifier
     t2 = time()
-    FT2.train()
+    FT1.train()
 
     # Evaluate on the testing set
     t3 = time()
-    FT2.test(approx_stats=False)
+    FT1.test(approx_stats=False, prune_insignificant=True)
 
     # Create the report
     t4 = time()
-    FT2.report("recommender2")
+    FT1.report("recommender_error")
 
     t5 = time()
-    print "Correlation:Recommender-Gender-Median:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
+    print "Correlation:Recommender-Age-RMSE:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
             % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
     print "-" * 80
     print

@@ -1,0 +1,14 @@
+# Testing
+Correlation:Recommender-Age-AvgScore:Instantiation: 0.01, Train: 0.04, Test: 19.58, Report: 2.90
+NMI:Adult-Sex-Income:Instantiation: 0.22, Train: 4.47, Test: 102.65, Report: 0.07
+NMI:Berkeley-Gender-Accepted:Instantiation: 0.01, Train: 0.01, Test: 30.51, Report: 6.67
+NMI:Staples-Income-Price:Instantiation: 3.22, Train: 29.98, Test: 113.22, Report: 0.12
+
+# Discovery
+Regression:Recommender-Gender-Genres:Instantiation: 0.01, Train: 0.38, Test: 128.38, Report: 0.15
+Regression:Overfeat-Race-Label:Instantiation: 0.12, Train: 2.44, Test: 31.74, Report: 0.51
+
+# Error
+Correlation:Recommender-Age-RMSE:Instantiation: 0.01, Train: 0.04, Test: 16.00, Report: 2.46
+NMI:Medical-Age-Prediction:Instantiation: 0.49, Train: 43.72, Test: 43.57, Report: 0.12
+Correlation:Medical-Age-Error:Instantiation: 0.45, Train: 22.77, Test: 75.98, Report: 11.87
