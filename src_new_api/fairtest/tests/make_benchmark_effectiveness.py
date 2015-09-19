@@ -158,7 +158,7 @@ def do_benchmark((classes, pool, guard_lines)):
     seed(RANDOM_SEED)
 
     # iterate for various effects
-    for effect in [20]:
+    for effect in [2.5, 5, 10, 15, 20]:
         results[effect]  = {}
 
         _classes = deepcopy(classes)
