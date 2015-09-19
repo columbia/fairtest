@@ -202,6 +202,8 @@ def build_tree(data, feature_info, sens, expl, output, measure, max_depth,
         if (depth == max_depth) or (len(node_features) == 0):
             return
 
+        # print 'looking for splits at pred {}'.format(pred)
+
         # select the best feature to split on
         split_score, best_feature, threshold, to_drop, child_measures = \
             select_best_feature(node_data, node_features,
@@ -212,7 +214,7 @@ def build_tree(data, feature_info, sens, expl, output, measure, max_depth,
             return
 
         # print 'splitting on {} (score={}) with threshold {} at pred {}'.\
-        #   format(best_feature, split_score, threshold, pred)
+        #    format(best_feature, split_score, threshold, pred)
 
         if threshold:
             # binary split

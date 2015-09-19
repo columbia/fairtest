@@ -22,6 +22,7 @@ import sys
 import multiprocessing
 from datetime import datetime
 
+FIND_CONTEXTS_STRICT = False
 
 def parse_line(line):
     """
@@ -41,28 +42,28 @@ def round(key):
     """
     Split the classes and allow a +-20% error on the sizes
     """
-    DELTA = 0.20
+    DELTA = 0.2
+    DELTA_HIGH = 0.25
     key = int(key)
-
-
+    '''
     SIZE = 100
-    if key in range(int(SIZE*(1 - DELTA)), int(SIZE*(1 + DELTA))):
+    if key in range(int(SIZE*(1 - DELTA)), int(SIZE*(1 + DELTA))+1):
         return str(SIZE)
 
     SIZE = 500
-    if key in range(int(SIZE*(1 - DELTA)), int(SIZE*(1 + DELTA))):
+    if key in range(int(SIZE*(1 - DELTA)), int(SIZE*(1 + DELTA))+1):
         return str(SIZE)
-
+    
     SIZE = 1000
-    if key in range(int(SIZE*(1 - DELTA)), int(SIZE*(1 + DELTA))):
+    if key in range(int(SIZE*(1 - DELTA)), int(SIZE*(1 + DELTA))+1):
         return str(SIZE)
 
     SIZE = 2000
-    if key in range(int(SIZE*(1 - DELTA)), int(SIZE*(1 + DELTA))):
+    if key in range(int(SIZE*(1 - DELTA_HIGH)), int(SIZE*(1 + DELTA_HIGH))+1):
         return str(SIZE)
-
+    '''
     SIZE = 5000
-    if key in range(int(SIZE*(1 - DELTA)), int(SIZE*(1 + DELTA))):
+    if key in range(int(SIZE*(1 - DELTA_HIGH)), int(SIZE*(1 + DELTA_HIGH))+1):
         return str(SIZE)
 
     return None
@@ -76,6 +77,8 @@ def load_file(file_name):
 
     # create a state_race dictionary with the sizes of each combination
     _sizes_dict = {}
+    states = set()
+    races = set()
     for line in f:
         state = parse_line(line)[0]
         gender = parse_line(line)[1]
@@ -83,11 +86,21 @@ def load_file(file_name):
         income = parse_line(line)[3]
         price = parse_line(line)[4]
         state_race = state + "_" + race
-
+        
+        states.add(state)
+        races.add(race)
+        
         if state_race not in _sizes_dict:
             _sizes_dict[state_race] = 0
         _sizes_dict[state_race] += 1
-
+    
+    for state in states:
+        all_races = [state+"_"+race for race in races]
+        all_sizes = [_sizes_dict.get(state_race, 0) for state_race in all_races]
+        if len(all_sizes) < 2 or sorted(all_sizes, reverse=True)[1] < 150:
+            for state_race in all_races:
+                _sizes_dict.pop(state_race, None) 
+    
     # swap the dictionary so that sizes are the keys
     sizes_dict = dict (zip(_sizes_dict.values(), _sizes_dict.keys()))
 
@@ -99,7 +112,7 @@ def load_file(file_name):
             if round(key) not in classes:
                 classes[round(key)] = []
             classes[round(key)].append(sizes_dict[key])
-
+    
     # reload the file and keep a dictionary with state_gender combinations
     # being the keys, and all the user attributes as the dictionary items
     # so that we don't read disk blocks in the main loop
@@ -137,7 +150,7 @@ def do_benchmark((classes, pool, guard_lines)):
     seed(RANDOM_SEED)
 
     # iterate for various effects
-    for effect in [2.5, 5, 10, 15, 20]:
+    for effect in [20]:
         results[effect]  = {}
 
         _classes = deepcopy(classes)
@@ -204,13 +217,17 @@ def do_benchmark((classes, pool, guard_lines)):
             EXPL = []
             SENS = ['income']
             TARGET = 'price'
-
+            
             # Instanciate the experiment
             FT1 = api.Experiment(data, SENS, TARGET, EXPL,
                                  measures={'race': 'NMI'},
                                  random_state=RANDOM_SEED)
+                                 
+            #print FT1.encoders['state'].classes_
+            #print FT1.encoders['race'].classes_
+            
             # Train the classifier
-            FT1.train(min_leaf_size=50)
+            FT1.train(min_leaf_size=50, score_aggregation="avg")
 
             approx_stats = True
             if int(_class) < 1000:
@@ -226,12 +243,12 @@ def do_benchmark((classes, pool, guard_lines)):
 
             #print selected
             #print context_list
-
+            
             # count sucess
             found = 0
             for context in context_list:
                 # print context
-                if len(context) == 2 and 'state' in context and 'race' in context:
+                if ('state' in context and 'race' in context) and (len(context) == 2 or not FIND_CONTEXTS_STRICT):
                     state_race = str(context['state']) + "_" + str(context['race'])
                     if state_race in selected:
                         # remove it so that we don't count multiple
@@ -241,6 +258,7 @@ def do_benchmark((classes, pool, guard_lines)):
 
             # print "effect:%s,size:%s,found:%s/10" % (str(effect), str(_class), str(found))
             results[effect][int(_class)] = found
+            # print 'not found: {}'.format(selected)
             # print results
         # end of iterations on classes of certain effect
     #end of iterations on effects
@@ -294,7 +312,7 @@ def main(argv=sys.argv):
     results = results.get()
     P.close()
     P.join()
-
+    
     parse_results(results, ITERATIONS)
 
 
