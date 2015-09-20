@@ -86,24 +86,24 @@ def load_file(file_name):
         income = parse_line(line)[3]
         price = parse_line(line)[4]
         state_race = state + "_" + race
-        
+
         states.add(state)
         races.add(race)
-        
+
         if state_race not in _sizes_dict:
             _sizes_dict[state_race] = 0
         _sizes_dict[state_race] += 1
-    
+
     # filter states with a single race
     for state in states:
         all_races = [state+"_"+race for race in races]
         all_sizes = [_sizes_dict.get(state_race, 0) for state_race in all_races]
-        
+
         # check that the second most frequent race is large enough
         if len(all_sizes) < 2 or sorted(all_sizes, reverse=True)[1] < 300:
             for state_race in all_races:
                 _sizes_dict.pop(state_race, None) 
-    
+
     # swap the dictionary so that sizes are the keys
     sizes_dict = dict (zip(_sizes_dict.values(), _sizes_dict.keys()))
 
@@ -115,7 +115,7 @@ def load_file(file_name):
             if round(key) not in classes:
                 classes[round(key)] = []
             classes[round(key)].append(sizes_dict[key])
-            
+
     '''
     for key in classes:
         print key + ": " + str(len(classes[key]))
@@ -225,15 +225,15 @@ def do_benchmark((classes, pool, guard_lines)):
             EXPL = []
             SENS = ['income']
             TARGET = 'price'
-            
+
             # Instanciate the experiment
             FT1 = api.Experiment(data, SENS, TARGET, EXPL,
                                  measures={'race': 'NMI'},
                                  random_state=RANDOM_SEED)
-                                 
+
             #print FT1.encoders['state'].classes_
             #print FT1.encoders['race'].classes_
-            
+
             # Train the classifier
             FT1.train(min_leaf_size=50, score_aggregation="avg")
 
@@ -251,7 +251,7 @@ def do_benchmark((classes, pool, guard_lines)):
 
             #print selected
             #print context_list
-            
+
             # count sucess
             found = 0
             for context in context_list:
@@ -320,7 +320,7 @@ def main(argv=sys.argv):
     results = results.get()
     P.close()
     P.join()
-    
+
     parse_results(results, ITERATIONS)
 
 

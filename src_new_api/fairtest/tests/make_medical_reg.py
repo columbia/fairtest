@@ -40,7 +40,7 @@ def main(argv=sys.argv):
 
     t5 = time()
 
-    print "Correlation:Medical-Age-Error:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
+    print "Error:Health(Cont.):Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
             % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
     print "-" * 80
     print

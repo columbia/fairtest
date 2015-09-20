@@ -38,7 +38,7 @@ def main(argv=sys.argv):
     FT1.report("berkeley", filter_by=display_clusters.FILTER_ALL)
 
     t5 = time()
-    print "NMI:Berkeley-Gender-Accepted:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
+    print "Testing:Berkeley:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
             % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
     print "-" * 80
     print

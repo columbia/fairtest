@@ -20,7 +20,7 @@ def main(argv=sys.argv):
     data = prepare.data_from_csv(FILENAME, sep='\\t', to_drop=['Average_age'])
     TARGET = 'Types'
     SENS = ['gender']
-    
+
     EXPL = []
     labeled_data = map(lambda s: ast.literal_eval(s), data[TARGET])
     for labels in labeled_data:
@@ -31,7 +31,7 @@ def main(argv=sys.argv):
     df_labels = pd.DataFrame(labeled_data, columns=labels)
     data = pd.concat([data.drop(TARGET, axis=1), df_labels], axis=1)
     TARGET = labels.tolist()
-    
+
     # Instanciate the experiment
     t1 = time()
     FT1 = api.Experiment(data, SENS, TARGET, EXPL, topk=10, random_state=0)
@@ -49,7 +49,7 @@ def main(argv=sys.argv):
 
     t5 = time()
 
-    print "Regression:Recommender-Gender-Genres:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
+    print "Discovery:Recommender:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
             % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
     print "-" * 80
     print

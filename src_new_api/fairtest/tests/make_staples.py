@@ -38,7 +38,7 @@ def main(argv=sys.argv):
     FT1.report("staples1")
 
     t5 = time()
-    print "NMI:Staples-Income-Price:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
+    print "Testing:Staples:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
             % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
     print "-" * 80
     print

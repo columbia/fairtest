@@ -39,7 +39,7 @@ def main(argv=sys.argv):
     FT1.report("recommender_test")
 
     t5 = time()
-    print "Correlation:Recommender-Age-AvgScore:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
+    print "Testing:Recommender:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
             % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
     print "-" * 80
     print
@@ -72,7 +72,7 @@ def main(argv=sys.argv):
     FT1.report("recommender_error")
 
     t5 = time()
-    print "Correlation:Recommender-Age-RMSE:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
+    print "Error:Recommender:Instantiation: %.2f, Train: %.2f, Test: %.2f, Report: %.2f"\
             % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
     print "-" * 80
     print
