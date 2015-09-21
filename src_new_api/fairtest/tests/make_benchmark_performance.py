@@ -6,7 +6,6 @@ Usage: ./make_benchmark_performance.py fairtest/data/staples/staples.csv 100
 
 
 Logic for now is:
-    ITERATE:
     - Load staples file (excluding zipcode, city from BASE_FEATURES)
     - For ADDITIONAL_FEATURES in {5, 10, 15, ..., 50}
         - pick ADDITIONAL_FEATURES features from BASE_FEATURES (relpicates the same features)
@@ -25,6 +24,7 @@ from random import shuffle, randint, seed
 
 import os
 import sys
+import pandas as pd
 import multiprocessing
 from datetime import datetime
 
@@ -82,11 +82,32 @@ def magnify_contents(contents, features):
 
     for entry in contents:
         magnified_entry = entry[:-1] +\
-                          [entry[feature]+str(i) for i,feature in enumerate(features)] +\
+                          [entry[feature]+str(i) for i, feature in enumerate(features)] +\
                           [entry[-1]]
         magnified_contents.append(magnified_entry)
 
     return magnified_contents
+
+
+def shuffle_column_contents(data, base_features):
+    """
+    After having create additional features by replicating some feature columns,
+    shuffle the contencts of the additional columns in order to randomize the
+    entropy of the data and cause more frustration to FairTest.
+    """
+    data_dict = dict(data)
+    keys = list(data.columns.values)
+
+    for key in keys:
+        if key not in base_features:
+            _values = dict(data_dict[key]).values()
+            _keys = dict(data_dict[key]).keys()
+            shuffle(_values)
+            shuffled = dict(zip(_keys, _values))
+            data_dict[key] = shuffled
+
+    data = pd.DataFrame(data_dict)
+    return data.reindex(columns=keys)
 
 
 def do_benchmark((contents, n_features_max)):
@@ -129,10 +150,10 @@ def do_benchmark((contents, n_features_max)):
 
         for size in [10000, 20000, 40000, 80000, 160000]:
 
-            random_suffix = str(randint(1,99999999))
+            random_suffix = str(randint(1, 99999999))
             current_filename = BASE_FILENAME + random_suffix
 
-            f_temp = open(current_filename , "w+")
+            f_temp = open(current_filename, "w+")
 
             print >> f_temp, features_header
             for content in magnify_contents(_contents[:size], features):
@@ -140,10 +161,12 @@ def do_benchmark((contents, n_features_max)):
 
             f_temp.close()
 
-            # TODO: Add this statisti in the results
-
             # Prepare data into FairTest friendly format
             data = prepare.data_from_csv(current_filename)
+
+            # shuffle around additional feature vales
+            data = shuffle_column_contents(data, BASE_FEATURES)
+
             os.remove(current_filename)
 
             # Initializing parameters for experiment
@@ -187,6 +210,8 @@ def parse_results(results, iterations):
     """
     merged = {}
 
+    print "#n_features,size,t_train,t_test,t_train_perc,t_test_perc,t_total,avg_feat_vals"
+
     for n_features in sorted(results[0]):
         merged[n_features] = {}
         for result in results:
@@ -199,8 +224,6 @@ def parse_results(results, iterations):
                 merged[n_features][size][0] += t_train
                 merged[n_features][size][1] += t_test
                 merged[n_features][size][2] += avg_no_of_feat_values
-
-    print "#n_features,size,t_train,t_test,t_train_perc,t_test_perc,t_total,avg_feat_vals"
 
     for n_features in sorted(merged):
         for size in sorted(merged[n_features]):

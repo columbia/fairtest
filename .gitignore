@@ -62,3 +62,7 @@ target/
 *.aux
 *.bbl
 *.blg
+
+# misc
+*/dirty/*
+*/db.*
