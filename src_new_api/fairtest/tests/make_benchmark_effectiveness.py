@@ -4,9 +4,9 @@ Run with: ./benchmark.py fairtest/data/staples/staples.csv
 
 The logic for now is:
     for SIZE in {100, 500, 1000, 2000, 5000}: 
+            - select 10 contexts {race, state} of size ~SIZE
             for DIFF in {10, 15, 20, 25, 30}:
-                    - select 10 contexts {race, state} of size ~SIZE
-                    - randomly select (50+DIFF)% of the rich 
+                    - randomly select (50+DIFF)% of the rich
                       and (50-DIFF)% of he poor to get discounts
                     - run FairTest and report the number of contexts found
 """
@@ -19,6 +19,7 @@ from random import shuffle, randint, seed
 
 import os
 import sys
+from math import ceil
 import multiprocessing
 from datetime import datetime
 
@@ -66,7 +67,31 @@ def round(key):
     if key in range(int(SIZE*(1 - DELTA_HIGH)), int(SIZE*(1 + DELTA_HIGH))+1):
         return str(SIZE)
 
+    SIZE = 10000
+    if key in range(int(SIZE*(1 - DELTA_HIGH)), int(SIZE*(1 + DELTA_HIGH))+1):
+        return str(SIZE)
+
     return None
+
+
+def make_price_pools(population, effect):
+    """
+    Helper to create a pool with exactly (50-effect)% discount for
+    people with low income and (50+effect)% discount for high income
+    """
+    income_map = map(lambda l: l.split(',')[3], population)
+    n_poor = len(filter(lambda l: l == 'income < 50K', income_map))
+    n_rich = len(filter(lambda l: l != 'income < 50K', income_map))
+
+    poor_price_pool = [True]*int(ceil(n_poor*(50.0-effect)/100)) +\
+                      [False]*int(ceil(n_poor*(50.0+effect)/100))
+    shuffle(poor_price_pool)
+
+    rich_price_pool = [True]*int(ceil(n_rich*(50.0+effect)/100)) +\
+                      [False]*int(ceil(n_rich*(50.0-effect)/100))
+    shuffle(rich_price_pool)
+
+    return poor_price_pool, rich_price_pool
 
 
 def load_file(file_name):
@@ -102,7 +127,7 @@ def load_file(file_name):
         # check that the second most frequent race is large enough
         if len(all_sizes) < 2 or sorted(all_sizes, reverse=True)[1] < 300:
             for state_race in all_races:
-                _sizes_dict.pop(state_race, None) 
+                _sizes_dict.pop(state_race, None)
 
     # swap the dictionary so that sizes are the keys
     sizes_dict = dict (zip(_sizes_dict.values(), _sizes_dict.keys()))
@@ -115,11 +140,6 @@ def load_file(file_name):
             if round(key) not in classes:
                 classes[round(key)] = []
             classes[round(key)].append(sizes_dict[key])
-
-    '''
-    for key in classes:
-        print key + ": " + str(len(classes[key]))
-    '''
 
     # reload the file and keep a dictionary with state_gender combinations
     # being the keys, and all the user attributes as the dictionary items
@@ -139,7 +159,7 @@ def load_file(file_name):
         state_race = state + "_" + race
         if state_race not in pool:
             pool[state_race] = []
-        pool[state_race].append(state + "," + gender + "," + race + "," + income + "," +  price)
+        pool[state_race].append(state + "," + gender + "," + race + "," + income + "," + price)
         lines += 1
 
     return classes, pool, lines
@@ -152,41 +172,49 @@ def do_benchmark((classes, pool, guard_lines)):
     results = {}
     BASE_FILENAME = "/tmp/temp_fairtest"
 
-    MICROSECONDS = int((datetime.now() - datetime(1970, 1, 1)).total_seconds() * 10**6)
+    MICROSECONDS = int((datetime.now() - datetime(1970, 1, 1)).total_seconds()*10**6)
     # keep last digits of this very large number
     RANDOM_SEED = MICROSECONDS % 10**8
     seed(RANDOM_SEED)
 
-    # iterate for various effects
-    for effect in [2.5, 5, 10, 15]:
-        results[effect]  = {}
+    _classes = deepcopy(classes)
+    # iterate for  various population sizes
+    # sorted numericaly by population size.
+    for _class in map(str, sorted(map(int, _classes.keys()))):
 
-        # TODO: Keep the same populations for a specific size
-        # and iterate over different effects. In this way, the
-        # graph will be readable in the y-axis since the comparison
-        # will be on the same popultions -- as per Roxana's sugegstion
+        selected = []
+        shuffle(_classes[_class])
 
-        _classes = deepcopy(classes)
-        # iterate for  various population sizes
-        # sorted numericaly by population size.
-        for _class in map(str, sorted(map(int, _classes.keys()))):
+        for i in range(0, 10):
+            state_race = _classes[_class].pop()
 
-            random_suffix = str(randint(1,999999))
+            # keep the contexts selected to compare later
+            # with Fairtest results
+            selected.append(state_race)
+
+        results[int(_class)] = {}
+        # iterate for various effects
+        for effect in [2.5, 5, 10, 15]:
+            _pool = deepcopy(pool)
+            _selected = deepcopy(selected)
+            # TODO: Keep the same populations for a specific size
+            # and iterate over different effects. In this way, the
+            # graph will be readable in the y-axis since the comparison
+            # will be on the same popultions -- as per Roxana's sugegstion
+
+            random_suffix = str(randint(1, 999999))
             current_filename = BASE_FILENAME + random_suffix
-            f_temp = open(current_filename , "w+")
+            f_temp = open(current_filename, "w+")
             print >> f_temp, "state,gender,race,income,price"
 
-            selected = []
-            _pool = deepcopy(pool)
-            shuffle(_classes[_class])
-
             lines = 0
-            for i in range(0, 10):
-                state_race = _classes[_class].pop()
+            for state_race in _selected:
 
-                # keep the contexts selected to compare later
-                # with Fairtest results
-                selected.append(state_race)
+                # create a pool with exactly the (50-effect)% discounts for poor
+                # and (50+effect)% discounts for rich, so that this are a bit
+                # more deterministic.
+                poor_price_pool, rich_price_pool =\
+                        make_price_pools(pool[state_race], effect)
 
                 for entry in _pool[state_race]:
                     state = entry.split(",")[0]
@@ -195,22 +223,24 @@ def do_benchmark((classes, pool, guard_lines)):
                     income = entry.split(",")[3]
                     # TODO: randomize this also
                     if income == 'income >= 50K':
-                        price = "low" if randint(1, 100) <= 50 + effect else "high"
+                        price = "low" if rich_price_pool.pop() else "high"
                     else:
-                        price = "low" if randint(1, 100) <= 50 - effect else "high"
+                        price = "low" if poor_price_pool.pop() else "high"
 
-                    print >> f_temp, "%s,%s,%s,%s,%s" % (state, gender, race, income, price)
+                    print >> f_temp, "%s,%s,%s,%s,%s" % (state, gender, race,
+                                                         income, price)
                     lines += 1
-
                 del _pool[state_race]
 
-            # print 'bias in populations {} of size {}'.format(selected, _class)
+            # print 'bias in populations {} of size {}'.format(_selected,_class)
             # This will be printing the remaining populations
-            # TODO: Maybe we don't want to keep the whole remaining file,
-            # but just a random part.
             for state_race in _pool:
+                # create exactly 50-50 split of discounts for the rest
+                price_pool = [True]*(len(_pool[state_race])/2 + 1) +\
+                             [False]*(len(_pool[state_race])/2 + 1)
+
                 for entry in _pool[state_race]:
-                    price = "low" if randint(1, 100) <= 50 else "high"
+                    price = "low" if price_pool.pop() else "high"
                     print >> f_temp, "%s,%s,%s,%s,%s" % (entry.split(",")[0],
                                                          entry.split(",")[1],
                                                          entry.split(",")[2],
@@ -233,7 +263,7 @@ def do_benchmark((classes, pool, guard_lines)):
 
             # Instanciate the experiment
             FT1 = api.Experiment(data, SENS, TARGET, EXPL,
-                                 measures={'race': 'NMI'},
+                                 measures={'income': 'NMI'},
                                  random_state=RANDOM_SEED)
 
             #print FT1.encoders['state'].classes_
@@ -250,31 +280,30 @@ def do_benchmark((classes, pool, guard_lines)):
             FT1.test(approx_stats=approx_stats, prune_insignificant=True)
 
             # Create the report
-            # Create the report
             context_list = FT1.report("benchmark_" + random_suffix,
                                       "/tmp", filter_by='all')
 
-            #print selected
+            #print _selected
             #print context_list
 
             # count sucess
             found = 0
             for context in context_list:
                 # print context
-                if ('state' in context and 'race' in context) and (len(context) == 2 or not FIND_CONTEXTS_STRICT):
+                if ('state' in context and 'race' in context) and\
+                        (len(context) == 2 or not FIND_CONTEXTS_STRICT):
                     state_race = str(context['state']) + "_" + str(context['race'])
-                    if state_race in selected:
+                    if state_race in _selected:
                         # remove it so that we don't count multiple
                         # times sub-sub-populations of a population
-                        selected.remove(state_race)
+                        _selected.remove(state_race)
                         found += 1
 
-            #print "effect:%s,size:%s,found:%s/10" % (str(effect), str(_class), str(found))
-            results[effect][int(_class)] = found
-            #print 'not found: {}'.format(selected)
-            # print results
-        # end of iterations on classes of certain effect
-    #end of iterations on effects
+            results[int(_class)][effect] = found
+            del _selected
+            #print 'not found: {}'.format(_selected)
+        # end of iterations on effects
+    #end of iterations on classes of sizes
     return results
 
 
@@ -283,28 +312,25 @@ def parse_results(results, iterations):
     Helper parsing the results and converting into csv format
     """
 
-    stats = []
+    stats = {}
 
-    for effect in sorted(results[0]):
-        merged = []
+    for _class in results[0]:
+        stats[_class] = {}
         for result in results:
-            merged.append(map(lambda x: x[1], sorted(result[effect].items())))
-        aggregate = map(sum, zip(*merged))
-        average = map(lambda x: float(x)/float(iterations), aggregate)
-        stats.append(average)
-
-    # print stats
+            for effect in result[_class]:
+                if effect not in stats[_class]:
+                    stats[_class][effect] = 0
+                stats[_class][effect] += result[_class][effect]
 
     print "#size",
     for effect in sorted(results[0]):
         print ",effect-%s" % effect,
     print
 
-    for result in range(len(stats[0])):
-
-        print "%s" % sorted(map(lambda x:x[1], results[0].items())[0].keys())[result],
-        for effect in range(len(stats)):
-            print ",%.2f" % stats[effect][result],
+    for size in sorted(stats):
+        print "%s" % size, 
+        for effect in sorted(stats[size]):
+            print ",%.2f" % (float(stats[size][effect]) / float(iterations)),
         print
 
 
