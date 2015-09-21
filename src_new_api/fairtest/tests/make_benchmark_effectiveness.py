@@ -45,7 +45,7 @@ def round(key):
     DELTA = 0.2
     DELTA_HIGH = 0.25
     key = int(key)
-    
+
     SIZE = 100
     if key in range(int(SIZE*(1 - DELTA)), int(SIZE*(1 + DELTA))+1):
         return str(SIZE)
@@ -53,7 +53,7 @@ def round(key):
     SIZE = 500
     if key in range(int(SIZE*(1 - DELTA)), int(SIZE*(1 + DELTA))+1):
         return str(SIZE)
-    
+
     SIZE = 1000
     if key in range(int(SIZE*(1 - DELTA)), int(SIZE*(1 + DELTA))+1):
         return str(SIZE)
@@ -61,7 +61,7 @@ def round(key):
     SIZE = 2000
     if key in range(int(SIZE*(1 - DELTA_HIGH)), int(SIZE*(1 + DELTA_HIGH))+1):
         return str(SIZE)
-    
+
     SIZE = 5000
     if key in range(int(SIZE*(1 - DELTA_HIGH)), int(SIZE*(1 + DELTA_HIGH))+1):
         return str(SIZE)
@@ -120,7 +120,7 @@ def load_file(file_name):
     for key in classes:
         print key + ": " + str(len(classes[key]))
     '''
-    
+
     # reload the file and keep a dictionary with state_gender combinations
     # being the keys, and all the user attributes as the dictionary items
     # so that we don't read disk blocks in the main loop
@@ -158,8 +158,13 @@ def do_benchmark((classes, pool, guard_lines)):
     seed(RANDOM_SEED)
 
     # iterate for various effects
-    for effect in [2.5, 5, 10, 15, 20]:
+    for effect in [2.5, 5, 10, 15]:
         results[effect]  = {}
+
+        # TODO: Keep the same populations for a specific size
+        # and iterate over different effects. In this way, the
+        # graph will be readable in the y-axis since the comparison
+        # will be on the same popultions -- as per Roxana's sugegstion
 
         _classes = deepcopy(classes)
         # iterate for  various population sizes
