@@ -110,11 +110,10 @@ def shuffle_column_contents(data, base_features):
     return data.reindex(columns=keys)
 
 
-def do_benchmark((contents, n_features_max)):
+def do_benchmark((contents, n_features_max, inc, size_range)):
     """
     main method doing the benchmark
     """
-
     BASE_FILENAME = "/tmp/temp_fairtest"
 
     MICROSECONDS = int((datetime.now() - datetime(1970, 1, 1)).total_seconds()*10**6)
@@ -122,60 +121,67 @@ def do_benchmark((contents, n_features_max)):
     seed(RANDOM_SEED)
 
     BASE_FEATURES = ['state', 'gender', 'race', 'income', 'price']
-    BASE_LEN = len(BASE_FEATURES)
+    N_BASE = len(BASE_FEATURES)
 
-    results = {}
     _contents = deepcopy(contents)
 
-    # iterate for n_features_max additional features
-    for n_features in range(BASE_LEN + 1, BASE_LEN + 1 + n_features_max, 5):
+    # create more features without including the last two that will
+    # be used as sensitiv and output. For each size, create the map
+    # once for the maximum feature size.
+    range_min = 0
+    range_max = N_BASE - 3
+    features = [randint(range_min, range_max) for _ \
+                in range(0, n_features_max - N_BASE)]
+
+    # create header
+    features_header = \
+            ','.join(BASE_FEATURES[:-1]) + ',' +\
+            ','.join([BASE_FEATURES[feature] for feature in features]) +\
+            ',price'
+
+    # shuffle entries of the file loaded in memory
+    # and copied within this function
+    shuffle(_contents)
+    _contents = _contents[:size_range[-1]]
+
+    random_suffix = str(randint(1, 99999999))
+    current_filename = BASE_FILENAME + random_suffix
+    f_temp = open(current_filename, "w+")
+
+    print >> f_temp, features_header
+    for content in magnify_contents(_contents, features):
+        print >> f_temp, ','.join(content)
+
+    f_temp.close()
+
+    # Prepare data into FairTest friendly format
+    data = prepare.data_from_csv(current_filename)
+
+    # shuffle around additional feature vales
+    data = shuffle_column_contents(data, BASE_FEATURES)
+    os.remove(current_filename)
+
+    # Initializing parameters for experiment
+    EXPL = []
+    SENS = ['income']
+    TARGET = 'price'
+
+    # initialize the dictionary
+    results = {}
+    for n_features in range(N_BASE+1, n_features_max, inc):
+        results[n_features] = {}
+        for size in size_range:
+            results[n_features][size] = {}
+
+    for additional_features in range(1, n_features_max-N_BASE, inc):
+        n_features = additional_features + N_BASE
         results[n_features] = {}
 
-        # create more features without including the last two that will
-        # be used as sensitiv and output.
-        range_min = 0
-        range_max = BASE_LEN - 3
-        features = [randint(range_min, range_max) for _ \
-                    in range(0, n_features - BASE_LEN)]
-
-        # create header
-        features_header = \
-                ','.join(BASE_FEATURES[:-1]) + ',' +\
-                ','.join([BASE_FEATURES[feature] for feature in features]) +\
-                ',price'
-
-        # shuffle entries of the file loaded in memory
-        # and copied within this function
-        shuffle(_contents)
-
-        for size in [10000, 20000, 40000, 80000, 160000]:
-
-            random_suffix = str(randint(1, 99999999))
-            current_filename = BASE_FILENAME + random_suffix
-
-            f_temp = open(current_filename, "w+")
-
-            print >> f_temp, features_header
-            for content in magnify_contents(_contents[:size], features):
-                print >> f_temp, ','.join(content)
-
-            f_temp.close()
-
-            # Prepare data into FairTest friendly format
-            data = prepare.data_from_csv(current_filename)
-
-            # shuffle around additional feature vales
-            data = shuffle_column_contents(data, BASE_FEATURES)
-
-            os.remove(current_filename)
-
-            # Initializing parameters for experiment
-            EXPL = []
-            SENS = ['income']
-            TARGET = 'price'
-
+        for size in size_range:
             # Instanciate the experiment
-            FT1 = api.Experiment(data, SENS, TARGET, EXPL,
+            # print data.drop(data.columns[range(N_BASE-1, n_features_max-1-additional_features)], axis=1).head(size)
+            _data = data.drop(data.columns[range(N_BASE-1, n_features_max-1-additional_features)], axis=1).head(size)
+            FT1 = api.Experiment(_data, SENS, TARGET, EXPL,
                                  random_state=int(random_suffix))
 
             # Train the classifier
@@ -183,22 +189,20 @@ def do_benchmark((contents, n_features_max)):
             FT1.train(min_leaf_size=50, score_aggregation="avg")
             t2 = time()
 
-            approx_stats = True
-            if size < 1000:
-                approx_stats = False
-
             # Evaluate on the testing set
-            FT1.test(approx_stats=approx_stats, prune_insignificant=True)
+            FT1.test(approx_stats=False, prune_insignificant=True)
             t3 = time()
 
             # Create the report
-            FT1.report("benchmark_" + random_suffix, "/tmp", filter_by='all')
+            random_suffix = str(randint(1, 99999999))
+            FT1.report("benchmark_performance" + random_suffix, "/tmp", filter_by='all')
 
             train = t2 - t1
             test = t3 - t2
 
             avg_no_of_feat_values = get_avg_no_of_feat_values(_contents[:size])
             results[n_features][size] = [train, test, avg_no_of_feat_values]
+            print n_features, size, results[n_features][size]
         # for all sizes
     # for all feature numbers
     return  results
@@ -237,7 +241,6 @@ def parse_results(results, iterations):
                      100*t_test/(t_train + t_test),
                      t_train + t_test,
                      avg_no_of_feat_values)
-        print ""
 
 
 def main(argv=sys.argv):
@@ -249,13 +252,16 @@ def main(argv=sys.argv):
 
     FILENAME = argv[1]
     ITERATIONS = int(argv[2])
-    MAX_ADDITIONAL_FEATURES = 50
 
     contents = load_file(FILENAME)
 
-    P = multiprocessing.Pool(multiprocessing.cpu_count()+4)
+    INC = 5
+    MAX_FEATURES = 70
+    SIZE_RANGE = [10000, 20000, 30000, 40000]
+
+    P = multiprocessing.Pool(multiprocessing.cpu_count()+2)
     results = P.map_async(do_benchmark,
-                          [(contents, MAX_ADDITIONAL_FEATURES)]*ITERATIONS)
+                          [(contents, MAX_FEATURES, INC, SIZE_RANGE)]*ITERATIONS)
     results = results.get()
     P.close()
     P.join()

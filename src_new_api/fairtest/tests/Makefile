@@ -2,7 +2,7 @@
 INPUT_FOLDER=/home/vatlidak/repos/fairtest/data
 OUTPUT_FOLDER=.
 
-all: adult berkeley recommender recommender_reg staples benchmark benchmark_effectiveness medical_bin medical_reg overfeat csv
+all: adult berkeley recommender recommender_reg staples medical_bin medical_reg overfeat csv
 
 adult:
 	./make_adult.py $(INPUT_FOLDER)/adult/adult.csv > $(OUTPUT_FOLDER)/results_adult.txt
@@ -15,12 +15,6 @@ recommender:
 
 recommender_reg:
 	./make_recommender_reg.py $(INPUT_FOLDER)/recommender/recommendations_types.txt > $(OUTPUT_FOLDER)/results_recommender_types.txt
-
-benchmark_effectiveness:
-	./make_benchmark_effectiveness.py $(INPUT_FOLDER)/staples/staples.csv 1 >  $(OUTPUT_FOLDER)/effect_population_size_effectiveness.csv
-
-benchmark:
-	./make_benchmark.py $(INPUT_FOLDER)/benchmark/benchmark.csv > $(OUTPUT_FOLDER)/results_benchmark.txt
 
 staples:
 	./make_staples.py $(INPUT_FOLDER)/staples/staples.csv > $(OUTPUT_FOLDER)/results_staples.txt
@@ -36,6 +30,14 @@ overfeat:
 
 csv:
 	./make_csv.sh results
+
+benchmarks: benchmark_performance benchmark_effectiveness
+
+benchmark_effectiveness:
+	./make_benchmark_effectiveness.py $(INPUT_FOLDER)/staples/staples.csv 1 >  $(OUTPUT_FOLDER)/results_benchmark_effectiveness.csv
+
+benchmark_performance:
+	./make_benchmark_performance.py $(INPUT_FOLDER)/staples/staples.csv 2 > $(OUTPUT_FOLDER)/results_benchmark_performance.csv
 
 clean:
 	rm -f $(OUTPUT_FOLDER)/results_*.txt
