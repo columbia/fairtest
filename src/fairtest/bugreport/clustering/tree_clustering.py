@@ -89,7 +89,8 @@ def update_cont_path(feature_path, feature, lower_bound=None, upper_bound=None):
     feature_path[feature] = bound
 
 
-def find_clusters_cat(tree, data, train_set=False):
+def find_clusters_cat(tree, data, features_info, sens, expl, output,
+                      prune_insignificant=False):
     """
     Traverse a categorical tree and output clusters for each node
 
@@ -111,17 +112,7 @@ def find_clusters_cat(tree, data, train_set=False):
     """
     # list of clusters
     clusters = []
-
-    out = data.out
-    sens = data.sens
-    encoders = data.encoders
-    labels = data.labels
-    expl = data.expl
-
-    if train_set:
-        data = data.data_train
-    else:
-        data = data.data_test
+    targets = data.columns[-output.num_labels:].tolist()
 
     # assign an id to each node
     node_id = 0
@@ -130,8 +121,6 @@ def find_clusters_cat(tree, data, train_set=False):
         node_id += 1
 
     measure_type = tree.measure.dataType
-    if expl:
-        assert measure_type == fm.Measure.DATATYPE_CT
 
     def bfs(node, parent, data_node, feature_path):
         """
@@ -174,8 +163,7 @@ def find_clusters_cat(tree, data, train_set=False):
             else:
                 # categorical split
                 category = node.category
-                feature_path[feature] = \
-                        encoders[feature].inverse_transform([category])[0]
+                feature_path[feature] = category
                 data_node = data_node[data_node[feature] == category]
 
         if measure_type == Measure.DATATYPE_CT:
@@ -183,73 +171,72 @@ def find_clusters_cat(tree, data, train_set=False):
 
             if not expl:
                 # create an empty contingency table
-                ct = pd.DataFrame(0, index=range(len(encoders[out].classes_)),
-                                  columns=range(len(encoders[sens].classes_)))
-
+                ct = pd.DataFrame(0, index=range(output.arity),
+                                  columns=range(features_info[sens].arity))
                 # fill in available values
-                ct = ct.add(pd.crosstab(data_node[out], data_node[sens]),
+                ct = ct.add(pd.crosstab(np.array(data_node[targets[0]]),
+                                        np.array(data_node[sens])),
                             fill_value=0)
 
                 # replace numbers by original labels
-                ct.index = encoders[out].classes_
-                ct.index.name = out
-                ct.columns = encoders[sens].classes_
-                ct.columns.name = sens
+                #ct.index = encoders[out].classes_
+                #ct.index.name = targets[0]
+                #ct.columns = encoders[sens].classes_
+                #ct.columns.name = sens
                 stats = ct
-                cluster_data = None
             else:
-                dim_expl = len(encoders[expl].classes_)
-                cts = [pd.DataFrame(0, index=range(len(encoders[out].classes_)),
-                                    columns=range(len(encoders[sens].classes_)))
+                dim_expl = features_info[expl].arity
+                cts = [pd.DataFrame(0, index=range(output.arity),
+                                    columns=range(features_info[sens].arity))
                        ] * dim_expl
 
                 for (key, group) in data_node.groupby(expl):
                     cts[key] = cts[key].add(
-                        pd.crosstab(group[out], group[sens]), fill_value=0)
-                    cts[key].index = encoders[out].classes_
-                    cts[key].index.name = out
-                    cts[key].columns = encoders[sens].classes_
-                    cts[key].columns.name = sens
+                        pd.crosstab(np.array(group[targets[0]]),
+                                    np.array(group[sens])), fill_value=0)
+                    #cts[key].index = encoders[out].classes_
+                    #cts[key].index.name = out
+                    #cts[key].columns = encoders[sens].classes_
+                    #cts[key].columns.name = sens
 
-                stats = np.array(cts)
-                cluster_data = {'expl': (expl, encoders[expl])}
+                stats = [ct.values for ct in cts]
 
+            cluster_data = None
             size = len(data_node)
 
         elif measure_type == Measure.DATATYPE_CORR:
             # continuous data
             # get data statistics for correlation computation
-            sum_x = data_node[out].sum()
-            sum_x2 = np.dot(data_node[out], data_node[out])
+            sum_x = data_node[targets[0]].sum()
+            sum_x2 = np.dot(data_node[targets[0]], data_node[targets[0]])
             sum_y = data_node[sens].sum()
             sum_y2 = np.dot(data_node[sens], data_node[sens])
-            sum_xy = np.dot(data_node[out], data_node[sens])
+            sum_xy = np.dot(data_node[targets[0]], data_node[sens])
 
             stats = [sum_x, sum_x2, sum_y, sum_y2, sum_xy, len(data_node)]
             size = len(data_node)
-            cluster_data = {'values': data_node[[out, sens]]}
+            cluster_data = {'values': data_node[[targets[0], sens]]}
 
         else:
             # regression measure
             # keep all the data
-            label_list = labels.tolist()
-            stats = data_node[label_list + [sens]]
+            stats = data_node[targets + [sens]]
             size = len(data_node)
-            cluster_data = {'labels': label_list, 'data_node': data_node,
-                            'sens': sens, 'encoder_sens': encoders[sens]}
+            cluster_data = {'data_node': data_node}
 
         # build a cluster class and store it in the list
-        training_measure = node.measure
+        training_measure = copy(node.measure)
 
-        #ancestor_ptr = parent
+        ancestor_ptr = parent
         # prune non-significant clusters
-        #if is_root or training_measure.abs_effect() > 0:
-        clstr = Cluster(node.id, feature_path, is_leaf, is_root, parent,
+        if (is_root or training_measure.abs_effect() > 0) \
+                or not prune_insignificant:
+            clstr = Cluster(node.id, feature_path, is_leaf, is_root, parent,
                     stats, size, training_measure, cluster_data)
-        if parent:
-            parent.children.append(clstr)
-        clusters.append(clstr)
-        ancestor_ptr = clstr
+            if parent:
+                parent.children.append(clstr)
+            clusters.append(clstr)
+            ancestor_ptr = clstr
 
         # recurse in children
         for child in node.get_children():

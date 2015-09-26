@@ -15,7 +15,7 @@ from sklearn.externals.six import StringIO
 from copy import copy
 
 
-def find_thresholds(data, features, categorical, num_bins):
+def find_thresholds(data, features, feature_info, num_bins):
     """
     Find thresholds for continuous features (quantization)
 
@@ -42,7 +42,7 @@ def find_thresholds(data, features, categorical, num_bins):
 
     for feature in features:
         # consider only continuous features
-        if feature not in categorical:
+        if feature_info[feature].arity is None:
 
             # count frequency of each value of the feature
             counts = Counter(data[feature])
@@ -50,7 +50,7 @@ def find_thresholds(data, features, categorical, num_bins):
             if len(values) <= num_bins:
                 # there are less than num_bins values
                 thresholds[feature] = (np.array(values[0:-1]) +
-                                       np.array(values[1:]))/2.0
+                                           np.array(values[1:]))/2.0
             else:
                 # binning algorithm from Spark. Build 'num_bins' bins of roughly
                 # equal sample size
@@ -81,38 +81,34 @@ class ScoreParams:
     Split-scoring parameters
     """
     # Child-score aggregation (weighted average, average or max)
-    WEIGHTED_AVG = 'WEIGHTED_AVG'
-    AVG = 'AVG'
-    MAX = 'MAX'
+    WEIGHTED_AVG = 'weighted_avg'
+    AVG = 'avg'
+    MAX = 'max'
     AGG_TYPES = [WEIGHTED_AVG, AVG, MAX]
 
-    def __init__(self, measure, agg_type, expl=None):
+    def __init__(self, measure, agg_type):
+        assert agg_type in ScoreParams.AGG_TYPES
         self.measure = measure
         self.agg_type = agg_type
-        self.expl = expl
 
 
 class SplitParams:
     """
     Split parameters
     """
-    def __init__(self, targets, sens, dim, categorical,
-                 thresholds, min_leaf_size, expl=None):
+    def __init__(self, targets, sens, expl, dim, feature_info,
+                 thresholds, min_leaf_size):
         self.targets = targets
         self.sens = sens
+        self.expl = expl
         self.dim = dim
-        self.categorical = categorical
+        self.feature_info = feature_info
         self.thresholds = thresholds
         self.min_leaf_size = min_leaf_size
-        self.expl = expl
 
 
-def build_tree(dataset,
-               categorical,
-               max_depth=5,
-               min_leaf_size=100,
-               measure=fm.NMI(ci_level=0.95),
-               agg_type="WEIGHTED_AVG", max_bins=10):
+def build_tree(data, feature_info, sens, expl, output, measure, max_depth,
+               min_leaf_size=100, agg_type='AVG', max_bins=10):
     """
     Builds a decision tree for finding nodes with high bias
 
@@ -146,56 +142,47 @@ def build_tree(dataset,
     """
     tree = Tree()
 
-    data = dataset.data_train
-
     # Check if there are multiple labeled outputs
-    if dataset.out_type == 'labeled':
-        targets = dataset.labels.tolist()
-    else:
-        targets = [dataset.out]
+    targets = data.columns[-output.num_labels:].tolist()
+    # print 'targets = {}'.format(targets)
 
-    sens = dataset.sens
-    expl = dataset.expl
-    features = data.columns.difference(targets).difference([sens])
+    features = set(data.columns.tolist())-set([sens, expl])-set(targets)
+    # print 'contextual features = {}'.format(features)
 
     if expl:
         assert isinstance(measure, fm.CondNMI)
-        features = features.difference([expl])
 
     # check the data dimensions
     if isinstance(measure, fm.CORR):
         if expl:
-            dim = (len(dataset.encoders[expl].classes_), 6)
+            dim = (feature_info[expl].arity, 6)
         else:
             dim = 6
     else:
-        assert dataset.out_type in ['cat', 'labeled'] \
-               and dataset.sens_type == 'cat'
-
         # get the dimensions of the OUTPUT x SENSITIVE contingency table
         if expl:
-            dim = (len(dataset.encoders[expl].classes_),
-                   len(dataset.encoders[dataset.out].classes_),
-                   len(dataset.encoders[dataset.sens].classes_))
+            dim = (feature_info[expl].arity, output.arity,
+                   feature_info[sens].arity)
         else:
-            dim = (len(dataset.encoders[dataset.out].classes_),
-                   len(dataset.encoders[dataset.sens].classes_))
+            dim = (output.arity, feature_info[sens].arity)
+
+    # print 'dim = {}'.format(dim)
 
     # bin the continuous features
-    cont_thresholds = find_thresholds(data, features, categorical, max_bins)
+    cont_thresholds = find_thresholds(data, features, feature_info, max_bins)
 
-    score_params = ScoreParams(measure, agg_type, expl)
-    split_params = SplitParams(targets, sens, dim, categorical,
-                               cont_thresholds, min_leaf_size, expl)
+    # print 'thresholds = {}'.format(cont_thresholds)
+
+    score_params = ScoreParams(measure, agg_type)
+    split_params = SplitParams(targets, sens, expl, dim, feature_info,
+                               cont_thresholds, min_leaf_size)
 
     # get a measure for the root
     if measure.dataType == Measure.DATATYPE_CT:
-        target = targets[0]
-        stats = [count_values(data, sens, target, expl, dim)[0]]
+        stats = [count_values(data, sens, targets[0], expl, dim)[0]]
     elif measure.dataType == Measure.DATATYPE_CORR:
-        target = targets[0]
         # compute summary statistics for each child
-        stats = [corr_values(data, sens, target)[0]]
+        stats = [corr_values(data, sens, targets[0])[0]]
     else:
         # aggregate all the data for each child for regression
         stats = [data[targets+[sens]]]
@@ -207,13 +194,15 @@ def build_tree(dataset,
     # Builds up the tree recursively. Selects the best feature to split on,
     # in order to maximize the average bias (mutual information) in all
     # sub-trees.
-    def rec_build_tree(node_data, node, pred,
-                       node_features, depth, parent_score):
+    def rec_build_tree(node_data, node, pred, node_features, depth,
+                       parent_score):
         node.add_features(size=len(node_data))
 
         # make a new leaf
         if (depth == max_depth) or (len(node_features) == 0):
             return
+
+        # print 'looking for splits at pred {}'.format(pred)
 
         # select the best feature to split on
         split_score, best_feature, threshold, to_drop, child_measures = \
@@ -221,11 +210,11 @@ def build_tree(dataset,
                                 split_params, score_params, parent_score)
 
         # no split found, make a leaf
-        if not best_feature:
+        if best_feature is None:
             return
 
         # print 'splitting on {} (score={}) with threshold {} at pred {}'.\
-        #   format(best_feature, split_score, threshold, pred)
+        #     format(best_feature, split_score, threshold, pred)
 
         if threshold:
             # binary split
@@ -252,19 +241,13 @@ def build_tree(dataset,
                                      measure=child_measures['right'])
 
             # recursively build the tree
-            rec_build_tree(data_left,
-                           left_child,
-                           pred+[pred_left],
-                           node_features.drop(to_drop),
-                           depth+1,
-                           split_score)
-            rec_build_tree(data_right,
-                           right_child,
-                           pred+[pred_right],
-                           node_features.drop(to_drop),
-                           depth+1,
-                           split_score)
+            rec_build_tree(data_left, left_child, pred+[pred_left],
+                           node_features-set(to_drop), depth+1, split_score)
+            rec_build_tree(data_right, right_child, pred+[pred_right],
+                           node_features-set(to_drop), depth+1, split_score)
+
         else:
+            threads = []
             # categorical split
             for val in node_data[best_feature].unique():
 
@@ -280,13 +263,16 @@ def build_tree(dataset,
                                        category=val,
                                        measure=child_measures[val])
 
-                    data_child = node_data[node_data[best_feature] == val]
+                    child_data = node_data[node_data[best_feature] == val]
+
                     # recursively build the tree
-                    rec_build_tree(data_child, child, pred+[new_pred],
-                                   node_features.drop(to_drop + [best_feature]),
-                                   depth+1, split_score)
+                    rec_build_tree(child_data, child, pred+[new_pred],
+                                node_features-set(to_drop + [best_feature]),
+                                depth+1, split_score)
+
 
     rec_build_tree(data, tree, [], features, 0, 0)
+
     return tree
 
 
@@ -318,7 +304,7 @@ def select_best_feature(node_data, features, split_params,
         The best feature
 
     best_threshold :
-        The best threshold
+        The best threshol
 
     to_drop :
         A List of features to drop
@@ -335,10 +321,10 @@ def select_best_feature(node_data, features, split_params,
     # keep track of useless features (no splits available)
     to_drop = []
 
-    categorical = split_params.categorical
-    targets = split_params.targets
+    feature_info = split_params.feature_info
     sens = split_params.sens
     expl = split_params.expl
+    targets = split_params.targets
 
     # iterate over all available non-sensitive features
     for feature in features:
@@ -347,23 +333,20 @@ def select_best_feature(node_data, features, split_params,
             feature_list.append(expl)
 
         # determine type of split
-        if feature in categorical:
+        if feature_info[feature].arity:
             split_score, measures = test_cat_feature(node_data[feature_list],
-                                                     feature, split_params,
-                                                     score_params)
+                                                     feature,
+                                                     split_params, score_params)
             threshold = None
         else:
             split_score, threshold, measures = \
-                    test_cont_feature(node_data[feature_list],
-                                      feature,
-                                      split_params,
-                                      score_params)
-
+                    test_cont_feature(node_data[feature_list], feature,
+                                      split_params, score_params)
 
         # print 'feature {}: score {}'.format(feature, split_score)
 
         # the feature produced no split and can be dropped for future sub-trees
-        if not split_score or np.isnan(split_score):
+        if split_score is None or np.isnan(split_score):
             to_drop.append(feature)
             continue
 
@@ -461,7 +444,7 @@ def corr_values(data, sens, target):
                      np.dot(x, x),
                      y.sum(),
                      np.dot(y, y),
-                     np.dot(x, y), x.size]), len(data)
+                     np.dot(x, y), x.size]), len(x)
 
 
 def test_cat_feature(node_data, feature, split_params, score_params):
@@ -488,37 +471,41 @@ def test_cat_feature(node_data, feature, split_params, score_params):
         the score of the current split
     """
     # print 'testing categorical feature {}'.format(feature)
-    targets = split_params.targets
     sens = split_params.sens
     dim = split_params.dim
     expl = split_params.expl
+    targets = split_params.targets
     min_leaf_size = split_params.min_leaf_size
     data_type = score_params.measure.dataType
 
     if data_type == Measure.DATATYPE_CT:
-        target = targets[0]
         # build a contingency table for each child
-        contigency_table = [(key, count_values(group, sens, target, expl, dim))
-                            for key, group in node_data.groupby(feature)]
+        child_stats = [(key, count_values(group, sens, targets[0], expl, dim))
+                       for key, group in node_data.groupby(feature)]
     elif data_type == Measure.DATATYPE_CORR:
-        target = targets[0]
         # compute summary statistics for each child
-        contigency_table = [(key, corr_values(group, sens, target))\
-                for key, group in node_data.groupby(feature)]
+        child_stats = [(key, corr_values(group, sens, targets[0]))
+                       for key, group in node_data.groupby(feature)]
     else:
         # aggregate all the data for each child for regression
-        contigency_table = [(key, (group[targets+[sens]], len(group)))\
-                for key, group in node_data.groupby(feature)]
+        child_stats = [(key, (group[targets+[sens]], len(group)))
+                       for key, group in node_data.groupby(feature)]
+
+
+    N = len(node_data)
+    N_children = sum([size for (key, (group, size))
+                   in child_stats if size >= min_leaf_size])
 
     # prune small sub-trees
-    contigency_table = [(key, group) for (key, (group, size))
-                        in contigency_table if size >= min_leaf_size]
+    child_stats = [(key, group) for (key, (group, size))
+                   in child_stats if size >= min_leaf_size]
 
     split_score = None
     # compute the split score
-    if len(contigency_table) > 1:
-        values, contigency_table = zip(*contigency_table)
-        split_score, measures = score(contigency_table, score_params)
+    if len(child_stats) > 1:
+        values, child_stats = zip(*child_stats)
+        split_score, measures = score(child_stats, score_params, frac=(1.0*N_children/N))
+
         # print split_score
         return split_score, dict(zip(values, measures))
     else:
@@ -554,12 +541,11 @@ def test_cont_feature(node_data, feature, split_params, score_params):
     best_measures :
         best measures
     """
-    print 'testing continuous feature {}'.format(feature)
-    sys.stdout.flush()
-    targets = split_params.targets
+    #print 'testing continuous feature {}'.format(feature_idx)
     sens = split_params.sens
     dim = split_params.dim
     expl = split_params.expl
+    targets = split_params.targets
     min_leaf_size = split_params.min_leaf_size
     thresholds = split_params.thresholds[feature]
     data_type = score_params.measure.dataType
@@ -594,22 +580,17 @@ def test_cont_feature(node_data, feature, split_params, score_params):
 
     # split data based on the bin thresholds
     groups = node_data.groupby(np.digitize(node_data[feature],
-                                           thresholds,
-                                           right=True))
+                                          thresholds, right=True))
 
     if data_type == Measure.DATATYPE_CT:
-        target = targets[0]
         # aggregate all the target counts for each bin
-        temp = map(lambda (key, group): (key, count_values(group,
-                                                           sens,
-                                                           target,
-                                                           expl,
-                                                           dim)),
+        temp = map(lambda (key, group):
+                   (key, count_values(group, sens, targets[0], expl, dim)),
                    groups)
     elif data_type == Measure.DATATYPE_CORR:
-        target = targets[0]
         # correlation score
-        temp = map(lambda (key, group): (key, corr_values(group, sens, target)),
+        temp = map(lambda (key, group):
+                   (key, corr_values(group, sens, targets[0])),
                    groups)
 
     # get the indices of the bin thresholds
@@ -636,7 +617,6 @@ def test_cont_feature(node_data, feature, split_params, score_params):
         split_score, measures = score([data_left, data_right], score_params)
         # print 'testing threshold {}'.format(thresholds[keys[0]])
         # print 'score = {}'.format(split_score)
-
         max_score = split_score
         best_threshold = thresholds[keys[0]]
         best_measures = dict(zip(['left', 'right'], measures))
@@ -669,7 +649,7 @@ def test_cont_feature(node_data, feature, split_params, score_params):
     return max_score, best_threshold, best_measures
 
 
-def score(stats, score_params):
+def score(stats, score_params, frac=1):
     """
     Compute the score for a split
 
@@ -681,6 +661,7 @@ def score(stats, score_params):
     score_params :
         Split scoring parameters
     """
+
     measure = score_params.measure
     agg_type = score_params.agg_type
 
@@ -693,13 +674,15 @@ def score(stats, score_params):
                      measure_copy.compute(child, approx=True).abs_effect(),
                      zip_w_measure)
 
+    # print score_list
+
     # take the average or maximum of the child scores
     if agg_type == ScoreParams.WEIGHTED_AVG:
         totals = map(lambda group: group.sum().sum(), stats)
         probas = map(lambda tot: (1.0*tot)/sum(totals), totals)
-        return np.dot(score_list, probas), measures
+        return frac * np.dot(score_list, probas), measures
     elif agg_type == ScoreParams.AVG:
-        return np.mean(score_list), measures
+        return frac * np.mean(score_list), measures
     elif agg_type == ScoreParams.MAX:
         return max(score_list), measures
 

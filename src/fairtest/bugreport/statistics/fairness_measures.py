@@ -11,6 +11,7 @@ import pandas as pd
 from math import sqrt, log, exp, atanh, tanh
 import scikits.bootstrap as bs
 import rpy2.robjects as ro
+import sys
 
 
 def z_effect(ci_low, ci_high):
@@ -36,6 +37,11 @@ def z_effect(ci_low, ci_high):
     if the interval does not contain zero.
     """
     return 0 if (ci_low * ci_high < 0) else min(abs(ci_low), abs(ci_high))
+
+
+APPROX_LIMIT_BS_MI = sys.maxint
+APPROX_LIMIT_BS = 1000
+APPROX_LIMIT_PVAL = 1000
 
 
 class Measure(object):
@@ -71,13 +77,13 @@ class NMI(Measure):
             self.stats = mutual_info(data, norm=True, ci_level=ci_level)
         else:
             N = np.array(data).sum()
-            if N < 1000:
+            if N < APPROX_LIMIT_PVAL:
                 pval = permutation_test_ct(data)
             else:
                 _, pval, _, _ = G_test(data)
 
             if ci_level:
-                if N < 1000:
+                if N < APPROX_LIMIT_BS_MI:
                     ci_low, ci_high = \
                         bootstrap_ci_ct(data,
                                         lambda x: mutual_info(x, norm=True,
@@ -105,8 +111,8 @@ class NMI(Measure):
     def __str__(self):
         return 'NMI(confidence={})'.format(self.ci_level)
 
-    def __copy__(self):
-        return NMI(self.ci_level)
+    #def __copy__(self):
+    #    return NMI(self.ci_level)
 
 
 class CondNMI(Measure):
@@ -127,13 +133,13 @@ class CondNMI(Measure):
             self.stats = cond_mutual_info(data, norm=True, ci_level=ci_level)
         else:
             N = np.max([np.array(ct).sum() for ct in np.array(data)])
-            if N < 1000:
+            if N < APPROX_LIMIT_PVAL:
                 pval = permutation_test_ct_cond(data)
             else:
                 _, pval, _ = G_test_cond(data)
 
             if ci_level:
-                if N < 1000:
+                if N < APPROX_LIMIT_BS_MI:
                     ci_low, ci_high = \
                         bootstrap_ci_ct_cond(data,
                                              lambda x:
@@ -158,8 +164,8 @@ class CondNMI(Measure):
     def abs_effect(self):
         return self.stats[0]
 
-    def __copy__(self):
-        return CondNMI(self.ci_level)
+    #def __copy__(self):
+    #    return CondNMI(self.ci_level)
 
     def __str__(self):
         return 'Conditional NMI(confidence={})'.format(self.ci_level)
@@ -179,12 +185,12 @@ class CORR(Measure):
         else:
             x = data[data.columns[1]]
             y = data[data.columns[0]]
-            if len(x) < 1000:
+            if len(x) < APPROX_LIMIT_PVAL:
                 pval = permutation_test_corr(x, y)
             else:
                 _, _, pval = correlation(corr_stats, ci_level)
             if ci_level:
-                if len(x) < 1000:
+                if len(x) < APPROX_LIMIT_BS:
                     ci_low, ci_high = \
                         bootstrap_ci_corr(x, y,
                                           lambda x,y: min(1,max(-1,stats.pearsonr(x, y)[0])),
@@ -211,8 +217,8 @@ class CORR(Measure):
         else:
             return abs(self.stats[0])
 
-    def __copy__(self):
-        return CORR(self.ci_level)
+    #def __copy__(self):
+    #    return CORR(self.ci_level)
 
     def __str__(self):
         return 'Correlation(confidence={})'.format(self.ci_level)
@@ -231,7 +237,7 @@ class DIFF(Measure):
             self.stats = difference(data, ci_level=ci_level)
         else:
             N = np.array(data).sum()
-            if N < 1000:
+            if N < APPROX_LIMIT_PVAL:
                 pval = permutation_test_ct(data)
             else:
                 _, pval, _, _ = G_test(data)
@@ -248,7 +254,6 @@ class DIFF(Measure):
                     elif ci_low > 0 and ci_high > 0:
                         ci_low = 0
 
-                self.exact_ci = True
                 self.stats = (ci_low, ci_high, pval)
             else:
                 self.stats = difference(data, ci_level=ci_level)
@@ -262,8 +267,8 @@ class DIFF(Measure):
         else:
             return abs(self.stats[0])
 
-    def __copy__(self):
-        return DIFF(self.ci_level)
+    #def __copy__(self):
+    #    return DIFF(self.ci_level)
 
     def __str__(self):
         return 'Difference(confidence={})'.format(self.ci_level)
@@ -282,7 +287,7 @@ class RATIO(Measure):
             self.stats = ratio(data, ci_level=ci_level)
         else:
             N = np.array(data).sum()
-            if N < 1000:
+            if N < APPROX_LIMIT_PVAL:
                 pval = permutation_test_ct(data)
             else:
                 _, pval, _, _ = G_test(data)
@@ -298,7 +303,6 @@ class RATIO(Measure):
                     elif ci_low > 1 and ci_high > 1:
                         ci_low = 1
 
-                self.exact_ci = True
                 self.stats = (ci_low, ci_high, pval)
             else:
                 self.stats = ratio(data, ci_level=ci_level)
@@ -312,8 +316,8 @@ class RATIO(Measure):
         else:
             return abs(log(self.stats[0]))
 
-    def __copy__(self):
-        return RATIO(self.ci_level)
+    #def __copy__(self):
+    #    return RATIO(self.ci_level)
 
     def __str__(self):
         return 'Regression(confidence={})'.format(self.ci_level)
@@ -330,8 +334,8 @@ class REGRESSION(Measure):
         self.topK = topK
         self.type = None
 
-    def __copy__(self):
-        return REGRESSION(self.ci_level, self.topK)
+    #def __copy__(self):
+    #    return REGRESSION(self.ci_level, self.topK)
 
     def compute(self, data, approx=False, adj_ci_level=None):
         ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
@@ -342,11 +346,13 @@ class REGRESSION(Measure):
             X = data[data.columns[0:-1]]
 
             # print 'Regressing from {}...{} to {}'.\
-            #        format(data.columns[0], data.columns[-2], data.columns[-1])
+            #         format(data.columns[0], data.columns[-2], data.columns[-1])
 
             reg = LogisticRegression()
             reg.fit(X, y)
             y_pred = reg.predict(X)
+            # print metrics.classification_report(y, y_pred)
+            # print reg.coef_[0]
 
             # approximate the standard errors for all regression coefficients
             mse = np.mean((y - y_pred.T)**2)
@@ -356,6 +362,7 @@ class REGRESSION(Measure):
 
             # compute confidence intervals and p-values for all coefficients
             results = pd.DataFrame(coeffs, columns=['coeff'])
+
             results['std err'] = SE_est
             results['z'] = abs(results['coeff']/results['std err'])
             results['p-value'] = 2*stats.norm.sf(results['z'])
@@ -363,9 +370,10 @@ class REGRESSION(Measure):
             if not ci_level:
                 results['effect'] = map(lambda c: abs(c), results['coeff'])
                 sorted_results = results.sort(columns=['effect'],
-                                              ascending=False)
-                self.stats = sorted_results[['coeff',
-                                             'p-value']].head(self.topK)
+                                          ascending=False)
+
+                self.stats = \
+                    sorted_results[['coeff', 'p-value']].head(self.topK)
                 self.type = "Regression"
                 return self
 
@@ -381,8 +389,15 @@ class REGRESSION(Measure):
                     map(lambda (ci_low, ci_high): z_effect(ci_low, ci_high),
                         zip(results['conf low'], results['conf high']))
             sorted_results = results.sort(columns=['effect'], ascending=False)
+
+            # temp = sorted_results.copy()
+            # temp.index =
+            #       map(lambda x: data.columns[x], sorted_results.index.values)
+            # print temp
+
             self.stats = sorted_results[['conf low', 'conf high', 'p-value']].\
                     head(self.topK)
+            # print self.stats
             self.type = "Regression"
             return self
         else:
@@ -390,10 +405,11 @@ class REGRESSION(Measure):
             top_labels = self.stats.index
 
             for idx in top_labels:
+                ct = pd.crosstab(data[data.columns[idx]],
+                                 data[data.columns[-1]])
                 self.stats.loc[idx] = \
-                    mutual_info(pd.crosstab(data[data.columns[idx]],
-                                            data[data.columns[-1]]),
-                                norm=True, ci_level=ci_level)
+                    NMI(self.ci_level).compute(ct, approx=approx,
+                                               adj_ci_level=adj_ci_level).stats
             self.type = "MI"
             return self
 
@@ -454,7 +470,7 @@ def mutual_info(data, norm=False, ci_level=None, p=True):
     ----------
     https://en.wikipedia.org/wiki/Mutual_information
     """
-    assert not p or ci_level
+    assert p or not ci_level
 
     if isinstance(data, pd.DataFrame):
         data = data.values
@@ -495,6 +511,8 @@ def mutual_info(data, norm=False, ci_level=None, p=True):
             mi = 0
         else:
             mi = mi/min(hx, hy)
+            #mi = mi/sqrt(hx*hy)
+            #mi = mi/hxy
 
     # no confidence levels, return single measure
     if not ci_level:
@@ -512,6 +530,8 @@ def mutual_info(data, norm=False, ci_level=None, p=True):
 
     if norm:
         ci = map(lambda x: x/min(hx, hy), ci)
+        #ci = map(lambda x: x/sqrt(hx*hy), ci)
+        #ci = map(lambda x: x/hxy, ci)
 
     return max(ci[0], 0), min(ci[1], 1), pval
 
@@ -748,9 +768,25 @@ def cond_mutual_info(data, norm=False, ci_level=None, p=True):
     ----------
     https://en.wikipedia.org/wiki/Conditional_mutual_information
     """
+    assert p or not ci_level
 
-    assert not p or ci_level
+    if p:
+        G, pval, _ = G_test_cond(data)
+    else:
+        pval = 0
 
+    weights = map(lambda d: d.sum(), data)
+    mis = map(lambda d: mutual_info(d, norm, ci_level, p), data)
+
+    if ci_level:
+        mis = map(lambda mi: mi[0:-1], mis)
+        (cond_mi_low, cond_mi_high) = np.average(mis, axis=0, weights=weights)
+        return cond_mi_low, cond_mi_high, pval
+    else:
+        mis = map(lambda mi: mi[0], mis)
+        cond_mi = np.average(mis, axis=None, weights=weights)
+        return cond_mi, pval
+    '''
     data = [ct.values if isinstance(ct, pd.DataFrame) else ct for ct in data]
     data = np.array([d for d in data if d.sum() > 0])
 
@@ -795,6 +831,7 @@ def cond_mutual_info(data, norm=False, ci_level=None, p=True):
         ci = map(lambda x: x/min(cond_hx, cond_hy), ci)
 
     return max(ci[0], 0), min(ci[1], 1), pval
+    '''
 
 
 def G_test_cond(data):
@@ -1040,7 +1077,7 @@ def bootstrap_ci_ct(data, stat, num_samples=10000, ci_level=0.95):
     data += 1
     n = data.sum()
 
-    #print 'Bootstrap on data of size {}'.format(n)
+    # print 'Bootstrap on data of size {}'.format(n)
     probas = (1.0*data)/n
 
     # Obtain `num_samples' random samples of `n' multinomial values, sampled
@@ -1092,9 +1129,7 @@ def bootstrap_ci_ct_cond(data, stat, num_samples=10000, ci_level=0.95):
 
     probas = [(1.0*ct)/ct.sum() for ct in data]
 
-    # Obtain `num_samples' random samples of `n' multinomial values, sampled
-    # with replacement from {0, 1, ..., n-1}. For each sample, rebuild a
-    # contingency table and compute the stat.
+    # Resample for each explanatory group
     temp = np.dstack([np.random.multinomial(data[i].sum(),
                                             probas[i],
                                             size=num_samples)
@@ -1110,7 +1145,7 @@ def bootstrap_ci_ct_cond(data, stat, num_samples=10000, ci_level=0.95):
     return ci
 
 
-def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
+def bootstrap_ci_corr2(x, y, stat, num_samples=10000, ci_level=0.95):
     """
     Bootstrap confidence interval computation for correlation
 
@@ -1142,6 +1177,18 @@ def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
     ci = bs.ci((np.array(x), np.array(y)), stat,
                alpha=1-ci_level, n_samples=num_samples)
     return ci
+
+
+def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
+    data = np.array(zip(x, y))
+    n = len(data)
+    idxs = np.random.randint(0, n, (num_samples, n))
+    samples = map(lambda idx: data[idx], idxs)
+    bs_stats = map(lambda sample: stat(sample[:,0], sample[:,1]), samples)
+    alpha = 1-ci_level
+    q_low = np.percentile(bs_stats, 100*alpha/2)
+    q_high = np.percentile(bs_stats, 100*(1-alpha/2))
+    return (q_low, q_high)
 
 
 def permutation_test_ct_cond(data, num_samples=10000):
@@ -1194,7 +1241,7 @@ def permutation_test_ct_cond(data, num_samples=10000):
     return max(pval, 1.0/num_samples)
 
 
-def permutation_test_ct(data, num_samples=10000):
+def permutation_test_ct(data, num_samples=100000):
     """
     Monte-Carlo permutation test for a contingency table
 
@@ -1220,17 +1267,67 @@ def permutation_test_ct(data, num_samples=10000):
     ----------
     https://en.wikipedia.org/wiki/Resampling_(statistics)
     """
-    if isinstance(data, pd.DataFrame):
-        data = data.values
+    if not isinstance(data, pd.DataFrame):
+        data = pd.DataFrame(data)
+    data = data[data.columns[(data != 0).any()]]
+    data = data[(data.T != 0).any()]
 
-    #print 'permutation test of size {}'.format(data.sum())
+    # print 'permutation test of size {}'.format(data.sum())
 
     data = np.array(data, dtype='int')
+    if len(data.shape) != 2:
+        return 1
+    if data.shape[0] < 2 or data.shape[1] < 2:
+        return 1
 
     ro.globalenv['ct'] = data
-    ro.r('res = chisq_test(as.table(ct), distribution=approximate(B={}))'.
-         format(num_samples))
-    pval = ro.r('pvalue(res)')[0]
+    pval = ro.r('chisq.test(ct, simulate.p.value = TRUE, B = {})$p.value'.
+                format(num_samples))[0]
+    return max(pval, 1.0/num_samples)
+
+
+def permutation_test_ct2(data, num_samples=10000):
+    """
+    Monte-Carlo permutation test for a 2-way contingency table
+
+    Parameters
+    ----------
+    data :
+        the contingency table
+
+    num_samples :
+        the number of random permutations to perform
+
+    Returns
+    -------
+    p :
+        the p-value
+
+    References
+    ----------
+    https://en.wikipedia.org/wiki/Resampling_(statistics)
+    """
+    if isinstance(data, pd.DataFrame):
+        data = np.array(data)
+
+    dim = data.shape
+    data_x = []
+    data_y = []
+
+    for x in range(0, dim[0]):
+        for y in range(0, dim[1]):
+            data_x += [x]*data[x, y]
+            data_y += [y]*data[x, y]
+
+    stat_0 = metrics.mutual_info_score(data_x, data_y)
+
+    k = 0
+    for i in range(num_samples):
+        np.random.shuffle(data_x)
+        mi = metrics.mutual_info_score(data_x, data_y)
+        k += stat_0 < mi
+
+    pval = (1.0*k) / num_samples
     return max(pval, 1.0/num_samples)
 
 
