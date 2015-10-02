@@ -9,10 +9,9 @@ from sklearn.linear_model import LogisticRegression
 import numpy as np
 import pandas as pd
 from math import sqrt, log, exp, atanh, tanh
-import scikits.bootstrap as bs
 import rpy2.robjects as ro
 import sys
-
+from collections import Counter
 
 def z_effect(ci_low, ci_high):
     """
@@ -245,7 +244,7 @@ class DIFF(Measure):
             if ci_level:
                 ci_low, ci_high = \
                         bootstrap_ci_ct(data,
-                                        lambda x: difference(x, ci_level=None),
+                                        lambda x: difference(x, ci_level=None)[0],
                                         ci_level=ci_level)
 
                 if pval > 1-ci_level:
@@ -266,6 +265,44 @@ class DIFF(Measure):
             return z_effect(ci_low, ci_high)
         else:
             return abs(self.stats[0])
+
+    #def __copy__(self):
+    #    return DIFF(self.ci_level)
+
+    def __str__(self):
+        return 'Difference(confidence={})'.format(self.ci_level)
+
+
+class COND_DIFF(Measure):
+    """
+    Difference measure
+    """
+    dataType = Measure.DATATYPE_CT
+
+    def compute(self, data, approx=True, adj_ci_level=None):
+        ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
+
+        pval = permutation_test_ct_cond(data)
+
+        ci_low, ci_high = bootstrap_ci_ct_cond(data,
+                                        lambda x: cond_difference(x),
+                                        ci_level=ci_level)
+
+        results = pd.DataFrame(columns=['conf low', 'conf high', 'p-value'])
+        results.loc[0] = [ci_low, ci_high, pval]
+
+        for (idx, ct) in enumerate(data):
+            results.loc[idx+1] = DIFF(ci_level).compute(ct, approx).stats
+
+        self.stats = results
+        return self
+
+    def abs_effect(self):
+        if self.ci_level:
+            (ci_low, ci_high, p) = self.stats.loc[0]
+            return z_effect(ci_low, ci_high)
+        else:
+            return abs(self.stats.loc[0]['conf low'])
 
     #def __copy__(self):
     #    return DIFF(self.ci_level)
@@ -295,7 +332,7 @@ class RATIO(Measure):
             if ci_level:
                 ci_low, ci_high = \
                         bootstrap_ci_ct(data,
-                                        lambda x: ratio(x, ci_level=None),
+                                        lambda x: ratio(x, ci_level=None)[0],
                                         ci_level=ci_level)
                 if pval > 1-ci_level:
                     if ci_low < 1 and ci_high < 1:
@@ -320,7 +357,112 @@ class RATIO(Measure):
     #    return RATIO(self.ci_level)
 
     def __str__(self):
-        return 'Regression(confidence={})'.format(self.ci_level)
+        return 'Ratio(confidence={})'.format(self.ci_level)
+
+'''
+class REGRESSION(Measure):
+    """
+    Regression measure
+    """
+    dataType = Measure.DATATYPE_REG
+
+    def __init__(self, ci_level=None, topK=10):
+        Measure.__init__(self, ci_level)
+        self.topK = topK
+
+    def compute(self, data, approx=False, adj_ci_level=None):
+        ci_level = self.ci_level if adj_ci_level is None else adj_ci_level
+
+        # regression not yet trained
+        y = data[data.columns[-1]]
+        if self.stats is None:
+            X = data[data.columns[0:-1]]
+        else:
+            X = data[data.columns[self.stats.index.tolist()]]
+
+        print 'Regressing from {}...{} to {}'.\
+                 format(data.columns[0], data.columns[-2], data.columns[-1])
+
+        reg = LogisticRegression()
+        reg.fit(X, y)
+        y_pred = reg.predict(X)
+        print metrics.classification_report(y, y_pred)
+        # print reg.coef_[0]
+
+        # approximate the standard errors for all regression coefficients
+        mse = np.mean((y - y_pred.T)**2)
+
+        Xm = np.c_[(X, np.ones(len(X)))]
+        Xm = np.matrix(Xm)
+
+        var_est = mse * np.diag(np.linalg.pinv(Xm.T * Xm))[0:-1]
+        SE_est = np.sqrt(var_est)
+        coeffs = reg.coef_[0].tolist()
+
+        # compute confidence intervals and p-values for all coefficients
+        results = pd.DataFrame(coeffs, columns=['coeff'])
+
+        results['std err'] = SE_est
+        results['z'] = abs(results['coeff']/results['std err'])
+        results['p-value'] = 2*stats.norm.sf(results['z'])
+        print results
+        if not ci_level:
+            results['effect'] = map(lambda c: abs(c), results['coeff'])
+            sorted_results = results.sort(columns=['effect'],
+                                          ascending=False)
+            if self.stats is None:
+                self.stats = \
+                    sorted_results[['coeff', 'p-value']].head(self.topK)
+            else:
+                top_labels = self.stats.index
+                self.stats = sorted_results[['coeff', 'p-value']].loc[top_labels]
+            return self
+
+        ci_s = stats.norm.interval(ci_level,
+                                   loc=results['coeff'],
+                                   scale=results['std err'])
+        results['conf low'] = ci_s[0]
+        results['conf high'] = ci_s[1]
+
+        # compute a standardized effect size
+        # and return the topK coefficients
+        results['effect'] = \
+                map(lambda (ci_low, ci_high): z_effect(ci_low, ci_high),
+                    zip(results['conf low'], results['conf high']))
+        if self.stats is not None:
+            top_labels = self.stats.index
+            results.index = top_labels
+
+        sorted_results = results.sort(columns=['effect'], ascending=False)
+
+        if self.stats is None:
+            self.stats = sorted_results[['conf low', 'conf high', 'p-value']].\
+                head(self.topK)
+            print self.stats
+        else:
+            self.stats = sorted_results[['conf low', 'conf high', 'p-value']]
+            print self.stats
+        return self
+
+    def abs_effect(self):
+        if self.ci_level:
+            effects = np.array(map(
+                lambda (ci_low, ci_high, pval): z_effect(ci_low, ci_high),
+                self.stats.values))
+        else:
+            effects = np.array(map(lambda (coeff, pval): abs(coeff),
+                                   self.stats.values))
+
+        non_nan = effects[~np.isnan(effects)]
+        if len(non_nan) == 0:
+            return -1
+        else:
+            return np.sum(non_nan)/len(effects)
+
+    def __str__(self):
+        return 'Regression(confidence={}, topK={})'.\
+                format(self.ci_level, self.topK)
+'''
 
 
 class REGRESSION(Measure):
@@ -408,7 +550,7 @@ class REGRESSION(Measure):
                 ct = pd.crosstab(data[data.columns[idx]],
                                  data[data.columns[-1]])
                 self.stats.loc[idx] = \
-                    NMI(self.ci_level).compute(ct, approx=approx,
+                    DIFF(self.ci_level).compute(ct, approx=approx,
                                                adj_ci_level=adj_ci_level).stats
             self.type = "MI"
             return self
@@ -429,7 +571,11 @@ class REGRESSION(Measure):
             else:
                 return np.sum(non_nan)/len(effects)
         else:
-            return np.mean(map(lambda stat: stat[0], self.stats.values))
+            if self.ci_level:
+                return np.mean(map(lambda stat: z_effect((stat[0]), (stat[1])), self.stats.values))
+                #return np.mean(map(lambda stat: stat[0], self.stats.values))
+            else:
+                return np.mean(map(lambda stat: stat[0], self.stats.values))
 
     def __str__(self):
         return 'Regression(confidence={}, topK={})'.\
@@ -629,6 +775,14 @@ def difference(data, ci_level=0.95):
         return diff, pval
 
 
+def cond_difference(data):
+    weights = map(lambda d: d.sum(), data)
+    diffs = map(lambda d: (difference(d, ci_level=None)[0]), data)
+
+    cond_diff = np.average(diffs, axis=None, weights=weights)
+    return cond_diff
+
+
 def ratio(data, ci_level=0.95):
     """
     Ratio measure, possibly with confidence intervals
@@ -665,7 +819,7 @@ def ratio(data, ci_level=0.95):
 
     # data smoothing
     data = data.copy()
-    data += 5
+    data += 1
 
     # transform contingency table into probability table
     tot = np.sum(data, axis=0)
@@ -1130,11 +1284,13 @@ def bootstrap_ci_ct_cond(data, stat, num_samples=10000, ci_level=0.95):
     probas = [(1.0*ct)/ct.sum() for ct in data]
 
     # Resample for each explanatory group
+
     temp = np.dstack([np.random.multinomial(data[i].sum(),
                                             probas[i],
                                             size=num_samples)
                       for i in range(dim[0])])
-    bs_stats = [row.reshape(dim) for row in temp]
+
+    bs_stats = [row.T.reshape(dim) for row in temp]
     bs_stats = map(lambda ct: stat(ct), bs_stats)
 
     alpha = 1-ci_level
@@ -1142,9 +1298,11 @@ def bootstrap_ci_ct_cond(data, stat, num_samples=10000, ci_level=0.95):
     q_high = np.percentile(bs_stats, 100*(1-alpha/2))
 
     ci = (q_low, q_high)
+
+    print ci_level, ci
     return ci
 
-
+'''
 def bootstrap_ci_corr2(x, y, stat, num_samples=10000, ci_level=0.95):
     """
     Bootstrap confidence interval computation for correlation
@@ -1177,7 +1335,7 @@ def bootstrap_ci_corr2(x, y, stat, num_samples=10000, ci_level=0.95):
     ci = bs.ci((np.array(x), np.array(y)), stat,
                alpha=1-ci_level, n_samples=num_samples)
     return ci
-
+'''
 
 def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
     data = np.array(zip(x, y))
@@ -1219,7 +1377,8 @@ def permutation_test_ct_cond(data, num_samples=10000):
     data_x = [[] for ct in data]
     data_y = [[] for ct in data]
 
-    stat_0 = cond_mutual_info(data, norm=False, ci_level=None, p=False)[0]
+    #stat_0 = cond_mutual_info(data, norm=False, ci_level=None, p=False)[0]
+    stat_0 = abs(cond_difference(data))
 
     for e in range(0, dim[0]):
         for x in range(0, dim[1]):
@@ -1227,15 +1386,33 @@ def permutation_test_ct_cond(data, num_samples=10000):
                 data_x[e] += [x]*data[e, x, y]
                 data_y[e] += [y]*data[e, x, y]
 
+    '''
     k = 0
     N = data.sum()
     for i in range(num_samples):
         mi_cond = 0
         for e in range(0, dim[0]):
             np.random.shuffle(data_x[e])
+
             mi_cond += (1.0*len(data_x[e]))/N * \
                        metrics.mutual_info_score(data_x[e], data_y[e])
         k += stat_0 < mi_cond
+    '''
+
+    k = 0
+    N = data.sum()
+    for i in range(num_samples):
+        temp = np.zeros(dim)
+        for e in range(0, dim[0]):
+            np.random.shuffle(data_x[e])
+            counter = Counter(zip(data_x[e], data_y[e]))
+
+            for x in range(0, dim[1]):
+                for y in range(0, dim[2]):
+                    temp[e, x, y] = counter.get((x,y), 0)
+
+        temp_stat = cond_difference(temp)
+        k += stat_0 < abs(temp_stat)
 
     pval = (1.0*k) / num_samples
     return max(pval, 1.0/num_samples)

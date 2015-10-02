@@ -149,9 +149,6 @@ def build_tree(data, feature_info, sens, expl, output, measure, max_depth,
     features = set(data.columns.tolist())-set([sens, expl])-set(targets)
     # print 'contextual features = {}'.format(features)
 
-    if expl:
-        assert isinstance(measure, fm.CondNMI)
-
     # check the data dimensions
     if isinstance(measure, fm.CORR):
         if expl:

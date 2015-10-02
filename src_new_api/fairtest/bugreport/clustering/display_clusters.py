@@ -258,26 +258,6 @@ def print_cluster_ct(cluster, cluster_stats, effect_name, namer, output_stream):
         print >> output_stream, pretty_ct(ct)
         print >> output_stream
     else:
-        global_ct = reduce(lambda x, y: x+y, cluster.stats)
-
-        ct_measure = fm.NMI(ci_level=cluster.clstr_measure.ci_level)
-        if cluster.clstr_measure.ci_level:
-            (effect_low, effect_high, p_val) = \
-                    ct_measure.compute(global_ct, approx=False).stats
-            print '{} (non-adjusted) = [{:.4f}, {:.4f}]'.\
-                    format('NMI', effect_low, effect_high)
-        else:
-            (effect, p_val) = ct_measure.compute(global_ct, approx=False).stats
-            print '{} (non-adjusted) = {:.4f}'.\
-                    format('NMI', effect)
-
-        ct = pd.DataFrame(global_ct)
-        ct.index = namer.get_target_vals(out, len(ct.index))
-        ct.index.name = out
-        ct.columns = namer.get_sens_feature_vals(len(ct.columns))
-        ct.columns.name = namer.sens
-        print >> output_stream, pretty_ct(ct)
-        print >> output_stream
 
         expl_values = namer.get_expl_feature_vals(len(cluster_stats))
         for i in range(len(cluster.stats)):
@@ -287,17 +267,15 @@ def print_cluster_ct(cluster, cluster_stats, effect_name, namer, output_stream):
                 print >> output_stream, '> {} = {} ; size {} ({:.2f}%):'.\
                     format(namer.expl, expl_values[i], size, weight)
 
-                ct_measure = fm.NMI(ci_level=cluster.clstr_measure.ci_level)
-
                 if cluster.clstr_measure.ci_level:
                     (effect_low, effect_high, p_val) = \
-                            ct_measure.compute(cluster.stats[i], approx=False).stats
-                    print >> output_stream, '{} (non-adjusted) = [{:.4f}, {:.4f}]'.\
-                            format('NMI', effect_low, effect_high)
+                            cluster_stats.loc[i+1]
+                    print >> output_stream, 'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.\
+                        format(p_val, 'DIFF', effect_low, effect_high)
                 else:
-                    (effect, p_val) = ct_measure.compute(cluster.stats[i], approx=False).stats
-                    print '{} (non-adjusted) = {:.4f}'.\
-                            format('NMI', effect)
+                    (effect, p_val) = cluster_stats.loc[i+1]
+                    print 'p-value = {:.2e} ; {} = {:.4f}'.\
+                        format(p_val, 'DIFF', effect)
 
                 ct = pd.DataFrame(cluster.stats[i])
                 ct.index = namer.get_target_vals(out, len(ct.index))
@@ -306,6 +284,8 @@ def print_cluster_ct(cluster, cluster_stats, effect_name, namer, output_stream):
                 ct.columns.name = namer.sens
                 print >> output_stream, pretty_ct(ct)
                 print >> output_stream
+
+        cluster_stats = cluster_stats.loc[0]
 
     if len(cluster_stats) == 3:
         # print p-value and confidence interval of MI
@@ -374,7 +354,7 @@ def print_cluster_corr(cluster, cluster_stats, effect_name, namer,
         min_key_diff = min([keys[i + 1]-keys[i] for i in xrange(len(keys)-1)])
         plt.boxplot(groups, positions=keys, widths=(1.0*min_key_diff)/2)
 
-    plt.rcParams.update({'font.size': 16})
+    plt.rcParams.update({'font.size': 22})
     if namer.sens in namer.encoders:
         ax = plt.gca()
         ax.set_xticklabels(namer.get_sens_feature_vals(len(data[data.columns[1]].unique())))
@@ -383,6 +363,19 @@ def print_cluster_corr(cluster, cluster_stats, effect_name, namer,
         plt.ylim(np.min(out)-0.4*np.std(out), np.max(out)+0.4*np.std(out))
     plt.xlabel(data.columns[1])
     plt.ylabel(data.columns[0])
+
+    '''
+    if len(out) == 43179:
+        plt.text(0.07, 0.9, '(a)', horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes)
+    elif len(out) == 123:
+        plt.text(0.07, 0.9, '(b)', horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes)
+        plt.yticks([0,1,2])
+    elif len(out) == 8177:
+        plt.text(0.07, 0.9, '(c)', horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes)
+    elif len(out) == 558:
+        plt.text(0.07, 0.9, '(d)', horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes)
+    '''
+
     plt.show()
 
     if len(cluster_stats) == 3:
@@ -417,7 +410,7 @@ def print_cluster_reg(cluster, stats, effect_name, namer, output_stream,
     """
     effect = cluster.clstr_measure.abs_effect()
 
-    print >> output_stream, 'Average MI of top-{} labels: {}'.format(len(stats), effect)
+    print >> output_stream, 'Average Effect of top-{} labels: {}'.format(len(stats), effect)
     print >> output_stream
     labels = namer.output.names
 
@@ -426,9 +419,15 @@ def print_cluster_reg(cluster, stats, effect_name, namer, output_stream,
 
     if sort_by == SORT_BY_EFFECT:
         if 'conf low' in stats.columns:
-            sorted_results = stats.sort(columns=['conf low'], ascending=False)
+            stats['effect'] = \
+                map(lambda (ci_low, ci_high): ci_low,
+                    zip(stats['conf low'], stats['conf high']))
+            sorted_results = stats.sort(columns=['effect'], ascending=False)
         else:
+            stats['effect'] = map(lambda c: abs(c), stats['coeff'])
             sorted_results = stats.sort(columns=['coeff'], ascending=False)
+
+        sorted_results = sorted_results.drop('effect', axis=1)
     else:
         sorted_results = stats.sort(columns=['p-value'], ascending=True)
 
@@ -532,6 +531,8 @@ def print_report_info(dataset, train_size, test_size, sensitive, contextual,
     print >> output_stream, 'X: {}'.format("\n\t".join(
         textwrap.wrap(str(contextual), 60)))
     print >> output_stream, 'E: {}'.format(expl)
+    if len(target) > 10:
+        target = '[{} ... {}]'.format(target[0], target[-1])
     print >> output_stream, 'O: {}'.format(target)
     print >> output_stream
     print >> output_stream, 'Train Params: \t{}'.format(train_params)

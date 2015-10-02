@@ -20,7 +20,7 @@ import numpy as np
 import sys
 
 
-class Experiment:
+class Experiment(object):
     """
     A FairTest experiment
     """
@@ -247,8 +247,7 @@ class Experiment:
         """
 
         self.display_params = {'sort_by': sort_by,
-                               'filter_by': filter_by
-                               }
+                               'filter_by': filter_by}
 
         # TODO validate inputs
         if not output_dir:
@@ -281,13 +280,29 @@ class Experiment:
             clusters = self.contexts[sens]
             np.random.seed(self.random_state)
             # dirty nasty hack for the benchmark
-            txt = displ.bug_report(clusters, stats, sens, self.expl, self.output,
-                             output_stream, sort_by, filter_by, self.encoders)
+            txt = displ.bug_report(clusters, stats, sens, self.expl,
+                                   self.output, output_stream, sort_by,
+                                   filter_by, self.encoders)
             if len(self.sens_features) == 1:
                 return txt
 
 
 def measure_from_string(m_str, ci_level, topk):
+    """
+    Gets a Metric from its string representation
+
+    Parameters
+    ----------
+    m_str :
+        the string representation
+
+    ci_level :
+        the confidence level
+
+    topk :
+        topK parameter for regression metric
+
+    """
     if m_str == "NMI" or m_str == "MI":
         return fm.NMI(ci_level=ci_level)
     elif m_str == "Corr":
@@ -295,7 +310,7 @@ def measure_from_string(m_str, ci_level, topk):
     elif m_str == "Diff":
         return fm.DIFF(ci_level=ci_level)
     elif m_str == "Ratio":
-        return fm.Ratio(ci_level=ci_level)
+        return fm.RATIO(ci_level=ci_level)
     elif m_str == "Reg":
         return fm.REGRESSION(ci_level=ci_level, topK=topk)
     elif m_str == "CondNMI":
@@ -304,6 +319,27 @@ def measure_from_string(m_str, ci_level, topk):
 
 
 def get_measure(sens, out, ci_level, topk, expl):
+    """
+    Gets a default Metric
+
+    Parameters
+    ----------
+    sens :
+        the sensitive Feature
+
+    out :
+        the target Feature
+
+    ci_level :
+        the confidence level
+
+    topk :
+        the topK parameter for regression
+
+    expl:
+        the explanatory Feature
+
+    """
     if expl:
         assert sens.arity and out.arity
         return fm.CondNMI(ci_level=ci_level)
@@ -319,7 +355,7 @@ def get_measure(sens, out, ci_level, topk, expl):
         return fm.CORR(ci_level=ci_level)
 
 
-class Feature:
+class Feature(object):
     """
     Class holding information about user features
     """
@@ -337,7 +373,7 @@ class Feature:
                % (self.__class__.__name__, self.ftype, self.arity)
 
 
-class Target:
+class Target(object):
     """
     Class holding information about the target feature(s)
     """

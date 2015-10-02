@@ -49,21 +49,26 @@ def compute_all_stats(experiments, approx, fdr):
         for (sens, clusters) in experiments.iteritems():
             measure = clusters[0].clstr_measure
             # For regression, re-form the dataframes for each cluster
-            if measure.dataType == fm.Measure.DATATYPE_REG:
+            if isinstance(measure.stats, pd.DataFrame):
                 res = all_stats[sens]
                 res = pd.DataFrame(res['stats'], index=res['index'],
                                    columns=res['cols'])
                 all_stats[sens] = \
-                    {'stats': np.array_split(res, len(res)/measure.topK)}
+                    {'stats': np.array_split(res, len(res)/len(measure.stats))}
 
         all_stats = {sens: exp_stats['stats'] for (sens, exp_stats) in all_stats.iteritems()}
+
+        #print all_stats
+
         return all_stats
 
 
 def num_hypotheses(clusters):
     measure = clusters[0].clstr_measure
-    if measure.dataType == fm.Measure.DATATYPE_REG:
-        return len(clusters)*measure.topK
+    #if measure.dataType == fm.Measure.DATATYPE_REG:
+    #    return len(clusters)*measure.topK
+    if isinstance(measure.stats, pd.DataFrame):
+        return len(clusters)*len(measure.stats)
     else:
         return len(clusters)
 
@@ -119,7 +124,7 @@ def compute_stats(clusters, approx, adj_ci_level):
 
     # For regression, we have multiple p-values per cluster
     # (one per topK coefficient)
-    if measure.dataType == fm.Measure.DATATYPE_REG:
+    if isinstance(measure.stats, pd.DataFrame):
         stats = pd.concat(stats)
         index = stats.index
         cols = stats.columns
