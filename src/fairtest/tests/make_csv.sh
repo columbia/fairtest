@@ -30,15 +30,15 @@ function _convert_to_percentage() {
 
   cat ${_report}_* | grep -w "Instantiation"  | grep "Discovery" | tr ':' ',' | tr '-' ',' |\
     sed 's, ,,g' |cut -f1,2,3,4,6,8,10 -d','  | sed 's,\,, ,g' |\
-    awk '{printf "%s,%.2f,%.2f,%.2f,%.2f,%d\n",$2, $5, $6, 100*$5/($5+$6), 100*$6/($5+$6), ($5+$6)}'
+    awk '{printf "%s(D),%.2f,%.2f,%.2f,%.2f,%d\n",$2, $5, $6, 100*$5/($5+$6), 100*$6/($5+$6), ($5+$6)}'
 
   cat ${_report}_* | grep -w "Instantiation"  | grep "Testing" | tr ':' ',' | tr '-' ',' |\
     sed 's, ,,g' |cut -f1,2,3,4,6,8,10 -d','  | sed 's,\,, ,g' |\
-    awk '{printf "%s,%.2f,%.2f,%.2f,%.2f,%d\n",$2, $5, $6, 100*$5/($5+$6), 100*$6/($5+$6), ($5+$6)}'
+    awk '{printf "%s(T),%.2f,%.2f,%.2f,%.2f,%d\n",$2, $5, $6, 100*$5/($5+$6), 100*$6/($5+$6), ($5+$6)}'
 
   cat ${_report}_* | grep -w "Instantiation"  | grep "Error" | tr ':' ',' | tr '-' ',' |\
     sed 's, ,,g' |cut -f1,2,3,4,6,8,10 -d','  | sed 's,\,, ,g' |\
-    awk '{printf "%s,%.2f,%.2f,%.2f,%.2f,%d\n",$2, $5, $6, 100*$5/($5+$6), 100*$6/($5+$6), ($5+$6)}'
+    awk '{printf "%s(EP),%.2f,%.2f,%.2f,%.2f,%d\n",$2, $5, $6, 100*$5/($5+$6), 100*$6/($5+$6), ($5+$6)}'
 }
 
 function __convert_to_percentage() {

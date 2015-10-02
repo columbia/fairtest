@@ -110,7 +110,7 @@ def shuffle_column_contents(data, base_features):
     return data.reindex(columns=keys)
 
 
-def do_benchmark((contents, n_features_max, inc, size_range)):
+def do_benchmark((contents, feature_range, size_range)):
     """
     main method doing the benchmark
     """
@@ -131,7 +131,7 @@ def do_benchmark((contents, n_features_max, inc, size_range)):
     range_min = 0
     range_max = N_BASE - 3
     features = [randint(range_min, range_max) for _ \
-                in range(0, n_features_max - N_BASE)]
+                in range(0,feature_range[-1] - N_BASE)]
 
     # create header
     features_header = \
@@ -168,19 +168,20 @@ def do_benchmark((contents, n_features_max, inc, size_range)):
 
     # initialize the dictionary
     results = {}
-    for n_features in range(N_BASE+1, n_features_max, inc):
+    for n_features in feature_range:
         results[n_features] = {}
         for size in size_range:
             results[n_features][size] = {}
 
-    for additional_features in range(1, n_features_max-N_BASE, inc):
+    additional_features_range = [x-N_BASE for x in feature_range]
+    for additional_features in additional_features_range:
         n_features = additional_features + N_BASE
         results[n_features] = {}
 
         for size in size_range:
             # Instanciate the experiment
             # print data.drop(data.columns[range(N_BASE-1, n_features_max-1-additional_features)], axis=1).head(size)
-            _data = data.drop(data.columns[range(N_BASE-1, n_features_max-1-additional_features)], axis=1).head(size)
+            _data = data.drop(data.columns[range(N_BASE-1, additional_features_range[-1]-1-additional_features)], axis=1).head(size)
             FT1 = api.Experiment(_data, SENS, TARGET, EXPL,
                                  random_state=int(random_suffix))
 
@@ -194,14 +195,15 @@ def do_benchmark((contents, n_features_max, inc, size_range)):
             t3 = time()
 
             # Create the report
-            random_suffix = str(randint(1, 99999999))
-            FT1.report("benchmark_performance" + random_suffix, "/tmp", filter_by='all')
+            _random_suffix = str(randint(1, 99999999))
+            FT1.report("nop_benchmark_performance" + _random_suffix, "/tmp", filter_by='all')
 
             train = t2 - t1
             test = t3 - t2
 
             avg_no_of_feat_values = get_avg_no_of_feat_values(_contents[:size])
             results[n_features][size] = [train, test, avg_no_of_feat_values]
+            del _data
             print n_features, size, results[n_features][size]
         # for all sizes
     # for all feature numbers
@@ -255,13 +257,12 @@ def main(argv=sys.argv):
 
     contents = load_file(FILENAME)
 
-    INC = 5
-    MAX_FEATURES = 70
-    SIZE_RANGE = [10000, 20000, 30000, 40000]
+    SIZE_RANGE = [10000, 20000, 40000, 60000, 80000]
+    FEATURES_RANGE = [10, 20, 40, 60, 80]
 
-    P = multiprocessing.Pool(multiprocessing.cpu_count()+2)
+    P = multiprocessing.Pool(multiprocessing.cpu_count()-2)
     results = P.map_async(do_benchmark,
-                          [(contents, MAX_FEATURES, INC, SIZE_RANGE)]*ITERATIONS)
+                          [(contents, FEATURES_RANGE, SIZE_RANGE)]*ITERATIONS)
     results = results.get()
     P.close()
     P.join()

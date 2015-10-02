@@ -1,7 +1,19 @@
 """
-Simple classifier use to showcase Fairtest API
+Simple examples
 """
-from sklearn import svm
+from fairtest.bugreport import api2 as api
+from fairtest.bugreport.helpers import prepare
+
+
+
+#########################################
+#                                       #
+# Experiment 1                          #
+#                                       #
+# Using Fairtest with in memory data    #
+#                                       #
+#########################################
+
 
 #
 # X = [ 'race', 'city', 'state']
@@ -17,44 +29,69 @@ X = [[1, 2, 2], [0, 0, 2], [0, 0, 1], [0, 0, 3], [2, 4, 3], [0, 0, 3],\
         [0, 4, 4], [0, 4, 4], [1, 2, 2], [1, 2, 2], [0, 0, 1], [1, 2, 1],\
         [0, 0, 1], [1, 1, 1], [0, 2, 2], [1, 2, 4], [1, 2, 0], [0, 0, 1],\
         [2, 3, 2], [0, 0, 3], [2, 3, 1], [2, 1, 0], [1, 2, 0], [0, 4, 2],\
-        [2, 3, 3], [0, 4, 1]]
+        [2, 3, 3], [0, 4, 1]]*1000
+
 #
 # y = [ 'price']
 # 'price' in [0, 1]
 #
 # 'city' == 0 will always get 'price' == 1 and  have people with 'race' == 0
 #
-Y = [0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1,\
+y = [0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1,\
         1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1,\
-        0, 1, 1, 1, 0]
+        0, 1, 1, 1, 0]*1000
+
+# Preapre data into FairTest friendly format
+data = prepare.data_from_mem(X, y)
+
+
+# Initializing parameters for experiment
+EXPL = []
+SENS = [0]
+TARGET = 3
+
+
+# Instanciate the experiment
+FT2 = api.Experiment(data, SENS, TARGET, EXPL)
+
+# Train the classifier
+FT2.train()
+
+# Evaluate on the testing set
+FT2.test()
+
+# Create the report
+FT2.report("demoset-1")
 
 
 
-SPLIT = 10
-clf = svm.SVC()
+#########################################
+#                                       #
+# Experiment 2                          #
+#                                       #
+# Using Fairtest with in csv file       #
+#                                       #
+#########################################
 
-# training the model
-x_train = X[:SPLIT]
-y_train = Y[:SPLIT]
-clf.fit(x_train, y_train)
 
-# testing the model
-x_test = X[SPLIT:]
-y_test = map(lambda x: clf.predict(x), x_test)
+# Preapre data into FairTest friendly format
+FILENAME = "/home/vatlidak/repos/fairtest/data/staples/staples.csv"
+data = prepare.data_from_csv(FILENAME, ['zipcode', 'distance'])
 
-# evaluating the model
-print clf.score(x_test, y_test)
 
-# using Fairtest
-from fairtest.bugreport import api
+# Initializing parameters for experiment
+EXPL = []
+SENS = ['income']
+TARGET = 'price'
 
-testcase = api.Fairtest()
+# Instanciate the experiment
+FT2 = api.Experiment(data, SENS, TARGET, EXPL)
 
-testcase.set_attribute_types(('race', 'city', 'state', 'price'),\
-                             ('cat', 'cat', 'cat', 'cat'))
-testcase.set_sensitive_attribute('race')
-testcase.set_output_attribute('price')
+# Train the classifier
+FT2.train()
 
-# passing exactly the same arguments
-# that were used in clf.score
-testcase.bug_report(x_test, y_test)
+# Evaluate on the testing set
+FT2.test()
+
+# Create the report
+FT2.report("demoset-2")
