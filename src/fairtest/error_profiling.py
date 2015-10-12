@@ -50,7 +50,7 @@ class ErrorProfiling(Investigation):
             error_name = "Class. Error"
             data[error_name] = ['Correct' if pred == truth
                                 else 'FP' if pred else 'FN' for (pred, truth)
-                                in (zip(data[output], data[ground_truth]))]
+                                in zip(data[output], data[ground_truth])]
         elif data.dtypes[output] == np.object:
             # multi-valued classification
             logging.info('Computing Mutlivalued Classification Error')

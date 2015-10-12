@@ -2,7 +2,7 @@
 Mutual Information Metric.
 """
 
-from . import Metric
+from .metric import Metric
 import fairtest.modules.statistics.hypothesis_test as tests
 import fairtest.modules.statistics.confidence_interval as intervals
 import pandas as pd

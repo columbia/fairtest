@@ -4,7 +4,7 @@ Effectiveness Benchmark for FairTest
 Usage: ./make_benchmark_effectiveness.py fairtest/data/staples/staples.csv 100
 
 The logic for now is:
-    for SIZE in {100, 500, 1000, 2000, 5000}: 
+    for SIZE in {100, 500, 1000, 2000, 5000}:
             - select 10 contexts {race, state} of size ~SIZE
             for DIFF in {10, 15, 20, 25, 30}:
                     - randomly select (50+DIFF)% of the rich
@@ -80,9 +80,9 @@ def make_price_pools(population, effect):
     Helper to create a pool with exactly (50-effect)% discount for
     people with low income and (50+effect)% discount for high income
     """
-    income_map = map(lambda l: l.split(',')[3], population)
-    n_poor = len(filter(lambda l: l == 'income < 50K', income_map))
-    n_rich = len(filter(lambda l: l != 'income < 50K', income_map))
+    income_map = [l.split(',')[3] for l in population]
+    n_poor = len([l for l in income_map if l == 'income < 50K'])
+    n_rich = len([l for l in income_map if l != 'income < 50K'])
 
     poor_price_pool = [True]*int(ceil(n_poor*(50.0-effect)/100)) +\
                       [False]*int(ceil(n_poor*(50.0+effect)/100))
@@ -131,7 +131,7 @@ def load_file(file_name):
                 _sizes_dict.pop(state_race, None)
 
     # swap the dictionary so that sizes are the keys
-    sizes_dict = dict (zip(_sizes_dict.values(), _sizes_dict.keys()))
+    sizes_dict = dict(zip(_sizes_dict.values(), _sizes_dict.keys()))
 
     # round the sizes and split in five classes
     # {'100': 30, '5000': 19, '2000': 19, '500': 23, '1000': 24}
@@ -183,12 +183,12 @@ def do_benchmark((classes, pool, guard_lines)):
     _classes = deepcopy(classes)
     # iterate for  various population sizes
     # sorted numericaly by population size.
-    for _class in map(str, sorted(map(int, _classes.keys()))):
+    for _class in [str(x) for x in sorted([int(y) for y in _classes.keys()])]:
 
         selected = []
         shuffle(_classes[_class])
 
-        for i in range(0, 10):
+        for _ in range(0, 10):
             state_race = _classes[_class].pop()
 
             # keep the contexts selected to compare later
@@ -321,7 +321,7 @@ def parse_results(results, iterations):
     print
 
     for size in sorted(stats):
-        print "%s" % size, 
+        print "%s" % size,
         for effect in sorted(stats[size]):
             print ",%.2f" % (float(stats[size][effect]) / float(iterations)),
         print

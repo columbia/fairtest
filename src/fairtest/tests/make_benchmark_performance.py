@@ -35,8 +35,8 @@ def parse_line(line):
     line is in the format distance,zipcode,city,state,gender,race,income,price
     """
     line = line.strip().split(",")[1:]
-    zipcode = str(line[0])
-    city = str(line[1])
+    # zipcode = str(line[0])
+    # city = str(line[1])
     state = str(line[2])
     gender = str(line[3])
     race = str(line[4])
@@ -67,7 +67,7 @@ def get_avg_no_of_feat_values(contents):
     """
     total = 0
     for i in range(0, len(contents[0])):
-        total += len(set(map(lambda x: x[i], contents)))
+        total += len(set([x[i] for x in contents]))
 
     return float(total) / float(len(contents[0]))
 
@@ -238,7 +238,7 @@ def parse_results(results, iterations):
 
     for n_features in sorted(merged):
         for size in sorted(merged[n_features]):
-            result =  merged[n_features][size]
+            result = merged[n_features][size]
             t_train = result[0]/iterations
             t_test = result[1]/iterations
             avg_no_of_feat_values = result[2]/iterations

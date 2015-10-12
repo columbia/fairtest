@@ -9,7 +9,7 @@ for _file in FILES:
     inf = open(_file)
     data = inf.readlines()
     inf.close()
-    
+
     outf = open(_file, 'w')
     outf.write('#set,train,test,ptrain,ptest\n')
     for i in range(1, len(data)):

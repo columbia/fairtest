@@ -29,7 +29,7 @@ def main(argv=sys.argv):
     SENS = ['Race']
     EXPL = []
 
-    labeled_data = map(lambda s: ast.literal_eval(s), data[TARGET])
+    labeled_data = [ast.literal_eval(s) for s in data[TARGET]]
     for l in labeled_data:
         assert len(l) == 5
     label_encoder = preprocessing.MultiLabelBinarizer()

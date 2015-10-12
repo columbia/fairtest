@@ -5,6 +5,16 @@ import logging
 
 
 def set_params(filename='fairtest.log', level=logging.INFO):
+    """
+    Set Logging Parameters
+
+    Parameters
+    ----------
+    filename :
+        the name of the log file
+    level :
+        the logging level
+    """
     logger = logging.getLogger()
     fhandler = logging.FileHandler(filename=filename, mode='w+')
     formatter = logging.Formatter(

@@ -19,7 +19,7 @@ def main(argv=sys.argv):
         usage(argv)
 
     '''
-    Testing (average movie rating accross age)
+    Testing (average movie rating across age)
     '''
     # Prepare data into FairTest friendly format
     FILENAME = argv[1]
@@ -93,9 +93,9 @@ def main(argv=sys.argv):
     SENS = ['Gender']
 
     EXPL = []
-    labeled_data = map(lambda s: ast.literal_eval(s), data[TARGET])
+    labeled_data = [ast.literal_eval(s) for s in data[TARGET]]
     for labels in labeled_data:
-        assert(len(labels) == 5)
+        assert len(labels) == 5
     label_encoder = preprocessing.MultiLabelBinarizer()
     labeled_data = label_encoder.fit_transform(labeled_data)
     labels = label_encoder.classes_
