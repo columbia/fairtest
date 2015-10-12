@@ -167,6 +167,7 @@ about ongoing investigations, as well as more fine-grained debug information
 Code Organisation
 -----------------
 
+Directory or File                       | Description
 --------------------------------------- | ------------------------------------
 data                                    |  Demo datasets
 src/apps                                |  Demo apps

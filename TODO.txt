@@ -1,15 +1,13 @@
-* Look for image-net datasets with Race, Gender, Age, etc.
+* Look for image-net datasets trained
 
-* Dataset: Set protected attributes list (with type, and measure?)
-* Run Experiment:
-    - load data
-    for PA in PAs:
-        - encode data
-        - train tree
-        - get clusters
-        - store (PA, cluster list)
-    
-    - get CIs for all PAs
-    - correct p-values for all PAs
-    - display results for all PAs (filename+_PA_TARGET)
-    
+* Move all application code to src/apps and leave only dataset in data/
+
+* Add user input validation for investigations
+
+* Add CondNMI metric
+
+* Make sure performance/effectiveness benchmarks still work
+
+* Correct some results
+
+* Test a "clean" installation of FairTest using setup.py
