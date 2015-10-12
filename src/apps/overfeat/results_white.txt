@@ -1,0 +1,6215 @@
+swimming trunks, bathing trunks 0.247569
+sarong 0.0749687
+maillot, tank suit 0.0422572
+maillot 0.0302738
+knee pad 0.0297081
+mortarboard 0.237303
+seat belt, seatbelt 0.0908726
+wig 0.0885678
+brassiere, bra, bandeau 0.0630054
+hair spray 0.0341488
+oboe, hautboy, hautbois 0.222201
+academic gown, academic robe, judge's robe 0.111166
+neck brace 0.0998332
+oxygen mask 0.0912703
+whistle 0.037882
+Windsor tie 0.529302
+academic gown, academic robe, judge's robe 0.196361
+suit, suit of clothes 0.133491
+oboe, hautboy, hautbois 0.0425015
+panpipe, pandean pipe, syrinx 0.0142971
+valley, vale 0.245952
+cliff dwelling 0.11231
+alp 0.0859329
+suspension bridge 0.0666803
+maze, labyrinth 0.0364801
+nipple 0.371146
+neck brace 0.188449
+remote control, remote 0.0678495
+cradle 0.0378922
+Band Aid 0.0229039
+ocarina, sweet potato 0.224061
+whistle 0.165674
+oxygen mask 0.0804445
+loupe, jeweler's loupe 0.0705936
+oboe, hautboy, hautbois 0.0704355
+fur coat 0.606988
+trench coat 0.0553201
+cardigan 0.05153
+velvet 0.0389353
+teddy, teddy bear 0.0244627
+Dutch oven 0.167898
+plow, plough 0.113296
+diamondback, diamondback rattlesnake, Crotalus adamanteus 0.0600277
+rifle 0.0561584
+barrow, garden cart, lawn cart, wheelbarrow 0.0434148
+ice lolly, lolly, lollipop, popsicle 0.0458868
+maraca 0.0356585
+stethoscope 0.0316948
+wooden spoon 0.0291478
+soccer ball 0.0247624
+brassiere, bra, bandeau 0.253372
+miniskirt, mini 0.0742912
+bikini, two-piece 0.0582312
+maillot 0.0573145
+Band Aid 0.0351243
+neck brace 0.15353
+toilet seat 0.0597826
+barber chair 0.0537583
+rain barrel 0.0410114
+punching bag, punch bag, punching ball, punchball 0.0403704
+notebook, notebook computer 0.207658
+dumbbell 0.0942538
+miniskirt, mini 0.0411827
+bulletproof vest 0.0397591
+hand-held computer, hand-held microcomputer 0.0374195
+Windsor tie 0.313502
+tobacco shop, tobacconist shop, tobacconist 0.135101
+hand-held computer, hand-held microcomputer 0.134169
+neck brace 0.0811007
+ocarina, sweet potato 0.0790057
+maillot, tank suit 0.140538
+miniskirt, mini 0.122595
+maillot 0.0768067
+horizontal bar, high bar 0.0743046
+balance beam, beam 0.0680666
+academic gown, academic robe, judge's robe 0.319417
+bassoon 0.067267
+mortarboard 0.0468553
+plunger, plumber's helper 0.0420905
+cello, violoncello 0.0284901
+lab coat, laboratory coat 0.312134
+suit, suit of clothes 0.283869
+Windsor tie 0.161313
+bow tie, bow-tie, bowtie 0.143223
+bolo tie, bolo, bola tie, bola 0.032475
+Windsor tie 0.149829
+neck brace 0.0760213
+academic gown, academic robe, judge's robe 0.0752642
+bassoon 0.057004
+abaya 0.0509495
+wig 0.173271
+hair spray 0.0650251
+bow tie, bow-tie, bowtie 0.0538248
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0367323
+academic gown, academic robe, judge's robe 0.0314361
+sunglass 0.0965751
+sunglasses, dark glasses, shades 0.0833814
+seat belt, seatbelt 0.0716502
+fur coat 0.0570062
+wig 0.0512086
+diaper, nappy, napkin 0.222046
+bib 0.0964245
+crib, cot 0.0363098
+tub, vat 0.0360917
+bathtub, bathing tub, bath, tub 0.0342037
+bikini, two-piece 0.169555
+wig 0.094506
+lab coat, laboratory coat 0.082413
+maillot 0.0725895
+ice lolly, lolly, lollipop, popsicle 0.0643534
+sunscreen, sunblock, sun blocker 0.224103
+Band Aid 0.119067
+face powder 0.0527943
+bow tie, bow-tie, bowtie 0.0464636
+lipstick, lip rouge 0.0277723
+dumbbell 0.0767849
+jersey, T-shirt, tee shirt 0.0618612
+miniskirt, mini 0.0572144
+bathing cap, swimming cap 0.0499446
+plunger, plumber's helper 0.0474323
+military uniform 0.609989
+trench coat 0.17212
+suit, suit of clothes 0.168291
+lab coat, laboratory coat 0.0128069
+bow tie, bow-tie, bowtie 0.012799
+stethoscope 0.0493026
+ice lolly, lolly, lollipop, popsicle 0.0318034
+screwdriver 0.0282532
+notebook, notebook computer 0.0243384
+crossword puzzle, crossword 0.0221246
+folding chair 0.170046
+barber chair 0.111397
+steel drum 0.0696758
+barrow, garden cart, lawn cart, wheelbarrow 0.0636307
+rocking chair, rocker 0.0286723
+bow tie, bow-tie, bowtie 0.0382809
+shower cap 0.0303201
+punching bag, punch bag, punching ball, punchball 0.0295463
+microphone, mike 0.0280473
+bassoon 0.0251915
+military uniform 0.233079
+bow tie, bow-tie, bowtie 0.207564
+wig 0.120622
+lab coat, laboratory coat 0.0474228
+suit, suit of clothes 0.0288375
+potter's wheel 0.0904486
+paintbrush 0.046544
+plunger, plumber's helper 0.0418009
+wok 0.0383516
+vacuum, vacuum cleaner 0.0317668
+swimming trunks, bathing trunks 0.161891
+sarong 0.158731
+pajama, pyjama, pj's, jammies 0.103409
+miniskirt, mini 0.0950459
+brassiere, bra, bandeau 0.0595089
+harmonica, mouth organ, harp, mouth harp 0.167314
+barbershop 0.0469801
+Band Aid 0.0317047
+loupe, jeweler's loupe 0.0250043
+sunscreen, sunblock, sun blocker 0.0221748
+stage 0.0930283
+microphone, mike 0.0736836
+wig 0.0535639
+punching bag, punch bag, punching ball, punchball 0.043
+maraca 0.0377189
+bathing cap, swimming cap 0.172291
+abaya 0.134784
+suit, suit of clothes 0.0875049
+Band Aid 0.0812615
+mask 0.0646621
+maillot, tank suit 0.184939
+maillot 0.169666
+brassiere, bra, bandeau 0.135513
+bikini, two-piece 0.0672672
+hair spray 0.064363
+Band Aid 0.143067
+bathing cap, swimming cap 0.104846
+shower cap 0.0548444
+lipstick, lip rouge 0.0458802
+whistle 0.043142
+suit, suit of clothes 0.759003
+Windsor tie 0.11348
+bow tie, bow-tie, bowtie 0.0411727
+academic gown, academic robe, judge's robe 0.0176635
+notebook, notebook computer 0.00819137
+neck brace 0.281064
+bow tie, bow-tie, bowtie 0.0574472
+loupe, jeweler's loupe 0.0488778
+gasmask, respirator, gas helmet 0.0470594
+stethoscope 0.0361279
+brassiere, bra, bandeau 0.691434
+bikini, two-piece 0.250206
+maillot 0.0348798
+maillot, tank suit 0.0133109
+sarong 0.00235604
+cowboy hat, ten-gallon hat 0.154988
+shower cap 0.116965
+sombrero 0.105732
+loupe, jeweler's loupe 0.039795
+strainer 0.0340806
+bow tie, bow-tie, bowtie 0.127706
+lipstick, lip rouge 0.060687
+military uniform 0.0444115
+red wine 0.0406721
+suit, suit of clothes 0.0352839
+Band Aid 0.124686
+bathing cap, swimming cap 0.116049
+ice lolly, lolly, lollipop, popsicle 0.0634953
+sunscreen, sunblock, sun blocker 0.0609617
+diaper, nappy, napkin 0.050369
+groom, bridegroom 0.298327
+gown 0.28106
+brassiere, bra, bandeau 0.149144
+pajama, pyjama, pj's, jammies 0.0277758
+lab coat, laboratory coat 0.0162839
+pajama, pyjama, pj's, jammies 0.171895
+vestment 0.156886
+fur coat 0.0864555
+trench coat 0.057037
+cloak 0.0492577
+brassiere, bra, bandeau 0.291763
+neck brace 0.261232
+maillot, tank suit 0.193906
+sunglass 0.045266
+bikini, two-piece 0.0244944
+lipstick, lip rouge 0.203431
+hair slide 0.163106
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0760636
+wig 0.0673982
+face powder 0.065601
+guinea pig, Cavia cobaya 0.0679402
+stretcher 0.0293531
+king crab, Alaska crab, Alaskan king crab, Alaska king crab, Paralithodes camtschatica 0.0277123
+American lobster, Northern lobster, Maine lobster, Homarus americanus 0.0259238
+barbershop 0.0224863
+Windsor tie 0.690978
+suit, suit of clothes 0.164194
+academic gown, academic robe, judge's robe 0.10107
+oboe, hautboy, hautbois 0.00687196
+bolo tie, bolo, bola tie, bola 0.00530611
+beer glass 0.0909622
+ice lolly, lolly, lollipop, popsicle 0.0901174
+bolo tie, bolo, bola tie, bola 0.0700062
+pop bottle, soda bottle 0.0547957
+goblet 0.041302
+bow tie, bow-tie, bowtie 0.0803216
+microphone, mike 0.0454002
+sunglass 0.043982
+barbershop 0.0439139
+whistle 0.0412619
+groom, bridegroom 0.332767
+lab coat, laboratory coat 0.0553114
+picket fence, paling 0.0482439
+rapeseed 0.0455854
+bonnet, poke bonnet 0.0429854
+academic gown, academic robe, judge's robe 0.196757
+Windsor tie 0.17293
+oboe, hautboy, hautbois 0.125918
+bassoon 0.105868
+jersey, T-shirt, tee shirt 0.0573061
+wig 0.0562805
+ice lolly, lolly, lollipop, popsicle 0.0241731
+bib 0.0222425
+broccoli 0.0191248
+ice cream, icecream 0.0180875
+trench coat 0.107708
+cleaver, meat cleaver, chopper 0.0463368
+bath towel 0.0338625
+mailbag, postbag 0.0299642
+swimming trunks, bathing trunks 0.0290705
+wig 0.0932984
+groom, bridegroom 0.0777881
+hair spray 0.0749468
+brassiere, bra, bandeau 0.0556498
+stethoscope 0.0427764
+miniskirt, mini 0.0656145
+dumbbell 0.0513155
+hand-held computer, hand-held microcomputer 0.04602
+mailbag, postbag 0.0388164
+jean, blue jean, denim 0.032068
+hair spray 0.0934909
+stage 0.0932784
+brassiere, bra, bandeau 0.0476325
+cleaver, meat cleaver, chopper 0.0450177
+maillot 0.0419846
+sunscreen, sunblock, sun blocker 0.103188
+stethoscope 0.0546278
+ice lolly, lolly, lollipop, popsicle 0.0536957
+lens cap, lens cover 0.0372024
+hair spray 0.033816
+cassette 0.287143
+mask 0.190767
+iPod 0.13747
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0626268
+loudspeaker, speaker, speaker unit, loudspeaker system, speaker system 0.0550738
+trench coat 0.374814
+fur coat 0.183516
+sweatshirt 0.0529076
+miniskirt, mini 0.0480079
+pickelhaube 0.0259665
+Tibetan mastiff 0.234573
+chow, chow chow 0.210263
+malamute, malemute, Alaskan malamute 0.157604
+Eskimo dog, husky 0.150033
+Newfoundland, Newfoundland dog 0.0305306
+snowmobile 0.789418
+motor scooter, scooter 0.0726853
+dogsled, dog sled, dog sleigh 0.0651065
+hoopskirt, crinoline 0.0209915
+bobsled, bobsleigh, bob 0.0109546
+nipple 0.576307
+oxygen mask 0.0676524
+Band Aid 0.0585014
+diaper, nappy, napkin 0.039324
+ice lolly, lolly, lollipop, popsicle 0.0323024
+croquet ball 0.0935154
+bubble 0.0545059
+totem pole 0.0310616
+plunger, plumber's helper 0.028218
+unicycle, monocycle 0.0232381
+miniskirt, mini 0.0956579
+bikini, two-piece 0.0515028
+brassiere, bra, bandeau 0.0419074
+maillot 0.039533
+gasmask, respirator, gas helmet 0.0379198
+academic gown, academic robe, judge's robe 0.403226
+Windsor tie 0.205356
+suit, suit of clothes 0.129433
+mortarboard 0.0824972
+bow tie, bow-tie, bowtie 0.0475802
+maraca 0.0880011
+ice lolly, lolly, lollipop, popsicle 0.0702607
+hair slide 0.0500843
+bow tie, bow-tie, bowtie 0.0420329
+Band Aid 0.0383082
+neck brace 0.145845
+comic book 0.0674498
+oxygen mask 0.0597491
+potter's wheel 0.0539106
+puck, hockey puck 0.0293674
+rugby ball 0.221465
+maillot, tank suit 0.148596
+maillot 0.087127
+miniskirt, mini 0.0814019
+soccer ball 0.0372667
+fur coat 0.0344841
+mosquito net 0.0326203
+wig 0.0211447
+sleeping bag 0.0195706
+sarong 0.0190855
+kimono 0.934734
+pajama, pyjama, pj's, jammies 0.0217333
+poncho 0.0156207
+stole 0.00546593
+cardigan 0.00246369
+nipple 0.0669279
+lotion 0.0499564
+bubble 0.0360987
+barbershop 0.0304046
+diaper, nappy, napkin 0.0295235
+maillot, tank suit 0.293229
+balance beam, beam 0.158414
+maillot 0.126644
+horizontal bar, high bar 0.0869036
+parallel bars, bars 0.0866985
+suit, suit of clothes 0.341941
+bow tie, bow-tie, bowtie 0.156101
+trench coat 0.0627266
+theater curtain, theatre curtain 0.0324895
+jean, blue jean, denim 0.0311715
+maillot, tank suit 0.681124
+maillot 0.24339
+brassiere, bra, bandeau 0.0226927
+bikini, two-piece 0.0196862
+pajama, pyjama, pj's, jammies 0.00386495
+military uniform 0.0875351
+croquet ball 0.0774155
+rock python, rock snake, Python sebae 0.042436
+trench coat 0.0371227
+tiger, Panthera tigris 0.0332585
+binoculars, field glasses, opera glasses 0.0835695
+maraca 0.0592351
+pinwheel 0.0535708
+bubble 0.0479889
+ice lolly, lolly, lollipop, popsicle 0.0454526
+suit, suit of clothes 0.104624
+unicycle, monocycle 0.0931643
+torch 0.0795611
+horizontal bar, high bar 0.0736491
+spotlight, spot 0.0430082
+bikini, two-piece 0.182021
+bow tie, bow-tie, bowtie 0.118686
+maillot 0.0842966
+maillot, tank suit 0.0722902
+brassiere, bra, bandeau 0.0686609
+armadillo 0.0371796
+iron, smoothing iron 0.0308094
+miniskirt, mini 0.0269935
+hoopskirt, crinoline 0.0253216
+cloak 0.0224765
+bikini, two-piece 0.361262
+brassiere, bra, bandeau 0.127834
+neck brace 0.0592857
+sunscreen, sunblock, sun blocker 0.0409799
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0344472
+suit, suit of clothes 0.331202
+bow tie, bow-tie, bowtie 0.208536
+Windsor tie 0.151036
+Loafer 0.0757207
+groom, bridegroom 0.0482864
+wig 0.757164
+seat belt, seatbelt 0.0820879
+sunscreen, sunblock, sun blocker 0.0207295
+lab coat, laboratory coat 0.0166872
+hair spray 0.0136697
+dumbbell 0.0346271
+diaper, nappy, napkin 0.0297693
+miniskirt, mini 0.0240522
+croquet ball 0.0238453
+brassiere, bra, bandeau 0.0228963
+miniskirt, mini 0.254559
+dumbbell 0.0780591
+barbell 0.0681522
+knee pad 0.0502514
+jersey, T-shirt, tee shirt 0.0287589
+lab coat, laboratory coat 0.19492
+bow tie, bow-tie, bowtie 0.127812
+Windsor tie 0.0835256
+suit, suit of clothes 0.0786039
+groom, bridegroom 0.0619905
+mortarboard 0.251343
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.181646
+power drill 0.0919359
+hammer 0.0814065
+can opener, tin opener 0.0620573
+ice lolly, lolly, lollipop, popsicle 0.0986114
+bubble 0.0839347
+ear, spike, capitulum 0.0576783
+rapeseed 0.0439742
+corn 0.0405679
+maillot, tank suit 0.391368
+maillot 0.200528
+sarong 0.0673475
+gown 0.0626251
+bikini, two-piece 0.0506914
+stethoscope 0.111017
+jersey, T-shirt, tee shirt 0.0514435
+umbrella 0.0437303
+maillot 0.0304345
+sunglasses, dark glasses, shades 0.0281429
+sunglasses, dark glasses, shades 0.490024
+sunglass 0.393493
+revolver, six-gun, six-shooter 0.0198492
+binoculars, field glasses, opera glasses 0.0167282
+lens cap, lens cover 0.00861779
+lipstick, lip rouge 0.63401
+Band Aid 0.040902
+ice lolly, lolly, lollipop, popsicle 0.0355486
+hair spray 0.0313279
+syringe 0.0196775
+groom, bridegroom 0.335733
+bonnet, poke bonnet 0.0756954
+bubble 0.0658476
+umbrella 0.0370235
+mortarboard 0.0315165
+bikini, two-piece 0.413048
+volleyball 0.23382
+maillot 0.143716
+brassiere, bra, bandeau 0.0699161
+maillot, tank suit 0.047223
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0318432
+beer bottle 0.0267843
+Band Aid 0.0254064
+water bottle 0.0245478
+groom, bridegroom 0.0232529
+horizontal bar, high bar 0.229479
+maillot 0.212876
+balance beam, beam 0.163896
+dumbbell 0.100147
+maillot, tank suit 0.0945835
+racket, racquet 0.342396
+sweatshirt 0.225078
+tennis ball 0.0921299
+ping-pong ball 0.0636527
+jersey, T-shirt, tee shirt 0.0283436
+stethoscope 0.0875285
+bath towel 0.0760741
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0624381
+bathtub, bathing tub, bath, tub 0.0560174
+washer, automatic washer, washing machine 0.0523433
+trench coat 0.116642
+military uniform 0.0901541
+coho, cohoe, coho salmon, blue jack, silver salmon, Oncorhynchus kisutch 0.0259805
+sunglass 0.0259331
+binoculars, field glasses, opera glasses 0.025769
+Indian cobra, Naja naja 0.0686162
+park bench 0.0381391
+kimono 0.0247979
+swing 0.0215874
+marimba, xylophone 0.021412
+brassiere, bra, bandeau 0.515869
+maillot 0.248856
+bikini, two-piece 0.161286
+maillot, tank suit 0.0174465
+miniskirt, mini 0.0168557
+diaper, nappy, napkin 0.700815
+bath towel 0.0454506
+Band Aid 0.0394796
+bathtub, bathing tub, bath, tub 0.0225793
+nipple 0.0222278
+hair spray 0.18116
+microphone, mike 0.0836373
+stage 0.0582162
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0436175
+binoculars, field glasses, opera glasses 0.0298365
+miniskirt, mini 0.438892
+velvet 0.16395
+overskirt 0.0604844
+maillot 0.0297361
+stole 0.0279547
+grand piano, grand 0.351558
+television, television system 0.0516493
+upright, upright piano 0.0415511
+cello, violoncello 0.0376107
+harp 0.0300074
+hair spray 0.144124
+drumstick 0.0789135
+brassiere, bra, bandeau 0.0648026
+neck brace 0.0545066
+academic gown, academic robe, judge's robe 0.0401672
+ice lolly, lolly, lollipop, popsicle 0.119194
+ping-pong ball 0.0713005
+hair spray 0.0650766
+whistle 0.0371218
+sunscreen, sunblock, sun blocker 0.0297979
+stethoscope 0.285489
+maillot 0.154659
+brassiere, bra, bandeau 0.109473
+bikini, two-piece 0.0788792
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0564893
+jersey, T-shirt, tee shirt 0.692572
+maillot, tank suit 0.0855531
+miniskirt, mini 0.0681745
+maillot 0.0510806
+sweatshirt 0.0255806
+oboe, hautboy, hautbois 0.124188
+lab coat, laboratory coat 0.0962941
+suit, suit of clothes 0.0937524
+bow tie, bow-tie, bowtie 0.0798379
+bolo tie, bolo, bola tie, bola 0.0752656
+lab coat, laboratory coat 0.130334
+Windsor tie 0.120279
+barbershop 0.105933
+ballplayer, baseball player 0.0645351
+tobacco shop, tobacconist shop, tobacconist 0.0316058
+sliding door 0.282122
+window screen 0.0336624
+crutch 0.0321467
+miniskirt, mini 0.030084
+apron 0.0276968
+apiary, bee house 0.854844
+marimba, xylophone 0.0345295
+racket, racquet 0.019672
+paddle, boat paddle 0.0173346
+park bench 0.0162793
+lab coat, laboratory coat 0.25895
+sweatshirt 0.256452
+stethoscope 0.247316
+academic gown, academic robe, judge's robe 0.0432679
+trench coat 0.0245114
+brassiere, bra, bandeau 0.200928
+face powder 0.178517
+lab coat, laboratory coat 0.0884223
+Band Aid 0.0546581
+sunscreen, sunblock, sun blocker 0.0495069
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.32027
+hair spray 0.0885535
+stethoscope 0.0860472
+brassiere, bra, bandeau 0.0384461
+bassoon 0.0317068
+stethoscope 0.713088
+lab coat, laboratory coat 0.161325
+trench coat 0.0673037
+pajama, pyjama, pj's, jammies 0.0125363
+crutch 0.00746214
+diaper, nappy, napkin 0.118777
+nipple 0.107414
+brassiere, bra, bandeau 0.0689858
+Band Aid 0.0609482
+face powder 0.0303418
+bonnet, poke bonnet 0.454201
+rapeseed 0.046918
+bow tie, bow-tie, bowtie 0.0344037
+cardigan 0.0190619
+fur coat 0.0160814
+microphone, mike 0.0979364
+barbershop 0.0939897
+whistle 0.087139
+oboe, hautboy, hautbois 0.0669425
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0582248
+lipstick, lip rouge 0.899015
+ice lolly, lolly, lollipop, popsicle 0.0227081
+wig 0.0169718
+Band Aid 0.0100808
+bathing cap, swimming cap 0.00680572
+maillot 0.161846
+miniskirt, mini 0.126688
+bikini, two-piece 0.116253
+maillot, tank suit 0.113798
+gown 0.0715898
+shoe shop, shoe-shop, shoe store 0.048918
+ice lolly, lolly, lollipop, popsicle 0.0441288
+cocktail shaker 0.041675
+maraca 0.0281243
+punching bag, punch bag, punching ball, punchball 0.0277549
+swimming trunks, bathing trunks 0.322598
+cowboy hat, ten-gallon hat 0.23839
+bathing cap, swimming cap 0.230139
+shower cap 0.0219993
+brassiere, bra, bandeau 0.0173477
+cowboy hat, ten-gallon hat 0.239313
+seat belt, seatbelt 0.159861
+bathtub, bathing tub, bath, tub 0.0718951
+car mirror 0.0563736
+tub, vat 0.0433783
+maillot, tank suit 0.527599
+maillot 0.406214
+bikini, two-piece 0.0103051
+dumbbell 0.00821904
+brassiere, bra, bandeau 0.00711852
+suit, suit of clothes 0.182534
+lab coat, laboratory coat 0.0706271
+sweatshirt 0.0633988
+Band Aid 0.0390121
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0360221
+tub, vat 0.250908
+bathtub, bathing tub, bath, tub 0.155027
+mask 0.0461843
+washbasin, handbasin, washbowl, lavabo, wash-hand basin 0.0402593
+bassinet 0.034523
+bikini, two-piece 0.152286
+brassiere, bra, bandeau 0.0881023
+maillot, tank suit 0.0849805
+seat belt, seatbelt 0.0701258
+hourglass 0.0627828
+maillot 0.434423
+bikini, two-piece 0.209897
+maillot, tank suit 0.204733
+brassiere, bra, bandeau 0.0824275
+miniskirt, mini 0.0151396
+ice lolly, lolly, lollipop, popsicle 0.127671
+feather boa, boa 0.0515455
+Band Aid 0.0405908
+banana 0.0364692
+bubble 0.036094
+face powder 0.262135
+thunder snake, worm snake, Carphophis amoenus 0.0555835
+lipstick, lip rouge 0.0273138
+sunscreen, sunblock, sun blocker 0.0216332
+mouse, computer mouse 0.0198293
+bathing cap, swimming cap 0.205152
+wig 0.183225
+sunscreen, sunblock, sun blocker 0.164824
+face powder 0.120215
+lipstick, lip rouge 0.0511941
+ice lolly, lolly, lollipop, popsicle 0.0637109
+whistle 0.0578978
+stethoscope 0.0302326
+lipstick, lip rouge 0.0296652
+maraca 0.0285287
+ice lolly, lolly, lollipop, popsicle 0.117499
+Band Aid 0.0975566
+lipstick, lip rouge 0.0673509
+sunscreen, sunblock, sun blocker 0.0575041
+bubble 0.0439631
+lipstick, lip rouge 0.339503
+Band Aid 0.115953
+hair spray 0.0526177
+lab coat, laboratory coat 0.0466038
+face powder 0.0376698
+maillot 0.0628556
+brassiere, bra, bandeau 0.0568436
+miniskirt, mini 0.0475267
+trench coat 0.0450965
+maillot, tank suit 0.0364819
+maillot 0.480181
+maillot, tank suit 0.448304
+bathing cap, swimming cap 0.0195071
+bikini, two-piece 0.0139817
+gown 0.00982752
+sunglass 0.201852
+sunglasses, dark glasses, shades 0.121432
+face powder 0.113148
+loupe, jeweler's loupe 0.107187
+lipstick, lip rouge 0.0791392
+shower cap 0.134122
+conch 0.127395
+loggerhead, loggerhead turtle, Caretta caretta 0.0837521
+wig 0.0817267
+stingray 0.0447262
+vizsla, Hungarian pointer 0.11291
+golden retriever 0.0385161
+bloodhound, sleuthhound 0.0350928
+hay 0.031027
+Rhodesian ridgeback 0.0308968
+stethoscope 0.223632
+red wine 0.0483401
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0420951
+gasmask, respirator, gas helmet 0.0353166
+corkscrew, bottle screw 0.0350482
+pajama, pyjama, pj's, jammies 0.209748
+carousel, carrousel, merry-go-round, roundabout, whirligig 0.110998
+poncho 0.0488323
+sweatshirt 0.0411689
+stole 0.0350937
+sandal 0.045699
+cliff dwelling 0.0357402
+rocking chair, rocker 0.0248747
+cradle 0.0185537
+wooden spoon 0.0184283
+nipple 0.227673
+Band Aid 0.142118
+bath towel 0.0675915
+syringe 0.0337099
+barbershop 0.0311829
+jersey, T-shirt, tee shirt 0.118097
+black-and-tan coonhound 0.0863647
+Gordon setter 0.0482438
+wig 0.0453801
+abaya 0.0419946
+Band Aid 0.0998941
+hair spray 0.0950439
+sunscreen, sunblock, sun blocker 0.0910894
+neck brace 0.0872313
+loupe, jeweler's loupe 0.0505825
+jersey, T-shirt, tee shirt 0.808263
+maillot, tank suit 0.112433
+maillot 0.0222325
+gown 0.00522288
+bulletproof vest 0.00505683
+soccer ball 0.363704
+rugby ball 0.347126
+croquet ball 0.159791
+pinwheel 0.0139141
+torch 0.0115123
+bonnet, poke bonnet 0.309963
+shower cap 0.192662
+chain mail, ring mail, mail, chain armor, chain armour, ring armor, ring armour 0.0456105
+ski mask 0.0307962
+wig 0.022674
+velvet 0.324683
+suit, suit of clothes 0.0887606
+wig 0.0871591
+lab coat, laboratory coat 0.0503195
+maillot 0.0444591
+bulletproof vest 0.256727
+miniskirt, mini 0.148446
+knee pad 0.0805872
+dumbbell 0.0654783
+academic gown, academic robe, judge's robe 0.0355886
+bikini, two-piece 0.0721807
+cloak 0.0517984
+miniskirt, mini 0.0506149
+bonnet, poke bonnet 0.0481612
+maillot 0.0370625
+bikini, two-piece 0.318691
+maillot 0.180869
+brassiere, bra, bandeau 0.104293
+maillot, tank suit 0.0979331
+miniskirt, mini 0.0236851
+Brittany spaniel 0.101928
+Blenheim spaniel 0.0795694
+hotdog, hot dog, red hot 0.0785176
+Welsh springer spaniel 0.0372646
+Ibizan hound, Ibizan Podenco 0.0359118
+Rhodesian ridgeback 0.280615
+vizsla, Hungarian pointer 0.169706
+Staffordshire bullterrier, Staffordshire bull terrier 0.0662416
+hog, pig, grunter, squealer, Sus scrofa 0.0477015
+American Staffordshire terrier, Staffordshire terrier, American pit bull terrier, pit bull terrier 0.0451007
+potter's wheel 0.138037
+hand-held computer, hand-held microcomputer 0.078247
+American lobster, Northern lobster, Maine lobster, Homarus americanus 0.0473642
+stethoscope 0.0320804
+oboe, hautboy, hautbois 0.0293712
+tub, vat 0.218808
+bath towel 0.157746
+bathtub, bathing tub, bath, tub 0.128838
+brassiere, bra, bandeau 0.0621162
+dumbbell 0.0546582
+lipstick, lip rouge 0.140749
+sweatshirt 0.136742
+wig 0.129496
+seat belt, seatbelt 0.0612057
+velvet 0.0336702
+balance beam, beam 0.0982471
+maypole 0.035238
+hair spray 0.0286956
+stole 0.0285233
+parallel bars, bars 0.0266889
+hair spray 0.0726833
+neck brace 0.0697554
+lab coat, laboratory coat 0.0565503
+bow tie, bow-tie, bowtie 0.0476782
+jersey, T-shirt, tee shirt 0.0391032
+notebook, notebook computer 0.224409
+bathtub, bathing tub, bath, tub 0.118493
+ice lolly, lolly, lollipop, popsicle 0.116215
+tub, vat 0.0952983
+bikini, two-piece 0.0708657
+knee pad 0.220425
+maillot, tank suit 0.157883
+sweatshirt 0.156071
+brassiere, bra, bandeau 0.0992548
+diaper, nappy, napkin 0.0606604
+lab coat, laboratory coat 0.67649
+bolo tie, bolo, bola tie, bola 0.0754462
+Windsor tie 0.0640406
+suit, suit of clothes 0.0288889
+pick, plectrum, plectron 0.0243246
+lipstick, lip rouge 0.105028
+brassiere, bra, bandeau 0.0944526
+bonnet, poke bonnet 0.0610928
+bikini, two-piece 0.0558059
+bath towel 0.0530763
+lipstick, lip rouge 0.329663
+bikini, two-piece 0.168784
+wig 0.114448
+bathing cap, swimming cap 0.0838128
+ice lolly, lolly, lollipop, popsicle 0.042257
+stage 0.0930936
+electric guitar 0.0761034
+banjo 0.074872
+trombone 0.0530021
+acoustic guitar 0.0430689
+brassiere, bra, bandeau 0.301818
+bikini, two-piece 0.242058
+maillot, tank suit 0.196696
+maillot 0.152643
+bathtub, bathing tub, bath, tub 0.0409679
+brassiere, bra, bandeau 0.222775
+bikini, two-piece 0.161349
+maillot 0.0816809
+miniskirt, mini 0.067288
+Band Aid 0.0416419
+studio couch, day bed 0.320505
+diaper, nappy, napkin 0.113744
+bath towel 0.0728577
+maillot 0.0691004
+notebook, notebook computer 0.0354929
+brassiere, bra, bandeau 0.62221
+bikini, two-piece 0.184925
+maillot 0.0856712
+maillot, tank suit 0.0541862
+face powder 0.013596
+miniskirt, mini 0.125085
+knee pad 0.0513039
+maillot 0.0463176
+dumbbell 0.0458869
+barbell 0.0441664
+lipstick, lip rouge 0.33742
+mortarboard 0.120122
+wig 0.0795376
+hair spray 0.0429263
+seat belt, seatbelt 0.0371086
+lipstick, lip rouge 0.636864
+Band Aid 0.072796
+ice lolly, lolly, lollipop, popsicle 0.0282805
+face powder 0.0271643
+seat belt, seatbelt 0.0194253
+fur coat 0.175833
+wig 0.0736303
+bow tie, bow-tie, bowtie 0.0440357
+wool, woolen, woollen 0.0359843
+stole 0.035644
+maillot, tank suit 0.403448
+bikini, two-piece 0.240186
+brassiere, bra, bandeau 0.0667671
+maillot 0.0185688
+balance beam, beam 0.0128926
+suit, suit of clothes 0.0753699
+seat belt, seatbelt 0.0656558
+cowboy hat, ten-gallon hat 0.0619338
+Band Aid 0.0504005
+shower cap 0.0479374
+oxygen mask 0.0497291
+golfcart, golf cart 0.049714
+ox 0.045039
+horizontal bar, high bar 0.0424733
+neck brace 0.0380174
+swimming trunks, bathing trunks 0.439086
+diaper, nappy, napkin 0.173838
+bathtub, bathing tub, bath, tub 0.131786
+tub, vat 0.0780748
+bathing cap, swimming cap 0.0291917
+military uniform 0.601343
+pickelhaube 0.127579
+ballplayer, baseball player 0.0782926
+academic gown, academic robe, judge's robe 0.0181546
+bulletproof vest 0.0139158
+academic gown, academic robe, judge's robe 0.614551
+mortarboard 0.385449
+dumbbell 0
+carbonara 0
+stole 0
+maillot 0.0970072
+maillot, tank suit 0.0917457
+apron 0.0790344
+miniskirt, mini 0.0716758
+cowboy boot 0.0632674
+Band Aid 0.088106
+pretzel 0.0877936
+ice lolly, lolly, lollipop, popsicle 0.060304
+diaper, nappy, napkin 0.0419508
+king snake, kingsnake 0.0329582
+maillot 0.34245
+maillot, tank suit 0.233815
+balance beam, beam 0.171495
+horizontal bar, high bar 0.0767345
+parallel bars, bars 0.0456881
+lipstick, lip rouge 0.355324
+wig 0.166714
+bonnet, poke bonnet 0.12816
+cloak 0.0517358
+abaya 0.0345265
+bikini, two-piece 0.912393
+maillot 0.0623607
+maillot, tank suit 0.0145034
+brassiere, bra, bandeau 0.00398309
+sarong 0.00146268
+stretcher 0.736396
+sturgeon 0.034843
+chain saw, chainsaw 0.0307443
+barrow, garden cart, lawn cart, wheelbarrow 0.0287887
+gar, garfish, garpike, billfish, Lepisosteus osseus 0.0220407
+spatula 0.0380806
+sweatshirt 0.036105
+punching bag, punch bag, punching ball, punchball 0.035411
+rugby ball 0.0288458
+nipple 0.0281922
+oboe, hautboy, hautbois 0.470646
+brassiere, bra, bandeau 0.0733561
+microphone, mike 0.053738
+bassoon 0.0341897
+lipstick, lip rouge 0.0328532
+rapeseed 0.0880859
+hay 0.0301611
+miniskirt, mini 0.0299213
+soccer ball 0.0276935
+ice lolly, lolly, lollipop, popsicle 0.0257438
+suit, suit of clothes 0.245131
+Windsor tie 0.142102
+hand-held computer, hand-held microcomputer 0.0511078
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0363438
+ice lolly, lolly, lollipop, popsicle 0.0316266
+seat belt, seatbelt 0.252128
+washer, automatic washer, washing machine 0.209194
+tub, vat 0.0901037
+bathtub, bathing tub, bath, tub 0.0718079
+neck brace 0.0402605
+hair spray 0.0780661
+safety pin 0.0472878
+book jacket, dust cover, dust jacket, dust wrapper 0.0451767
+sweatshirt 0.0413894
+jersey, T-shirt, tee shirt 0.0402326
+maillot 0.313009
+maillot, tank suit 0.296096
+dumbbell 0.14322
+bikini, two-piece 0.0684324
+balance beam, beam 0.0372272
+velvet 0.441513
+miniskirt, mini 0.130059
+maillot 0.0830977
+stole 0.0667122
+maillot, tank suit 0.0607359
+pot, flowerpot 0.117022
+plunger, plumber's helper 0.0440385
+potter's wheel 0.0411919
+goblet 0.0402339
+water jug 0.0380343
+miniskirt, mini 0.391486
+maillot 0.182
+maillot, tank suit 0.150952
+brassiere, bra, bandeau 0.041369
+notebook, notebook computer 0.0240416
+bikini, two-piece 0.318304
+maillot 0.135934
+swimming trunks, bathing trunks 0.12939
+sunscreen, sunblock, sun blocker 0.12065
+maillot, tank suit 0.0708274
+Band Aid 0.356552
+sunscreen, sunblock, sun blocker 0.0934637
+face powder 0.0629194
+lab coat, laboratory coat 0.0393228
+wig 0.033382
+bow tie, bow-tie, bowtie 0.26339
+miniskirt, mini 0.103423
+brassiere, bra, bandeau 0.0942498
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.068936
+seat belt, seatbelt 0.0467713
+trombone 0.311256
+crutch 0.194673
+cornet, horn, trumpet, trump 0.176779
+bannister, banister, balustrade, balusters, handrail 0.0543228
+French horn, horn 0.0295154
+barbershop 0.728839
+barber chair 0.171386
+restaurant, eating house, eating place, eatery 0.0123548
+stretcher 0.010077
+grocery store, grocery, food market, market 0.00784126
+stole 0.210125
+maillot 0.144449
+velvet 0.0666254
+suit, suit of clothes 0.0622173
+backpack, back pack, knapsack, packsack, rucksack, haversack 0.0512313
+swimming trunks, bathing trunks 0.984251
+diaper, nappy, napkin 0.00582275
+bathing cap, swimming cap 0.00355487
+maillot 0.00164468
+maillot, tank suit 0.00100308
+brassiere, bra, bandeau 0.546479
+bikini, two-piece 0.188817
+necklace 0.0485848
+wig 0.0317447
+lipstick, lip rouge 0.0315934
+swimming trunks, bathing trunks 0.288493
+bath towel 0.138815
+bathtub, bathing tub, bath, tub 0.115541
+tub, vat 0.0869392
+diaper, nappy, napkin 0.0699352
+laptop, laptop computer 0.320216
+notebook, notebook computer 0.0949253
+desk 0.0942026
+photocopier 0.0737242
+printer 0.0245064
+rock python, rock snake, Python sebae 0.150939
+tiger, Panthera tigris 0.0680119
+frilled lizard, Chlamydosaurus kingi 0.0401388
+boa constrictor, Constrictor constrictor 0.0366663
+comic book 0.0355408
+bucket, pail 0.0419098
+hair spray 0.0391365
+sunscreen, sunblock, sun blocker 0.0340005
+sunglass 0.0330585
+plunger, plumber's helper 0.0283653
+shower curtain 0.0581178
+hair spray 0.0495538
+greenhouse, nursery, glasshouse 0.039881
+lorikeet 0.0318699
+mitten 0.0289315
+bikini, two-piece 0.221869
+brassiere, bra, bandeau 0.194333
+lipstick, lip rouge 0.141595
+wig 0.101841
+seat belt, seatbelt 0.0374928
+punching bag, punch bag, punching ball, punchball 0.282051
+dumbbell 0.16049
+barbell 0.12189
+corkscrew, bottle screw 0.0416584
+necklace 0.0384463
+brassiere, bra, bandeau 0.386076
+bikini, two-piece 0.126076
+lipstick, lip rouge 0.0625837
+wig 0.0401449
+maillot 0.0382427
+brassiere, bra, bandeau 0.335623
+wig 0.0639354
+maillot, tank suit 0.0562096
+dumbbell 0.0494003
+maillot 0.0437176
+harmonica, mouth organ, harp, mouth harp 0.132754
+ice lolly, lolly, lollipop, popsicle 0.128225
+ocarina, sweet potato 0.0526216
+whistle 0.0432964
+ping-pong ball 0.032072
+bikini, two-piece 0.216698
+maillot 0.143898
+brassiere, bra, bandeau 0.142451
+maillot, tank suit 0.0755686
+sunscreen, sunblock, sun blocker 0.0405319
+pajama, pyjama, pj's, jammies 0.102778
+bib 0.100549
+ice lolly, lolly, lollipop, popsicle 0.0727573
+Band Aid 0.0345609
+bathtub, bathing tub, bath, tub 0.0330125
+miniskirt, mini 0.0860636
+maillot 0.0719351
+trench coat 0.06451
+maillot, tank suit 0.047338
+sarong 0.0429643
+gown 0.0795745
+maillot, tank suit 0.0513368
+parallel bars, bars 0.0472721
+iron, smoothing iron 0.044919
+overskirt 0.0407173
+maillot 0.0892776
+miniskirt, mini 0.0867335
+stole 0.0769504
+maillot, tank suit 0.0740803
+neck brace 0.0536209
+microphone, mike 0.365476
+stage 0.238717
+punching bag, punch bag, punching ball, punchball 0.0343846
+harmonica, mouth organ, harp, mouth harp 0.0286958
+cornet, horn, trumpet, trump 0.0263145
+maillot, tank suit 0.0868854
+jersey, T-shirt, tee shirt 0.0844807
+maillot 0.0714122
+racket, racquet 0.0677716
+gown 0.0537062
+bonnet, poke bonnet 0.186555
+bathing cap, swimming cap 0.170224
+bath towel 0.148409
+diaper, nappy, napkin 0.144799
+toilet tissue, toilet paper, bathroom tissue 0.0251398
+Windsor tie 0.207698
+prison, prison house 0.205037
+neck brace 0.132857
+lab coat, laboratory coat 0.0509214
+Loafer 0.0378182
+bathing cap, swimming cap 0.314075
+bow tie, bow-tie, bowtie 0.112883
+military uniform 0.112008
+wig 0.0765317
+shower cap 0.0520594
+bikini, two-piece 0.0535838
+sunscreen, sunblock, sun blocker 0.0287224
+microphone, mike 0.0278388
+brassiere, bra, bandeau 0.0276647
+whistle 0.0267801
+sunscreen, sunblock, sun blocker 0.11619
+Band Aid 0.0519159
+stage 0.0394437
+harmonica, mouth organ, harp, mouth harp 0.0334675
+whistle 0.0318632
+wig 0.353695
+sunscreen, sunblock, sun blocker 0.185469
+lipstick, lip rouge 0.149422
+mask 0.0418045
+sunglasses, dark glasses, shades 0.0395228
+oboe, hautboy, hautbois 0.520995
+cornet, horn, trumpet, trump 0.126075
+flute, transverse flute 0.118304
+sax, saxophone 0.0595918
+trombone 0.0501795
+Chihuahua 0.136888
+Brabancon griffon 0.0805075
+basenji 0.0752062
+Pembroke, Pembroke Welsh corgi 0.0623273
+Cardigan, Cardigan Welsh corgi 0.06021
+nipple 0.647572
+Band Aid 0.0685156
+hamster 0.0633177
+remote control, remote 0.0199095
+mouse, computer mouse 0.0186165
+groom, bridegroom 0.175901
+brassiere, bra, bandeau 0.0926097
+gown 0.082724
+miniskirt, mini 0.0623666
+maillot 0.0399151
+indigo bunting, indigo finch, indigo bird, Passerina cyanea 0.0538822
+quill, quill pen 0.0333173
+pinwheel 0.022308
+sunscreen, sunblock, sun blocker 0.0222854
+stretcher 0.0203579
+polecat, fitch, foulmart, foumart, Mustela putorius 0.0719016
+doormat, welcome mat 0.0470226
+power drill 0.044557
+sandal 0.0387347
+croquet ball 0.0282456
+jean, blue jean, denim 0.452727
+stole 0.0648578
+miniskirt, mini 0.0533212
+crutch 0.0357899
+gown 0.0266177
+maillot 0.226473
+miniskirt, mini 0.132277
+microphone, mike 0.0771092
+bikini, two-piece 0.0716484
+brassiere, bra, bandeau 0.0670636
+marimba, xylophone 0.177774
+jigsaw puzzle 0.0407808
+quill, quill pen 0.032304
+cardigan 0.030295
+wig 0.0227739
+bikini, two-piece 0.23385
+sarong 0.120707
+gown 0.0646887
+maillot 0.056262
+conch 0.0429727
+gown 0.291479
+groom, bridegroom 0.208417
+bow tie, bow-tie, bowtie 0.114643
+suit, suit of clothes 0.106544
+stole 0.0236877
+ice lolly, lolly, lollipop, popsicle 0.113225
+hair slide 0.0592366
+Band Aid 0.0533514
+drumstick 0.0526868
+ping-pong ball 0.0340496
+academic gown, academic robe, judge's robe 0.193542
+mortarboard 0.0887741
+stethoscope 0.0533772
+cowboy hat, ten-gallon hat 0.0406222
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0329503
+go-kart 0.301139
+snowmobile 0.183601
+motor scooter, scooter 0.0732525
+tricycle, trike, velocipede 0.0578576
+sturgeon 0.0537756
+ear, spike, capitulum 0.136038
+wooden spoon 0.130771
+pretzel 0.076252
+spatula 0.0382179
+ice cream, icecream 0.0369725
+gown 0.840271
+hoopskirt, crinoline 0.0720928
+overskirt 0.0513855
+groom, bridegroom 0.0218811
+feather boa, boa 0.00346442
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.177775
+neck brace 0.0949102
+brassiere, bra, bandeau 0.0920761
+stethoscope 0.0747149
+wig 0.0603417
+wig 0.114933
+gown 0.0865879
+maillot 0.0673757
+brassiere, bra, bandeau 0.0556047
+microphone, mike 0.0504729
+mask 0.153681
+wig 0.141142
+pick, plectrum, plectron 0.117999
+Band Aid 0.0847943
+bow tie, bow-tie, bowtie 0.0835588
+racket, racquet 0.0824704
+miniskirt, mini 0.0757727
+barbell 0.0342799
+stethoscope 0.0319299
+maillot 0.0291135
+dumbbell 0.725486
+punching bag, punch bag, punching ball, punchball 0.0283503
+barbell 0.0269854
+maillot 0.0208774
+knee pad 0.0208604
+wig 0.353652
+bikini, two-piece 0.189838
+brassiere, bra, bandeau 0.162746
+bathtub, bathing tub, bath, tub 0.0574365
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0285458
+maillot 0.21612
+maillot, tank suit 0.10328
+bikini, two-piece 0.0815369
+miniskirt, mini 0.0696876
+jean, blue jean, denim 0.0590673
+cloak 0.236095
+shower cap 0.234861
+bathing cap, swimming cap 0.0708994
+wig 0.0581255
+abaya 0.0522915
+notebook, notebook computer 0.392709
+hand-held computer, hand-held microcomputer 0.0921159
+laptop, laptop computer 0.0864704
+computer keyboard, keypad 0.0504423
+seat belt, seatbelt 0.0288576
+fur coat 0.242526
+wig 0.121129
+hair slide 0.118075
+sunglasses, dark glasses, shades 0.0594666
+sunglass 0.035187
+crutch 0.506817
+folding chair 0.152794
+parallel bars, bars 0.0384687
+vacuum, vacuum cleaner 0.0325643
+bow 0.0296952
+brassiere, bra, bandeau 0.377399
+wig 0.264721
+maillot, tank suit 0.0408757
+hair spray 0.0289671
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0225547
+notebook, notebook computer 0.0557794
+zucchini, courgette 0.0304978
+ear, spike, capitulum 0.0296683
+wallaby, brush kangaroo 0.0186525
+groom, bridegroom 0.0174672
+plunger, plumber's helper 0.222076
+dumbbell 0.139073
+can opener, tin opener 0.0797119
+barbell 0.0450392
+hammer 0.0418094
+diaper, nappy, napkin 0.344531
+swimming trunks, bathing trunks 0.203074
+brassiere, bra, bandeau 0.0486153
+dumbbell 0.0457117
+parallel bars, bars 0.0315022
+brassiere, bra, bandeau 0.107275
+clog, geta, patten, sabot 0.103042
+Loafer 0.0967244
+neck brace 0.0804983
+Band Aid 0.0638312
+proboscis monkey, Nasalis larvatus 0.430825
+bicycle-built-for-two, tandem bicycle, tandem 0.0638991
+vine snake 0.0508761
+horizontal bar, high bar 0.049164
+Indian cobra, Naja naja 0.0397342
+pick, plectrum, plectron 0.132921
+oxygen mask 0.121354
+ocarina, sweet potato 0.0932245
+Windsor tie 0.0808149
+sunscreen, sunblock, sun blocker 0.0667179
+panpipe, pandean pipe, syrinx 0.0588538
+shoji 0.0568713
+harmonica, mouth organ, harp, mouth harp 0.0486184
+diaper, nappy, napkin 0.0414263
+ocarina, sweet potato 0.0334411
+sweatshirt 0.458409
+velvet 0.10279
+trench coat 0.057386
+maillot, tank suit 0.0530826
+cardigan 0.0394947
+ice lolly, lolly, lollipop, popsicle 0.116549
+groom, bridegroom 0.0896017
+stethoscope 0.032195
+feather boa, boa 0.0253136
+lipstick, lip rouge 0.0218696
+harmonica, mouth organ, harp, mouth harp 0.098423
+ice lolly, lolly, lollipop, popsicle 0.0619708
+Band Aid 0.026816
+muzzle 0.0250871
+weasel 0.0223498
+wig 0.319597
+bikini, two-piece 0.219788
+brassiere, bra, bandeau 0.0719598
+bathing cap, swimming cap 0.0369522
+necklace 0.0299058
+gar, garfish, garpike, billfish, Lepisosteus osseus 0.0826606
+coho, cohoe, coho salmon, blue jack, silver salmon, Oncorhynchus kisutch 0.0485706
+potter's wheel 0.0306195
+barracouta, snoek 0.0295953
+plunger, plumber's helper 0.0295377
+nipple 0.47444
+diaper, nappy, napkin 0.353984
+Petri dish 0.0355756
+lab coat, laboratory coat 0.0176086
+oxygen mask 0.0117121
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0855811
+dumbbell 0.0613713
+hair spray 0.0569097
+brassiere, bra, bandeau 0.0381309
+ping-pong ball 0.0356836
+sunscreen, sunblock, sun blocker 0.113753
+bathing cap, swimming cap 0.0949073
+lipstick, lip rouge 0.0934492
+Band Aid 0.0644962
+Italian greyhound 0.053205
+Polaroid camera, Polaroid Land camera 0.197568
+tripod 0.181121
+reflex camera 0.169532
+binoculars, field glasses, opera glasses 0.0980449
+lens cap, lens cover 0.0799022
+bathtub, bathing tub, bath, tub 0.374108
+tub, vat 0.169153
+lens cap, lens cover 0.157355
+diaper, nappy, napkin 0.0688667
+nipple 0.0335344
+cowboy hat, ten-gallon hat 0.896393
+military uniform 0.0506584
+sombrero 0.046752
+trombone 0.000734588
+cloak 0.000728317
+academic gown, academic robe, judge's robe 0.169295
+abaya 0.116244
+groom, bridegroom 0.0655571
+gown 0.0489885
+mortarboard 0.0486279
+stethoscope 0.548684
+lab coat, laboratory coat 0.415151
+oxygen mask 0.01205
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.00349997
+loupe, jeweler's loupe 0.0034179
+lipstick, lip rouge 0.444205
+face powder 0.0631338
+hair slide 0.0306291
+bikini, two-piece 0.0260275
+wig 0.0245172
+jean, blue jean, denim 0.234831
+suit, suit of clothes 0.224229
+miniskirt, mini 0.196928
+Loafer 0.0559473
+bow tie, bow-tie, bowtie 0.0315478
+Boston bull, Boston terrier 0.844635
+Chihuahua 0.0431384
+French bulldog 0.031401
+toy terrier 0.0164362
+Italian greyhound 0.0053876
+notebook, notebook computer 0.21618
+laptop, laptop computer 0.0941983
+stethoscope 0.093326
+ping-pong ball 0.0754543
+lab coat, laboratory coat 0.0726618
+bikini, two-piece 0.294756
+brassiere, bra, bandeau 0.183833
+maillot 0.0818544
+gown 0.0456466
+sunglass 0.0415982
+wig 0.924427
+fur coat 0.00609043
+hair spray 0.00522808
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.00313774
+Yorkshire terrier 0.00221384
+dumbbell 0.283144
+barbell 0.139967
+miniskirt, mini 0.115695
+jean, blue jean, denim 0.0625506
+balance beam, beam 0.0596468
+Band Aid 0.32893
+computer keyboard, keypad 0.0934274
+tile roof 0.0763187
+ringneck snake, ring-necked snake, ring snake 0.0281172
+bath towel 0.0239146
+maillot, tank suit 0.037723
+neck brace 0.0359237
+dumbbell 0.0342509
+bulletproof vest 0.0336644
+punching bag, punch bag, punching ball, punchball 0.0318619
+neck brace 0.33633
+sweatshirt 0.0385085
+maillot, tank suit 0.0278884
+jersey, T-shirt, tee shirt 0.0267799
+loupe, jeweler's loupe 0.025283
+notebook, notebook computer 0.213292
+photocopier 0.0864712
+mouse, computer mouse 0.0381402
+desk 0.0338393
+printer 0.030326
+gown 0.12963
+baseball 0.109465
+racket, racquet 0.0630284
+hoopskirt, crinoline 0.0577504
+goose 0.0319338
+mask 0.541804
+sunscreen, sunblock, sun blocker 0.166657
+ocarina, sweet potato 0.0562509
+Band Aid 0.0545138
+bathing cap, swimming cap 0.0450007
+suit, suit of clothes 0.123728
+abaya 0.0549004
+cloak 0.0414502
+trench coat 0.0404517
+Windsor tie 0.0267129
+lipstick, lip rouge 0.243514
+groom, bridegroom 0.100403
+whistle 0.085217
+brassiere, bra, bandeau 0.05462
+bikini, two-piece 0.0529703
+Windsor tie 0.523136
+bulletproof vest 0.0821036
+hand-held computer, hand-held microcomputer 0.0502429
+neck brace 0.0338733
+book jacket, dust cover, dust jacket, dust wrapper 0.0204077
+groom, bridegroom 0.155554
+red wine 0.12821
+crayfish, crawfish, crawdad, crawdaddy 0.0750879
+candle, taper, wax light 0.0302077
+cornet, horn, trumpet, trump 0.0294896
+tench, Tinca tinca 0.136413
+assault rifle, assault gun 0.10917
+rifle 0.0774121
+military uniform 0.0708523
+park bench 0.029869
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.175092
+wig 0.0716748
+hair spray 0.0673556
+paintbrush 0.0295585
+neck brace 0.026346
+fireboat 0.0935734
+crutch 0.0749174
+lifeboat 0.0333443
+speedboat 0.0323478
+liner, ocean liner 0.0294806
+brassiere, bra, bandeau 0.863216
+bikini, two-piece 0.0451961
+wig 0.0291493
+maillot, tank suit 0.0165881
+maillot 0.0150727
+Windsor tie 0.941177
+lab coat, laboratory coat 0.0328925
+nipple 0.00327512
+neck brace 0.00253384
+suit, suit of clothes 0.00218861
+swimming trunks, bathing trunks 0.649663
+bathing cap, swimming cap 0.0518572
+miniskirt, mini 0.0335863
+jean, blue jean, denim 0.0299309
+knee pad 0.0197606
+velvet 0.235273
+miniskirt, mini 0.195586
+maillot, tank suit 0.155797
+overskirt 0.102108
+maillot 0.101207
+maillot 0.282725
+maillot, tank suit 0.230167
+miniskirt, mini 0.0993036
+dumbbell 0.0813137
+brassiere, bra, bandeau 0.0682759
+keeshond 0.42059
+malamute, malemute, Alaskan malamute 0.328622
+Norwegian elkhound, elkhound 0.14661
+Tibetan mastiff 0.0442473
+Leonberg 0.0257846
+seat belt, seatbelt 0.0704824
+drumstick 0.0573734
+suit, suit of clothes 0.0251873
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0244202
+stethoscope 0.0220358
+bow tie, bow-tie, bowtie 0.915839
+brassiere, bra, bandeau 0.0194852
+maraca 0.00813644
+lipstick, lip rouge 0.00665894
+groom, bridegroom 0.00237471
+flute, transverse flute 0.164444
+theater curtain, theatre curtain 0.137092
+oboe, hautboy, hautbois 0.0991659
+French horn, horn 0.0723541
+sax, saxophone 0.049908
+jigsaw puzzle 0.159113
+starfish, sea star 0.101277
+rock crab, Cancer irroratus 0.0462989
+slug 0.0448799
+sea cucumber, holothurian 0.0386896
+Band Aid 0.156292
+shower cap 0.129932
+sunscreen, sunblock, sun blocker 0.0564204
+oxygen mask 0.0520386
+bathing cap, swimming cap 0.0357328
+mortarboard 0.304413
+academic gown, academic robe, judge's robe 0.197603
+abaya 0.0579265
+wig 0.0425975
+cloak 0.0346211
+gown 0.330489
+apron 0.071441
+balance beam, beam 0.0630279
+pajama, pyjama, pj's, jammies 0.0568946
+parallel bars, bars 0.038976
+vacuum, vacuum cleaner 0.221482
+harp 0.11631
+Indian cobra, Naja naja 0.0463664
+sandal 0.0425796
+go-kart 0.0333008
+microphone, mike 0.137239
+electric guitar 0.0814377
+acoustic guitar 0.0608791
+mask 0.0596071
+stage 0.0556063
+wig 0.156639
+hair slide 0.106079
+brassiere, bra, bandeau 0.0499219
+hair spray 0.0449667
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0448991
+potter's wheel 0.612235
+loupe, jeweler's loupe 0.0248956
+Indian cobra, Naja naja 0.0240102
+studio couch, day bed 0.0218421
+jigsaw puzzle 0.0195472
+ice lolly, lolly, lollipop, popsicle 0.169998
+nipple 0.0950097
+stethoscope 0.0697811
+neck brace 0.0657278
+lens cap, lens cover 0.0565172
+neck brace 0.125421
+laptop, laptop computer 0.09188
+diaper, nappy, napkin 0.080825
+potter's wheel 0.0677758
+oxygen mask 0.0664034
+lab coat, laboratory coat 0.114661
+stethoscope 0.0975462
+bolo tie, bolo, bola tie, bola 0.0863219
+bow tie, bow-tie, bowtie 0.084175
+lipstick, lip rouge 0.0644395
+wig 0.685054
+Sussex spaniel 0.13118
+hair slide 0.0420047
+Irish setter, red setter 0.025733
+hair spray 0.0250092
+seat belt, seatbelt 0.218155
+neck brace 0.127393
+face powder 0.115809
+Band Aid 0.104621
+lab coat, laboratory coat 0.0520088
+crutch 0.177415
+parallel bars, bars 0.139348
+guillotine 0.0751086
+broom 0.056025
+pole 0.0422401
+oboe, hautboy, hautbois 0.298491
+microphone, mike 0.180004
+flute, transverse flute 0.134228
+cornet, horn, trumpet, trump 0.0489156
+hair spray 0.0474219
+bathing cap, swimming cap 0.263692
+cowboy hat, ten-gallon hat 0.261362
+mortarboard 0.094234
+sombrero 0.0805821
+crash helmet 0.0465018
+dumbbell 0.0877769
+perfume, essence 0.0820079
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0792232
+brassiere, bra, bandeau 0.0651531
+hair spray 0.039456
+military uniform 0.0525685
+cloak 0.0467607
+hummingbird 0.03133
+jacamar 0.0277777
+wig 0.0224151
+neck brace 0.1551
+Windsor tie 0.15283
+sweatshirt 0.138842
+nipple 0.0898938
+Sealyham terrier, Sealyham 0.089276
+Windsor tie 0.135188
+stethoscope 0.0835573
+lab coat, laboratory coat 0.0834199
+violin, fiddle 0.0425627
+hand-held computer, hand-held microcomputer 0.0422368
+stethoscope 0.224509
+lab coat, laboratory coat 0.101528
+notebook, notebook computer 0.057091
+drumstick 0.0504035
+spatula 0.0310242
+sarong 0.370175
+maillot, tank suit 0.130928
+swimming trunks, bathing trunks 0.0976429
+vase 0.0554057
+cowboy boot 0.0545388
+wig 0.363264
+gown 0.187822
+feather boa, boa 0.120089
+groom, bridegroom 0.0953883
+fur coat 0.0655381
+crutch 0.829702
+vacuum, vacuum cleaner 0.0335971
+swab, swob, mop 0.0241159
+croquet ball 0.0148295
+ski 0.00495568
+wig 0.261167
+lipstick, lip rouge 0.164017
+seat belt, seatbelt 0.0980362
+cowboy hat, ten-gallon hat 0.0978308
+sombrero 0.0412276
+lipstick, lip rouge 0.529584
+wig 0.186887
+mask 0.141512
+feather boa, boa 0.043275
+Band Aid 0.0123793
+academic gown, academic robe, judge's robe 0.785938
+abaya 0.0491644
+cloak 0.0337779
+neck brace 0.0300627
+sweatshirt 0.0266486
+lipstick, lip rouge 0.378164
+bikini, two-piece 0.292104
+brassiere, bra, bandeau 0.0632914
+maillot 0.0375978
+ice lolly, lolly, lollipop, popsicle 0.0174971
+wig 0.398573
+bikini, two-piece 0.0957579
+gown 0.0931673
+brassiere, bra, bandeau 0.0761435
+perfume, essence 0.0314593
+suit, suit of clothes 0.159941
+bolo tie, bolo, bola tie, bola 0.0814304
+bow tie, bow-tie, bowtie 0.0496811
+Windsor tie 0.0445036
+seat belt, seatbelt 0.0408014
+seat belt, seatbelt 0.845734
+sunglasses, dark glasses, shades 0.0248509
+lipstick, lip rouge 0.0119334
+syringe 0.0106784
+sunglass 0.00889271
+stethoscope 0.082376
+maillot, tank suit 0.0710267
+lab coat, laboratory coat 0.0656188
+nipple 0.0569959
+pajama, pyjama, pj's, jammies 0.055345
+diaper, nappy, napkin 0.170022
+swimming trunks, bathing trunks 0.06692
+brassiere, bra, bandeau 0.0584685
+Band Aid 0.0579651
+tub, vat 0.0331958
+ice lolly, lolly, lollipop, popsicle 0.122835
+banana 0.101665
+dumbbell 0.100168
+maraca 0.0663179
+ping-pong ball 0.0578448
+brassiere, bra, bandeau 0.313467
+diaper, nappy, napkin 0.148187
+bikini, two-piece 0.0814679
+bathtub, bathing tub, bath, tub 0.0607034
+tub, vat 0.0407759
+basset, basset hound 0.0602556
+Brittany spaniel 0.0581993
+miniskirt, mini 0.0461954
+Welsh springer spaniel 0.0360262
+bonnet, poke bonnet 0.0330383
+kimono 0.11609
+lipstick, lip rouge 0.093756
+groom, bridegroom 0.0821827
+stethoscope 0.0708326
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0292927
+Windsor tie 0.096397
+bow tie, bow-tie, bowtie 0.0904343
+panpipe, pandean pipe, syrinx 0.0281488
+academic gown, academic robe, judge's robe 0.0269119
+shower cap 0.0229717
+crib, cot 0.319739
+cradle 0.182623
+diaper, nappy, napkin 0.170349
+bassinet 0.12748
+studio couch, day bed 0.0470741
+nipple 0.304442
+Band Aid 0.115945
+bib 0.103956
+lens cap, lens cover 0.0902169
+maraca 0.0443851
+suit, suit of clothes 0.713248
+Windsor tie 0.0817856
+cornet, horn, trumpet, trump 0.0713395
+oboe, hautboy, hautbois 0.0710006
+bow tie, bow-tie, bowtie 0.0159519
+brassiere, bra, bandeau 0.453542
+maillot, tank suit 0.231198
+maillot 0.129747
+bikini, two-piece 0.122846
+miniskirt, mini 0.0117473
+Band Aid 0.131826
+bubble 0.0813752
+hair slide 0.0675571
+wig 0.0446478
+mortarboard 0.0342839
+maillot 0.223617
+bikini, two-piece 0.17842
+maillot, tank suit 0.085283
+brassiere, bra, bandeau 0.0438297
+tub, vat 0.0401065
+bikini, two-piece 0.378836
+maillot 0.223149
+maillot, tank suit 0.19957
+pole 0.0647291
+bathing cap, swimming cap 0.0322427
+abaya 0.270627
+Windsor tie 0.235598
+neck brace 0.107064
+cloak 0.0755295
+academic gown, academic robe, judge's robe 0.0683597
+joystick 0.35587
+lipstick, lip rouge 0.0972225
+punching bag, punch bag, punching ball, punchball 0.0531948
+plunger, plumber's helper 0.0359374
+dumbbell 0.027632
+groom, bridegroom 0.405115
+restaurant, eating house, eating place, eatery 0.0455584
+gown 0.0384083
+vestment 0.0359461
+hoopskirt, crinoline 0.0276408
+prison, prison house 0.136777
+croquet ball 0.0783492
+parallel bars, bars 0.0626044
+punching bag, punch bag, punching ball, punchball 0.0595056
+horizontal bar, high bar 0.0463562
+neck brace 0.585828
+oxygen mask 0.257776
+Windsor tie 0.0421729
+nipple 0.0247223
+hand-held computer, hand-held microcomputer 0.0131551
+maillot 0.387339
+maillot, tank suit 0.258883
+miniskirt, mini 0.0577242
+perfume, essence 0.0361406
+knee pad 0.0245648
+brassiere, bra, bandeau 0.112593
+stethoscope 0.0558624
+lab coat, laboratory coat 0.0549428
+gown 0.0546905
+window shade 0.0374011
+wig 0.325798
+neck brace 0.158699
+sunglass 0.110435
+face powder 0.0349415
+sunglasses, dark glasses, shades 0.0349087
+Band Aid 0.0584601
+tarantula 0.0320625
+cockroach, roach 0.0236759
+sunscreen, sunblock, sun blocker 0.01935
+scorpion 0.0189179
+maillot, tank suit 0.168732
+maillot 0.0735267
+dumbbell 0.0574855
+miniskirt, mini 0.0477268
+jersey, T-shirt, tee shirt 0.0262078
+abaya 0.246718
+pick, plectrum, plectron 0.11191
+face powder 0.110353
+Windsor tie 0.0581991
+Band Aid 0.0426312
+maillot, tank suit 0.273099
+bathing cap, swimming cap 0.22835
+swimming trunks, bathing trunks 0.0590631
+jersey, T-shirt, tee shirt 0.0308402
+maillot 0.0291212
+lab coat, laboratory coat 0.200943
+bow tie, bow-tie, bowtie 0.200535
+Windsor tie 0.0866741
+harmonica, mouth organ, harp, mouth harp 0.059358
+stethoscope 0.0490795
+dumbbell 0.11346
+maillot 0.0740396
+bow tie, bow-tie, bowtie 0.0594002
+ice lolly, lolly, lollipop, popsicle 0.0373006
+brassiere, bra, bandeau 0.0329718
+neck brace 0.844103
+abaya 0.0151565
+seat belt, seatbelt 0.012461
+face powder 0.0121538
+brassiere, bra, bandeau 0.0110512
+diaper, nappy, napkin 0.157892
+potter's wheel 0.157668
+neck brace 0.113781
+cradle 0.076146
+nipple 0.0579112
+Windsor tie 0.123632
+bow tie, bow-tie, bowtie 0.0772638
+suit, suit of clothes 0.0753409
+lab coat, laboratory coat 0.0711309
+neck brace 0.0681435
+suit, suit of clothes 0.268247
+bow tie, bow-tie, bowtie 0.132176
+velvet 0.0670668
+maillot 0.0601473
+gown 0.0569116
+hair spray 0.172177
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.115041
+Band Aid 0.0789684
+bikini, two-piece 0.0658265
+bathtub, bathing tub, bath, tub 0.0431355
+dumbbell 0.267333
+barbell 0.122901
+punching bag, punch bag, punching ball, punchball 0.0676882
+miniskirt, mini 0.0461252
+apron 0.0301527
+crossword puzzle, crossword 0.0570244
+maillot, tank suit 0.042232
+maillot 0.0388379
+mouse, computer mouse 0.02998
+notebook, notebook computer 0.0291622
+velvet 0.252031
+miniskirt, mini 0.159185
+overskirt 0.158517
+stole 0.100886
+gown 0.0942296
+miniskirt, mini 0.166719
+bikini, two-piece 0.120588
+brassiere, bra, bandeau 0.0826817
+maillot 0.0729155
+dumbbell 0.0533473
+lipstick, lip rouge 0.113424
+Band Aid 0.109367
+face powder 0.0594589
+ice lolly, lolly, lollipop, popsicle 0.0582571
+sunscreen, sunblock, sun blocker 0.0465803
+piggy bank, penny bank 0.683367
+bathtub, bathing tub, bath, tub 0.038643
+tub, vat 0.0288501
+diaper, nappy, napkin 0.0274822
+saltshaker, salt shaker 0.0230883
+seat belt, seatbelt 0.0906951
+maillot 0.0869436
+bikini, two-piece 0.0632599
+maillot, tank suit 0.0518467
+parallel bars, bars 0.0351592
+neck brace 0.231365
+stethoscope 0.0576444
+brassiere, bra, bandeau 0.0380066
+bow tie, bow-tie, bowtie 0.0336907
+wig 0.0288154
+miniskirt, mini 0.208388
+overskirt 0.150313
+hoopskirt, crinoline 0.101509
+stole 0.100087
+velvet 0.0921439
+sarong 0.0461139
+abaya 0.0446026
+rhinoceros beetle 0.0437026
+capuchin, ringtail, Cebus capucinus 0.0308904
+hornbill 0.0239034
+shield, buckler 0.203334
+sorrel 0.095856
+cowboy hat, ten-gallon hat 0.0889396
+vestment 0.0563196
+cuirass 0.0441897
+wig 0.720293
+brassiere, bra, bandeau 0.073711
+lipstick, lip rouge 0.0424733
+hair spray 0.0341134
+bikini, two-piece 0.0196215
+bow tie, bow-tie, bowtie 0.409264
+suit, suit of clothes 0.127642
+Windsor tie 0.0653692
+lab coat, laboratory coat 0.0513429
+Band Aid 0.0343495
+scuba diver 0.475711
+jellyfish 0.304381
+sea snake 0.0492263
+oscilloscope, scope, cathode-ray oscilloscope, CRO 0.0390142
+nematode, nematode worm, roundworm 0.0198884
+restaurant, eating house, eating place, eatery 0.151083
+candle, taper, wax light 0.139126
+groom, bridegroom 0.10736
+jigsaw puzzle 0.056938
+crossword puzzle, crossword 0.0283336
+abaya 0.104071
+unicycle, monocycle 0.0754419
+hornbill 0.0636705
+miniskirt, mini 0.0437504
+umbrella 0.0287443
+lab coat, laboratory coat 0.128285
+bow tie, bow-tie, bowtie 0.118793
+wig 0.0804723
+sunscreen, sunblock, sun blocker 0.053622
+stethoscope 0.0507774
+piggy bank, penny bank 0.216325
+quilt, comforter, comfort, puff 0.0713143
+bathtub, bathing tub, bath, tub 0.0612508
+tub, vat 0.0572141
+redbone 0.0537145
+barbershop 0.224344
+drumstick 0.0379371
+hair spray 0.0266818
+microphone, mike 0.0253531
+sunscreen, sunblock, sun blocker 0.0222165
+diaper, nappy, napkin 0.149503
+bonnet, poke bonnet 0.132222
+feather boa, boa 0.113394
+bathtub, bathing tub, bath, tub 0.100488
+tub, vat 0.0806272
+mask 0.292368
+sombrero 0.0565627
+pinwheel 0.0560679
+bubble 0.0551322
+wig 0.0419528
+park bench 0.784019
+balance beam, beam 0.0302247
+croquet ball 0.0272412
+worm fence, snake fence, snake-rail fence, Virginia fence 0.017295
+apiary, bee house 0.0158295
+bow tie, bow-tie, bowtie 0.230987
+seat belt, seatbelt 0.215938
+poncho 0.0351923
+stole 0.0323133
+Band Aid 0.0309781
+paddle, boat paddle 0.43874
+maillot, tank suit 0.408541
+maillot 0.0739841
+volleyball 0.0343593
+bathing cap, swimming cap 0.0189536
+neck brace 0.128483
+bow tie, bow-tie, bowtie 0.0719553
+military uniform 0.0429721
+sunglass 0.0371689
+seat belt, seatbelt 0.0305292
+ice lolly, lolly, lollipop, popsicle 0.393494
+lipstick, lip rouge 0.203883
+hair slide 0.0310764
+whistle 0.0279733
+syringe 0.0272198
+lipstick, lip rouge 0.298417
+wig 0.132744
+ice lolly, lolly, lollipop, popsicle 0.0710224
+hair slide 0.0688083
+seat belt, seatbelt 0.0459712
+Loafer 0.764367
+suit, suit of clothes 0.0772851
+Windsor tie 0.0486136
+bulletproof vest 0.0184545
+neck brace 0.00625107
+whistle 0.259725
+neck brace 0.166719
+power drill 0.165318
+tricycle, trike, velocipede 0.0999345
+knee pad 0.0317447
+horned viper, cerastes, sand viper, horned asp, Cerastes cornutus 0.124653
+Indian cobra, Naja naja 0.105707
+rock python, rock snake, Python sebae 0.0476241
+sidewinder, horned rattlesnake, Crotalus cerastes 0.047323
+neck brace 0.0445004
+Band Aid 0.136481
+bathing cap, swimming cap 0.121651
+sunscreen, sunblock, sun blocker 0.06113
+shower cap 0.0538192
+bow tie, bow-tie, bowtie 0.0429918
+syringe 0.108636
+perfume, essence 0.0665968
+hair spray 0.0557326
+lipstick, lip rouge 0.0556008
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0524731
+abaya 0.159541
+neck brace 0.158128
+academic gown, academic robe, judge's robe 0.111743
+sweatshirt 0.0646341
+seat belt, seatbelt 0.0459745
+unicycle, monocycle 0.097801
+shoe shop, shoe-shop, shoe store 0.0781222
+tricycle, trike, velocipede 0.0534981
+sea snake 0.0514716
+water snake 0.0481397
+diaper, nappy, napkin 0.894376
+swimming trunks, bathing trunks 0.00997407
+hoopskirt, crinoline 0.00865798
+tub, vat 0.00664433
+bathtub, bathing tub, bath, tub 0.00436223
+Sussex spaniel 0.040971
+comic book 0.0297845
+bloodhound, sleuthhound 0.019189
+Japanese spaniel 0.0183781
+thresher, thrasher, threshing machine 0.0183529
+bathing cap, swimming cap 0.265291
+maillot, tank suit 0.188782
+maillot 0.14919
+shower cap 0.0747433
+miniskirt, mini 0.0553444
+brassiere, bra, bandeau 0.524334
+maillot 0.14487
+maillot, tank suit 0.0599052
+wig 0.0490688
+feather boa, boa 0.0339369
+harmonica, mouth organ, harp, mouth harp 0.222356
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.141824
+lens cap, lens cover 0.0876932
+whistle 0.0860577
+Band Aid 0.0523209
+sunglasses, dark glasses, shades 0.601881
+sunglass 0.218064
+bathing cap, swimming cap 0.0390716
+snorkel 0.0340748
+lens cap, lens cover 0.0133802
+mortarboard 0.246118
+cloak 0.0999481
+cowboy hat, ten-gallon hat 0.0862048
+sombrero 0.0632329
+seat belt, seatbelt 0.0621946
+brassiere, bra, bandeau 0.624445
+diaper, nappy, napkin 0.0984027
+notebook, notebook computer 0.046035
+tub, vat 0.0302366
+neck brace 0.0249203
+lipstick, lip rouge 0.140238
+bow tie, bow-tie, bowtie 0.0988085
+lens cap, lens cover 0.0687734
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0488564
+sunglass 0.0404535
+puffer, pufferfish, blowfish, globefish 0.738563
+goldfish, Carassius auratus 0.0412212
+plastic bag 0.0229991
+conch 0.0201528
+shower cap 0.0186683
+bucket, pail 0.267935
+maillot 0.0973583
+bikini, two-piece 0.0723113
+maillot, tank suit 0.0409425
+diaper, nappy, napkin 0.0371731
+dumbbell 0.116836
+power drill 0.0375646
+soccer ball 0.0326118
+diaper, nappy, napkin 0.0317242
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0279732
+brassiere, bra, bandeau 0.95603
+bikini, two-piece 0.0161239
+cowboy hat, ten-gallon hat 0.00648931
+maillot, tank suit 0.0059816
+neck brace 0.00284588
+parallel bars, bars 0.241549
+folding chair 0.180244
+rocking chair, rocker 0.0892801
+barbell 0.082454
+tricycle, trike, velocipede 0.0706668
+swimming trunks, bathing trunks 0.0595699
+sarong 0.0379978
+sunscreen, sunblock, sun blocker 0.0295788
+sea urchin 0.0286162
+starfish, sea star 0.0247309
+sombrero 0.275728
+bonnet, poke bonnet 0.23097
+cowboy hat, ten-gallon hat 0.214296
+sunglasses, dark glasses, shades 0.0202136
+Chihuahua 0.0159323
+croquet ball 0.107874
+plunger, plumber's helper 0.0705073
+screwdriver 0.0651318
+dumbbell 0.0612444
+maraca 0.0523341
+sarong 0.320191
+gown 0.0930529
+crutch 0.0824456
+trench coat 0.0772896
+pajama, pyjama, pj's, jammies 0.0491061
+rugby ball 0.0565911
+stethoscope 0.039526
+racket, racquet 0.0289995
+plunger, plumber's helper 0.0238074
+drumstick 0.0222573
+brassiere, bra, bandeau 0.479277
+bikini, two-piece 0.133379
+maillot 0.0834932
+wig 0.057096
+maillot, tank suit 0.0511763
+stethoscope 0.126493
+harmonica, mouth organ, harp, mouth harp 0.066906
+lipstick, lip rouge 0.0598796
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0492366
+lens cap, lens cover 0.0391872
+diaper, nappy, napkin 0.660666
+stethoscope 0.0705601
+nipple 0.0569964
+mouse, computer mouse 0.0400456
+tub, vat 0.0306373
+shower cap 0.0917412
+sunglass 0.0844699
+vizsla, Hungarian pointer 0.044948
+frilled lizard, Chlamydosaurus kingi 0.0276159
+redbone 0.0201368
+lipstick, lip rouge 0.280489
+seat belt, seatbelt 0.0777131
+fur coat 0.0558274
+brassiere, bra, bandeau 0.0462329
+wig 0.0436935
+dumbbell 0.175816
+gasmask, respirator, gas helmet 0.153885
+binoculars, field glasses, opera glasses 0.078391
+barbell 0.0622108
+power drill 0.037192
+stethoscope 0.42779
+lab coat, laboratory coat 0.186024
+Windsor tie 0.0490274
+neck brace 0.0460382
+sweatshirt 0.0439175
+lab coat, laboratory coat 0.121869
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0523524
+neck brace 0.0367935
+stethoscope 0.034032
+Windsor tie 0.0330741
+crutch 0.0882802
+power drill 0.058393
+Dutch oven 0.0482808
+vacuum, vacuum cleaner 0.0419663
+chain saw, chainsaw 0.0315388
+maillot, tank suit 0.284583
+miniskirt, mini 0.135246
+maillot 0.120335
+sunglass 0.0751677
+bikini, two-piece 0.0577138
+fur coat 0.343267
+lipstick, lip rouge 0.230674
+feather boa, boa 0.102494
+wig 0.10012
+seat belt, seatbelt 0.0385157
+miniskirt, mini 0.221439
+gown 0.102826
+maillot 0.081415
+wig 0.0756003
+velvet 0.0703085
+marimba, xylophone 0.373874
+sarong 0.0979809
+parallel bars, bars 0.0843371
+crutch 0.0391036
+flute, transverse flute 0.0229351
+harmonica, mouth organ, harp, mouth harp 0.326281
+cowboy hat, ten-gallon hat 0.0541541
+violin, fiddle 0.0324168
+ice lolly, lolly, lollipop, popsicle 0.0290381
+lighter, light, igniter, ignitor 0.0280038
+lab coat, laboratory coat 0.135788
+Band Aid 0.123742
+sunscreen, sunblock, sun blocker 0.0988513
+bath towel 0.0570971
+Windsor tie 0.0395317
+suit, suit of clothes 0.0375448
+Band Aid 0.0311289
+bow tie, bow-tie, bowtie 0.0304478
+sunglasses, dark glasses, shades 0.0266068
+Windsor tie 0.0250264
+sunscreen, sunblock, sun blocker 0.0418495
+wallaby, brush kangaroo 0.0226923
+bathing cap, swimming cap 0.0193938
+hair spray 0.014761
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0138243
+wig 0.12743
+suit, suit of clothes 0.0940783
+hair spray 0.0916455
+Windsor tie 0.0634202
+shower cap 0.0431661
+gown 0.0984292
+velvet 0.0697214
+maillot 0.0672715
+jean, blue jean, denim 0.0634705
+stole 0.0623059
+miniskirt, mini 0.448348
+folding chair 0.0570733
+barbell 0.0537678
+barber chair 0.050459
+dumbbell 0.0488263
+brassiere, bra, bandeau 0.238994
+bikini, two-piece 0.187212
+maillot 0.170108
+maillot, tank suit 0.11757
+gown 0.0756568
+oxygen mask 0.99869
+gasmask, respirator, gas helmet 0.0010524
+sunscreen, sunblock, sun blocker 5.25273e-05
+water bottle 3.67766e-05
+nipple 3.62753e-05
+dumbbell 0.0840739
+lens cap, lens cover 0.0801643
+microphone, mike 0.0319886
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0273343
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0246759
+maillot, tank suit 0.392494
+miniskirt, mini 0.288985
+maillot 0.18874
+bikini, two-piece 0.0140095
+pajama, pyjama, pj's, jammies 0.0134306
+stethoscope 0.101214
+wig 0.0961001
+bikini, two-piece 0.0920329
+maillot 0.0726629
+gown 0.0588163
+bikini, two-piece 0.381385
+brassiere, bra, bandeau 0.192633
+maillot 0.103836
+maillot, tank suit 0.0902899
+jersey, T-shirt, tee shirt 0.0746409
+power drill 0.530336
+dumbbell 0.0935145
+barbell 0.068857
+neck brace 0.0417565
+punching bag, punch bag, punching ball, punchball 0.0294964
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.211466
+harmonica, mouth organ, harp, mouth harp 0.0774727
+sunglasses, dark glasses, shades 0.0505124
+Band Aid 0.0450148
+sunglass 0.0350103
+bathtub, bathing tub, bath, tub 0.0566803
+Band Aid 0.0542598
+tub, vat 0.0535534
+bathing cap, swimming cap 0.0457967
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0395286
+brassiere, bra, bandeau 0.419655
+notebook, notebook computer 0.127647
+maillot 0.11922
+maillot, tank suit 0.0520793
+bikini, two-piece 0.0338562
+bonnet, poke bonnet 0.307431
+brassiere, bra, bandeau 0.259944
+maillot 0.0982989
+necklace 0.073867
+sarong 0.0687161
+diaper, nappy, napkin 0.138163
+maillot 0.0586671
+brassiere, bra, bandeau 0.0416496
+tub, vat 0.0389035
+bathtub, bathing tub, bath, tub 0.0379482
+ice lolly, lolly, lollipop, popsicle 0.0653013
+lipstick, lip rouge 0.0601435
+bubble 0.0524306
+Band Aid 0.0478492
+feather boa, boa 0.0438143
+bath towel 0.160367
+brassiere, bra, bandeau 0.110966
+maillot 0.0846546
+bikini, two-piece 0.0548916
+gown 0.0450429
+lab coat, laboratory coat 0.535401
+stethoscope 0.175196
+bow tie, bow-tie, bowtie 0.0394602
+Windsor tie 0.0294388
+wig 0.0213409
+wig 0.546543
+fur coat 0.0758802
+shower cap 0.0584682
+bath towel 0.021292
+hair spray 0.0160832
+swimming trunks, bathing trunks 0.684369
+sarong 0.0248423
+bathing cap, swimming cap 0.0239378
+barbell 0.0225461
+diaper, nappy, napkin 0.021385
+cloak 0.106212
+suit, suit of clothes 0.0931228
+lipstick, lip rouge 0.0489384
+umbrella 0.0382903
+wig 0.036977
+bath towel 0.199053
+bonnet, poke bonnet 0.136587
+bathing cap, swimming cap 0.117321
+ice lolly, lolly, lollipop, popsicle 0.0987259
+lipstick, lip rouge 0.0547419
+Band Aid 0.148057
+lipstick, lip rouge 0.137257
+bubble 0.1317
+necklace 0.0811281
+bikini, two-piece 0.0544296
+lipstick, lip rouge 0.226321
+wig 0.191475
+face powder 0.131108
+ice lolly, lolly, lollipop, popsicle 0.106444
+sunscreen, sunblock, sun blocker 0.0590146
+diaper, nappy, napkin 0.0703966
+neck brace 0.0659706
+menu 0.0522801
+crib, cot 0.0451786
+bib 0.0402011
+brassiere, bra, bandeau 0.117695
+suit, suit of clothes 0.112136
+bow tie, bow-tie, bowtie 0.0446825
+wig 0.0434058
+dumbbell 0.0321113
+stethoscope 0.117291
+cleaver, meat cleaver, chopper 0.0430489
+lab coat, laboratory coat 0.0389893
+Band Aid 0.0311456
+quill, quill pen 0.0298594
+brassiere, bra, bandeau 0.429533
+maillot 0.0906738
+bikini, two-piece 0.0857696
+seat belt, seatbelt 0.0855995
+maillot, tank suit 0.0422377
+thunder snake, worm snake, Carphophis amoenus 0.140491
+eft 0.077379
+lipstick, lip rouge 0.0749964
+loupe, jeweler's loupe 0.0577478
+ringneck snake, ring-necked snake, ring snake 0.0483206
+wig 0.199583
+brassiere, bra, bandeau 0.162561
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.126776
+bikini, two-piece 0.070755
+hair spray 0.0519467
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.232931
+shower cap 0.103427
+African grey, African gray, Psittacus erithacus 0.0437546
+ping-pong ball 0.0280334
+maraca 0.0225761
+wig 0.168052
+hair spray 0.0552717
+mask 0.0502886
+stethoscope 0.0376549
+Band Aid 0.0338303
+feather boa, boa 0.216837
+wig 0.195909
+lipstick, lip rouge 0.0718215
+fur coat 0.0694815
+hair slide 0.066399
+Band Aid 0.223779
+sunscreen, sunblock, sun blocker 0.186122
+lipstick, lip rouge 0.0905943
+lotion 0.0410759
+hair spray 0.0289043
+croquet ball 0.163915
+cowboy hat, ten-gallon hat 0.117095
+lawn mower, mower 0.0609751
+cowboy boot 0.0524194
+parallel bars, bars 0.0445752
+jersey, T-shirt, tee shirt 0.328803
+maillot, tank suit 0.21177
+wig 0.160166
+maillot 0.106469
+velvet 0.0759144
+miniskirt, mini 0.154619
+jersey, T-shirt, tee shirt 0.145579
+maillot 0.102053
+maillot, tank suit 0.0936533
+gown 0.0346003
+sleeping bag 0.157449
+stretcher 0.0318773
+hand-held computer, hand-held microcomputer 0.0277692
+harmonica, mouth organ, harp, mouth harp 0.0268685
+remote control, remote 0.0256034
+brassiere, bra, bandeau 0.122201
+maillot, tank suit 0.107279
+bikini, two-piece 0.0646071
+maillot 0.063174
+diaper, nappy, napkin 0.0424538
+suit, suit of clothes 0.3898
+bow tie, bow-tie, bowtie 0.18668
+Windsor tie 0.173338
+bolo tie, bolo, bola tie, bola 0.0719694
+groom, bridegroom 0.0565102
+tripod 0.0789037
+gown 0.0419681
+crutch 0.0362696
+rifle 0.0326963
+microphone, mike 0.0293209
+drumstick 0.258815
+brassiere, bra, bandeau 0.233688
+notebook, notebook computer 0.0354414
+grand piano, grand 0.0350325
+stage 0.0277734
+four-poster 0.121333
+throne 0.106507
+cradle 0.0981298
+vestment 0.063709
+pajama, pyjama, pj's, jammies 0.060121
+bow tie, bow-tie, bowtie 0.306667
+suit, suit of clothes 0.183541
+cleaver, meat cleaver, chopper 0.0487116
+jersey, T-shirt, tee shirt 0.048262
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0226122
+basketball 0.0996937
+ballplayer, baseball player 0.0762024
+maze, labyrinth 0.0745865
+volleyball 0.0494321
+umbrella 0.0475372
+seat belt, seatbelt 0.0702678
+lipstick, lip rouge 0.0530535
+brassiere, bra, bandeau 0.0475637
+bikini, two-piece 0.0422209
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0295958
+miniskirt, mini 0.290609
+sunglasses, dark glasses, shades 0.0545089
+sunglass 0.0523517
+cornet, horn, trumpet, trump 0.0278333
+umbrella 0.0254973
+sunglass 0.344435
+sunglasses, dark glasses, shades 0.327793
+ice lolly, lolly, lollipop, popsicle 0.120328
+Band Aid 0.0182024
+whistle 0.0176228
+groom, bridegroom 0.144947
+gown 0.140192
+abaya 0.104265
+trench coat 0.0728911
+kimono 0.0725009
+bathtub, bathing tub, bath, tub 0.339775
+Band Aid 0.126686
+bikini, two-piece 0.108447
+hair spray 0.0742625
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0489675
+sunglasses, dark glasses, shades 0.214004
+bikini, two-piece 0.175898
+sunglass 0.126768
+brassiere, bra, bandeau 0.0565942
+maillot 0.0387678
+wig 0.733893
+face powder 0.0376656
+neck brace 0.0353418
+mask 0.0340542
+lab coat, laboratory coat 0.0255667
+seat belt, seatbelt 0.161998
+wig 0.133034
+ice lolly, lolly, lollipop, popsicle 0.0807504
+hair spray 0.059074
+hair slide 0.0367258
+brassiere, bra, bandeau 0.418033
+bow tie, bow-tie, bowtie 0.170393
+maillot 0.0501141
+gown 0.0446603
+suit, suit of clothes 0.0424583
+plunger, plumber's helper 0.201504
+dumbbell 0.156991
+punching bag, punch bag, punching ball, punchball 0.074892
+switch, electric switch, electrical switch 0.0495976
+joystick 0.0468879
+brassiere, bra, bandeau 0.0849701
+kimono 0.0742354
+hair spray 0.0492885
+groom, bridegroom 0.0479613
+bow tie, bow-tie, bowtie 0.0448071
+maillot, tank suit 0.4378
+maillot 0.195839
+bikini, two-piece 0.0805519
+swimming trunks, bathing trunks 0.0377279
+miniskirt, mini 0.029878
+brassiere, bra, bandeau 0.4251
+bikini, two-piece 0.175271
+maillot 0.140833
+wig 0.076846
+maillot, tank suit 0.0416362
+suit, suit of clothes 0.238216
+academic gown, academic robe, judge's robe 0.132718
+Windsor tie 0.112296
+bulletproof vest 0.103187
+trench coat 0.0546929
+oxygen mask 0.452295
+steam locomotive 0.226933
+warplane, military plane 0.0417409
+parachute, chute 0.0310829
+scuba diver 0.0288061
+sweatshirt 0.054999
+cowboy hat, ten-gallon hat 0.0487137
+cloak 0.0444744
+brassiere, bra, bandeau 0.0388786
+lab coat, laboratory coat 0.02878
+fur coat 0.859205
+capuchin, ringtail, Cebus capucinus 0.0159261
+wig 0.0145193
+seat belt, seatbelt 0.0104549
+drumstick 0.00420212
+Band Aid 0.231455
+dumbbell 0.0977264
+pick, plectrum, plectron 0.0437446
+balance beam, beam 0.0421219
+harmonica, mouth organ, harp, mouth harp 0.0279337
+sunglass 0.0776084
+sunglasses, dark glasses, shades 0.0770127
+brassiere, bra, bandeau 0.0707736
+suit, suit of clothes 0.0478263
+lipstick, lip rouge 0.0462993
+lipstick, lip rouge 0.769892
+whistle 0.040701
+ice lolly, lolly, lollipop, popsicle 0.0406605
+Band Aid 0.0217378
+pick, plectrum, plectron 0.0111489
+bubble 0.0749152
+lipstick, lip rouge 0.0630064
+sunglass 0.0625313
+wig 0.032041
+sunglasses, dark glasses, shades 0.022939
+sarong 0.488146
+bikini, two-piece 0.227781
+swimming trunks, bathing trunks 0.154516
+maillot 0.0403259
+maillot, tank suit 0.0372901
+chain mail, ring mail, mail, chain armor, chain armour, ring armor, ring armour 0.246167
+neck brace 0.105411
+bonnet, poke bonnet 0.0516905
+sweatshirt 0.0367688
+Band Aid 0.0323308
+sarong 0.610062
+maillot 0.0580761
+Arabian camel, dromedary, Camelus dromedarius 0.0393045
+maillot, tank suit 0.0289311
+frilled lizard, Chlamydosaurus kingi 0.0242774
+maillot, tank suit 0.518039
+maillot 0.346957
+miniskirt, mini 0.0613533
+dumbbell 0.0137364
+bikini, two-piece 0.00934935
+Windsor tie 0.674112
+suit, suit of clothes 0.0763214
+neck brace 0.0695853
+oboe, hautboy, hautbois 0.0160018
+lab coat, laboratory coat 0.0159688
+cloak 0.23078
+abaya 0.134993
+wig 0.103557
+quill, quill pen 0.0353804
+stole 0.0253242
+maillot, tank suit 0.687746
+maillot 0.056868
+dumbbell 0.0448415
+jersey, T-shirt, tee shirt 0.0420125
+velvet 0.029357
+wig 0.723639
+lipstick, lip rouge 0.0879741
+necklace 0.0319521
+hair spray 0.026777
+bow tie, bow-tie, bowtie 0.012605
+bow tie, bow-tie, bowtie 0.0797738
+bath towel 0.0794215
+suit, suit of clothes 0.0604884
+lab coat, laboratory coat 0.041614
+notebook, notebook computer 0.0340351
+lab coat, laboratory coat 0.670651
+beaker 0.0946326
+potter's wheel 0.0429645
+plate 0.0352943
+Petri dish 0.0172612
+lipstick, lip rouge 0.0832206
+Band Aid 0.0441527
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0359599
+syringe 0.0277698
+harmonica, mouth organ, harp, mouth harp 0.0275676
+suit, suit of clothes 0.588223
+Windsor tie 0.253205
+academic gown, academic robe, judge's robe 0.0592514
+bow tie, bow-tie, bowtie 0.0264737
+mortarboard 0.0115946
+lab coat, laboratory coat 0.229157
+brassiere, bra, bandeau 0.220416
+neck brace 0.118809
+bikini, two-piece 0.0726682
+maillot, tank suit 0.039703
+sunscreen, sunblock, sun blocker 0.374212
+bikini, two-piece 0.0692263
+bathing cap, swimming cap 0.0453451
+diaper, nappy, napkin 0.0404657
+binoculars, field glasses, opera glasses 0.0321097
+sunglasses, dark glasses, shades 0.0759655
+military uniform 0.070796
+seat belt, seatbelt 0.0552425
+loupe, jeweler's loupe 0.0546191
+sunglass 0.0500615
+brassiere, bra, bandeau 0.209658
+bikini, two-piece 0.203362
+seat belt, seatbelt 0.0989888
+hair spray 0.0562085
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0392195
+brassiere, bra, bandeau 0.593735
+bikini, two-piece 0.170913
+umbrella 0.0429291
+maillot 0.0339265
+maillot, tank suit 0.0211247
+groom, bridegroom 0.331159
+burrito 0.075755
+bow tie, bow-tie, bowtie 0.0559526
+ice lolly, lolly, lollipop, popsicle 0.0551106
+French horn, horn 0.0214052
+bikini, two-piece 0.318607
+maillot, tank suit 0.159838
+maillot 0.149858
+brassiere, bra, bandeau 0.0858151
+wig 0.0703219
+bikini, two-piece 0.140039
+lipstick, lip rouge 0.101034
+brassiere, bra, bandeau 0.0962569
+maillot 0.0949789
+wig 0.02898
+boa constrictor, Constrictor constrictor 0.112919
+fur coat 0.0940947
+wig 0.0496435
+hatchet 0.0294455
+cloak 0.0279727
+bathing cap, swimming cap 0.0751129
+face powder 0.0718116
+bath towel 0.0707348
+sunscreen, sunblock, sun blocker 0.066668
+Band Aid 0.0438146
+maillot, tank suit 0.0654835
+jersey, T-shirt, tee shirt 0.0322864
+neck brace 0.0278568
+seat belt, seatbelt 0.0172343
+maillot 0.0144112
+sarong 0.0223119
+cowboy boot 0.0191452
+ear, spike, capitulum 0.0171795
+cowboy hat, ten-gallon hat 0.0152939
+swimming trunks, bathing trunks 0.0145951
+dining table, board 0.193312
+rocking chair, rocker 0.183615
+folding chair 0.101521
+bookcase 0.0514537
+crib, cot 0.0381781
+hay 0.0999782
+parallel bars, bars 0.0584584
+diamondback, diamondback rattlesnake, Crotalus adamanteus 0.0516546
+plunger, plumber's helper 0.0454374
+ram, tup 0.0330849
+coho, cohoe, coho salmon, blue jack, silver salmon, Oncorhynchus kisutch 0.14087
+barracouta, snoek 0.0551549
+cowboy hat, ten-gallon hat 0.0328036
+military uniform 0.0327203
+snorkel 0.0300857
+pajama, pyjama, pj's, jammies 0.248519
+suit, suit of clothes 0.065571
+gown 0.0614077
+trench coat 0.0552765
+miniskirt, mini 0.0445915
+neck brace 0.310005
+Band Aid 0.182632
+ice lolly, lolly, lollipop, popsicle 0.0639927
+sunscreen, sunblock, sun blocker 0.0487722
+nipple 0.03378
+gasmask, respirator, gas helmet 0.0783772
+rifle 0.0626369
+hair spray 0.0564505
+tripod 0.0477553
+microphone, mike 0.0449065
+bikini, two-piece 0.397075
+brassiere, bra, bandeau 0.126793
+maillot 0.0603184
+miniskirt, mini 0.0375185
+sarong 0.0315993
+bubble 0.0530859
+whistle 0.0341314
+ice lolly, lolly, lollipop, popsicle 0.0275606
+croquet ball 0.0236092
+maraca 0.0203345
+bikini, two-piece 0.328029
+swimming trunks, bathing trunks 0.159776
+maillot 0.136302
+sarong 0.11931
+maillot, tank suit 0.0966111
+cowboy hat, ten-gallon hat 0.341725
+mortarboard 0.183957
+shower cap 0.177206
+sombrero 0.143731
+bathing cap, swimming cap 0.0324548
+maillot 0.395445
+maillot, tank suit 0.213612
+miniskirt, mini 0.0583989
+perfume, essence 0.0260896
+ping-pong ball 0.0171664
+jean, blue jean, denim 0.145587
+suit, suit of clothes 0.120841
+bow tie, bow-tie, bowtie 0.0950455
+Loafer 0.0656784
+crutch 0.061778
+artichoke, globe artichoke 0.039723
+pitcher, ewer 0.0385632
+sax, saxophone 0.0338423
+Indian cobra, Naja naja 0.0319027
+crayfish, crawfish, crawdad, crawdaddy 0.0272879
+lipstick, lip rouge 0.755521
+red wine 0.0671064
+face powder 0.0197564
+beer glass 0.0138078
+syringe 0.0114249
+nipple 0.374049
+gasmask, respirator, gas helmet 0.322251
+oxygen mask 0.165997
+Band Aid 0.0208622
+bath towel 0.0190805
+lipstick, lip rouge 0.177967
+ice lolly, lolly, lollipop, popsicle 0.166309
+Band Aid 0.072267
+hair slide 0.0656186
+nipple 0.0486237
+brassiere, bra, bandeau 0.175304
+gown 0.101748
+groom, bridegroom 0.0893651
+bikini, two-piece 0.0665777
+maillot 0.064516
+barber chair 0.106155
+bow tie, bow-tie, bowtie 0.0747674
+barbershop 0.0662657
+neck brace 0.0549542
+lab coat, laboratory coat 0.0458858
+bath towel 0.279395
+shower cap 0.267129
+bathing cap, swimming cap 0.139406
+fur coat 0.0530008
+wig 0.0269137
+sombrero 0.255671
+cowboy hat, ten-gallon hat 0.22746
+military uniform 0.206414
+pickelhaube 0.0461324
+drumstick 0.0250802
+Band Aid 0.0789822
+sweatshirt 0.049088
+nipple 0.0397391
+spatula 0.0357173
+bath towel 0.0319991
+academic gown, academic robe, judge's robe 0.575842
+Windsor tie 0.315026
+suit, suit of clothes 0.03945
+Loafer 0.0182036
+mortarboard 0.0153728
+pick, plectrum, plectron 0.283304
+loupe, jeweler's loupe 0.0956671
+puck, hockey puck 0.0576176
+combination lock 0.043902
+Petri dish 0.0418117
+bow tie, bow-tie, bowtie 0.398584
+suit, suit of clothes 0.149947
+oboe, hautboy, hautbois 0.0724505
+bassoon 0.0359147
+Windsor tie 0.0270206
+balance beam, beam 0.778056
+horizontal bar, high bar 0.0793676
+parallel bars, bars 0.0419678
+ping-pong ball 0.0169436
+stage 0.0159457
+wig 0.397603
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.107175
+hair spray 0.0534386
+hair slide 0.0469604
+face powder 0.044267
+brassiere, bra, bandeau 0.566772
+bikini, two-piece 0.261842
+maillot 0.0555929
+maillot, tank suit 0.0428174
+gown 0.0177078
+cowboy boot 0.0885291
+miniskirt, mini 0.0373602
+rifle 0.0371728
+pole 0.0322586
+sunglass 0.0301813
+academic gown, academic robe, judge's robe 0.282012
+mortarboard 0.205867
+cloak 0.0997445
+suit, suit of clothes 0.0297141
+ballplayer, baseball player 0.0196207
+crash helmet 0.530283
+mortarboard 0.122911
+academic gown, academic robe, judge's robe 0.080246
+cowboy hat, ten-gallon hat 0.0658233
+sombrero 0.019217
+lab coat, laboratory coat 0.474782
+suit, suit of clothes 0.132256
+sweatshirt 0.107742
+trench coat 0.0317056
+academic gown, academic robe, judge's robe 0.0316676
+pier 0.154167
+shopping cart 0.077502
+radio telescope, radio reflector 0.074406
+chainlink fence 0.0621448
+suspension bridge 0.0373106
+velvet 0.154585
+maillot 0.132997
+dumbbell 0.116205
+miniskirt, mini 0.0952338
+gown 0.0660174
+balance beam, beam 0.0710332
+toyshop 0.0656799
+bathing cap, swimming cap 0.0342688
+brassiere, bra, bandeau 0.0295781
+throne 0.0290954
+jersey, T-shirt, tee shirt 0.0684622
+umbrella 0.0347184
+sunglasses, dark glasses, shades 0.021957
+jean, blue jean, denim 0.0208778
+sweatshirt 0.0203196
+jean, blue jean, denim 0.17193
+bow tie, bow-tie, bowtie 0.0736963
+miniskirt, mini 0.0584837
+overskirt 0.0528588
+stole 0.0490224
+gasmask, respirator, gas helmet 0.490885
+oxygen mask 0.168445
+Band Aid 0.0662559
+can opener, tin opener 0.0403836
+nipple 0.0353391
+miniskirt, mini 0.363975
+vacuum, vacuum cleaner 0.178226
+unicycle, monocycle 0.121473
+jean, blue jean, denim 0.0780939
+swab, swob, mop 0.0602732
+oboe, hautboy, hautbois 0.138914
+flute, transverse flute 0.114469
+stethoscope 0.0881128
+hair spray 0.0878581
+bassoon 0.0735265
+lipstick, lip rouge 0.221814
+harmonica, mouth organ, harp, mouth harp 0.0874297
+syringe 0.0591663
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.054553
+ice lolly, lolly, lollipop, popsicle 0.0403702
+vacuum, vacuum cleaner 0.0903683
+go-kart 0.0612435
+stethoscope 0.0543363
+notebook, notebook computer 0.0348438
+harmonica, mouth organ, harp, mouth harp 0.0251848
+lab coat, laboratory coat 0.243637
+bathing cap, swimming cap 0.111707
+sunscreen, sunblock, sun blocker 0.0800887
+bow tie, bow-tie, bowtie 0.0762412
+wig 0.0633456
+wig 0.175858
+sunglass 0.129084
+sunglasses, dark glasses, shades 0.106653
+lipstick, lip rouge 0.101091
+brassiere, bra, bandeau 0.0776525
+French horn, horn 0.0643124
+sax, saxophone 0.052472
+stage 0.0517672
+sunglass 0.0434288
+trombone 0.030268
+maillot, tank suit 0.222974
+killer whale, killer, orca, grampus, sea wolf, Orcinus orca 0.168194
+snorkel 0.0859731
+swimming trunks, bathing trunks 0.0817847
+gar, garfish, garpike, billfish, Lepisosteus osseus 0.0534372
+wig 0.0860065
+hair spray 0.0448789
+cloak 0.0349281
+ski mask 0.03477
+bonnet, poke bonnet 0.0341566
+bikini, two-piece 0.44406
+maillot 0.21032
+brassiere, bra, bandeau 0.197092
+maillot, tank suit 0.12255
+miniskirt, mini 0.00453397
+brassiere, bra, bandeau 0.208051
+lab coat, laboratory coat 0.111697
+stethoscope 0.0875777
+bow 0.0487458
+hourglass 0.0387987
+bow tie, bow-tie, bowtie 0.057992
+chain mail, ring mail, mail, chain armor, chain armour, ring armor, ring armour 0.0421427
+stethoscope 0.0369765
+microphone, mike 0.0349409
+brassiere, bra, bandeau 0.0325312
+puffer, pufferfish, blowfish, globefish 0.0909998
+conch 0.0862582
+sea urchin 0.0792677
+loggerhead, loggerhead turtle, Caretta caretta 0.0617042
+bathing cap, swimming cap 0.0463377
+wig 0.204855
+brassiere, bra, bandeau 0.116562
+lipstick, lip rouge 0.115432
+hair spray 0.0777612
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0460002
+plastic bag 0.253548
+wig 0.209236
+lab coat, laboratory coat 0.143821
+suit, suit of clothes 0.0477069
+groom, bridegroom 0.0320538
+jean, blue jean, denim 0.146778
+miniskirt, mini 0.115572
+maillot 0.0914839
+maillot, tank suit 0.0627301
+dumbbell 0.060944
+folding chair 0.0725273
+barber chair 0.0574667
+neck brace 0.0573071
+miniskirt, mini 0.0562033
+dumbbell 0.0393608
+Band Aid 0.142651
+lipstick, lip rouge 0.0660309
+sunscreen, sunblock, sun blocker 0.055424
+ice lolly, lolly, lollipop, popsicle 0.0511793
+hair slide 0.044073
+overskirt 0.358919
+neck brace 0.20773
+breastplate, aegis, egis 0.152075
+cuirass 0.0930466
+Windsor tie 0.0531837
+academic gown, academic robe, judge's robe 0.131898
+trench coat 0.126667
+hand-held computer, hand-held microcomputer 0.113856
+miniskirt, mini 0.0468507
+mailbag, postbag 0.0391054
+maillot, tank suit 0.101847
+balance beam, beam 0.0775492
+hammer 0.0745374
+maillot 0.0600127
+hatchet 0.0590713
+bath towel 0.241453
+bathing cap, swimming cap 0.0895356
+wig 0.0602943
+sunscreen, sunblock, sun blocker 0.0479904
+cowboy hat, ten-gallon hat 0.0424098
+face powder 0.217628
+lipstick, lip rouge 0.212007
+wig 0.0836924
+sunscreen, sunblock, sun blocker 0.0635347
+sunglass 0.0362211
+horizontal bar, high bar 0.406054
+balance beam, beam 0.157556
+parallel bars, bars 0.127645
+maillot 0.126698
+maillot, tank suit 0.0844011
+hair spray 0.114999
+bikini, two-piece 0.0812235
+feather boa, boa 0.0800719
+brassiere, bra, bandeau 0.0669373
+tub, vat 0.0531585
+crutch 0.0790714
+trombone 0.0684092
+French horn, horn 0.047293
+pajama, pyjama, pj's, jammies 0.0393525
+groom, bridegroom 0.0380011
+nipple 0.226204
+hamster 0.207394
+ocarina, sweet potato 0.068009
+mouse, computer mouse 0.0559431
+piggy bank, penny bank 0.0517189
+barbershop 0.110414
+library 0.0742001
+shoe shop, shoe-shop, shoe store 0.0693221
+military uniform 0.0328137
+restaurant, eating house, eating place, eatery 0.0213219
+pajama, pyjama, pj's, jammies 0.0973835
+stethoscope 0.081679
+hair spray 0.0801982
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0609278
+neck brace 0.0586246
+cloak 0.118158
+car mirror 0.0571488
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0481114
+seat belt, seatbelt 0.0469903
+spotlight, spot 0.0442128
+overskirt 0.312594
+gown 0.29373
+velvet 0.226739
+hoopskirt, crinoline 0.0749455
+miniskirt, mini 0.0227393
+nipple 0.147747
+neck brace 0.112461
+Band Aid 0.0686865
+Windsor tie 0.0601116
+diaper, nappy, napkin 0.0521931
+maillot, tank suit 0.205987
+maillot 0.153254
+miniskirt, mini 0.125719
+sunglass 0.0512153
+bikini, two-piece 0.0425871
+diaper, nappy, napkin 0.873174
+nipple 0.0612504
+crib, cot 0.014645
+cradle 0.00723853
+bath towel 0.00541543
+flute, transverse flute 0.22647
+walking stick, walkingstick, stick insect 0.0669982
+crayfish, crawfish, crawdad, crawdaddy 0.0558936
+dragonfly, darning needle, devil's darning needle, sewing needle, snake feeder, snake doctor, mosquito hawk, skeeter hawk 0.0377675
+syringe 0.0353728
+bow tie, bow-tie, bowtie 0.110991
+ice cream, icecream 0.0594408
+remote control, remote 0.0474018
+soap dispenser 0.0287897
+mask 0.028755
+bikini, two-piece 0.689491
+bathing cap, swimming cap 0.0883521
+maillot, tank suit 0.0352285
+maillot 0.0304214
+bubble 0.0231801
+hair slide 0.218606
+pinwheel 0.0818694
+diaper, nappy, napkin 0.0631518
+conch 0.0603088
+nipple 0.057221
+neck brace 0.178494
+seat belt, seatbelt 0.11201
+jersey, T-shirt, tee shirt 0.101462
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0600226
+hair spray 0.0567642
+miniskirt, mini 0.081889
+ski mask 0.0742456
+buckle 0.0728161
+diaper, nappy, napkin 0.0561666
+bonnet, poke bonnet 0.0556136
+seat belt, seatbelt 0.92991
+sunglasses, dark glasses, shades 0.0357035
+car mirror 0.0128318
+sunglass 0.0053963
+minibus 0.00170123
+brassiere, bra, bandeau 0.71083
+bikini, two-piece 0.0940004
+swimming trunks, bathing trunks 0.0366131
+maillot 0.0236084
+miniskirt, mini 0.021977
+tape player 0.13394
+cassette player 0.125979
+Polaroid camera, Polaroid Land camera 0.0974512
+CD player 0.0807072
+radio, wireless 0.0563347
+lipstick, lip rouge 0.152986
+feather boa, boa 0.0606861
+fur coat 0.0368979
+wig 0.0315564
+bath towel 0.0284564
+thresher, thrasher, threshing machine 0.0956186
+lakeside, lakeshore 0.0628129
+drilling platform, offshore rig 0.0596866
+castle 0.0553669
+fountain 0.0524969
+maillot, tank suit 0.40495
+balance beam, beam 0.0587174
+maillot 0.0442693
+parallel bars, bars 0.0433562
+miniskirt, mini 0.0345502
+dumbbell 0.348506
+barbell 0.133121
+miniskirt, mini 0.0498587
+suit, suit of clothes 0.043046
+Windsor tie 0.0351086
+velvet 0.235281
+pajama, pyjama, pj's, jammies 0.099659
+trench coat 0.0779271
+miniskirt, mini 0.0641301
+stole 0.0596305
+maraca 0.50191
+ocarina, sweet potato 0.158346
+cowboy hat, ten-gallon hat 0.0327201
+Band Aid 0.0230882
+nipple 0.0217489
+power drill 0.0793718
+suit, suit of clothes 0.0790015
+Windsor tie 0.0697364
+plastic bag 0.0657417
+cowboy boot 0.0635016
+cash machine, cash dispenser, automated teller machine, automatic teller machine, automated teller, automatic teller, ATM 0.104252
+pay-phone, pay-station 0.102184
+vacuum, vacuum cleaner 0.0997425
+refrigerator, icebox 0.061176
+gas pump, gasoline pump, petrol pump, island dispenser 0.0600842
+panpipe, pandean pipe, syrinx 0.169209
+nipple 0.0666048
+neck brace 0.0494536
+hair spray 0.0481367
+ocarina, sweet potato 0.0453472
+lighter, light, igniter, ignitor 0.104513
+drumstick 0.0368227
+syringe 0.0325189
+feather boa, boa 0.0271308
+candle, taper, wax light 0.0268597
+balance beam, beam 0.138831
+bow 0.0821768
+pole 0.0810942
+plunger, plumber's helper 0.0657123
+broom 0.063674
+neck brace 0.255328
+ping-pong ball 0.113342
+hair spray 0.0699024
+lab coat, laboratory coat 0.0553856
+seat belt, seatbelt 0.0551325
+bikini, two-piece 0.485545
+maillot 0.207459
+maillot, tank suit 0.198721
+brassiere, bra, bandeau 0.0988327
+sunscreen, sunblock, sun blocker 0.00296605
+parallel bars, bars 0.238777
+altar 0.0701686
+cradle 0.0537093
+crib, cot 0.0387948
+bow 0.0383339
+drumstick 0.267304
+pole 0.0697786
+hatchet 0.0319948
+microphone, mike 0.0289509
+assault rifle, assault gun 0.0270429
+kimono 0.373605
+maillot 0.0794776
+sarong 0.0664086
+maillot, tank suit 0.0584249
+sunglass 0.0473108
+feather boa, boa 0.19735
+cloak 0.156745
+lighter, light, igniter, ignitor 0.134783
+seat belt, seatbelt 0.106228
+wig 0.0471512
+torch 0.126548
+baseball 0.10515
+racket, racquet 0.0927552
+sunglass 0.0356392
+kimono 0.034084
+miniskirt, mini 0.547346
+limousine, limo 0.132191
+minivan 0.039686
+maillot 0.0127495
+unicycle, monocycle 0.0123444
+maillot, tank suit 0.552521
+maillot 0.401354
+brassiere, bra, bandeau 0.0137525
+miniskirt, mini 0.0119153
+bathing cap, swimming cap 0.00407992
+cuirass 0.293118
+military uniform 0.164703
+gasmask, respirator, gas helmet 0.0642296
+pickelhaube 0.0526937
+breastplate, aegis, egis 0.0437067
+stethoscope 0.280616
+lab coat, laboratory coat 0.151137
+oxygen mask 0.147907
+spatula 0.128028
+screwdriver 0.0350227
+neck brace 0.254881
+seat belt, seatbelt 0.244315
+stethoscope 0.0834239
+brassiere, bra, bandeau 0.0815733
+notebook, notebook computer 0.0384303
+Windsor tie 0.306667
+suit, suit of clothes 0.164952
+oboe, hautboy, hautbois 0.124775
+oxygen mask 0.0404588
+bolo tie, bolo, bola tie, bola 0.0278758
+Band Aid 0.0846881
+cloak 0.0448929
+shower cap 0.0402771
+sweatshirt 0.0349927
+neck brace 0.0326401
+nipple 0.18278
+harmonica, mouth organ, harp, mouth harp 0.0538919
+diaper, nappy, napkin 0.0391882
+loupe, jeweler's loupe 0.0305735
+Band Aid 0.0286066
+sandbar, sand bar 0.042113
+volleyball 0.0284764
+swimming trunks, bathing trunks 0.0225007
+seashore, coast, seacoast, sea-coast 0.0188069
+ski 0.0186747
+gown 0.0973438
+bathing cap, swimming cap 0.069015
+bikini, two-piece 0.0651488
+maillot, tank suit 0.0527114
+maillot 0.0524046
+maillot, tank suit 0.146072
+neck brace 0.0853447
+overskirt 0.0501242
+Windsor tie 0.0291548
+academic gown, academic robe, judge's robe 0.0276808
+bow tie, bow-tie, bowtie 0.213267
+suit, suit of clothes 0.135387
+Windsor tie 0.104837
+lab coat, laboratory coat 0.0903847
+bolo tie, bolo, bola tie, bola 0.0497102
+maillot 0.192454
+poncho 0.191177
+apron 0.151886
+overskirt 0.128008
+maillot, tank suit 0.0991797
+brassiere, bra, bandeau 0.196087
+bikini, two-piece 0.178538
+maillot 0.126341
+maillot, tank suit 0.0741672
+wig 0.055502
+fur coat 0.178344
+tub, vat 0.141797
+bath towel 0.0747911
+diaper, nappy, napkin 0.0717315
+bathtub, bathing tub, bath, tub 0.0562404
+harmonica, mouth organ, harp, mouth harp 0.271867
+ice lolly, lolly, lollipop, popsicle 0.0935187
+diaper, nappy, napkin 0.0640552
+nipple 0.0607955
+maraca 0.0571208
+lipstick, lip rouge 0.11758
+hair spray 0.0912017
+sunscreen, sunblock, sun blocker 0.057689
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0553152
+wig 0.0458757
+oxygen mask 0.144218
+neck brace 0.141855
+seat belt, seatbelt 0.0636779
+gasmask, respirator, gas helmet 0.0612949
+hair slide 0.0440878
+bonnet, poke bonnet 0.280939
+wool, woolen, woollen 0.200509
+mask 0.131071
+hair slide 0.103746
+wig 0.0879591
+suit, suit of clothes 0.194445
+Windsor tie 0.179521
+bow tie, bow-tie, bowtie 0.113876
+academic gown, academic robe, judge's robe 0.0444878
+cleaver, meat cleaver, chopper 0.0324881
+megalith, megalithic structure 0.358106
+stone wall 0.0959006
+assault rifle, assault gun 0.0263423
+maze, labyrinth 0.0214043
+unicycle, monocycle 0.0198812
+wig 0.318122
+ice lolly, lolly, lollipop, popsicle 0.0644628
+hair spray 0.054576
+lipstick, lip rouge 0.0407582
+bikini, two-piece 0.0313276
+fur coat 0.177078
+lipstick, lip rouge 0.143634
+feather boa, boa 0.125317
+wig 0.0973242
+bow tie, bow-tie, bowtie 0.0614033
+bikini, two-piece 0.576029
+brassiere, bra, bandeau 0.186645
+maillot 0.0384333
+stethoscope 0.0227388
+lipstick, lip rouge 0.0143493
+bikini, two-piece 0.302171
+wig 0.200347
+maillot 0.133892
+maillot, tank suit 0.130386
+brassiere, bra, bandeau 0.0593237
+maillot, tank suit 0.39299
+maillot 0.284338
+bikini, two-piece 0.217431
+sarong 0.0389631
+gown 0.0174775
+bathing cap, swimming cap 0.601034
+sunglass 0.205517
+sunglasses, dark glasses, shades 0.038575
+lens cap, lens cover 0.0242099
+seat belt, seatbelt 0.0214892
+dumbbell 0.165243
+cowboy boot 0.100467
+miniskirt, mini 0.0835614
+barbell 0.0786554
+maillot, tank suit 0.0531748
+plate 0.0575339
+zucchini, courgette 0.0484744
+crossword puzzle, crossword 0.0473076
+spaghetti squash 0.0411325
+burrito 0.0379204
+abaya 0.453225
+sweatshirt 0.126118
+cloak 0.0730762
+ski mask 0.0713303
+jersey, T-shirt, tee shirt 0.0360643
+bubble 0.0446987
+torch 0.0347553
+mosque 0.026649
+stupa, tope 0.0217155
+plunger, plumber's helper 0.0206423
+maillot 0.32319
+brassiere, bra, bandeau 0.314327
+bikini, two-piece 0.154979
+maillot, tank suit 0.143928
+miniskirt, mini 0.0125158
+lipstick, lip rouge 0.14318
+hair spray 0.0812973
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0761634
+Band Aid 0.0630777
+seat belt, seatbelt 0.0467542
+bearskin, busby, shako 0.147186
+wig 0.0945028
+hair spray 0.070394
+neck brace 0.0637263
+maillot, tank suit 0.0243322
+brassiere, bra, bandeau 0.649979
+maillot, tank suit 0.0764465
+maillot 0.0609525
+wig 0.0444002
+bikini, two-piece 0.0357845
+stage 0.462554
+drumstick 0.349378
+electric guitar 0.035258
+microphone, mike 0.0325642
+drum, membranophone, tympan 0.0151159
+lipstick, lip rouge 0.335124
+wig 0.174559
+ice lolly, lolly, lollipop, popsicle 0.0929632
+hair slide 0.0910451
+bonnet, poke bonnet 0.0702614
+lipstick, lip rouge 0.243819
+bikini, two-piece 0.182762
+bathing cap, swimming cap 0.0893746
+brassiere, bra, bandeau 0.0471755
+wig 0.0367492
+unicycle, monocycle 0.169427
+warplane, military plane 0.122964
+aircraft carrier, carrier, flattop, attack aircraft carrier 0.056772
+knee pad 0.040948
+basketball 0.0298636
+web site, website, internet site, site 0.104902
+balance beam, beam 0.0694928
+parallel bars, bars 0.0530148
+ping-pong ball 0.0463405
+analog clock 0.0410361
+military uniform 0.946864
+pickelhaube 0.0274261
+suit, suit of clothes 0.00357412
+trench coat 0.0031573
+cowboy hat, ten-gallon hat 0.00301767
+groom, bridegroom 0.0857518
+breastplate, aegis, egis 0.053595
+chain mail, ring mail, mail, chain armor, chain armour, ring armor, ring armour 0.0373085
+gown 0.0265084
+pillow 0.0186748
+sock 0.079171
+lipstick, lip rouge 0.046297
+cowboy boot 0.0344394
+knee pad 0.0340166
+torch 0.030506
+pajama, pyjama, pj's, jammies 0.0853308
+piggy bank, penny bank 0.0818973
+wooden spoon 0.0699971
+soccer ball 0.0482611
+ice lolly, lolly, lollipop, popsicle 0.0476927
+lens cap, lens cover 0.0429597
+stethoscope 0.0398835
+tub, vat 0.0368403
+ping-pong ball 0.0348342
+bubble 0.0321359
+chain mail, ring mail, mail, chain armor, chain armour, ring armor, ring armour 0.368904
+military uniform 0.148685
+shower cap 0.0478919
+wig 0.030552
+sunglass 0.0270389
+lab coat, laboratory coat 0.546164
+stethoscope 0.176993
+notebook, notebook computer 0.0737915
+hand-held computer, hand-held microcomputer 0.0143281
+jean, blue jean, denim 0.0112049
+bikini, two-piece 0.383014
+brassiere, bra, bandeau 0.104097
+sunscreen, sunblock, sun blocker 0.097273
+Band Aid 0.0548891
+diaper, nappy, napkin 0.042244
+unicycle, monocycle 0.0247111
+torch 0.0218508
+balance beam, beam 0.0217199
+Arabian camel, dromedary, Camelus dromedarius 0.0212579
+albatross, mollymawk 0.0182484
+lipstick, lip rouge 0.0920644
+suit, suit of clothes 0.0696631
+bow tie, bow-tie, bowtie 0.0680788
+bearskin, busby, shako 0.0649635
+Windsor tie 0.0509052
+maillot, tank suit 0.0749094
+gown 0.058462
+standard poodle 0.0539191
+seashore, coast, seacoast, sea-coast 0.0526802
+sandbar, sand bar 0.0513788
+tub, vat 0.0759771
+bathtub, bathing tub, bath, tub 0.0728389
+groom, bridegroom 0.046385
+gown 0.0384577
+shower cap 0.0307538
+lighter, light, igniter, ignitor 0.0953017
+stopwatch, stop watch 0.0875991
+Band Aid 0.0740262
+digital watch 0.0585391
+nipple 0.0494623
+bassoon 0.155019
+torch 0.135043
+microphone, mike 0.054056
+balance beam, beam 0.0536001
+notebook, notebook computer 0.0535718
+maillot 0.43054
+maillot, tank suit 0.288792
+sarong 0.0741486
+miniskirt, mini 0.0306398
+brassiere, bra, bandeau 0.0293279
+chain mail, ring mail, mail, chain armor, chain armour, ring armor, ring armour 0.248801
+puffer, pufferfish, blowfish, globefish 0.215227
+brain coral 0.143273
+eel 0.0479591
+electric ray, crampfish, numbfish, torpedo 0.0424662
+brassiere, bra, bandeau 0.233302
+diaper, nappy, napkin 0.225464
+bikini, two-piece 0.213565
+lotion 0.133801
+Band Aid 0.0424789
+miniskirt, mini 0.100007
+bow tie, bow-tie, bowtie 0.0978214
+jean, blue jean, denim 0.0976631
+maillot 0.0694836
+gown 0.0523523
+suit, suit of clothes 0.0822269
+cleaver, meat cleaver, chopper 0.0673094
+Windsor tie 0.0549026
+dumbbell 0.0462733
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0462094
+stethoscope 0.0946516
+academic gown, academic robe, judge's robe 0.0743121
+velvet 0.0720223
+stole 0.0546892
+mortarboard 0.0517838
+maillot, tank suit 0.101741
+dumbbell 0.098542
+maillot 0.0831545
+diaper, nappy, napkin 0.0700251
+face powder 0.0469683
+assault rifle, assault gun 0.139872
+bow 0.0990698
+revolver, six-gun, six-shooter 0.0687812
+oboe, hautboy, hautbois 0.0521611
+rifle 0.044946
+Windsor tie 0.301304
+academic gown, academic robe, judge's robe 0.246624
+neck brace 0.16889
+jersey, T-shirt, tee shirt 0.0293924
+sweatshirt 0.0292262
+barbershop 0.190834
+altar 0.109319
+restaurant, eating house, eating place, eatery 0.0935092
+theater curtain, theatre curtain 0.0745614
+folding chair 0.042123
+Granny Smith 0.205591
+tennis ball 0.16194
+ladybug, ladybeetle, lady beetle, ladybird, ladybird beetle 0.0634079
+broccoli 0.0287831
+ice lolly, lolly, lollipop, popsicle 0.0256347
+diaper, nappy, napkin 0.13516
+brassiere, bra, bandeau 0.0779471
+maraca 0.0710519
+Band Aid 0.0409797
+bonnet, poke bonnet 0.0406787
+bathing cap, swimming cap 0.296318
+dumbbell 0.148875
+cowboy hat, ten-gallon hat 0.0597927
+shower cap 0.035869
+swimming trunks, bathing trunks 0.0333941
+maillot 0.322225
+maillot, tank suit 0.252324
+velvet 0.165498
+gown 0.157286
+miniskirt, mini 0.0162433
+gown 0.247652
+bikini, two-piece 0.222517
+swimming trunks, bathing trunks 0.167019
+maillot 0.126887
+maillot, tank suit 0.0757541
+unicycle, monocycle 0.295229
+torch 0.158944
+maze, labyrinth 0.047499
+spotlight, spot 0.0298903
+umbrella 0.0268558
+suit, suit of clothes 0.540841
+bow tie, bow-tie, bowtie 0.136844
+trench coat 0.050646
+jean, blue jean, denim 0.0318959
+coho, cohoe, coho salmon, blue jack, silver salmon, Oncorhynchus kisutch 0.0145936
+wig 0.5715
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0823732
+neck brace 0.038176
+brassiere, bra, bandeau 0.0330832
+fur coat 0.0317348
+rifle 0.163176
+bow 0.132491
+assault rifle, assault gun 0.0718693
+notebook, notebook computer 0.0613917
+barbell 0.0543396
+suit, suit of clothes 0.328772
+academic gown, academic robe, judge's robe 0.262546
+Windsor tie 0.133692
+mortarboard 0.0666197
+bow tie, bow-tie, bowtie 0.0459831
+maillot 0.288248
+maillot, tank suit 0.240884
+bikini, two-piece 0.159214
+swimming trunks, bathing trunks 0.119265
+sarong 0.0717774
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0635446
+harmonica, mouth organ, harp, mouth harp 0.0498373
+hair spray 0.0475627
+microphone, mike 0.0470381
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0456593
+punching bag, punch bag, punching ball, punchball 0.25544
+neck brace 0.0478564
+Windsor tie 0.041487
+basketball 0.0399705
+plunger, plumber's helper 0.0372482
+balance beam, beam 0.0590279
+academic gown, academic robe, judge's robe 0.0566936
+mortarboard 0.0317334
+gown 0.0262746
+dumbbell 0.025479
+neck brace 0.992113
+face powder 0.00347466
+loupe, jeweler's loupe 0.00110157
+gasmask, respirator, gas helmet 0.000635304
+oxygen mask 0.000604613
+bikini, two-piece 0.505634
+maillot, tank suit 0.155525
+maillot 0.140859
+swimming trunks, bathing trunks 0.0457423
+balance beam, beam 0.0191211
+academic gown, academic robe, judge's robe 0.370176
+Windsor tie 0.290778
+suit, suit of clothes 0.211707
+mortarboard 0.0402605
+Loafer 0.0277818
+barbell 0.0637125
+dumbbell 0.0534079
+tripod 0.050278
+stretcher 0.0493475
+vacuum, vacuum cleaner 0.0447448
+notebook, notebook computer 0.162242
+brassiere, bra, bandeau 0.141159
+laptop, laptop computer 0.046171
+grand piano, grand 0.0403104
+shoji 0.0302363
+bathing cap, swimming cap 0.54568
+mask 0.105495
+sunglass 0.0825192
+loupe, jeweler's loupe 0.0525043
+lens cap, lens cover 0.0489267
+hoopskirt, crinoline 0.12435
+overskirt 0.108705
+trench coat 0.0881897
+sarong 0.085197
+panpipe, pandean pipe, syrinx 0.0491072
+seat belt, seatbelt 0.381354
+lipstick, lip rouge 0.137463
+wig 0.125516
+brassiere, bra, bandeau 0.051235
+sunglasses, dark glasses, shades 0.0467045
+pajama, pyjama, pj's, jammies 0.139251
+gown 0.137556
+jean, blue jean, denim 0.124996
+sarong 0.112443
+bikini, two-piece 0.0821733
+bassoon 0.0957066
+hair spray 0.0946032
+oboe, hautboy, hautbois 0.0640374
+wig 0.0480574
+cloak 0.0476797
+ice lolly, lolly, lollipop, popsicle 0.116536
+nipple 0.0658775
+oxygen mask 0.0614656
+bubble 0.0545123
+Band Aid 0.0347399
+steel drum 0.739192
+drum, membranophone, tympan 0.123161
+potter's wheel 0.0225323
+gong, tam-tam 0.019753
+drumstick 0.0108442
+bow tie, bow-tie, bowtie 0.0386879
+Windsor tie 0.0225023
+suit, suit of clothes 0.0212524
+vestment 0.019172
+stethoscope 0.0170401
+accordion, piano accordion, squeeze box 0.995662
+marimba, xylophone 0.00147408
+abacus 0.000963707
+panpipe, pandean pipe, syrinx 0.000592066
+banjo 0.000170031
+seat belt, seatbelt 0.153365
+bikini, two-piece 0.0494971
+kimono 0.0384097
+flute, transverse flute 0.0332929
+stethoscope 0.0285573
+wig 0.253062
+mortarboard 0.119482
+umbrella 0.109323
+ice lolly, lolly, lollipop, popsicle 0.0855662
+syringe 0.0396095
+ice lolly, lolly, lollipop, popsicle 0.197101
+crayfish, crawfish, crawdad, crawdaddy 0.10228
+strawberry 0.0671345
+American lobster, Northern lobster, Maine lobster, Homarus americanus 0.0667375
+hotdog, hot dog, red hot 0.0406288
+suit, suit of clothes 0.261101
+trench coat 0.168844
+academic gown, academic robe, judge's robe 0.141595
+velvet 0.0434961
+abaya 0.037144
+sunglass 0.174868
+sunglasses, dark glasses, shades 0.128477
+hair spray 0.0639433
+wig 0.0513989
+lipstick, lip rouge 0.0489284
+lab coat, laboratory coat 0.898493
+stethoscope 0.0305987
+Windsor tie 0.00935526
+suit, suit of clothes 0.00686722
+neck brace 0.00373896
+lipstick, lip rouge 0.385307
+face powder 0.0864354
+wig 0.0726319
+bathing cap, swimming cap 0.0419503
+hair spray 0.0314899
+beer bottle 0.0801983
+crayfish, crawfish, crawdad, crawdaddy 0.0635834
+ice lolly, lolly, lollipop, popsicle 0.0598545
+sunscreen, sunblock, sun blocker 0.0578484
+common iguana, iguana, Iguana iguana 0.0442764
+bonnet, poke bonnet 0.269691
+umbrella 0.126684
+wig 0.123435
+sombrero 0.0900682
+hair spray 0.0784891
+diaper, nappy, napkin 0.126833
+nipple 0.116725
+ocarina, sweet potato 0.0347611
+ear, spike, capitulum 0.0262203
+abacus 0.0237286
+maillot 0.339044
+miniskirt, mini 0.0817136
+velvet 0.0570303
+brassiere, bra, bandeau 0.0519184
+backpack, back pack, knapsack, packsack, rucksack, haversack 0.0425493
+book jacket, dust cover, dust jacket, dust wrapper 0.111442
+gown 0.0732265
+fur coat 0.061641
+stole 0.0487334
+jersey, T-shirt, tee shirt 0.0449312
+fur coat 0.0759783
+wig 0.0749248
+bikini, two-piece 0.0543928
+hair spray 0.0366609
+bath towel 0.0333829
+bikini, two-piece 0.307392
+brassiere, bra, bandeau 0.302631
+maillot 0.0767634
+wig 0.0594919
+stethoscope 0.0458212
+miniskirt, mini 0.182548
+velvet 0.127679
+maillot 0.110583
+gown 0.0802954
+apron 0.059617
+stethoscope 0.0980418
+lab coat, laboratory coat 0.0699219
+plunger, plumber's helper 0.0553202
+oxygen mask 0.0344142
+tub, vat 0.0343703
+bikini, two-piece 0.343098
+maillot 0.16317
+maillot, tank suit 0.0888567
+miniskirt, mini 0.0662801
+diaper, nappy, napkin 0.0417089
+lipstick, lip rouge 0.143894
+bikini, two-piece 0.0818284
+panpipe, pandean pipe, syrinx 0.0656033
+ice lolly, lolly, lollipop, popsicle 0.0580459
+Band Aid 0.0525213
+hair slide 0.152095
+wig 0.123278
+ice lolly, lolly, lollipop, popsicle 0.0516516
+lipstick, lip rouge 0.0477523
+bubble 0.0453352
+drumstick 0.13222
+syringe 0.124853
+bassoon 0.0721096
+hair spray 0.0514392
+wine bottle 0.0431699
+lab coat, laboratory coat 0.471016
+pajama, pyjama, pj's, jammies 0.0701827
+stethoscope 0.0622783
+bath towel 0.0605834
+gown 0.0544875
+sax, saxophone 0.419461
+sunglass 0.0754869
+violin, fiddle 0.0535775
+sunglasses, dark glasses, shades 0.047733
+harmonica, mouth organ, harp, mouth harp 0.0410083
+crossword puzzle, crossword 0.290993
+computer keyboard, keypad 0.143451
+mouse, computer mouse 0.0802272
+laptop, laptop computer 0.0759004
+notebook, notebook computer 0.044352
+ice lolly, lolly, lollipop, popsicle 0.0661013
+sleeping bag 0.0368241
+sunscreen, sunblock, sun blocker 0.0363274
+umbrella 0.0359531
+nipple 0.0322452
+swimming trunks, bathing trunks 0.148813
+brassiere, bra, bandeau 0.137345
+bikini, two-piece 0.136499
+Great Dane 0.0415537
+Italian greyhound 0.0383694
+ice lolly, lolly, lollipop, popsicle 0.403912
+lab coat, laboratory coat 0.132619
+syringe 0.0787877
+lipstick, lip rouge 0.0562057
+harmonica, mouth organ, harp, mouth harp 0.0392458
+maillot, tank suit 0.765466
+maillot 0.157837
+brassiere, bra, bandeau 0.020857
+bikini, two-piece 0.0146906
+gown 0.0118228
+bikini, two-piece 0.133186
+maillot 0.11443
+maillot, tank suit 0.113896
+miniskirt, mini 0.0899922
+brassiere, bra, bandeau 0.0836489
+suit, suit of clothes 0.133925
+lab coat, laboratory coat 0.0451931
+sweatshirt 0.0422864
+crutch 0.0416741
+sunscreen, sunblock, sun blocker 0.0290108
+lab coat, laboratory coat 0.138496
+wig 0.0627045
+sunglasses, dark glasses, shades 0.0622365
+Band Aid 0.0438234
+bow tie, bow-tie, bowtie 0.0402033
+cup 0.189189
+paper towel 0.112423
+coffee mug 0.100421
+espresso 0.0617367
+toilet tissue, toilet paper, bathroom tissue 0.0455014
+bow tie, bow-tie, bowtie 0.46303
+bathing cap, swimming cap 0.0830317
+bolo tie, bolo, bola tie, bola 0.0605794
+military uniform 0.0595203
+wig 0.0420106
+balance beam, beam 0.823445
+parallel bars, bars 0.0366834
+horizontal bar, high bar 0.0227421
+maillot, tank suit 0.0177315
+pole 0.0124047
+wig 0.328763
+ocarina, sweet potato 0.193268
+fur coat 0.0552372
+mask 0.045264
+Sussex spaniel 0.0378519
+tub, vat 0.460006
+bathtub, bathing tub, bath, tub 0.149679
+notebook, notebook computer 0.115355
+brassiere, bra, bandeau 0.0888338
+diaper, nappy, napkin 0.0237574
+trench coat 0.703304
+suit, suit of clothes 0.0659453
+poncho 0.0424425
+stole 0.0268614
+cloak 0.0165703
+Windsor tie 0.35129
+lab coat, laboratory coat 0.343207
+oboe, hautboy, hautbois 0.0286966
+whistle 0.0192314
+hand-held computer, hand-held microcomputer 0.0164949
+stethoscope 0.21214
+wig 0.0694403
+ice lolly, lolly, lollipop, popsicle 0.0587608
+maillot 0.0465174
+bikini, two-piece 0.0398163
+seat belt, seatbelt 0.160399
+lipstick, lip rouge 0.0844359
+lab coat, laboratory coat 0.0659754
+fur coat 0.0524781
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0518878
+lab coat, laboratory coat 0.0751569
+hair spray 0.0699992
+lipstick, lip rouge 0.053017
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.050193
+groom, bridegroom 0.0417026
+miniskirt, mini 0.293263
+hoopskirt, crinoline 0.0685265
+neck brace 0.0411928
+overskirt 0.0365054
+dumbbell 0.0327524
+abacus 0.102427
+diaper, nappy, napkin 0.0554198
+maraca 0.0492127
+sunscreen, sunblock, sun blocker 0.0467335
+ice lolly, lolly, lollipop, popsicle 0.0459943
+gown 0.450727
+maillot, tank suit 0.115179
+maillot 0.0974699
+jean, blue jean, denim 0.0940833
+miniskirt, mini 0.0299976
+stethoscope 0.146416
+flute, transverse flute 0.114189
+bow tie, bow-tie, bowtie 0.0805119
+violin, fiddle 0.0777694
+harmonica, mouth organ, harp, mouth harp 0.0629272
+lipstick, lip rouge 0.101297
+face powder 0.091653
+Band Aid 0.0858817
+ice lolly, lolly, lollipop, popsicle 0.0528536
+seat belt, seatbelt 0.0360101
+brassiere, bra, bandeau 0.15779
+bikini, two-piece 0.118116
+bearskin, busby, shako 0.0527627
+maillot 0.0482289
+sweatshirt 0.0349021
+military uniform 0.10204
+bow tie, bow-tie, bowtie 0.0736241
+Band Aid 0.0705689
+shower cap 0.0618419
+bathing cap, swimming cap 0.053544
+lab coat, laboratory coat 0.854869
+notebook, notebook computer 0.0299991
+stethoscope 0.015972
+beaker 0.0158281
+Windsor tie 0.00770759
+brassiere, bra, bandeau 0.198003
+maillot, tank suit 0.17238
+stethoscope 0.151714
+neck brace 0.0785898
+lab coat, laboratory coat 0.0733581
+maillot, tank suit 0.106663
+maillot 0.0902282
+miniskirt, mini 0.0817273
+bathing cap, swimming cap 0.044049
+feather boa, boa 0.0316336
+maillot, tank suit 0.242785
+maillot 0.136633
+gown 0.12954
+miniskirt, mini 0.04483
+velvet 0.044079
+cowboy boot 0.605155
+sarong 0.12196
+miniskirt, mini 0.0320565
+bikini, two-piece 0.0265104
+maillot, tank suit 0.0168179
+notebook, notebook computer 0.0757354
+drumstick 0.051916
+brassiere, bra, bandeau 0.0385269
+laptop, laptop computer 0.0313452
+seat belt, seatbelt 0.0306694
+lens cap, lens cover 0.251378
+ice lolly, lolly, lollipop, popsicle 0.0379555
+Band Aid 0.0366577
+stethoscope 0.0336801
+hair slide 0.0336796
+punching bag, punch bag, punching ball, punchball 0.455559
+horizontal bar, high bar 0.0760391
+turnstile 0.0616833
+cock 0.0314238
+parallel bars, bars 0.0241063
+dumbbell 0.127106
+barbell 0.1154
+barber chair 0.112526
+stretcher 0.105404
+folding chair 0.0570204
+sarong 0.17246
+sandbar, sand bar 0.141642
+maillot 0.079314
+maillot, tank suit 0.0665196
+swimming trunks, bathing trunks 0.0564112
+maillot, tank suit 0.296072
+maillot 0.144528
+hand-held computer, hand-held microcomputer 0.0647938
+notebook, notebook computer 0.0347889
+sunglass 0.034359
+hair spray 0.129088
+maillot, tank suit 0.0932102
+wig 0.074953
+maillot 0.0697971
+brassiere, bra, bandeau 0.067436
+maillot 0.269193
+maillot, tank suit 0.173928
+miniskirt, mini 0.149323
+gown 0.0947111
+brassiere, bra, bandeau 0.0705622
+kimono 0.356898
+pajama, pyjama, pj's, jammies 0.134624
+seat belt, seatbelt 0.0394413
+bonnet, poke bonnet 0.037768
+maraca 0.0257011
+swimming trunks, bathing trunks 0.587301
+horizontal bar, high bar 0.043474
+sarong 0.0245368
+diaper, nappy, napkin 0.0189707
+bathing cap, swimming cap 0.0187556
+sunglasses, dark glasses, shades 0.340365
+seat belt, seatbelt 0.2914
+sunglass 0.112885
+mask 0.0276533
+wig 0.0248933
+plane, carpenter's plane, woodworking plane 0.0831554
+gong, tam-tam 0.0691352
+potter's wheel 0.0523248
+stretcher 0.0459359
+marimba, xylophone 0.0442167
+gown 0.449186
+overskirt 0.379897
+hoopskirt, crinoline 0.154275
+groom, bridegroom 0.0135779
+cloak 0.00159701
+torch 0.102658
+potter's wheel 0.0964404
+neck brace 0.0708402
+hand-held computer, hand-held microcomputer 0.0520907
+cowboy boot 0.0485108
+maillot 0.414424
+maillot, tank suit 0.253591
+bikini, two-piece 0.0743612
+gown 0.0254265
+notebook, notebook computer 0.022446
+maillot, tank suit 0.255488
+maillot 0.198024
+bikini, two-piece 0.161862
+miniskirt, mini 0.0811371
+brassiere, bra, bandeau 0.0213995
+marimba, xylophone 0.269362
+potter's wheel 0.0403002
+balance beam, beam 0.0372057
+upright, upright piano 0.0201726
+apron 0.0191793
+electric fan, blower 0.0971394
+Windsor tie 0.0888694
+planetarium 0.0649245
+kimono 0.0600553
+suit, suit of clothes 0.0342458
+neck brace 0.196685
+nipple 0.158317
+lab coat, laboratory coat 0.124309
+ocarina, sweet potato 0.0877053
+Windsor tie 0.0565103
+wig 0.306065
+feather boa, boa 0.0943099
+bubble 0.036597
+Irish setter, red setter 0.020882
+chiton, coat-of-mail shell, sea cradle, polyplacophore 0.0207199
+balance beam, beam 0.350281
+parallel bars, bars 0.199855
+maillot, tank suit 0.148482
+maillot 0.0584916
+horizontal bar, high bar 0.0350891
+flute, transverse flute 0.093963
+notebook, notebook computer 0.0651323
+oboe, hautboy, hautbois 0.0283597
+laptop, laptop computer 0.0242571
+toaster 0.0200311
+face powder 0.564783
+Band Aid 0.0823162
+bath towel 0.0742639
+sunscreen, sunblock, sun blocker 0.0535568
+lab coat, laboratory coat 0.0317136
+pajama, pyjama, pj's, jammies 0.549525
+lab coat, laboratory coat 0.0528539
+gown 0.0373311
+miniskirt, mini 0.0325886
+hoopskirt, crinoline 0.0266909
+maillot 0.244226
+brassiere, bra, bandeau 0.11124
+maillot, tank suit 0.095406
+parallel bars, bars 0.0572913
+dumbbell 0.0558493
+wig 0.150243
+bathing cap, swimming cap 0.145195
+seat belt, seatbelt 0.130297
+shower cap 0.0763171
+lipstick, lip rouge 0.0747389
+bikini, two-piece 0.340515
+brassiere, bra, bandeau 0.207839
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.11622
+maillot 0.0541951
+lab coat, laboratory coat 0.0467012
+stethoscope 0.112237
+seat belt, seatbelt 0.100426
+cowboy hat, ten-gallon hat 0.0708001
+umbrella 0.0600035
+bonnet, poke bonnet 0.0444921
+groom, bridegroom 0.869327
+gown 0.0978189
+bow tie, bow-tie, bowtie 0.00245416
+apron 0.00204928
+hair spray 0.00102665
+hoopskirt, crinoline 0.143987
+gown 0.13442
+overskirt 0.098152
+pajama, pyjama, pj's, jammies 0.0569664
+diaper, nappy, napkin 0.0559986
+wig 0.149534
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0640908
+cloak 0.0599899
+abaya 0.0483885
+hair spray 0.0463377
+miniskirt, mini 0.858724
+maillot 0.0298425
+brassiere, bra, bandeau 0.0206138
+jean, blue jean, denim 0.0100817
+cowboy boot 0.00702386
+dumbbell 0.797199
+barbell 0.11724
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0195259
+plunger, plumber's helper 0.00690821
+power drill 0.00649296
+bassoon 0.290905
+cello, violoncello 0.275827
+oboe, hautboy, hautbois 0.113172
+violin, fiddle 0.0350932
+flute, transverse flute 0.0277043
+bikini, two-piece 0.222778
+maillot 0.196101
+miniskirt, mini 0.118172
+tub, vat 0.0433142
+brassiere, bra, bandeau 0.0414865
+sweatshirt 0.209014
+neck brace 0.149085
+lab coat, laboratory coat 0.145206
+nipple 0.0601167
+potter's wheel 0.0537177
+rapeseed 0.111144
+swing 0.0987765
+sunglasses, dark glasses, shades 0.0688153
+bikini, two-piece 0.0378453
+ice lolly, lolly, lollipop, popsicle 0.0348831
+mask 0.429875
+microphone, mike 0.0655756
+harmonica, mouth organ, harp, mouth harp 0.0501572
+pelican 0.0354865
+albatross, mollymawk 0.0268931
+bikini, two-piece 0.288955
+brassiere, bra, bandeau 0.199671
+miniskirt, mini 0.161704
+diaper, nappy, napkin 0.125776
+maillot 0.088483
+maillot 0.0702996
+wig 0.0664247
+miniskirt, mini 0.0644386
+hair spray 0.060753
+abaya 0.060372
+lab coat, laboratory coat 0.227316
+stethoscope 0.218579
+groom, bridegroom 0.138696
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0162832
+pajama, pyjama, pj's, jammies 0.0161368
+kimono 0.2828
+vestment 0.205899
+pajama, pyjama, pj's, jammies 0.0514183
+candle, taper, wax light 0.0296173
+bakery, bakeshop, bakehouse 0.0281189
+brassiere, bra, bandeau 0.296631
+maillot 0.0693181
+wig 0.0511582
+cowboy hat, ten-gallon hat 0.0395343
+bikini, two-piece 0.0353489
+balance beam, beam 0.436303
+horizontal bar, high bar 0.0945287
+maillot, tank suit 0.0700332
+dumbbell 0.0682243
+maillot 0.0660105
+bikini, two-piece 0.605287
+maillot 0.179519
+maillot, tank suit 0.0713089
+sarong 0.0440943
+swimming trunks, bathing trunks 0.0433673
+fiddler crab 0.275251
+crayfish, crawfish, crawdad, crawdaddy 0.052432
+rock crab, Cancer irroratus 0.0298977
+snorkel 0.0288386
+bathing cap, swimming cap 0.0237815
+hoopskirt, crinoline 0.312717
+overskirt 0.150112
+gown 0.139378
+miniskirt, mini 0.11112
+swing 0.0614427
+cardigan 0.101465
+croquet ball 0.0557626
+miniskirt, mini 0.0364956
+gown 0.0361277
+groom, bridegroom 0.0338523
+notebook, notebook computer 0.12744
+apron 0.117284
+iron, smoothing iron 0.0514281
+oxygen mask 0.0490151
+photocopier 0.0481113
+Saluki, gazelle hound 0.0845918
+Maltese dog, Maltese terrier, Maltese 0.0633617
+park bench 0.043149
+swing 0.0403196
+lab coat, laboratory coat 0.0351421
+brassiere, bra, bandeau 0.234064
+cello, violoncello 0.0993917
+maillot 0.0920755
+dumbbell 0.0654304
+bikini, two-piece 0.0638979
+lab coat, laboratory coat 0.27997
+notebook, notebook computer 0.157925
+stethoscope 0.0968227
+quill, quill pen 0.0573326
+marimba, xylophone 0.0468875
+swimming trunks, bathing trunks 0.773286
+bikini, two-piece 0.0473417
+sunscreen, sunblock, sun blocker 0.0384117
+maillot 0.0342574
+sandbar, sand bar 0.0268275
+bow 0.148349
+assault rifle, assault gun 0.14688
+rifle 0.109491
+oboe, hautboy, hautbois 0.0386024
+bassoon 0.0336946
+notebook, notebook computer 0.533163
+laptop, laptop computer 0.209003
+mouse, computer mouse 0.0288858
+television, television system 0.0118174
+dishwasher, dish washer, dishwashing machine 0.00815476
+bathing cap, swimming cap 0.117589
+mortarboard 0.0782132
+bow tie, bow-tie, bowtie 0.0501432
+lipstick, lip rouge 0.0487472
+wig 0.0443467
+lipstick, lip rouge 0.289932
+loupe, jeweler's loupe 0.106365
+Band Aid 0.0895951
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0453831
+harmonica, mouth organ, harp, mouth harp 0.0432151
+bow tie, bow-tie, bowtie 0.151243
+lab coat, laboratory coat 0.0836496
+lipstick, lip rouge 0.0431132
+Band Aid 0.0312014
+Windsor tie 0.030335
+feather boa, boa 0.121336
+groom, bridegroom 0.117201
+hair spray 0.0789858
+cello, violoncello 0.0482673
+syringe 0.0450343
+lipstick, lip rouge 0.647783
+wig 0.133696
+hair spray 0.0286818
+brassiere, bra, bandeau 0.0238309
+sunglass 0.0223944
+lipstick, lip rouge 0.883724
+ice lolly, lolly, lollipop, popsicle 0.0281744
+wig 0.0277084
+hair slide 0.00860306
+seat belt, seatbelt 0.00526617
+carton 0.502247
+brassiere, bra, bandeau 0.0735927
+neck brace 0.0670905
+cradle 0.0652182
+diaper, nappy, napkin 0.0576656
+bathing cap, swimming cap 0.0982087
+jersey, T-shirt, tee shirt 0.0302709
+shower cap 0.0293543
+sunglasses, dark glasses, shades 0.0257679
+hair spray 0.0254336
+brassiere, bra, bandeau 0.604395
+bikini, two-piece 0.107017
+maillot 0.0534939
+maillot, tank suit 0.031739
+wig 0.0236099
+miniskirt, mini 0.308635
+wig 0.110644
+maillot 0.107768
+maillot, tank suit 0.0847961
+stole 0.0532248
+bikini, two-piece 0.193244
+maillot 0.0967568
+ice lolly, lolly, lollipop, popsicle 0.0474215
+torch 0.0457355
+maillot, tank suit 0.0419499
+Band Aid 0.033448
+sweatshirt 0.0322602
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0268087
+window shade 0.0249635
+umbrella 0.0180352
+sarong 0.486079
+maillot 0.0863011
+maillot, tank suit 0.0713966
+pelican 0.0469057
+seashore, coast, seacoast, sea-coast 0.0432823
+harmonica, mouth organ, harp, mouth harp 0.11012
+power drill 0.0524883
+paintbrush 0.0438508
+lens cap, lens cover 0.0286334
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.026789
+thimble 0.0980654
+bathing cap, swimming cap 0.0586233
+face powder 0.0567839
+piggy bank, penny bank 0.0483452
+perfume, essence 0.0472775
+abaya 0.340464
+cloak 0.0738442
+academic gown, academic robe, judge's robe 0.0443777
+sweatshirt 0.0439231
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0350943
+military uniform 0.419897
+assault rifle, assault gun 0.245907
+rifle 0.112182
+bulletproof vest 0.041111
+half track 0.0137833
+hoopskirt, crinoline 0.114033
+apron 0.0985437
+tennis ball 0.0863069
+bath towel 0.0766184
+gown 0.0479585
+brassiere, bra, bandeau 0.548434
+bikini, two-piece 0.14461
+bath towel 0.0696461
+maillot 0.0250402
+Band Aid 0.0223129
+parallel bars, bars 0.0896275
+turnstile 0.040148
+balance beam, beam 0.0347171
+horizontal bar, high bar 0.0319777
+bathing cap, swimming cap 0.0306409
+wig 0.106952
+hair spray 0.101478
+lipstick, lip rouge 0.0772117
+drumstick 0.0581038
+syringe 0.0390782
+seat belt, seatbelt 0.35338
+bath towel 0.151849
+Band Aid 0.0690375
+face powder 0.0468277
+wig 0.040461
+ping-pong ball 0.302046
+whistle 0.0776258
+ice lolly, lolly, lollipop, popsicle 0.0476019
+lipstick, lip rouge 0.0373602
+lens cap, lens cover 0.0326954
+bikini, two-piece 0.0884854
+cowboy boot 0.0548068
+chain saw, chainsaw 0.0504273
+maillot, tank suit 0.03886
+swing 0.0314862
+lab coat, laboratory coat 0.399448
+stethoscope 0.328438
+notebook, notebook computer 0.0297132
+hand-held computer, hand-held microcomputer 0.0278251
+plunger, plumber's helper 0.0173745
+gasmask, respirator, gas helmet 0.584226
+oxygen mask 0.206401
+loupe, jeweler's loupe 0.0905311
+neck brace 0.0408883
+Windsor tie 0.0121568
+cowboy hat, ten-gallon hat 0.826011
+sombrero 0.150188
+military uniform 0.00457299
+crash helmet 0.00414082
+bolo tie, bolo, bola tie, bola 0.00394834
+bikini, two-piece 0.118724
+maillot 0.109642
+miniskirt, mini 0.0885034
+brassiere, bra, bandeau 0.0697628
+maillot, tank suit 0.0582657
+dumbbell 0.14381
+jersey, T-shirt, tee shirt 0.105835
+maillot 0.0960953
+maillot, tank suit 0.0841182
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0686732
+cardigan 0.542098
+wig 0.217817
+wool, woolen, woollen 0.0810375
+stole 0.0349259
+bath towel 0.0186564
+gown 0.129187
+maillot, tank suit 0.108772
+maillot 0.104176
+pajama, pyjama, pj's, jammies 0.082145
+bikini, two-piece 0.0639689
+hair spray 0.241104
+sunglass 0.168143
+sunglasses, dark glasses, shades 0.0608474
+wig 0.0446904
+jersey, T-shirt, tee shirt 0.0425256
+tub, vat 0.300789
+diaper, nappy, napkin 0.26611
+bikini, two-piece 0.0979722
+bath towel 0.0858799
+bathtub, bathing tub, bath, tub 0.0845814
+punching bag, punch bag, punching ball, punchball 0.167324
+maraca 0.049165
+hair spray 0.0375744
+slot, one-armed bandit 0.0264235
+limousine, limo 0.02294
+bikini, two-piece 0.268146
+maillot 0.131217
+miniskirt, mini 0.118434
+maillot, tank suit 0.110951
+brassiere, bra, bandeau 0.0887727
+diaper, nappy, napkin 0.180777
+cradle 0.0626967
+neck brace 0.0437622
+oxygen mask 0.022092
+syringe 0.0202454
+lipstick, lip rouge 0.340104
+wig 0.115738
+Band Aid 0.0667267
+ice lolly, lolly, lollipop, popsicle 0.0474074
+kimono 0.0411072
+stretcher 0.203152
+mortarboard 0.100845
+academic gown, academic robe, judge's robe 0.0915451
+Loafer 0.0431578
+torch 0.0322755
+bikini, two-piece 0.133246
+wig 0.10548
+face powder 0.0818234
+brassiere, bra, bandeau 0.0777725
+lab coat, laboratory coat 0.062414
+Brittany spaniel 0.0647269
+chain saw, chainsaw 0.0619996
+clumber, clumber spaniel 0.0518193
+groom, bridegroom 0.0475653
+English springer, English springer spaniel 0.0454886
+lab coat, laboratory coat 0.461066
+stethoscope 0.0723277
+dishwasher, dish washer, dishwashing machine 0.0178001
+toilet tissue, toilet paper, bathroom tissue 0.0174922
+washer, automatic washer, washing machine 0.0172676
+miniskirt, mini 0.208051
+lab coat, laboratory coat 0.110114
+velvet 0.0746578
+pajama, pyjama, pj's, jammies 0.0597106
+dumbbell 0.0526713
+harmonica, mouth organ, harp, mouth harp 0.236498
+oboe, hautboy, hautbois 0.141937
+microphone, mike 0.110244
+flute, transverse flute 0.0504061
+wig 0.0496209
+dumbbell 0.229084
+power drill 0.161106
+plunger, plumber's helper 0.0862762
+screwdriver 0.0656312
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0622638
+maillot, tank suit 0.501159
+maillot 0.361639
+bikini, two-piece 0.0584521
+brassiere, bra, bandeau 0.0111935
+gown 0.00655872
+French horn, horn 0.284256
+sax, saxophone 0.0624525
+sunglass 0.0580481
+wig 0.0372576
+oboe, hautboy, hautbois 0.0344929
+wig 0.130491
+stethoscope 0.0988112
+face powder 0.0718878
+lipstick, lip rouge 0.0647359
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0627588
+face powder 0.179339
+tub, vat 0.141994
+sunscreen, sunblock, sun blocker 0.109606
+neck brace 0.0378617
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0347601
+jean, blue jean, denim 0.068004
+miniskirt, mini 0.0489864
+stage 0.0406972
+ski 0.0330219
+suit, suit of clothes 0.0217399
+Windsor tie 0.238618
+neck brace 0.206306
+hoopskirt, crinoline 0.0683261
+lab coat, laboratory coat 0.0622857
+sweatshirt 0.0437119
+velvet 0.221255
+hoopskirt, crinoline 0.214537
+overskirt 0.202417
+gown 0.0519962
+miniskirt, mini 0.04559
+mountain bike, all-terrain bike, off-roader 0.0946114
+unicycle, monocycle 0.0811396
+soccer ball 0.0692172
+parachute, chute 0.0601595
+binoculars, field glasses, opera glasses 0.0522737
+volleyball 0.826873
+basketball 0.0746814
+soccer ball 0.0256774
+balance beam, beam 0.0106691
+racket, racquet 0.0103094
+bonnet, poke bonnet 0.556119
+diaper, nappy, napkin 0.366128
+bath towel 0.0187928
+cradle 0.00728318
+bow tie, bow-tie, bowtie 0.00670122
+suit, suit of clothes 0.312387
+Loafer 0.130347
+military uniform 0.0721516
+jean, blue jean, denim 0.0416091
+bow tie, bow-tie, bowtie 0.0403967
+wig 0.214695
+Band Aid 0.0909974
+hair slide 0.0854752
+hair spray 0.0586423
+lipstick, lip rouge 0.0501108
+suit, suit of clothes 0.0822046
+groom, bridegroom 0.0652221
+trench coat 0.0581236
+hair spray 0.0508599
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0466319
+bathing cap, swimming cap 0.148555
+maillot 0.121231
+maillot, tank suit 0.116139
+sunglass 0.0977763
+volleyball 0.0488636
+sweatshirt 0.188239
+trench coat 0.132879
+stethoscope 0.0621013
+stole 0.0391551
+velvet 0.0273861
+miniskirt, mini 0.10233
+jean, blue jean, denim 0.0353651
+notebook, notebook computer 0.0345381
+sunglass 0.0314209
+drumstick 0.0303662
+seat belt, seatbelt 0.119529
+abaya 0.0647001
+sweatshirt 0.0641598
+umbrella 0.0335549
+cloak 0.0196858
+brassiere, bra, bandeau 0.302369
+bikini, two-piece 0.0817653
+lipstick, lip rouge 0.0710999
+stethoscope 0.0544802
+maillot 0.0467466
+sunscreen, sunblock, sun blocker 0.0792074
+ice lolly, lolly, lollipop, popsicle 0.0508837
+sunglass 0.0357523
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0264911
+Band Aid 0.0259984
+wig 0.555543
+brassiere, bra, bandeau 0.0578985
+maillot 0.0267676
+velvet 0.0236009
+jersey, T-shirt, tee shirt 0.0210095
+diaper, nappy, napkin 0.58221
+shower cap 0.0757653
+bonnet, poke bonnet 0.0477476
+crib, cot 0.0338819
+bath towel 0.0276156
+wig 0.511257
+vulture 0.0390439
+hair spray 0.026425
+sunglass 0.0251924
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0232346
+bikini, two-piece 0.501757
+brassiere, bra, bandeau 0.112504
+miniskirt, mini 0.0769786
+maillot 0.0548502
+volleyball 0.0442412
+maillot, tank suit 0.46463
+maillot 0.220105
+gown 0.068433
+miniskirt, mini 0.0658652
+velvet 0.0304944
+bikini, two-piece 0.378168
+maillot 0.201901
+sunscreen, sunblock, sun blocker 0.192955
+swimming trunks, bathing trunks 0.056012
+maillot, tank suit 0.0342971
+tub, vat 0.229765
+crib, cot 0.175866
+bathtub, bathing tub, bath, tub 0.132578
+lens cap, lens cover 0.118756
+bath towel 0.0433818
+dumbbell 0.156381
+maillot, tank suit 0.113128
+ping-pong ball 0.0792378
+maillot 0.0747535
+balance beam, beam 0.0723259
+redbone 0.129005
+vizsla, Hungarian pointer 0.119704
+lion, king of beasts, Panthera leo 0.0672429
+Irish terrier 0.0546127
+triceratops 0.0404081
+brassiere, bra, bandeau 0.379723
+lab coat, laboratory coat 0.17186
+stethoscope 0.150215
+bikini, two-piece 0.126828
+maillot 0.0307191
+hay 0.20606
+miniskirt, mini 0.0562215
+gown 0.0555895
+bikini, two-piece 0.0383347
+groom, bridegroom 0.0362147
+neck brace 0.351694
+fur coat 0.250535
+wig 0.0352253
+stole 0.0309765
+academic gown, academic robe, judge's robe 0.0233695
+miniskirt, mini 0.0727906
+Christmas stocking 0.0708409
+pajama, pyjama, pj's, jammies 0.0631706
+gown 0.0596266
+velvet 0.0575396
+bow tie, bow-tie, bowtie 0.130278
+shoji 0.100722
+spatula 0.0343286
+wooden spoon 0.0308978
+stethoscope 0.0284388
+diaper, nappy, napkin 0.0876864
+bonnet, poke bonnet 0.0416232
+hair slide 0.0314767
+brassiere, bra, bandeau 0.0307147
+maillot 0.0253979
+brassiere, bra, bandeau 0.666679
+maillot, tank suit 0.136125
+maillot 0.119062
+bikini, two-piece 0.0468853
+miniskirt, mini 0.0166872
+bow tie, bow-tie, bowtie 0.0911423
+remote control, remote 0.0417134
+mask 0.034038
+toilet tissue, toilet paper, bathroom tissue 0.0319818
+Samoyed, Samoyede 0.029282
+corn 0.0819084
+ear, spike, capitulum 0.074317
+sarong 0.0663734
+maypole 0.0448281
+flute, transverse flute 0.042928
+miniskirt, mini 0.56365
+stole 0.0636383
+velvet 0.047957
+jean, blue jean, denim 0.0227767
+cardigan 0.0225881
+miniskirt, mini 0.300069
+brassiere, bra, bandeau 0.132183
+dumbbell 0.125584
+sarong 0.0338008
+maillot 0.0284084
+wig 0.101808
+bathtub, bathing tub, bath, tub 0.0969552
+lab coat, laboratory coat 0.0670666
+face powder 0.0599276
+Band Aid 0.0430783
+microphone, mike 0.176312
+stage 0.0894707
+whistle 0.0600182
+punching bag, punch bag, punching ball, punchball 0.0436567
+hummingbird 0.0389103
+piggy bank, penny bank 0.115611
+maraca 0.0938671
+pajama, pyjama, pj's, jammies 0.0790267
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0441517
+seat belt, seatbelt 0.0362991
+oxygen mask 0.571911
+neck brace 0.0694759
+loupe, jeweler's loupe 0.0270505
+gasmask, respirator, gas helmet 0.0234585
+nipple 0.0224115
+stethoscope 0.0901894
+bonnet, poke bonnet 0.0901684
+pajama, pyjama, pj's, jammies 0.0701693
+bib 0.0674686
+abacus 0.0523039
+hay 0.529828
+ear, spike, capitulum 0.059827
+ice lolly, lolly, lollipop, popsicle 0.0340648
+corn 0.024013
+bikini, two-piece 0.0197733
+wig 0.243014
+neck brace 0.169785
+stethoscope 0.0413246
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0335509
+hair spray 0.0290057
+brassiere, bra, bandeau 0.58379
+wig 0.211329
+bikini, two-piece 0.0582876
+face powder 0.0495871
+maillot, tank suit 0.0350491
+drumstick 0.0370376
+drum, membranophone, tympan 0.0357054
+racket, racquet 0.025995
+kimono 0.0251008
+burrito 0.0237948
+Band Aid 0.0638688
+bubble 0.054791
+feather boa, boa 0.0546286
+fur coat 0.0528241
+cloak 0.0478951
+garter snake, grass snake 0.162852
+knot 0.135685
+night snake, Hypsiglena torquata 0.123041
+boa constrictor, Constrictor constrictor 0.104373
+vine snake 0.0924753
+hair slide 0.313618
+stethoscope 0.0828669
+hair spray 0.0759095
+lipstick, lip rouge 0.0584308
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0575284
+punching bag, punch bag, punching ball, punchball 0.393737
+joystick 0.0681116
+water bottle 0.020327
+mouse, computer mouse 0.0163567
+mailbag, postbag 0.0141789
+trench coat 0.603696
+miniskirt, mini 0.125888
+suit, suit of clothes 0.0462667
+pajama, pyjama, pj's, jammies 0.0277455
+fur coat 0.0228283
+maillot, tank suit 0.182206
+bikini, two-piece 0.130517
+maillot 0.115671
+hair spray 0.0736524
+brassiere, bra, bandeau 0.0649961
+maillot, tank suit 0.0689392
+wig 0.0385259
+jersey, T-shirt, tee shirt 0.0346633
+Windsor tie 0.0340723
+hoopskirt, crinoline 0.0305857
+face powder 0.150754
+sunscreen, sunblock, sun blocker 0.107259
+loupe, jeweler's loupe 0.0605349
+lab coat, laboratory coat 0.0597319
+lipstick, lip rouge 0.0374657
+shower curtain 0.727789
+chime, bell, gong 0.0226131
+shoji 0.0142209
+apron 0.0131387
+plunger, plumber's helper 0.00985117
+fur coat 0.0672656
+pajama, pyjama, pj's, jammies 0.0508109
+soccer ball 0.0369343
+Band Aid 0.0281868
+crib, cot 0.0259281
+paddle, boat paddle 0.179062
+marimba, xylophone 0.0856979
+sarong 0.0359448
+canoe 0.0259716
+kimono 0.0244878
+wig 0.753755
+face powder 0.0261022
+hair slide 0.024247
+brassiere, bra, bandeau 0.0181133
+hair spray 0.0139072
+trench coat 0.126644
+sunglass 0.0963339
+fur coat 0.0539704
+Windsor tie 0.0475373
+neck brace 0.0468881
+fur coat 0.159451
+wig 0.024555
+Band Aid 0.024401
+feather boa, boa 0.0216557
+microphone, mike 0.0212787
+brassiere, bra, bandeau 0.90984
+bikini, two-piece 0.0606749
+maillot 0.021772
+maillot, tank suit 0.00292622
+sarong 0.0027824
+sunscreen, sunblock, sun blocker 0.035736
+Band Aid 0.0319392
+bow tie, bow-tie, bowtie 0.0267608
+syringe 0.0244196
+boa constrictor, Constrictor constrictor 0.018913
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.211333
+bikini, two-piece 0.164379
+brassiere, bra, bandeau 0.121943
+bathtub, bathing tub, bath, tub 0.0713547
+drumstick 0.0440456
+lipstick, lip rouge 0.742264
+ice lolly, lolly, lollipop, popsicle 0.081699
+wig 0.0370766
+kimono 0.0217195
+syringe 0.013761
+brassiere, bra, bandeau 0.970758
+bikini, two-piece 0.0262288
+maillot 0.00279384
+maillot, tank suit 7.10905e-05
+miniskirt, mini 6.01673e-05
+bikini, two-piece 0.74446
+brassiere, bra, bandeau 0.139118
+maillot 0.075181
+maillot, tank suit 0.024212
+volleyball 0.00888129
+parachute, chute 0.386548
+volleyball 0.27569
+soccer ball 0.128665
+pole 0.0629166
+rugby ball 0.0362051
+maillot 0.198633
+bikini, two-piece 0.124054
+maillot, tank suit 0.0939839
+brassiere, bra, bandeau 0.088602
+miniskirt, mini 0.0557905
+cowboy boot 0.23953
+sarong 0.174309
+cuirass 0.116733
+breastplate, aegis, egis 0.0927641
+velvet 0.0513417
+diaper, nappy, napkin 0.690526
+bath towel 0.110058
+nipple 0.0509043
+Band Aid 0.030668
+stethoscope 0.0142812
+soccer ball 0.101176
+pinwheel 0.0839277
+piggy bank, penny bank 0.0527472
+plastic bag 0.0503955
+bib 0.0355836
+maillot 0.523115
+maillot, tank suit 0.150185
+bikini, two-piece 0.0495027
+brassiere, bra, bandeau 0.0449797
+dumbbell 0.0440704
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.227116
+dumbbell 0.0672599
+hair spray 0.0637765
+binoculars, field glasses, opera glasses 0.0624526
+sunglass 0.0492361
+military uniform 0.126865
+bathing cap, swimming cap 0.113769
+Italian greyhound 0.0634419
+sunscreen, sunblock, sun blocker 0.0588703
+shower cap 0.0415113
+maillot, tank suit 0.415185
+maillot 0.208358
+brassiere, bra, bandeau 0.129819
+bikini, two-piece 0.0838855
+gown 0.0208827
+power drill 0.211846
+dumbbell 0.110575
+stretcher 0.107278
+cowboy boot 0.091783
+potter's wheel 0.0747822
+harmonica, mouth organ, harp, mouth harp 0.815597
+flute, transverse flute 0.0508683
+microphone, mike 0.0372905
+cornet, horn, trumpet, trump 0.0184271
+whistle 0.0173027
+barbershop 0.373865
+nipple 0.0388112
+sunscreen, sunblock, sun blocker 0.0375707
+bubble 0.0343549
+tarantula 0.0303336
+abaya 0.241813
+sunglasses, dark glasses, shades 0.111115
+wig 0.106127
+cloak 0.0856641
+sweatshirt 0.0660266
+vestment 0.228273
+wooden spoon 0.13298
+bow tie, bow-tie, bowtie 0.0866321
+cowboy hat, ten-gallon hat 0.0523091
+mask 0.0467092
+maillot 0.216671
+balance beam, beam 0.196094
+brassiere, bra, bandeau 0.0995011
+maillot, tank suit 0.0518584
+dumbbell 0.0482538
+maillot, tank suit 0.355147
+maillot 0.124298
+brassiere, bra, bandeau 0.0878487
+miniskirt, mini 0.0760401
+overskirt 0.0435111
+overskirt 0.164677
+hoopskirt, crinoline 0.0950596
+sarong 0.0904736
+maillot, tank suit 0.0761086
+cowboy boot 0.0414616
+brassiere, bra, bandeau 0.108598
+seat belt, seatbelt 0.0483128
+hair spray 0.0416891
+bikini, two-piece 0.0414963
+lipstick, lip rouge 0.0401213
+cardigan 0.0772295
+pinwheel 0.0420991
+sweatshirt 0.0341995
+soccer ball 0.0322777
+jersey, T-shirt, tee shirt 0.0310673
+suit, suit of clothes 0.484675
+bow tie, bow-tie, bowtie 0.0698316
+Loafer 0.0460046
+trench coat 0.0421277
+Windsor tie 0.038262
+pajama, pyjama, pj's, jammies 0.095274
+stethoscope 0.0579432
+sarong 0.0356459
+stole 0.0347745
+apron 0.0263016
+hoopskirt, crinoline 0.254001
+maillot, tank suit 0.091424
+overskirt 0.0792758
+neck brace 0.0515376
+dumbbell 0.0397062
+gown 0.488618
+maillot, tank suit 0.147025
+maillot 0.0957834
+sarong 0.0884034
+overskirt 0.0417024
+bath towel 0.239629
+Band Aid 0.123614
+bathing cap, swimming cap 0.122132
+sunscreen, sunblock, sun blocker 0.11571
+lipstick, lip rouge 0.0481864
+cardigan 0.362514
+hay 0.113358
+stole 0.0345491
+overskirt 0.0312955
+groom, bridegroom 0.0303007
+academic gown, academic robe, judge's robe 0.14905
+grand piano, grand 0.115793
+mortarboard 0.0876944
+bow 0.0793381
+abaya 0.0370706
+Windsor tie 0.540178
+suit, suit of clothes 0.369581
+lab coat, laboratory coat 0.0687327
+stethoscope 0.00445056
+cleaver, meat cleaver, chopper 0.00249232
+crib, cot 0.0769877
+ice lolly, lolly, lollipop, popsicle 0.0638915
+bath towel 0.059803
+diaper, nappy, napkin 0.0551328
+Band Aid 0.051239
+mortarboard 0.51339
+academic gown, academic robe, judge's robe 0.374199
+umbrella 0.037208
+bathing cap, swimming cap 0.0159946
+sombrero 0.010873
+potter's wheel 0.074997
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0212265
+wig 0.0206919
+neck brace 0.0188111
+chimpanzee, chimp, Pan troglodytes 0.0167891
+groom, bridegroom 0.512834
+suit, suit of clothes 0.405596
+notebook, notebook computer 0.0266196
+bow tie, bow-tie, bowtie 0.0102981
+gown 0.00458864
+cowboy hat, ten-gallon hat 0.0292725
+stethoscope 0.0267674
+syringe 0.0232502
+sunglass 0.0176248
+ice lolly, lolly, lollipop, popsicle 0.0155842
+sunglass 0.273424
+sunglasses, dark glasses, shades 0.271775
+bow tie, bow-tie, bowtie 0.137449
+bonnet, poke bonnet 0.0547919
+Windsor tie 0.0273263
+Windsor tie 0.115964
+oboe, hautboy, hautbois 0.0791343
+neck brace 0.0639076
+lab coat, laboratory coat 0.0506201
+bassoon 0.0474477
+drumstick 0.124465
+stethoscope 0.09811
+academic gown, academic robe, judge's robe 0.0634506
+bonnet, poke bonnet 0.0386253
+neck brace 0.0329412
+diaper, nappy, napkin 0.373755
+bath towel 0.264458
+bathtub, bathing tub, bath, tub 0.0508781
+bib 0.0464778
+tub, vat 0.0410378
+maillot 0.509087
+maillot, tank suit 0.270511
+bikini, two-piece 0.123232
+brassiere, bra, bandeau 0.0266592
+tub, vat 0.0175813
+wig 0.713838
+hair slide 0.099308
+hair spray 0.0238977
+fur coat 0.0225744
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0206047
+neck brace 0.0713044
+ping-pong ball 0.0610208
+Band Aid 0.0607464
+sunscreen, sunblock, sun blocker 0.0361237
+mixing bowl 0.0259945
+bikini, two-piece 0.209404
+paddle, boat paddle 0.176234
+maillot 0.153831
+maillot, tank suit 0.0858815
+seashore, coast, seacoast, sea-coast 0.0350798
+pajama, pyjama, pj's, jammies 0.349741
+marimba, xylophone 0.140296
+kimono 0.102987
+apron 0.0373867
+stethoscope 0.0295158
+sunglass 0.100405
+sunglasses, dark glasses, shades 0.0927861
+beer glass 0.0789832
+bathing cap, swimming cap 0.0684015
+bikini, two-piece 0.0682127
+jean, blue jean, denim 0.0606785
+military uniform 0.0439687
+suit, suit of clothes 0.030115
+sweatshirt 0.0275609
+stole 0.0268504
+lab coat, laboratory coat 0.50708
+syringe 0.0415981
+feather boa, boa 0.0390585
+trench coat 0.0333607
+bow tie, bow-tie, bowtie 0.0293686
+snorkel 0.156761
+gasmask, respirator, gas helmet 0.144312
+oxygen mask 0.12915
+knee pad 0.110907
+neck brace 0.106418
+miniskirt, mini 0.105625
+maillot, tank suit 0.09625
+maillot 0.0844995
+jean, blue jean, denim 0.0499762
+tub, vat 0.0463354
+mouse, computer mouse 0.121465
+tub, vat 0.112729
+bathtub, bathing tub, bath, tub 0.106182
+maillot 0.0899399
+soccer ball 0.0591333
+bath towel 0.945051
+bonnet, poke bonnet 0.029768
+wooden spoon 0.00569756
+nipple 0.00194047
+sleeping bag 0.00144978
+maillot, tank suit 0.191945
+maillot 0.143133
+bow tie, bow-tie, bowtie 0.0316699
+brassiere, bra, bandeau 0.0310415
+miniskirt, mini 0.0280818
+bikini, two-piece 0.382679
+fountain 0.334185
+swimming trunks, bathing trunks 0.216122
+maillot, tank suit 0.0258259
+bathing cap, swimming cap 0.0137436
+cleaver, meat cleaver, chopper 0.125718
+dumbbell 0.0931864
+syringe 0.0916054
+lighter, light, igniter, ignitor 0.0504376
+drumstick 0.0386436
+binoculars, field glasses, opera glasses 0.148842
+sunscreen, sunblock, sun blocker 0.0887938
+sunglass 0.0693835
+rifle 0.0629995
+jersey, T-shirt, tee shirt 0.0253083
+gown 0.385257
+hoopskirt, crinoline 0.304961
+overskirt 0.208656
+groom, bridegroom 0.0196982
+pajama, pyjama, pj's, jammies 0.0123193
+maillot 0.194748
+maillot, tank suit 0.143699
+dumbbell 0.0636694
+miniskirt, mini 0.0623013
+bikini, two-piece 0.0497145
+Windsor tie 0.152585
+cleaver, meat cleaver, chopper 0.0818716
+pick, plectrum, plectron 0.0708305
+hand-held computer, hand-held microcomputer 0.061111
+Petri dish 0.0315726
+wig 0.199219
+shower cap 0.144612
+sunscreen, sunblock, sun blocker 0.0944367
+Band Aid 0.0703858
+bathtub, bathing tub, bath, tub 0.0502925
+brassiere, bra, bandeau 0.0991338
+sunscreen, sunblock, sun blocker 0.0785823
+hair spray 0.0564577
+bikini, two-piece 0.0492109
+bathing cap, swimming cap 0.0458421
+overskirt 0.436585
+cloak 0.169064
+kimono 0.115243
+vestment 0.100971
+trench coat 0.0268004
+Italian greyhound 0.173494
+Mexican hairless 0.1045
+suit, suit of clothes 0.0720357
+Chihuahua 0.0624304
+Weimaraner 0.0467234
+ski 0.0830466
+bicycle-built-for-two, tandem bicycle, tandem 0.0741111
+crutch 0.0492711
+unicycle, monocycle 0.042707
+mountain bike, all-terrain bike, off-roader 0.0401545
+ice lolly, lolly, lollipop, popsicle 0.324637
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0678963
+sunscreen, sunblock, sun blocker 0.0612025
+hair spray 0.0434615
+Band Aid 0.034284
+notebook, notebook computer 0.282468
+steel drum 0.0758717
+laptop, laptop computer 0.0415125
+drumstick 0.0356584
+grand piano, grand 0.0292594
+bikini, two-piece 0.271178
+swimming trunks, bathing trunks 0.116354
+sarong 0.0992072
+maillot 0.0873289
+maillot, tank suit 0.070118
+miniskirt, mini 0.301592
+brassiere, bra, bandeau 0.151716
+maillot 0.114523
+maillot, tank suit 0.0872251
+gown 0.0613407
+bikini, two-piece 0.130344
+maillot 0.119133
+swimming trunks, bathing trunks 0.0965137
+sarong 0.0925566
+maillot, tank suit 0.0883401
+knot 0.121882
+fur coat 0.0685902
+sarong 0.0458379
+ear, spike, capitulum 0.0454977
+butcher shop, meat market 0.0371681
+Band Aid 0.12402
+bathing cap, swimming cap 0.0970402
+shower cap 0.0898912
+sunscreen, sunblock, sun blocker 0.0667979
+wig 0.0651602
+feather boa, boa 0.188004
+wig 0.133222
+fur coat 0.106234
+bubble 0.033837
+bow tie, bow-tie, bowtie 0.0265515
+basketball 0.288884
+maillot, tank suit 0.278757
+swimming trunks, bathing trunks 0.129479
+maillot 0.0630164
+sarong 0.0434772
+suit, suit of clothes 0.126049
+abaya 0.101977
+bow tie, bow-tie, bowtie 0.0397924
+kimono 0.0331923
+traffic light, traffic signal, stoplight 0.0323218
+Band Aid 0.172338
+pinwheel 0.145606
+ice lolly, lolly, lollipop, popsicle 0.108839
+hair slide 0.100461
+sunscreen, sunblock, sun blocker 0.0868874
+suit, suit of clothes 0.133352
+bassoon 0.130382
+drumstick 0.120977
+flute, transverse flute 0.105647
+trombone 0.0568138
+lab coat, laboratory coat 0.654514
+croquet ball 0.0362777
+racket, racquet 0.0222197
+jersey, T-shirt, tee shirt 0.0216551
+groom, bridegroom 0.0166062
+brassiere, bra, bandeau 0.243422
+maillot 0.188861
+maillot, tank suit 0.186106
+miniskirt, mini 0.061348
+bikini, two-piece 0.0591187
+maillot, tank suit 0.202999
+dumbbell 0.193262
+maillot 0.130414
+miniskirt, mini 0.0649051
+brassiere, bra, bandeau 0.0631196
+window shade 0.0912262
+groom, bridegroom 0.0858027
+kimono 0.0800994
+harp 0.034269
+miniskirt, mini 0.0282852
+stage 0.105516
+maraca 0.0455538
+groom, bridegroom 0.0442856
+hatchet 0.0399538
+basketball 0.0360094
+maraca 0.183817
+nipple 0.0781887
+Band Aid 0.0489495
+neck brace 0.0461675
+plunger, plumber's helper 0.032874
+ice lolly, lolly, lollipop, popsicle 0.310305
+stole 0.0921668
+bubble 0.0855222
+hair slide 0.067422
+groom, bridegroom 0.0488915
+nipple 0.264086
+bib 0.108885
+ice lolly, lolly, lollipop, popsicle 0.0767462
+bonnet, poke bonnet 0.0597482
+crib, cot 0.0445814
+drumstick 0.228514
+academic gown, academic robe, judge's robe 0.115663
+neck brace 0.074609
+brassiere, bra, bandeau 0.0336242
+crutch 0.0323857
+ballpoint, ballpoint pen, ballpen, Biro 0.251844
+stethoscope 0.0913456
+notebook, notebook computer 0.0712671
+lipstick, lip rouge 0.0703601
+maillot 0.0521437
+diaper, nappy, napkin 0.854992
+bonnet, poke bonnet 0.0201303
+brassiere, bra, bandeau 0.011252
+crib, cot 0.00888412
+soccer ball 0.00629298
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0816573
+microphone, mike 0.0742876
+wig 0.060905
+fur coat 0.047854
+hair spray 0.0273831
+neck brace 0.73739
+sunscreen, sunblock, sun blocker 0.0444374
+face powder 0.0258842
+nipple 0.0201082
+Petri dish 0.0159109
+bikini, two-piece 0.245597
+pole 0.119233
+maillot 0.106468
+mask 0.0470516
+gasmask, respirator, gas helmet 0.0418857
+balance beam, beam 0.447616
+horizontal bar, high bar 0.199741
+parallel bars, bars 0.101503
+punching bag, punch bag, punching ball, punchball 0.0784089
+dumbbell 0.0233585
+puffer, pufferfish, blowfish, globefish 0.355136
+Siamese cat, Siamese 0.0513384
+carousel, carrousel, merry-go-round, roundabout, whirligig 0.0454179
+mask 0.0304036
+feather boa, boa 0.0291951
+hair spray 0.0919884
+pick, plectrum, plectron 0.066425
+panpipe, pandean pipe, syrinx 0.0479733
+ski mask 0.0350226
+bathing cap, swimming cap 0.0324156
+face powder 0.423584
+sunscreen, sunblock, sun blocker 0.179365
+loupe, jeweler's loupe 0.144057
+neck brace 0.0640964
+Band Aid 0.0609541
+Windsor tie 0.535524
+academic gown, academic robe, judge's robe 0.257989
+suit, suit of clothes 0.0677297
+mortarboard 0.0466191
+vestment 0.00779272
+lipstick, lip rouge 0.120944
+hair spray 0.102422
+Band Aid 0.0680594
+whistle 0.0591359
+ice lolly, lolly, lollipop, popsicle 0.0499109
+lipstick, lip rouge 0.516982
+face powder 0.125866
+Band Aid 0.0450577
+sunscreen, sunblock, sun blocker 0.0336166
+hair spray 0.0313302
+brassiere, bra, bandeau 0.189299
+bathtub, bathing tub, bath, tub 0.113139
+hair spray 0.0777226
+bikini, two-piece 0.0708938
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0579643
+bow tie, bow-tie, bowtie 0.100553
+lipstick, lip rouge 0.0773468
+feather boa, boa 0.0753914
+Band Aid 0.0625057
+seat belt, seatbelt 0.0530393
+bikini, two-piece 0.417463
+brassiere, bra, bandeau 0.233375
+maillot 0.0747532
+swimming trunks, bathing trunks 0.045781
+maillot, tank suit 0.0429417
+sunscreen, sunblock, sun blocker 0.0911203
+lipstick, lip rouge 0.0616401
+harmonica, mouth organ, harp, mouth harp 0.0524358
+drumstick 0.0442457
+ice lolly, lolly, lollipop, popsicle 0.040173
+barracouta, snoek 0.184667
+sombrero 0.0305366
+rock python, rock snake, Python sebae 0.0286038
+night snake, Hypsiglena torquata 0.0276586
+iron, smoothing iron 0.0219038
+stethoscope 0.0866172
+diaper, nappy, napkin 0.0761848
+notebook, notebook computer 0.055348
+sunscreen, sunblock, sun blocker 0.0331638
+bucket, pail 0.0237017
+hoopskirt, crinoline 0.189182
+overskirt 0.0736214
+trench coat 0.0610354
+groom, bridegroom 0.0529792
+Great Dane 0.0505954
+cardigan 0.182691
+stole 0.0712331
+bonnet, poke bonnet 0.0523135
+kimono 0.0395381
+gown 0.0379346
+shower cap 0.0971884
+sunscreen, sunblock, sun blocker 0.0646256
+stethoscope 0.0598565
+Band Aid 0.0342901
+trench coat 0.0341324
+fur coat 0.50485
+lipstick, lip rouge 0.284551
+feather boa, boa 0.0631819
+wig 0.0310107
+bikini, two-piece 0.0258627
+Windsor tie 0.298934
+Band Aid 0.0894686
+maillot, tank suit 0.0609038
+sunscreen, sunblock, sun blocker 0.0500001
+sarong 0.0464252
+stethoscope 0.377865
+neck brace 0.142014
+brassiere, bra, bandeau 0.0836703
+oxygen mask 0.0741611
+seat belt, seatbelt 0.0497127
+maillot, tank suit 0.459797
+hand-held computer, hand-held microcomputer 0.133441
+neck brace 0.0449348
+seat belt, seatbelt 0.0408768
+brassiere, bra, bandeau 0.0329437
+gown 0.68235
+hoopskirt, crinoline 0.18824
+groom, bridegroom 0.0709991
+overskirt 0.0509744
+trench coat 0.000775759
+drumstick 0.077272
+stethoscope 0.0437349
+wooden spoon 0.0323727
+spatula 0.0302591
+cleaver, meat cleaver, chopper 0.025599
+nipple 0.223439
+muzzle 0.0803649
+ocarina, sweet potato 0.0755474
+redbone 0.0467948
+horizontal bar, high bar 0.0407765
+lab coat, laboratory coat 0.330501
+sweatshirt 0.281052
+Windsor tie 0.0852699
+trench coat 0.0310612
+stethoscope 0.0242176
+shower cap 0.0746148
+torch 0.0426994
+sweatshirt 0.0394685
+ballplayer, baseball player 0.0325342
+cowboy hat, ten-gallon hat 0.0298497
+brassiere, bra, bandeau 0.607084
+bikini, two-piece 0.215417
+maillot, tank suit 0.0639113
+maillot 0.0454682
+miniskirt, mini 0.00882269
+brassiere, bra, bandeau 0.110042
+seat belt, seatbelt 0.0991938
+Band Aid 0.0710888
+neck brace 0.0520255
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0451466
+harmonica, mouth organ, harp, mouth harp 0.195628
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.108964
+lipstick, lip rouge 0.105309
+loupe, jeweler's loupe 0.0347299
+syringe 0.0311185
+wig 0.38245
+hair spray 0.0590309
+stole 0.0516078
+fur coat 0.0470554
+cloak 0.0450269
+kimono 0.109988
+pajama, pyjama, pj's, jammies 0.0947269
+marimba, xylophone 0.0350278
+stethoscope 0.0310663
+candle, taper, wax light 0.0230009
+bikini, two-piece 0.118162
+lipstick, lip rouge 0.0957004
+sunscreen, sunblock, sun blocker 0.0665658
+dumbbell 0.0588737
+lotion 0.0571296
+Windsor tie 0.42671
+academic gown, academic robe, judge's robe 0.325544
+prison, prison house 0.0457232
+oboe, hautboy, hautbois 0.0375689
+neck brace 0.0346015
+neck brace 0.203921
+lab coat, laboratory coat 0.131386
+oxygen mask 0.0589787
+stethoscope 0.058753
+bath towel 0.0375116
+neck brace 0.648172
+Windsor tie 0.0466289
+jersey, T-shirt, tee shirt 0.0405189
+komondor 0.0263595
+sweatshirt 0.0179856
+sarong 0.0916956
+sandbar, sand bar 0.0738724
+breakwater, groin, groyne, mole, bulwark, seawall, jetty 0.0475664
+coho, cohoe, coho salmon, blue jack, silver salmon, Oncorhynchus kisutch 0.0431369
+shovel 0.0394931
+bath towel 0.223132
+bathing cap, swimming cap 0.175771
+wig 0.155197
+cowboy hat, ten-gallon hat 0.0650192
+shower cap 0.0548397
+tricycle, trike, velocipede 0.290608
+ice lolly, lolly, lollipop, popsicle 0.0784916
+maraca 0.0568955
+wooden spoon 0.0469526
+stethoscope 0.0452755
+bow 0.168293
+sunglass 0.054837
+barracouta, snoek 0.0358518
+binoculars, field glasses, opera glasses 0.0333542
+cloak 0.0331223
+brassiere, bra, bandeau 0.247773
+diaper, nappy, napkin 0.154102
+neck brace 0.0442877
+American Staffordshire terrier, Staffordshire terrier, American pit bull terrier, pit bull terrier 0.0334439
+boxer 0.0269164
+sleeping bag 0.209643
+cloak 0.121383
+binoculars, field glasses, opera glasses 0.0491611
+sweatshirt 0.0411987
+mountain tent 0.0384703
+oboe, hautboy, hautbois 0.0960515
+pajama, pyjama, pj's, jammies 0.0621583
+Windsor tie 0.044751
+oxygen mask 0.0389448
+steel drum 0.0297642
+diaper, nappy, napkin 0.103938
+notebook, notebook computer 0.0618828
+ice lolly, lolly, lollipop, popsicle 0.0616169
+stethoscope 0.0530445
+candle, taper, wax light 0.0503814
+seat belt, seatbelt 0.300944
+sweatshirt 0.203435
+Band Aid 0.133532
+bath towel 0.0684728
+stole 0.0299828
+lab coat, laboratory coat 0.390685
+neck brace 0.0954193
+sweatshirt 0.0454999
+cradle 0.0257248
+plastic bag 0.0227931
+miniskirt, mini 0.242645
+brassiere, bra, bandeau 0.140029
+dumbbell 0.086164
+knee pad 0.0809424
+maillot 0.0777507
+suit, suit of clothes 0.308724
+Windsor tie 0.233474
+bow tie, bow-tie, bowtie 0.0461637
+cleaver, meat cleaver, chopper 0.0329794
+groom, bridegroom 0.0211489
+seat belt, seatbelt 0.226759
+suit, suit of clothes 0.161155
+hand-held computer, hand-held microcomputer 0.0570307
+Windsor tie 0.0501327
+brassiere, bra, bandeau 0.0483899
+academic gown, academic robe, judge's robe 0.288909
+wig 0.20442
+mortarboard 0.127278
+cloak 0.0956612
+abaya 0.0836684
+maillot, tank suit 0.592467
+maillot 0.135473
+dumbbell 0.0595501
+brassiere, bra, bandeau 0.044136
+gown 0.030735
+gown 0.379756
+velvet 0.18887
+maillot 0.128956
+maillot, tank suit 0.105401
+miniskirt, mini 0.0568296
+bonnet, poke bonnet 0.191975
+umbrella 0.0499061
+sunglass 0.0484743
+bikini, two-piece 0.0473299
+shower curtain 0.0466949
+sleeping bag 0.0672963
+bobsled, bobsleigh, bob 0.0620689
+crutch 0.0301318
+plunger, plumber's helper 0.026538
+balance beam, beam 0.0231413
+neck brace 0.43212
+oxygen mask 0.135156
+gasmask, respirator, gas helmet 0.117308
+snorkel 0.0336945
+knee pad 0.0251721
+harmonica, mouth organ, harp, mouth harp 0.222916
+lipstick, lip rouge 0.180452
+flute, transverse flute 0.111347
+whistle 0.105396
+oboe, hautboy, hautbois 0.0661566
+grand piano, grand 0.0755645
+suit, suit of clothes 0.0412365
+groom, bridegroom 0.0375591
+harmonica, mouth organ, harp, mouth harp 0.0293833
+marimba, xylophone 0.0291067
+rule, ruler 0.259035
+sunscreen, sunblock, sun blocker 0.18689
+carton 0.0713953
+diaper, nappy, napkin 0.0502603
+bikini, two-piece 0.0391962
+fur coat 0.688452
+mortarboard 0.0468553
+bow tie, bow-tie, bowtie 0.0243055
+Blenheim spaniel 0.0225738
+neck brace 0.0199896
+Windsor tie 0.150313
+lab coat, laboratory coat 0.108705
+bow tie, bow-tie, bowtie 0.0725111
+suit, suit of clothes 0.0676285
+bolo tie, bolo, bola tie, bola 0.0539803
+Band Aid 0.11342
+seat belt, seatbelt 0.0911319
+neck brace 0.0584142
+suit, suit of clothes 0.0423416
+hair spray 0.0421448
+ice lolly, lolly, lollipop, popsicle 0.475013
+lipstick, lip rouge 0.0489207
+Band Aid 0.0267682
+whistle 0.026449
+sunscreen, sunblock, sun blocker 0.0250826
+groom, bridegroom 0.204192
+sunglass 0.0392119
+ice lolly, lolly, lollipop, popsicle 0.0353344
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0334863
+whistle 0.0333022
+pajama, pyjama, pj's, jammies 0.0661548
+stethoscope 0.0575331
+piggy bank, penny bank 0.0433626
+spatula 0.0342626
+wooden spoon 0.0326331
+suit, suit of clothes 0.118474
+hair spray 0.0464723
+jean, blue jean, denim 0.0428129
+trench coat 0.0281918
+neck brace 0.0272304
+microphone, mike 0.174924
+sax, saxophone 0.145885
+abaya 0.0636492
+bassoon 0.0588518
+harmonica, mouth organ, harp, mouth harp 0.0572169
+bow tie, bow-tie, bowtie 0.127826
+maraca 0.0985569
+suit, suit of clothes 0.0651233
+mortarboard 0.0569741
+feather boa, boa 0.0500311
+bathtub, bathing tub, bath, tub 0.381285
+tub, vat 0.226703
+maraca 0.0282333
+harmonica, mouth organ, harp, mouth harp 0.0263233
+diaper, nappy, napkin 0.0231706
+jean, blue jean, denim 0.065016
+swimming trunks, bathing trunks 0.0436517
+sunglass 0.0423614
+miniskirt, mini 0.0389404
+sarong 0.0311389
+brassiere, bra, bandeau 0.66112
+bikini, two-piece 0.087965
+wig 0.0320848
+maillot 0.0299536
+maillot, tank suit 0.0220355
+groom, bridegroom 0.67746
+gown 0.0800062
+ice cream, icecream 0.0250642
+cauliflower 0.0226447
+brassiere, bra, bandeau 0.0124781
+jersey, T-shirt, tee shirt 0.164308
+miniskirt, mini 0.0915705
+apron 0.0906689
+maillot 0.0875602
+dumbbell 0.0798501
+tub, vat 0.117892
+bathtub, bathing tub, bath, tub 0.108708
+neck brace 0.0312087
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0216824
+notebook, notebook computer 0.0204108
+Band Aid 0.242436
+bath towel 0.144202
+lipstick, lip rouge 0.0732098
+face powder 0.0619678
+lens cap, lens cover 0.0530162
+gown 0.10069
+racket, racquet 0.0588697
+kimono 0.0584514
+sarong 0.0475689
+maillot, tank suit 0.0458578
+maillot, tank suit 0.49321
+maillot 0.342234
+brassiere, bra, bandeau 0.0294536
+dumbbell 0.0224003
+balance beam, beam 0.0202558
+cornet, horn, trumpet, trump 0.168722
+microphone, mike 0.0707552
+flute, transverse flute 0.0653531
+bow tie, bow-tie, bowtie 0.0518175
+harmonica, mouth organ, harp, mouth harp 0.0389495
+pole 0.301286
+whistle 0.078593
+flute, transverse flute 0.0620893
+harmonica, mouth organ, harp, mouth harp 0.0428397
+drumstick 0.0373184
+bow tie, bow-tie, bowtie 0.0478133
+military uniform 0.0476324
+groom, bridegroom 0.032888
+stethoscope 0.0317015
+suit, suit of clothes 0.0281474
+bonnet, poke bonnet 0.342634
+bath towel 0.342369
+nipple 0.0528659
+diaper, nappy, napkin 0.0315279
+Band Aid 0.0300716
+bathing cap, swimming cap 0.180698
+bikini, two-piece 0.163473
+brassiere, bra, bandeau 0.100653
+maillot 0.0511161
+maillot, tank suit 0.0398333
+velvet 0.152763
+stole 0.113985
+wool, woolen, woollen 0.097334
+overskirt 0.0957932
+academic gown, academic robe, judge's robe 0.0504681
+dumbbell 0.165128
+maillot 0.138173
+velvet 0.120819
+miniskirt, mini 0.110862
+maillot, tank suit 0.044398
+Band Aid 0.0360217
+academic gown, academic robe, judge's robe 0.0352221
+sweatshirt 0.0312447
+hair spray 0.0291143
+stethoscope 0.0288876
+Scotch terrier, Scottish terrier, Scottie 0.093049
+miniature schnauzer 0.0737678
+affenpinscher, monkey pinscher, monkey dog 0.071681
+toy poodle 0.0626639
+bubble 0.0314828
+stole 0.214202
+fur coat 0.0879686
+tarantula 0.0488755
+miniskirt, mini 0.0298166
+Windsor tie 0.0253284
+wig 0.610137
+hair spray 0.0707623
+feather boa, boa 0.0682155
+neck brace 0.02096
+bubble 0.0192963
+jeep, landrover 0.593675
+pickup, pickup truck 0.0875865
+tow truck, tow car, wrecker 0.0532771
+tractor 0.0348352
+car wheel 0.0263466
+banjo 0.193115
+cello, violoncello 0.113724
+swing 0.0990443
+accordion, piano accordion, squeeze box 0.0757594
+violin, fiddle 0.0609147
+notebook, notebook computer 0.0489511
+Band Aid 0.0455022
+pick, plectrum, plectron 0.0443313
+sunscreen, sunblock, sun blocker 0.0415085
+sweatshirt 0.0311771
+stethoscope 0.0735254
+lab coat, laboratory coat 0.0651536
+hair spray 0.0619931
+pill bottle 0.0357767
+espresso maker 0.034267
+chain saw, chainsaw 0.303718
+lumbermill, sawmill 0.0607426
+ballplayer, baseball player 0.0213518
+hatchet 0.0205651
+military uniform 0.0131264
+maillot 0.255649
+maillot, tank suit 0.234407
+miniskirt, mini 0.127733
+brassiere, bra, bandeau 0.0983911
+gown 0.0739997
+lab coat, laboratory coat 0.201506
+Windsor tie 0.0450768
+trench coat 0.0304827
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0290487
+sunglasses, dark glasses, shades 0.0274513
+velvet 0.137011
+maillot, tank suit 0.120242
+gown 0.114628
+maillot 0.113432
+miniskirt, mini 0.100515
+nipple 0.296913
+bath towel 0.0717868
+harmonica, mouth organ, harp, mouth harp 0.0650879
+Band Aid 0.0463334
+lens cap, lens cover 0.039856
+sunscreen, sunblock, sun blocker 0.0764132
+wooden spoon 0.0674962
+shower cap 0.0660252
+Band Aid 0.0617901
+spatula 0.0493165
+hair spray 0.134491
+wig 0.0611582
+ice lolly, lolly, lollipop, popsicle 0.0380311
+whistle 0.0349517
+dumbbell 0.0335792
+horizontal bar, high bar 0.200266
+cello, violoncello 0.14085
+volleyball 0.121612
+trombone 0.0801275
+parallel bars, bars 0.0674205
+miniskirt, mini 0.187431
+jean, blue jean, denim 0.143676
+park bench 0.055848
+maillot 0.0221421
+maillot, tank suit 0.0208442
+sweatshirt 0.157579
+lab coat, laboratory coat 0.0722973
+ballplayer, baseball player 0.069774
+jersey, T-shirt, tee shirt 0.0684024
+Windsor tie 0.0364601
+brassiere, bra, bandeau 0.421938
+maillot, tank suit 0.0601193
+dumbbell 0.0544532
+bikini, two-piece 0.041996
+miniskirt, mini 0.0339248
+Windsor tie 0.256514
+lab coat, laboratory coat 0.233315
+suit, suit of clothes 0.185598
+bow tie, bow-tie, bowtie 0.0410097
+sunscreen, sunblock, sun blocker 0.0219972
+gasmask, respirator, gas helmet 0.0504664
+balloon 0.0303421
+knee pad 0.0259091
+sandal 0.0257852
+red wine 0.0247598
+bikini, two-piece 0.327968
+maillot 0.268485
+maillot, tank suit 0.260907
+sarong 0.0434427
+paddle, boat paddle 0.0258297
+dumbbell 0.0911269
+maillot 0.0907281
+ping-pong ball 0.0623759
+maillot, tank suit 0.0617589
+miniskirt, mini 0.0559485
+feather boa, boa 0.153214
+gown 0.102784
+overskirt 0.0636353
+sarong 0.0544472
+hoopskirt, crinoline 0.04837
+sarong 0.11278
+conch 0.0824911
+swimming trunks, bathing trunks 0.0629301
+bikini, two-piece 0.0533041
+maillot 0.0433817
+bubble 0.556153
+rugby ball 0.115806
+baseball 0.0857105
+volleyball 0.0280503
+soccer ball 0.0273502
+beer glass 0.137813
+sunglasses, dark glasses, shades 0.0549525
+jersey, T-shirt, tee shirt 0.0506237
+neck brace 0.0425191
+sunglass 0.0249316
+cowboy boot 0.0485293
+Sussex spaniel 0.0388606
+jersey, T-shirt, tee shirt 0.0284295
+vizsla, Hungarian pointer 0.0266724
+potter's wheel 0.0249031
+shoji 0.219536
+bow tie, bow-tie, bowtie 0.155593
+suit, suit of clothes 0.0972302
+Band Aid 0.0644172
+cleaver, meat cleaver, chopper 0.0327766
+Welsh springer spaniel 0.263037
+basset, basset hound 0.166598
+Brittany spaniel 0.0707631
+Blenheim spaniel 0.0294796
+gown 0.0253538
+sunglasses, dark glasses, shades 0.403796
+sunglass 0.184719
+bow tie, bow-tie, bowtie 0.0855789
+stethoscope 0.0322554
+power drill 0.0186189
+oboe, hautboy, hautbois 0.672486
+Windsor tie 0.104845
+bassoon 0.0262041
+whistle 0.021866
+sax, saxophone 0.017971
+capuchin, ringtail, Cebus capucinus 0.10383
+seat belt, seatbelt 0.0656184
+bow tie, bow-tie, bowtie 0.0438807
+Band Aid 0.0372744
+lab coat, laboratory coat 0.0360461
+sunglass 0.0796881
+sunscreen, sunblock, sun blocker 0.058286
+sunglasses, dark glasses, shades 0.0578995
+lab coat, laboratory coat 0.0564448
+suit, suit of clothes 0.0418104
+bikini, two-piece 0.0724515
+sunglass 0.0405837
+brassiere, bra, bandeau 0.0360027
+binoculars, field glasses, opera glasses 0.0308012
+miniskirt, mini 0.0303982
+stethoscope 0.0830007
+cardigan 0.0761734
+screwdriver 0.0657873
+spatula 0.0621023
+trench coat 0.0343324
+racket, racquet 0.322559
+soccer ball 0.114988
+tennis ball 0.0893817
+rugby ball 0.067647
+basketball 0.0403972
+hair spray 0.126333
+sarong 0.0568664
+maraca 0.0482417
+ocarina, sweet potato 0.0427001
+plunger, plumber's helper 0.0413523
+seat belt, seatbelt 0.416243
+bonnet, poke bonnet 0.0692839
+wig 0.0597319
+stole 0.0307034
+lipstick, lip rouge 0.0299996
+accordion, piano accordion, squeeze box 0.0616564
+shopping cart 0.0279491
+binoculars, field glasses, opera glasses 0.0222866
+laptop, laptop computer 0.0210058
+abacus 0.0195683
+lipstick, lip rouge 0.255263
+whistle 0.0890491
+ice lolly, lolly, lollipop, popsicle 0.0744862
+oboe, hautboy, hautbois 0.0502246
+microphone, mike 0.0443607
+sunscreen, sunblock, sun blocker 0.330083
+neck brace 0.285823
+face powder 0.0766351
+Band Aid 0.064627
+hair spray 0.0385371
+greenhouse, nursery, glasshouse 0.0250045
+hoopskirt, crinoline 0.0238692
+groom, bridegroom 0.0230846
+cleaver, meat cleaver, chopper 0.0221815
+swing 0.0218274
+wig 0.832344
+hair spray 0.0313974
+neck brace 0.0113636
+sunglass 0.0110894
+fur coat 0.0100114
+sunscreen, sunblock, sun blocker 0.215904
+panpipe, pandean pipe, syrinx 0.142345
+neck brace 0.07774
+Band Aid 0.0554345
+Windsor tie 0.0547382
+lipstick, lip rouge 0.108468
+Band Aid 0.0848199
+flute, transverse flute 0.0835295
+ice lolly, lolly, lollipop, popsicle 0.0787426
+paintbrush 0.0679991
+gown 0.33101
+maillot 0.153347
+maillot, tank suit 0.131571
+dumbbell 0.0957034
+punching bag, punch bag, punching ball, punchball 0.0594918
+mountain bike, all-terrain bike, off-roader 0.852772
+crash helmet 0.0107452
+dragonfly, darning needle, devil's darning needle, sewing needle, snake feeder, snake doctor, mosquito hawk, skeeter hawk 0.0103202
+disk brake, disc brake 0.00886809
+barn spider, Araneus cavaticus 0.00834813
+microphone, mike 0.0705587
+suit, suit of clothes 0.0623851
+cello, violoncello 0.0427442
+bow tie, bow-tie, bowtie 0.0297904
+maillot 0.0253651
+miniskirt, mini 0.616838
+gown 0.0575874
+velvet 0.0368919
+jean, blue jean, denim 0.022044
+hoopskirt, crinoline 0.0213948
+notebook, notebook computer 0.300217
+miniskirt, mini 0.105828
+maillot 0.0828373
+tub, vat 0.0669725
+bathtub, bathing tub, bath, tub 0.0435885
+balance beam, beam 0.273606
+miniskirt, mini 0.10412
+maillot 0.100134
+dumbbell 0.065428
+jean, blue jean, denim 0.0399467
+bow tie, bow-tie, bowtie 0.304064
+suit, suit of clothes 0.0448133
+lab coat, laboratory coat 0.0384044
+Band Aid 0.0296035
+sunglasses, dark glasses, shades 0.0288949
+academic gown, academic robe, judge's robe 0.112855
+hair spray 0.105912
+wig 0.0633214
+abaya 0.0461579
+oxygen mask 0.034961
+Windsor tie 0.541567
+suit, suit of clothes 0.347784
+oboe, hautboy, hautbois 0.0410495
+academic gown, academic robe, judge's robe 0.0124555
+bassoon 0.0116248
+Windsor tie 0.38013
+academic gown, academic robe, judge's robe 0.146149
+oboe, hautboy, hautbois 0.0661056
+suit, suit of clothes 0.0362968
+Loafer 0.0315592
+face powder 0.298671
+lipstick, lip rouge 0.102031
+wig 0.0717377
+hair spray 0.0664167
+brassiere, bra, bandeau 0.0369529
+bathing cap, swimming cap 0.328213
+shower cap 0.140641
+wig 0.041644
+sunglass 0.0318179
+sunglasses, dark glasses, shades 0.0304883
+miniskirt, mini 0.208211
+pajama, pyjama, pj's, jammies 0.04247
+maillot 0.0407073
+overskirt 0.0376617
+fur coat 0.0337666
+sleeping bag 0.0839442
+television, television system 0.0463825
+neck brace 0.0381365
+laptop, laptop computer 0.035795
+desktop computer 0.031356
+suit, suit of clothes 0.127664
+bow tie, bow-tie, bowtie 0.0660124
+Windsor tie 0.0498671
+wig 0.0408569
+oboe, hautboy, hautbois 0.0393151
+stethoscope 0.0968557
+shower cap 0.074519
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0635597
+bathtub, bathing tub, bath, tub 0.0513005
+bath towel 0.0458046
+academic gown, academic robe, judge's robe 0.0864017
+neck brace 0.0517999
+stage 0.0439393
+hair spray 0.0361562
+bassoon 0.0312457
+binoculars, field glasses, opera glasses 0.258728
+sunglass 0.153726
+bathing cap, swimming cap 0.0624572
+sunglasses, dark glasses, shades 0.047515
+lens cap, lens cover 0.0297898
+sunscreen, sunblock, sun blocker 0.0237273
+binoculars, field glasses, opera glasses 0.0236143
+sarong 0.0230986
+maillot 0.0217926
+stole 0.021269
+balance beam, beam 0.272037
+maillot 0.189916
+horizontal bar, high bar 0.086145
+maillot, tank suit 0.0759215
+bikini, two-piece 0.054049
+miniskirt, mini 0.121839
+diaper, nappy, napkin 0.116501
+maillot, tank suit 0.0999966
+maillot 0.099471
+bikini, two-piece 0.0916603
+accordion, piano accordion, squeeze box 0.123054
+drumstick 0.106718
+cellular telephone, cellular phone, cellphone, cell, mobile phone 0.0799592
+seat belt, seatbelt 0.0589251
+hand-held computer, hand-held microcomputer 0.0316798
+abaya 0.118234
+suit, suit of clothes 0.110276
+groom, bridegroom 0.0686577
+gown 0.0492769
+Loafer 0.0426744
+folding chair 0.358524
+stretcher 0.215927
+parallel bars, bars 0.17593
+potter's wheel 0.0514524
+barber chair 0.0510926
+suit, suit of clothes 0.851568
+notebook, notebook computer 0.0372672
+Windsor tie 0.036047
+military uniform 0.016956
+trench coat 0.0134801
+bubble 0.110194
+stethoscope 0.0600765
+maraca 0.0539146
+bonnet, poke bonnet 0.0353495
+whistle 0.0297553
+bow tie, bow-tie, bowtie 0.112134
+suit, suit of clothes 0.0768832
+neck brace 0.075017
+lab coat, laboratory coat 0.0300896
+jean, blue jean, denim 0.0264105
+sunscreen, sunblock, sun blocker 0.42443
+pick, plectrum, plectron 0.202368
+mask 0.0711286
+ski mask 0.0452632
+Band Aid 0.0412999
+cloak 0.22117
+academic gown, academic robe, judge's robe 0.203319
+suit, suit of clothes 0.0732874
+velvet 0.0560569
+vestment 0.0403079
+flute, transverse flute 0.0558229
+bow 0.0393115
+overskirt 0.0352468
+chain saw, chainsaw 0.0298034
+banjo 0.0240177
+miniskirt, mini 0.0390018
+bathing cap, swimming cap 0.0377855
+bikini, two-piece 0.0345605
+umbrella 0.0323556
+sunglass 0.026104
+bow tie, bow-tie, bowtie 0.0422729
+sunscreen, sunblock, sun blocker 0.0342251
+Band Aid 0.0299655
+hair slide 0.0297443
+neck brace 0.0135667
+balance beam, beam 0.166935
+barrow, garden cart, lawn cart, wheelbarrow 0.155064
+parallel bars, bars 0.116028
+swing 0.0858916
+park bench 0.0649198
+ballplayer, baseball player 0.143791
+parachute, chute 0.0939595
+racket, racquet 0.0425089
+sweatshirt 0.0294079
+baseball 0.0291359
+lipstick, lip rouge 0.312693
+ice lolly, lolly, lollipop, popsicle 0.121563
+sunglasses, dark glasses, shades 0.090563
+seat belt, seatbelt 0.0589195
+sunglass 0.0341939
+nipple 0.55116
+power drill 0.127533
+knee pad 0.0420381
+dumbbell 0.0274865
+can opener, tin opener 0.0255561
+mortarboard 0.0311659
+seat belt, seatbelt 0.0212488
+umbrella 0.0198831
+cowboy hat, ten-gallon hat 0.0142582
+bow tie, bow-tie, bowtie 0.0117575
+neck brace 0.267078
+hoopskirt, crinoline 0.205485
+overskirt 0.0993908
+potter's wheel 0.0427528
+sweatshirt 0.0418132
+screwdriver 0.284807
+abacus 0.131626
+maraca 0.0938039
+pencil box, pencil case 0.028351
+tricycle, trike, velocipede 0.0252317
+bikini, two-piece 0.269737
+maillot, tank suit 0.138345
+maillot 0.117604
+volleyball 0.0751925
+sandbar, sand bar 0.0419686
+lab coat, laboratory coat 0.184588
+groom, bridegroom 0.179722
+bow tie, bow-tie, bowtie 0.109038
+gown 0.0418917
+suit, suit of clothes 0.0283363
+lab coat, laboratory coat 0.719481
+pajama, pyjama, pj's, jammies 0.118481
+stole 0.0400008
+cardigan 0.0332052
+suit, suit of clothes 0.0310856
+Norwegian elkhound, elkhound 0.521784
+malamute, malemute, Alaskan malamute 0.204204
+Eskimo dog, husky 0.0612979
+timber wolf, grey wolf, gray wolf, Canis lupus 0.0548186
+Tibetan mastiff 0.0484888
+oxygen mask 0.616785
+gasmask, respirator, gas helmet 0.058748
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0414357
+Windsor tie 0.0329391
+hair spray 0.0301656
+hand-held computer, hand-held microcomputer 0.859839
+Windsor tie 0.09763
+plane, carpenter's plane, woodworking plane 0.00599945
+space bar 0.00522251
+slide rule, slipstick 0.00366736
+bikini, two-piece 0.386656
+maillot 0.251165
+maillot, tank suit 0.210635
+paddle, boat paddle 0.0486754
+snorkel 0.0212763
+brassiere, bra, bandeau 0.266845
+lipstick, lip rouge 0.233195
+bikini, two-piece 0.216856
+wig 0.0923273
+maillot 0.0730572
+wig 0.904397
+hand blower, blow dryer, blow drier, hair dryer, hair drier 0.0567355
+hair slide 0.0108096
+hair spray 0.0099926
+brassiere, bra, bandeau 0.00254836
+bulletproof vest 0.307364
+suit, suit of clothes 0.0868335
+hand-held computer, hand-held microcomputer 0.0586235
+plunger, plumber's helper 0.054661
+academic gown, academic robe, judge's robe 0.0521952
+drumstick 0.157498
+barbell 0.113247
+horizontal bar, high bar 0.0389204
+plunger, plumber's helper 0.0341175
+pole 0.03394
+military uniform 0.35757
+bow tie, bow-tie, bowtie 0.232248
+suit, suit of clothes 0.0611632
+ballplayer, baseball player 0.0588084
+pickelhaube 0.0457899
+sarong 0.08325
+bathing cap, swimming cap 0.0792631
+maillot 0.0742255
+bikini, two-piece 0.0596112
+maillot, tank suit 0.0471218
+pelican 0.167203
+banana 0.0197544
+pole 0.0183693
+chickadee 0.0171069
+pencil sharpener 0.0158662
+neck brace 0.657946
+Windsor tie 0.0466086
+nipple 0.0351094
+ocarina, sweet potato 0.0322611
+pick, plectrum, plectron 0.0257182
+plate 0.0412312
+spatula 0.0272018
+burrito 0.0252898
+Crock Pot 0.0248472
+jigsaw puzzle 0.0237424
+maillot, tank suit 0.454594
+maillot 0.1656
+gown 0.0545605
+dumbbell 0.0390639
+miniskirt, mini 0.0270497
+neck brace 0.810649
+Windsor tie 0.126761
+loupe, jeweler's loupe 0.0133875
+face powder 0.00558842
+oxygen mask 0.00546796
+sunscreen, sunblock, sun blocker 0.32318
+lipstick, lip rouge 0.210345
+Band Aid 0.0631192
+wig 0.0451773
+face powder 0.0415334
+dumbbell 0.310784
+diaper, nappy, napkin 0.220567
+bikini, two-piece 0.0386222
+hair spray 0.0296973
+sunscreen, sunblock, sun blocker 0.0286219
+jean, blue jean, denim 0.412977
+suit, suit of clothes 0.0960173
+sweatshirt 0.0712639
+sunglasses, dark glasses, shades 0.0478327
+sunglass 0.0380037
+sunglasses, dark glasses, shades 0.606239
+sunglass 0.215171
+seat belt, seatbelt 0.0535458
+bathing cap, swimming cap 0.0517648
+wig 0.0140934
+bikini, two-piece 0.957368
+brassiere, bra, bandeau 0.0257375
+maillot 0.0108608
+sarong 0.00210334
+sunscreen, sunblock, sun blocker 0.000788009
+lipstick, lip rouge 0.235224
+ice lolly, lolly, lollipop, popsicle 0.199146
+Band Aid 0.0628171
+whistle 0.0565636
+harmonica, mouth organ, harp, mouth harp 0.0325796
+bonnet, poke bonnet 0.588856
+wig 0.0537107
+neck brace 0.0483725
+shower cap 0.0414792
+sombrero 0.0190858
+stole 0.0851857
+wig 0.0514895
+cloak 0.0413605
+cardigan 0.0363953
+velvet 0.0326983
+oboe, hautboy, hautbois 0.0966178
+whistle 0.0850499
+ocarina, sweet potato 0.0504658
+hair spray 0.0453502
+hand-held computer, hand-held microcomputer 0.0440763
+Windsor tie 0.134469
+suit, suit of clothes 0.0979457
+lab coat, laboratory coat 0.0579128
+sunscreen, sunblock, sun blocker 0.0504868
+bolo tie, bolo, bola tie, bola 0.0421704
+Band Aid 0.0581556
+seat belt, seatbelt 0.0316186
+lab coat, laboratory coat 0.0287278
+hair slide 0.0279269
+lipstick, lip rouge 0.0265419
+lab coat, laboratory coat 0.648388
+stethoscope 0.235798
+Windsor tie 0.0601851
+suit, suit of clothes 0.0214478
+bolo tie, bolo, bola tie, bola 0.00753701
+lipstick, lip rouge 0.654497
+ice lolly, lolly, lollipop, popsicle 0.0806959
+face powder 0.0424087
+seat belt, seatbelt 0.0381647
+Band Aid 0.0343047
+maillot, tank suit 0.538131
+maillot 0.174446
+dumbbell 0.071664
+brassiere, bra, bandeau 0.0322567
+jersey, T-shirt, tee shirt 0.0234966
+lab coat, laboratory coat 0.0720793
+Windsor tie 0.0710995
+stethoscope 0.0344034
+academic gown, academic robe, judge's robe 0.0289791
+neck brace 0.0276336
+Windsor tie 0.356568
+neck brace 0.0868316
+lab coat, laboratory coat 0.0824082
+stethoscope 0.05144
+academic gown, academic robe, judge's robe 0.0435818
+dumbbell 0.59543
+maillot, tank suit 0.0737204
+miniskirt, mini 0.061957
+bathing cap, swimming cap 0.0607626
+maillot 0.0447831
+shower cap 0.41145
+Band Aid 0.0615429
+wig 0.0318533
+bathing cap, swimming cap 0.0260251
+bonnet, poke bonnet 0.0237124
+academic gown, academic robe, judge's robe 0.0665612
+umbrella 0.0327829
+mortarboard 0.032175
+sunglass 0.0257944
+sunglasses, dark glasses, shades 0.0255051
+military uniform 0.13379
+bow tie, bow-tie, bowtie 0.049685
+jersey, T-shirt, tee shirt 0.0453713
+bulletproof vest 0.0240304
+neck brace 0.0218861
+maillot 0.256581
+miniskirt, mini 0.0830849
+dumbbell 0.0763095
+knee pad 0.041392
+maillot, tank suit 0.0321039
+face powder 0.709159
+Band Aid 0.0610614
+lipstick, lip rouge 0.0454046
+sunscreen, sunblock, sun blocker 0.0417418
+loupe, jeweler's loupe 0.0253718
+lipstick, lip rouge 0.136346
+face powder 0.0712286
+hair spray 0.0526422
+hourglass 0.0509623
+Band Aid 0.0368798
+brassiere, bra, bandeau 0.391141
+bikini, two-piece 0.152491
+maillot 0.0792843
+tub, vat 0.0581211
+bathtub, bathing tub, bath, tub 0.0403486
+ice lolly, lolly, lollipop, popsicle 0.0987172
+wig 0.0851748
+suit, suit of clothes 0.0799966
+bow tie, bow-tie, bowtie 0.0559454
+lipstick, lip rouge 0.0336333
+suit, suit of clothes 0.379186
+academic gown, academic robe, judge's robe 0.141078
+notebook, notebook computer 0.0902652
+mortarboard 0.0824053
+groom, bridegroom 0.0600335
+face powder 0.562287
+neck brace 0.180523
+loupe, jeweler's loupe 0.0520911
+sunscreen, sunblock, sun blocker 0.019922
+lab coat, laboratory coat 0.0178643
+lipstick, lip rouge 0.527678
+wig 0.0685428
+Band Aid 0.027784
+ice lolly, lolly, lollipop, popsicle 0.0239899
+drumstick 0.0169941
+volleyball 0.313622
+horizontal bar, high bar 0.199884
+basketball 0.0996667
+balance beam, beam 0.0989232
+dumbbell 0.0796587
+clumber, clumber spaniel 0.202275
+Blenheim spaniel 0.169894
+Japanese spaniel 0.0749124
+cocker spaniel, English cocker spaniel, cocker 0.0582453
+toy poodle 0.0545752
+bikini, two-piece 0.650596
+maillot, tank suit 0.115519
+maillot 0.0670172
+brassiere, bra, bandeau 0.0391504
+swimming trunks, bathing trunks 0.0390529
+brassiere, bra, bandeau 0.193502
+bath towel 0.181901
+bikini, two-piece 0.161245
+sunscreen, sunblock, sun blocker 0.0388925
+gown 0.03697
+military uniform 0.297757
+pickelhaube 0.273333
+bearskin, busby, shako 0.0879636
+bow tie, bow-tie, bowtie 0.0710095
+academic gown, academic robe, judge's robe 0.0262646
+ice lolly, lolly, lollipop, popsicle 0.276288
+hotdog, hot dog, red hot 0.0709255
+ear, spike, capitulum 0.0551119
+harmonica, mouth organ, harp, mouth harp 0.0454974
+burrito 0.0407093
+wig 0.15067
+lipstick, lip rouge 0.106975
+brassiere, bra, bandeau 0.105303
+face powder 0.0440141
+perfume, essence 0.0407282

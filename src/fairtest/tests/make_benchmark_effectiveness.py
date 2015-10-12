@@ -1,6 +1,7 @@
-#!/usr/bin/env python
 """
-Run with: ./benchmark.py fairtest/data/staples/staples.csv
+Effectiveness Benchmark for FairTest
+
+Usage: ./make_benchmark_effectiveness.py fairtest/data/staples/staples.csv 100
 
 The logic for now is:
     for SIZE in {100, 500, 1000, 2000, 5000}: 
@@ -10,10 +11,9 @@ The logic for now is:
                       and (50-DIFF)% of he poor to get discounts
                     - run FairTest and report the number of contexts found
 """
-from fairtest.bugreport import api2 as api
-from fairtest.bugreport.helpers import prepare
+import fairtest.utils.prepare_data as prepare
+from fairtest import Testing, train, test, report
 
-from time import time
 from copy import deepcopy
 from random import shuffle, randint, seed
 
@@ -24,6 +24,7 @@ import multiprocessing
 from datetime import datetime
 
 FIND_CONTEXTS_STRICT = False
+
 
 def parse_line(line):
     """
@@ -159,7 +160,8 @@ def load_file(file_name):
         state_race = state + "_" + race
         if state_race not in pool:
             pool[state_race] = []
-        pool[state_race].append(state + "," + gender + "," + race + "," + income + "," + price)
+        pool[state_race].append(state + "," + gender + "," + race + "," +
+                                income + "," + price)
         lines += 1
 
     return classes, pool, lines
@@ -172,7 +174,8 @@ def do_benchmark((classes, pool, guard_lines)):
     results = {}
     BASE_FILENAME = "/tmp/temp_fairtest"
 
-    MICROSECONDS = int((datetime.now() - datetime(1970, 1, 1)).total_seconds()*10**6)
+    MICROSECONDS = int((datetime.now() - datetime(1970, 1, 1)).
+                       total_seconds()*10**6)
     # keep last digits of this very large number
     RANDOM_SEED = MICROSECONDS % 10**8
     seed(RANDOM_SEED)
@@ -249,7 +252,6 @@ def do_benchmark((classes, pool, guard_lines)):
                     lines += 1
 
             f_temp.close()
-            # protect from random bugs that appear after 3a.m. ;-)
             assert guard_lines == lines
 
             # Prepare data into FairTest friendly format
@@ -261,38 +263,30 @@ def do_benchmark((classes, pool, guard_lines)):
             SENS = ['income']
             TARGET = 'price'
 
-            # Instanciate the experiment
-            FT1 = api.Experiment(data, SENS, TARGET, EXPL,
-                                 measures={'income': 'NMI'},
-                                 random_state=RANDOM_SEED)
-
-            #print FT1.encoders['state'].classes_
-            #print FT1.encoders['race'].classes_
+            # Instantiate the experiment
+            inv = Testing(data, SENS, TARGET, EXPL, random_state=RANDOM_SEED)
 
             # Train the classifier
-            FT1.train(min_leaf_size=50, score_aggregation="avg")
+            train([inv], min_leaf_size=50)
 
-            approx_stats = True
+            exact_stats = False
             if int(_class) < 1000:
-                approx_stats = False
+                exact_stats = True
 
             # Evaluate on the testing set
-            FT1.test(approx_stats=approx_stats, prune_insignificant=True)
+            test([inv], exact=exact_stats)
 
             # Create the report
-            context_list = FT1.report("benchmark_" + random_suffix,
-                                      "/tmp", filter_by='all')
+            context_list = report([inv], "benchmark_" + random_suffix,
+                                  output_dir="/tmp", node_filter='all')
 
-            #print _selected
-            #print context_list
-
-            # count sucess
+            # count success
             found = 0
             for context in context_list:
-                # print context
                 if ('state' in context and 'race' in context) and\
                         (len(context) == 2 or not FIND_CONTEXTS_STRICT):
-                    state_race = str(context['state']) + "_" + str(context['race'])
+                    state_race = str(context['state']) + "_" + \
+                                 str(context['race'])
                     if state_race in _selected:
                         # remove it so that we don't count multiple
                         # times sub-sub-populations of a population
@@ -301,9 +295,8 @@ def do_benchmark((classes, pool, guard_lines)):
 
             results[int(_class)][effect] = found
             del _selected
-            #print 'not found: {}'.format(_selected)
         # end of iterations on effects
-    #end of iterations on classes of sizes
+    # end of iterations on classes of sizes
     return results
 
 
@@ -336,7 +329,7 @@ def parse_results(results, iterations):
 
 def main(argv=sys.argv):
     """
-    Entry point -- will try to parallelize
+    Entry point
     """
     if len(argv) != 3:
         usage(argv)

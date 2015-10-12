@@ -1,50 +1,29 @@
 #!/usr/bin/env python
-"""
-MovieLensALS.py
-Copyright (C) 2015, V. Atlidakis vatlidak@cs.columbia.edu>
 
-Tuned version of spark summit exersice to produce movie recommendations.
-For each user caclulate the RMSE improvement, the most prominent movie
-type of the ones recommended, the mode decade of movies recommended, and
-the median decade of the movies recommended.
-
-@argv[1]: A file with movie ratings
-
-@argv[2]: A template file with user's movie ratings template
-
-@argv[3]: A folder to move rendered templates
-
-output: A batch of rendered templates with users' movie ratings
-
-References
-----------
-http://ampcamp.berkeley.edu/big-data-mini-course/movie-recommendation-with-mllib
-"""
-import os
 import sys
 import itertools
-import statistics
 from math import sqrt
 from operator import add
-from collections import Counter
 from os.path import join, isfile, dirname
+import numpy as np
+import operator
 
 from pyspark import SparkConf, SparkContext
 from pyspark.mllib.recommendation import ALS
 
 def parseRating(line):
     """
-    Parses a rating record in MovieLens format userId::movieId::rating::timestamp .
+    Parses a rating record in MovieLens format userId::movieId::rating::count .
     """
     fields = line.strip().split("::")
-    return long(fields[3]) % 10, (int(fields[0]), int(fields[1]), float(fields[2]))
+    return int(fields[3]), (int(fields[0]), int(fields[1]), float(fields[2]))
 
 def parseMovie(line):
     """
     Parses a movie record in MovieLens format movieId::movieTitle .
     """
     fields = line.strip().split("::")
-    return int(fields[0]), fields[1] + ': ' + fields[2]
+    return int(fields[0]), fields[1]
 
 def loadRatings(ratingsFile):
     """
@@ -57,7 +36,8 @@ def loadRatings(ratingsFile):
     ratings = filter(lambda r: r[2] > 0, [parseRating(line)[1] for line in f])
     f.close()
     if not ratings:
-        return ''
+        print "No ratings provided."
+        sys.exit(1)
     else:
         return ratings
 
@@ -72,146 +52,148 @@ def computeRmse(model, data, n):
     return sqrt(predictionsAndRatings.map(lambda x: (x[0] - x[1]) ** 2).reduce(add) / float(n))
 
 if __name__ == "__main__":
-    if (len(sys.argv) != 4):
+    if (len(sys.argv) != 2):
         print "Usage: /path/to/spark/bin/spark-submit --driver-memory 2g " + \
-          "MovieLensALS.py movieLensDataDir personalRatingsbatch outputFile"
+          "MovieLensALS.py movieLensDataDir"
         sys.exit(1)
 
     # set up environment
     conf = SparkConf() \
-      .setAppName("MovieLensALS")
+      .setAppName("MovieLensALS") \
+      .set("spark.executor.memory", "2g")
     sc = SparkContext(conf=conf)
-
+    
     # load ratings and movie titles
     movieLensHomeDir = sys.argv[1]
 
     # ratings is an RDD of (last digit of timestamp, (userId, movieId, rating))
-    ratings = sc.textFile(join(movieLensHomeDir, "ratings.dat")).map(parseRating)
-
+    ratings = sc.textFile(join(movieLensHomeDir, "ratings_new.dat")).map(parseRating)
+    
     # movies is an RDD of (movieId, movieTitle)
     movies = dict(sc.textFile(join(movieLensHomeDir, "movies.dat")).map(parseMovie).collect())
 
+    numRatings = ratings.count()
+    numUsers = ratings.values().map(lambda r: r[0]).distinct().count()
+    numMovies = ratings.values().map(lambda r: r[1]).distinct().count()
 
-    fOut = open(sys.argv[3], 'w')
+    print "Got %d ratings from %d users on %d movies." % (numRatings, numUsers, numMovies)
+    
+    
+    # compute average rating of each movie
+    rating_list = {}
+    movie_avgs = {}
+    for rating in ratings.values().collect():
+        userID = rating[0]
+        movieID = rating[1]
+        if userID not in rating_list:
+            rating_list[userID] = []
+        if movieID not in movie_avgs:
+            movie_avgs[movieID] = [0,0]
+            
+        rating_list[userID].append(movieID)
+        movie_avgs[movieID][0] += rating[2]
+        movie_avgs[movieID][1] += 1
+    
+    for movie in movie_avgs:
+        movie_avgs[movie] = [(1.0*movie_avgs[movie][0])/movie_avgs[movie][1], movie_avgs[movie][1]]
+    
+    # popular = [(idx, avg) for (idx, (avg, n)) in movie_avgs.iteritems() if n > 10]
+    # print 'Top movies:'
+    # for (idx, avg) in sorted(popular, key=operator.itemgetter(1), reverse=True)[0:50]:
+    #     print movies[idx].encode('ascii', 'ignore'), avg
+    
+    
+    # keep 10 ratings per user as a test set and split the rest into training
+    # and validation sets
 
-    counter = 0
-    for fileName in os.listdir(sys.argv[2]):
-        counter += 1
+    # training, validation, test are all RDDs of (userId, movieId, rating)
+    numPartitions = 4
+    
+    (trainingData, validData) = ratings.filter(lambda x: x[0] >= 10).randomSplit([0.67, 0.33])
+    
+    training = trainingData \
+      .values() \
+      .repartition(numPartitions) \
+      .cache()
+      
+    validation = validData \
+      .values() \
+      .repartition(numPartitions) \
+      .cache()
+    
+    # hold-out 10 ratings per user
+    test = ratings.filter(lambda x: x[0] < 10).values().cache()
 
-        # load personal ratings
-        myRatings = loadRatings(join(sys.argv[2], fileName))
+    numTraining = training.count()
+    numValidation = validation.count()
+    numTest = test.count()
 
-        if not myRatings:
-            continue
+    print "Training: %d, validation: %d, test: %d" % (numTraining, numValidation, numTest)
+    
+    # train models and evaluate them on the validation set
 
-        userId = myRatings[0][0]
-        myRatings = [(0, x[1], x[2]) for x in myRatings]
-        myRatingsRDD = sc.parallelize(myRatings, 1)
+    ranks = [8, 12]
+    lambdas = [0.1, 10.0]
+    numIters = [10, 20]
+    bestModel = None
+    bestValidationRmse = float("inf")
+    bestRank = 0
+    bestLambda = -1.0
+    bestNumIter = -1
 
-        numRatings = ratings.count()
-        numUsers = ratings.values().map(lambda r: r[0]).distinct().count()
-        numMovies = ratings.values().map(lambda r: r[1]).distinct().count()
+    for rank, lmbda, numIter in itertools.product(ranks, lambdas, numIters):
+        model = ALS.train(training, rank, numIter, lmbda)
+        validationRmse = computeRmse(model, validation, numValidation)
+        print "RMSE (validation) = %f for the model trained with " % validationRmse + \
+              "rank = %d, lambda = %.1f, and numIter = %d." % (rank, lmbda, numIter)
+        if (validationRmse < bestValidationRmse):
+            bestModel = model
+            bestValidationRmse = validationRmse
+            bestRank = rank
+            bestLambda = lmbda
+            bestNumIter = numIter
 
-        # split ratings into train (60%), validation (20%), and test (20%) based on the 
-        # last digit of the timestamp, add myRatings to train, and cache them
-        # training, validation, test are all RDDs of (userId, movieId, rating)
-        numPartitions = 4
-        training = ratings.filter(lambda x: x[0] < 6) \
-          .values() \
-          .union(myRatingsRDD) \
-          .repartition(numPartitions) \
-          .cache()
+    testRmse = computeRmse(bestModel, test, numTest)
 
-        validation = ratings.filter(lambda x: x[0] >= 6 and x[0] < 8) \
-          .values() \
-          .repartition(numPartitions) \
-          .cache()
+    # evaluate the best model on the test set
+    print "The best model was trained with rank = %d and lambda = %.1f, " % (bestRank, bestLambda) \
+      + "and numIter = %d, and its RMSE on the test set is %f." % (bestNumIter, testRmse)
 
-        test = ratings.filter(lambda x: x[0] >= 8).values().cache()
-
-        numTraining = training.count()
-        numValidation = validation.count()
-        numTest = test.count()
-
-        # train models and evaluate them on the validation set
-
-        ranks = [8]
-        lambdas = [0.1]
-        numIters = [10]
-        bestModel = None
-        bestValidationRmse = float("inf")
-        bestRank = 0
-        bestLambda = -1.0
-        bestNumIter = -1
-
-        for rank, lmbda, numIter in itertools.product(ranks, lambdas, numIters):
-            model = ALS.train(training, rank, numIter, lmbda)
-            validationRmse = computeRmse(model, validation, numValidation)
-            if (validationRmse < bestValidationRmse):
-                bestModel = model
-                bestValidationRmse = validationRmse
-                bestRank = rank
-                bestLambda = lmbda
-                bestNumIter = numIter
-
-        testRmse = computeRmse(bestModel, test, numTest)
-
-        # compare the best model with a naive baseline that always returns the mean rating
-        meanRating = training.union(validation).map(lambda x: x[2]).mean()
-        baselineRmse = sqrt(test.map(lambda x: (meanRating - x[2]) ** 2).reduce(add) / numTest)
-        improvement = (baselineRmse - testRmse) / baselineRmse * 100
-
-        # make personalized recommendations
-
-        myRatedMovieIds = set([x[1] for x in myRatings])
-        candidates = sc.parallelize([m for m in movies if m not in myRatedMovieIds])
-        predictions = bestModel.predictAll(candidates.map(lambda x: (0, x))).collect()
-        recommendations = sorted(predictions, key=lambda x: x[2], reverse=True)[:50]
-        if not recommendations:
-            continue
-
-        myRatings = [(userId, x[1], x[2]) for x in myRatings]
-        movieTypes = []
-        movieDates = []
-        for i in xrange(len(recommendations)):
-            try:
-                movieTypes += (movies[recommendations[i][1]]).encode('ascii', 'ignore').split(": ")[1].split("|")[:]
-                movieDates.append(int((movies[recommendations[i][1]]).encode('ascii', 'ignore').split(": ")[0][-5:][:4]))
-            # In case if misparsed line int() raises exception
-            except Exception, error:
-                continue
-        movieDecades = map(lambda l: ((l % 100) / 10 ) * 10, movieDates)
-
-        movieNames = []
-        for i in range(0, 49):
-            try:
-                movieNames.append(movies[recommendations[i][1]].encode('ascii', 'ignore').split(": ")[0])
-            # In case if misparsed line int() raises exception
-            except Exception, error:
-                continue
-
-        #print  movieDecades
-        #print  Counter(movieDecades)
-        #print  Counter(movieDecades).most_common(1)
-        #print  movieTypes
-        #print  Counter(movieTypes)
-        #print  Counter(movieTypes).most_common(1)
-        print >> fOut, "%d,%s,%d,%d,%.2f,%s" % (myRatings[0][0],
-                                # Avoid statistics.mode; StatisticsError is
-                                # raised if there is not one most common value
-                                Counter(movieTypes).most_common(1)[0][0],
-                                Counter(movieDecades).most_common(1)[0][0],
-                                int(statistics.median(movieDecades)),
-                                improvement,
-                                ':'.join(movieNames)
-                                )
-        print "%d,%d,%s,%d,%d,%.2f,%s" % (counter,
-                                myRatings[0][0],
-                                Counter(movieTypes).most_common(1)[0][0],
-                                Counter(movieDecades).most_common(1)[0][0],
-                                int(statistics.median(movieDecades)),
-                                improvement,
-                                ':'.join(movieNames)
-                                )
-        # clean up
+    # compare the best model with a naive baseline that always returns the mean rating
+    meanRating = training.union(validation).map(lambda x: x[2]).mean()
+    baselineRmse = sqrt(test.map(lambda x: (meanRating - x[2]) ** 2).reduce(add) / numTest)
+    improvement = (baselineRmse - testRmse) / baselineRmse * 100
+    print "The best model improves the baseline by %.2f" % (improvement) + "%."
+    
+    f_out = open('recommendations_raw.txt', 'w')
+    for user in test.map(lambda r: r[0]).distinct().collect():
+        # get the movies rated by the user
+        user_movies = set(rating_list[user])
+        
+        # get all movies not rated by the user
+        candidates = sc.parallelize([m for m in movies if m not in user_movies])
+        
+        # find 50 predictions
+        predictions = bestModel.predictAll(candidates.map(lambda x: (user, x)))
+        recommendations = sorted(predictions.collect(), key=lambda x: x[2], reverse=True)[:50]
+        labels = [movies[x[1]].encode('ascii', 'ignore') for x in recommendations]
+        
+        # average ratings of the movies
+        user_movies_avgs = [movie_avgs[x[1]][0] for x in recommendations]
+        user_weighted_avg = np.average(user_movies_avgs, weights=None)
+        
+        # get the user's test set and compute the error
+        user_test = test.filter(lambda r: r[0] == user)
+        n = user_test.count()
+        assert n == 10
+        rmse = computeRmse(bestModel, user_test, n)
+        
+        user_movies_avgs = [movie_avgs[x[1]][0] for x in recommendations]
+        user_movies_weights = [movie_avgs[x[1]][1] for x in recommendations]
+        user_weighted_avg = np.average(user_movies_avgs, weights=user_movies_weights)
+        avg_score = np.mean([x[2] for x in recommendations])
+        print '{}\t{}\t{}\t{}'.format(user, user_weighted_avg, rmse, labels)
+        print >> f_out, '{}\t{}\t{}\t{}'.format(user, user_weighted_avg, rmse, labels)
+    # clean up
     sc.stop()
+    

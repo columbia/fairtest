@@ -1,6 +1,7 @@
 #!/bin/bash
 
 REPORT_PREFIX="$1"
+OUTPUT_FILE="$2"
 
 if [ -z ${REPORT_PREFIX} ]; then
     echo "Usage: $0 <filename>"
@@ -56,4 +57,4 @@ function __convert_to_percentage() {
 #parse_report_metric ${REPORT_PREFIX} "Regression" > init_train_test_timing_regression.csv
 #convert_to_percentage ${REPORT_PREFIX} > init_train_test_timing_percentages.csv
 
-__convert_to_percentage ${REPORT_PREFIX} > timing_percentages.csv
+__convert_to_percentage ${REPORT_PREFIX} > ${OUTPUT_FILE}
