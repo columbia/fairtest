@@ -14,7 +14,7 @@ from bugreport.helpers.distance import haversine
 epsilon = 0.05
 price = {'low': 0, 'high': 1}
 logfile = sys.stdout
-logfile = open("/tmp/logfile", "a+")
+logfile = open("./simulation/staples.csv", "a+")
 
 #caches
 zipcode_coordinates = {}
