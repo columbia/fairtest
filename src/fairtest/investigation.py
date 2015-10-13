@@ -33,6 +33,22 @@ class Investigation(object):
 
     def __init__(self, data, protected, output, expl=None, metrics=None,
                  train_size=0.5, ci_level=0.95, random_state=None):
+
+        if not isinstance(data, pd.DataFrame):
+            raise ValueError('data should be a Pandas DataFrame')
+
+        if not 0 < ci_level < 1:
+            raise ValueError('ci_level should be in (0,1), Got %s', ci_level)
+
+        if metrics is not None and not isinstance(metrics, dict):
+            raise ValueError('metrics should be a dictionary')
+
+        if not protected:
+            raise ValueError('at least one protected feature must be specified')
+
+        if not output:
+            raise ValueError('at least one output feature must be specified')
+
         self.ci_level = ci_level
         self.metrics = metrics if metrics is not None else {}
         self.trained_trees = {}
@@ -104,7 +120,7 @@ class Investigation(object):
 
 
 def train(investigations, max_depth=5, min_leaf_size=100,
-          score_aggregation="avg", max_bins=10):
+          score_aggregation=guided_tree.ScoreParams.AVG, max_bins=10):
     """
     Form hypotheses about discrimination contexts for each protected feature
     in each investigation
@@ -133,8 +149,27 @@ def train(investigations, max_depth=5, min_leaf_size=100,
         maximum number of bins used for finding splits on continuous
         features
     """
-    # TODO validate input
+
+    if max_depth < 0:
+        raise ValueError('max_depth must be non-negative')
+    if min_leaf_size <= 0:
+        raise ValueError('min_leaf_size must be positive')
+    if score_aggregation not in guided_tree.ScoreParams.AGG_TYPES:
+        raise ValueError("score_aggregation should be one of 'avg', "
+                         "'weighted_avg' or 'max', Got %s", score_aggregation)
+    if max_bins <=0:
+        raise ValueError('max_bins must be positive')
+
     for inv in investigations:
+        assert isinstance(inv, Investigation)
+        if inv.train_set is None:
+            raise RuntimeError('Investigation was not initialized')
+
+    for inv in investigations:
+        assert isinstance(inv, Investigation)
+        if inv.train_set is None:
+            raise RuntimeError('Investigation was not initialized')
+
         data = inv.train_set
 
         inv.train_params = {'max_depth': max_depth,
@@ -155,10 +190,10 @@ def train(investigations, max_depth=5, min_leaf_size=100,
             inv.trained_trees[sens] = tree
 
 
-def test(investigations, prune_insignificant=True, exact=True, level=0.95):
+def test(investigations, prune_insignificant=True, exact=True, ci_level=0.95):
     """
     Compute effect sizes and p-values for the discrimination contexts
-    discovered on the training set. Correct intervals and p-values accross
+    discovered on the training set. Correct intervals and p-values across
     all investigations.
 
     Parameters
@@ -177,15 +212,21 @@ def test(investigations, prune_insignificant=True, exact=True, level=0.95):
         intervals are generated with bootstrapping techniques and p-values
         via Monte-Carlo permutation tests.
 
-    level :
+    ci_level :
         familywise confidence level
     """
-    # TODO validate input, check that tree was trained
+    if not 0 < ci_level < 1:
+        raise ValueError('ci_level should be in (0,1), Got %s', ci_level)
+
+    for inv in investigations:
+        assert isinstance(inv, Investigation)
+        if not inv.trained_trees:
+            raise RuntimeError('Investigation was not trained')
 
     for inv in investigations:
         inv.test_params = {'prune_insignificant': prune_insignificant,
                            'exact': exact,
-                           'level': level}
+                           'ci_level': ci_level}
 
         data = inv.test_set
 
@@ -201,13 +242,13 @@ def test(investigations, prune_insignificant=True, exact=True, level=0.95):
     np.random.seed(investigations[0].random_state)
 
     logging.info('Begin testing phase')
-    all_stats = multitest.compute_all_stats(investigations, exact, level)
+    all_stats = multitest.compute_all_stats(investigations, exact, ci_level)
 
     for i, inv in enumerate(investigations):
         inv.stats = all_stats[i]
 
 
-def report(investigations, dataname, output_dir=None, level=0.95,
+def report(investigations, dataname, output_dir=None, ci_level=0.95,
            node_filter=filter_rank.FILTER_BETTER_THAN_ANCESTORS):
     """
     Output a FairTest bug report for each protected feature in each
@@ -221,7 +262,7 @@ def report(investigations, dataname, output_dir=None, level=0.95,
     dataname :
         name of the dataset used in the experiments
 
-    level :
+    ci_level :
         confidence level for filtering out bugs
 
     output_dir :
@@ -237,11 +278,22 @@ def report(investigations, dataname, output_dir=None, level=0.95,
         does not exhibit a stronger association than the larger contexts that
         it is part of.
     """
+    if not 0 < ci_level < 1:
+        raise ValueError('ci_level should be in (0,1), Got %s', ci_level)
+
+    if node_filter not in filter_rank.NODE_FILTERS:
+        raise ValueError("node_filter should be one of 'all', "
+                         "'leaves', 'root' or 'better_than_ancestors',"
+                         " Got %s", node_filter)
+
+    for inv in investigations:
+        assert isinstance(inv, Investigation)
+        if not inv.stats:
+            raise RuntimeError("Investigation was not tested")
 
     for idx, inv in enumerate(investigations):
-        inv.display_params = {'node_filter': node_filter}
 
-        # TODO validate inputs
+        inv.display_params = {'node_filter': node_filter}
 
         if not output_dir:
             output_stream = sys.stdout
@@ -275,10 +327,11 @@ def report(investigations, dataname, output_dir=None, level=0.95,
             stats = inv.stats[sens]
             contexts = inv.contexts[sens]
             np.random.seed(inv.random_state)
+
             # dirty nasty hack for the benchmark
             txt = report_module.bug_report(contexts, stats, sens, inv.expl,
                                            inv.output, output_stream,
-                                           level=level,
+                                           level=ci_level,
                                            encoders=inv.encoders,
                                            node_filter=node_filter,
                                            output_dir=output_dir)

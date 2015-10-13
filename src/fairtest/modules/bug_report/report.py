@@ -439,6 +439,8 @@ def print_context_corr(context, context_stats, metric_name, namer,
             # directory already exists
             pass
         plot_name = os.path.join(plot_dir, 'context_{}.png'.format(context.num))
+    else:
+        plot_name = None
 
     plt.figure()
     m, b = np.polyfit(sens, out, 1)
