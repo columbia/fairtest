@@ -1,7 +1,8 @@
 """
 Run FairTest Investigations on Movie Recommender Dataset
 
-Usage: ./make_recommender.py fairtest/data/recommender/recommendations.txt
+Usage: ./make_recommender.py fairtest/data/recommender/recommendations.txt \
+       results/recommender
 """
 
 import fairtest.utils.prepare_data as prepare
@@ -57,7 +58,8 @@ def main(argv=sys.argv):
     Error Profiling
     '''
     data = prepare.data_from_csv(FILENAME, sep='\t',
-                                 to_drop=['Types', 'Avg Movie Age', 'Avg Movie Rating'])
+                                 to_drop=['Types', 'Avg Movie Age',
+                                          'Avg Movie Rating'])
     SENS = ['Gender']
     TARGET = 'RMSE'
     EXPL = []
@@ -120,14 +122,14 @@ def main(argv=sys.argv):
 
     t5 = time()
 
-    print "Discovery:Recommender:Instantiation: %.2f, Train: %.2f, Test: %.2f, " \
-          "Report: %.2f" % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
+    print "Discovery:Recommender:Instantiation: %.2f, Train: %.2f, " \
+          "Test: %.2f, Report: %.2f" % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
     print "-" * 80
     print
 
 
 def usage(argv):
-    print "Usage:%s <filename>" % argv[0]
+    print "Usage:%s <filename> <output_dir>" % argv[0]
     exit(-1)
 
 if __name__ == '__main__':

@@ -1,10 +1,4 @@
-* Look for image-net datasets trained
-
-* Move all application code to src/apps and leave only dataset in data/
-
-* Add user input validation for investigations
-
-* Add CondNMI metric
+* Look for image-net datasets trained on people
 
 * Make sure performance/effectiveness benchmarks still work
 

@@ -5,12 +5,14 @@ from StringIO import StringIO
 import prettytable
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+from matplotlib import rcParams
 import random
 import pandas as pd
 import numpy as np
 import subprocess
 import textwrap
 import os
+import errno
 import re
 from fairtest.modules.metrics import Metric
 from fairtest.modules.context_discovery.tree_parser import Bound
@@ -182,7 +184,7 @@ def print_summary(all_contexts, displayed_contexts, namer, output_stream):
 
 def bug_report(contexts, stats, sens, expl, output, output_stream,
                node_filter=filter_rank.FILTER_BETTER_THAN_ANCESTORS, level=0.95,
-               encoders=None, output_dir=None):
+               encoders=None, plot_dir=None):
     """
     Print all the association bugs sorted by effect size
 
@@ -215,8 +217,10 @@ def bug_report(contexts, stats, sens, expl, output, output_stream,
     encoders :
         data encoders used to numerize categorical features
 
-    output_dir :
-        output directory (to save correlation plots)
+    plot_dir :
+        directory to save plots
+
+
     """
 
     metric = contexts[0].metric
@@ -227,7 +231,8 @@ def bug_report(contexts, stats, sens, expl, output, output_stream,
     # print global stats (root of tree)
     (root, root_stats) = [(c, stat) for (c, stat) in contexts_stats
                           if c.isroot][0]
-    print >> output_stream, 'Global Population of size {}'.format(root.size)
+    print >> output_stream, 'Global Population {} of size {}'.format(root.num,
+                                                                     root.size)
     print >> output_stream
 
     # print a contingency table, correlation analysis or regression summary
@@ -236,7 +241,7 @@ def bug_report(contexts, stats, sens, expl, output, output_stream,
                          output_stream)
     elif metric_type == Metric.DATATYPE_CORR:
         print_context_corr(root, root_stats, metric.__class__.__name__, namer,
-                           output_stream, output_dir)
+                           output_stream, plot_dir)
     else:
         print_context_reg(root, root_stats, namer, output_stream)
     print >> output_stream, '='*80
@@ -250,7 +255,8 @@ def bug_report(contexts, stats, sens, expl, output, output_stream,
     # print contexts in order of relevance
     for (context, context_stats) in ranked_bugs:
 
-        print >> output_stream, 'Sub-Population of size {}'.format(context.size)
+        print >> output_stream, \
+            'Sub-Population {} of size {}'.format(context.num, context.size)
         print >> output_stream, \
             'Context = {}'.format(print_context(context.path, namer))
         print >> output_stream
@@ -261,7 +267,7 @@ def bug_report(contexts, stats, sens, expl, output, output_stream,
         elif metric_type == Metric.DATATYPE_CORR:
             print_context_corr(context, context_stats,
                                metric.__class__.__name__, namer, output_stream,
-                               output_dir)
+                               plot_dir)
         else:
             print_context_reg(context, context_stats, namer, output_stream)
         print >> output_stream, '-'*80
@@ -395,8 +401,26 @@ def jitter(x, y, **kwargs):
 CORR_PLOT = 'BOXPLOT'
 
 
+def mkdir_p(path):
+    """
+    Creates a directory recursively creating any missing directories on the path
+
+    Parameters
+    ----------
+    path :
+        the directory path
+    """
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
+
+
 def print_context_corr(context, context_stats, metric_name, namer,
-                       output_stream, output_dir):
+                       output_stream, plot_dir):
     """
     Print an association context based on correlation
 
@@ -417,13 +441,15 @@ def print_context_corr(context, context_stats, metric_name, namer,
     output_stream :
         the stream to output data to
 
-    output_dir :
-        output directory to be used to store plots
+    plot_dir :
+        directory to be used to store plots
     """
     data = context.data
 
     out = data[data.columns[0]]
     sens = data[data.columns[1]]
+
+    rcParams.update({'figure.autolayout': True})
 
     # avoid matplotlib overflow
     if len(out) > 100000:
@@ -431,10 +457,9 @@ def print_context_corr(context, context_stats, metric_name, namer,
         out = np.array(out)
         sens = np.array(sens)
 
-    if output_dir:
-        plot_dir = os.path.join(output_dir, 'plots')
+    if plot_dir:
         try:
-            os.mkdir(plot_dir)
+            mkdir_p(plot_dir)
         except OSError:
             # directory already exists
             pass
@@ -442,7 +467,7 @@ def print_context_corr(context, context_stats, metric_name, namer,
     else:
         plot_name = None
 
-    plt.figure()
+    fig = plt.figure()
     m, b = np.polyfit(sens, out, 1)
     plt.plot(sens, m*sens + b, '-', color='green')
 
@@ -486,6 +511,7 @@ def print_context_corr(context, context_stats, metric_name, namer,
 
     if plot_name:
         plt.savefig(plot_name)
+        plt.close(fig)
     else:
         plt.show()
 

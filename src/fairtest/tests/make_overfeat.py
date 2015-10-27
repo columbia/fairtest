@@ -1,7 +1,7 @@
 """
 Run FairTest Discovery Investigation on ImageNet Dataset
 
-Usage: ./make_overfeat.py fairtest/data/images/overfeat_raw.csv
+Usage: ./make_overfeat.py fairtest/data/images/overfeat_raw.csv results/overfeat
 """
 
 import fairtest.utils.prepare_data as prepare
@@ -64,7 +64,7 @@ def main(argv=sys.argv):
 
 
 def usage(argv):
-    print "Usage:%s <filename>" % argv[0]
+    print "Usage:%s <filename> <output_dir>" % argv[0]
     exit(-1)
 
 if __name__ == '__main__':

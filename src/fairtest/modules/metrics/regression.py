@@ -73,8 +73,6 @@ class REGRESSION(Metric):
     def abs_effect(self):
         effects = np.array([intervals.z_effect(ci_low, ci_high)
                             for (ci_low, ci_high, _) in self.stats.values])
-
-        effects[np.isnan(effects)] = 0
         return np.mean(effects)
 
     @staticmethod

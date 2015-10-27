@@ -1,0 +1,46 @@
+================================================================================
+Commit Hash: 	0f5b6f6306871fe3ada16c1315438bb8a493797f
+
+Dataset: movies
+Train Size: 3020
+Test Size: 3020
+S: ['Gender', 'Age']
+X: ['Occupation']
+E: None
+O: ['Avg Movie Age']
+
+Train Params: 	{'max_bins': 10, 'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'avg'}
+Test Params: 	{'prune_insignificant': True, 'exact': True, 'ci_level': 0.95}
+Report Params: 	{'node_filter': 'better_than_ancestors'}
+================================================================================
+
+Report of associations of O=['Avg Movie Age'] on Si = Gender:
+Association metric: CORR
+
+Global Population 0 of size 3020
+
+p-value = 4.27e-02 ; CORR = [-0.0116, 0.1074]
+================================================================================
+
+Hierarchical printing of subpopulations (summary)
+
+================================================================================
+
+ Context = {} ; CI = [-0.0116, 0.1074] ; Size = 3020
+--------------------------------------------------------------------------------
+
+Report of associations of O=['Avg Movie Age'] on Si = Age:
+Association metric: CORR
+
+Global Population 0 of size 3020
+
+p-value = 1.03e-61 ; CORR = [0.2400, 0.3489]
+================================================================================
+
+Hierarchical printing of subpopulations (summary)
+
+================================================================================
+
+ Context = {} ; CI = [0.2400, 0.3489] ; Size = 3020
+--------------------------------------------------------------------------------
+

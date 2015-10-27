@@ -30,6 +30,8 @@ def z_effect(ci_low, ci_high):
     This is the absolute value of the lower bound of the confidence interval,
     or zero if the interval contains zero.
     """
+    if np.isnan(ci_low) or np.isnan(ci_high):
+        return 0
     return 0 if (ci_low * ci_high < 0) else min(abs(ci_low), abs(ci_high))
 
 

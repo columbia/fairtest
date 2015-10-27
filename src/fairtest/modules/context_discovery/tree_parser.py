@@ -236,8 +236,7 @@ def find_contexts(tree, data, features_info, sens, expl, output,
 
         ancestor_ptr = parent
         # prune non-significant contexts
-        if (is_root or metric.abs_effect() > 0) \
-                or not prune_insignificant:
+        if (is_root or metric.abs_effect() > 0) or not prune_insignificant:
             clstr = Context(node.id, feature_path, is_leaf, is_root, parent,
                             data, size, metric, additional_data)
             if parent:

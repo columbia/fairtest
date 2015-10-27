@@ -51,6 +51,62 @@ class NMI(Metric):
         return 'NMI'
 
 
+class CondNMI(Metric):
+    """
+    Conditional Mutual Information metric.
+    """
+    dataType = Metric.DATATYPE_CT
+
+    def compute(self, data, level, exact=True):
+        pval = \
+            tests.permutation_test_ct_cond(data,
+                                           lambda ct: abs(cond_mutual_info(ct)))
+
+        ci_low, ci_high = \
+            intervals.bootstrap_ci_ct_cond(data,
+                                           lambda ct: abs(cond_mutual_info(ct)),
+                                           ci_level=level)
+
+        self.stats = pd.DataFrame(columns=['ci_low', 'ci_high', 'pval'])
+        self.stats.loc[0] = [ci_low, ci_high, pval]
+
+        # compute mutual information for each sub-group
+        for (idx, sub_ct) in enumerate(data):
+            self.stats.loc[idx+1] = NMI().compute(sub_ct, level,
+                                                  exact=exact).stats
+
+        return self
+
+    def abs_effect(self):
+        (ci_low, _, _) = self.stats.loc[0]
+        return ci_low
+
+    @staticmethod
+    def approx_stats(data, level):
+        raise NotImplementedError()
+
+    @staticmethod
+    def exact_test(data):
+        raise NotImplementedError()
+
+    @staticmethod
+    def exact_ci(data, level):
+        raise NotImplementedError()
+
+    @staticmethod
+    def validate(sens, output, expl):
+        if output.num_labels != 1:
+            raise ValueError('CondNMI metric only usable for a single target')
+        if expl is None:
+            raise ValueError('CondNMI metric expects an explanatory feature')
+        if not expl.arity:
+            raise ValueError('CondNMI metric expects a categorical explanatory'
+                             ' feature')
+
+    def __str__(self):
+        return 'CondNMI'
+
+
 def mutual_info(data, norm=True, ci_level=None):
     """
     mutual information with or without normalization and confidence intervals.
@@ -134,3 +190,27 @@ def mutual_info(data, norm=True, ci_level=None):
     ci_high = min(ci_high, 1)
 
     return ci_low, ci_high, pval
+
+
+def cond_mutual_info(data, norm=True):
+    """
+    Compute the conditional mutual information of two variables given a third
+    Parameters
+    ----------
+    data :
+        A 3-dimensional table. This method computes the mutual
+        information between the first and second dimensions, given the third.
+    norm :
+        whether the MI should be normalized
+    Returns
+    -------
+    cond_mi :
+        the conditional mutual information
+    References
+    ----------
+    https://en.wikipedia.org/wiki/Conditional_mutual_information
+    """
+    weights = [d.sum() for d in data]
+    mis = [mutual_info(d, norm) for d in data]
+    cond_mi = np.average(mis, axis=None, weights=weights)
+    return cond_mi

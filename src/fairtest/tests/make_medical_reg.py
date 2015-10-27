@@ -1,6 +1,7 @@
 """
 Run FairTest Error Profiling Investigation on Medical Dataset
-Usage: ./make_medical_reg.py fairtest/data/medical/predictions_reg.csv
+Usage: ./make_medical_reg.py fairtest/data/medical/predictions_reg.csv \
+       results/medical_reg
 """
 
 import fairtest.utils.prepare_data as prepare
@@ -35,7 +36,7 @@ def main(argv=sys.argv):
 
     # Evaluate on the testing set
     t3 = time()
-    test([inv], exact=False)
+    test([inv])
 
     # Create the report
     t4 = time()
@@ -50,7 +51,7 @@ def main(argv=sys.argv):
 
 
 def usage(argv):
-    print "Usage:%s <filename>" % argv[0]
+    print "Usage:%s <filename> <output_dir>" % argv[0]
     exit(-1)
 
 if __name__ == '__main__':

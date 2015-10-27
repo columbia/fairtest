@@ -19,7 +19,7 @@ benchmark:
 berkeley:
 	rm -r $(OUTPUT_FOLDER)/berkeley; \
 	mkdir $(OUTPUT_FOLDER)/berkeley; \
-	python -m make_berkeley $(INPUT_FOLDER)/berkeley/berkeley.csv $(OUTPUT_FOLDER)/berkeley > $(OUTPUT_FOLDER)/results_brekeley.csv
+	python -m make_berkeley $(INPUT_FOLDER)/berkeley/berkeley.csv $(OUTPUT_FOLDER)/berkeley > $(OUTPUT_FOLDER)/results_berkeley.csv
 
 recommender:
 	rm -rf $(OUTPUT_FOLDER)/recommender; \
@@ -42,7 +42,7 @@ medical_bin:
 medical_reg:
 	rm -r $(OUTPUT_FOLDER)/medical_reg; \
 	mkdir $(OUTPUT_FOLDER)/medical_reg; \
-	python -m make_medical_reg $(INPUT_FOLDER)/medical/predictions_reg.csv $(OUTPUT_FOLDER)/medical_reg > $(OUTPUT_FOLDER)/results_medical_reg.csv
+	python -m make_medical_reg $(INPUT_FOLDER)/medical/predictions_reg_log.csv $(OUTPUT_FOLDER)/medical_reg > $(OUTPUT_FOLDER)/results_medical_reg.csv
 
 overfeat:
 	rm -r $(OUTPUT_FOLDER)/overfeat; \

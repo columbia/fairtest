@@ -1,7 +1,7 @@
 """
 Run FairTest Testing Investigation on Staples Dataset
 
-Usage: ./make_staples.py fairtest/data/staples/staples.csv
+Usage: ./make_staples.py fairtest/data/staples/staples.csv results/staples
 """
 
 import fairtest.utils.prepare_data as prepare
@@ -49,7 +49,7 @@ def main(argv=sys.argv):
 
 
 def usage(argv):
-    print "Usage:%s <filename>" % argv[0]
+    print "Usage:%s <filename> <output_dir>" % argv[0]
     exit(-1)
 
 if __name__ == '__main__':

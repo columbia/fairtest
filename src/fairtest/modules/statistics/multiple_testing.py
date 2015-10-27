@@ -22,15 +22,38 @@ def compute_all_stats(investigations, exact=True, level=0.95):
 
     level :
         overall confidence level (1- familywise error rate)
+    """
+
+    # reserve the same "confidence budget" for each investigation, independently
+    # of the number of hypotheses tested in each
+    adj_level = 1-(1-level)/len(investigations)
+    for inv in investigations:
+        inv.stats = compute_investigation_stats(inv, exact, adj_level)
+
+
+def compute_investigation_stats(inv, exact=True, level=0.95):
+    """
+    Compute all statistics for all protected features of an investigation
+
+    Parameters
+    ----------
+    inv :
+        the investigation
+
+    exact :
+        whether exact tests should be used
+
+    level :
+        overall confidence level (1- familywise error rate)
 
     Returns
     -------
     all_stats:
-        list of all statistics for all investigations
+        list of all statistics for the investigation
     """
 
     # count the number of hypotheses to test
-    total_hypotheses = sum([num_hypotheses(inv) for inv in investigations])
+    total_hypotheses = num_hypotheses(inv)
     logging.info('Testing %d hypotheses', total_hypotheses)
 
     #
@@ -39,14 +62,13 @@ def compute_all_stats(investigations, exact=True, level=0.95):
     adj_level = 1-(1-level)/total_hypotheses
 
     # statistics for all investigations
-    all_stats = [{sens: compute_stats(ctxts, exact, adj_level)
-                  for (sens, ctxts) in sorted(inv.contexts.iteritems())}
-                 for inv in investigations]
+    all_stats = {sens: compute_stats(ctxts, exact, adj_level)
+                 for (sens, ctxts) in sorted(inv.contexts.iteritems())}
+
 
     # flattened array of all p-values
     all_pvals = [max(stat[-1], 1e-180)
-                 for inv_stats in all_stats
-                 for sens_stats in inv_stats.values()
+                 for sens_stats in all_stats.values()
                  for stat in sens_stats['stats']]
 
     # correct p-values
@@ -56,33 +78,30 @@ def compute_all_stats(investigations, exact=True, level=0.95):
 
     # replace p-values by their corrected value
     idx = 0
-    # iterate over all investigations
-    for inv_idx, inv in enumerate(investigations):
-        # iterate over all protected features for an investigation
-        for (sens, sens_contexts) in inv.contexts.iteritems():
-            sens_stats = all_stats[inv_idx][sens]['stats']
-            # iterate over all contexts for a protected feature
-            for i in range(len(sens_stats)):
-                old_stats = sens_stats[i]
-                all_stats[inv_idx][sens]['stats'][i] = \
-                    np.append(old_stats[0:-1], pvals_corr[idx])
-                idx += 1
 
-    for inv_idx, inv in enumerate(investigations):
-        for (sens, sens_contexts) in inv.contexts.iteritems():
-            metric = sens_contexts[0].metric
-            # For regression, re-form the dataframes for each context
-            if isinstance(metric.stats, pd.DataFrame):
-                res = all_stats[inv_idx][sens]
-                res = pd.DataFrame(res['stats'], index=res['index'],
-                                   columns=res['cols'])
-                all_stats[inv_idx][sens] = \
-                    {'stats':
-                         np.array_split(res, len(res)/len(metric.stats))}
+    # iterate over all protected features for the investigation
+    for (sens, sens_contexts) in inv.contexts.iteritems():
+        sens_stats = all_stats[sens]['stats']
+        # iterate over all contexts for a protected feature
+        for i in range(len(sens_stats)):
+            old_stats = sens_stats[i]
+            all_stats[sens]['stats'][i] = \
+                np.append(old_stats[0:-1], pvals_corr[idx])
+            idx += 1
 
-    all_stats = [{sens: sens_stats['stats']
-                  for (sens, sens_stats) in inv_stats.iteritems()}
-                 for inv_stats in all_stats]
+    for (sens, sens_contexts) in inv.contexts.iteritems():
+        metric = sens_contexts[0].metric
+        # For regression, re-form the dataframes for each context
+        if isinstance(metric.stats, pd.DataFrame):
+            res = all_stats[sens]
+            res = pd.DataFrame(res['stats'], index=res['index'],
+                               columns=res['cols'])
+            all_stats[sens] = \
+                {'stats':
+                     np.array_split(res, len(res)/len(metric.stats))}
+
+    all_stats = {sens: sens_stats['stats']
+                 for (sens, sens_stats) in all_stats.iteritems()}
 
     return all_stats
 

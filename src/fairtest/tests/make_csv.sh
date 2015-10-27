@@ -4,7 +4,7 @@ REPORT_PREFIX="$1"
 OUTPUT_FILE="$2"
 
 if [ -z ${REPORT_PREFIX} ]; then
-    echo "Usage: $0 <filename>"
+    echo "Usage: $0 <results_dir> <filename>"
     exit -1
 fi
 
@@ -31,22 +31,22 @@ function _convert_to_percentage() {
 
   cat ${_report}_* | grep -w "Instantiation"  | grep "Discovery" | tr ':' ',' | tr '-' ',' |\
     sed 's, ,,g' |cut -f1,2,3,4,6,8,10 -d','  | sed 's,\,, ,g' |\
-    awk '{printf "%s(D),%.2f,%.2f,%.2f,%.2f,%d\n",$2, $5, $6, 100*$5/($5+$6), 100*$6/($5+$6), ($5+$6)}'
+    awk '{printf "%s,%.2f,%.2f,%.2f,%.2f,%d,D\n",$2, $5, $6, 100*$5/($5+$6), 100*$6/($5+$6), ($5+$6)}'
 
   cat ${_report}_* | grep -w "Instantiation"  | grep "Testing" | tr ':' ',' | tr '-' ',' |\
     sed 's, ,,g' |cut -f1,2,3,4,6,8,10 -d','  | sed 's,\,, ,g' |\
-    awk '{printf "%s(T),%.2f,%.2f,%.2f,%.2f,%d\n",$2, $5, $6, 100*$5/($5+$6), 100*$6/($5+$6), ($5+$6)}'
+    awk '{printf "%s,%.2f,%.2f,%.2f,%.2f,%d,T\n",$2, $5, $6, 100*$5/($5+$6), 100*$6/($5+$6), ($5+$6)}'
 
   cat ${_report}_* | grep -w "Instantiation"  | grep "Error" | tr ':' ',' | tr '-' ',' |\
     sed 's, ,,g' |cut -f1,2,3,4,6,8,10 -d','  | sed 's,\,, ,g' |\
-    awk '{printf "%s(EP),%.2f,%.2f,%.2f,%.2f,%d\n",$2, $5, $6, 100*$5/($5+$6), 100*$6/($5+$6), ($5+$6)}'
+    awk '{printf "%s,%.2f,%.2f,%.2f,%.2f,%d,EP\n",$2, $5, $6, 100*$5/($5+$6), 100*$6/($5+$6), ($5+$6)}'
 }
 
 function __convert_to_percentage() {
   local _report="$1"
 
-  echo "#set,train,test,ptrain,ptest,total,nl"
-  _convert_to_percentage ${_report} | tr ',' ' ' | awk '{printf "%s,%.2f,%.2f,%.2f,%.2f,%d,%d\n", $1, $2, $3, $4, $5, $6, NR-1}'
+  echo "#set,train,test,ptrain,ptest,total,investigation,idx"
+  _convert_to_percentage ${_report} | tr ',' ' ' | awk '{printf "%s,%.2f,%.2f,%.2f,%.2f,%d,%s,%d\n", $1, $2, $3, $4, $5, $6, $7, NR-1}'
 }
 
 #

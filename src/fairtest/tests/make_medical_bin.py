@@ -1,6 +1,7 @@
 """
 Run FairTest Error Profiling Investigation on Medical Dataset
-Usage: ./make_medical_bin.py fairtest/data/medical/predictions_bin.csv
+Usage: ./make_medical_bin.py fairtest/data/medical/predictions_bin.csv \
+       results/medical_bin
 """
 
 import fairtest.utils.prepare_data as prepare
@@ -50,7 +51,7 @@ def main(argv=sys.argv):
 
 
 def usage(argv):
-    print "Usage:%s <filename>" % argv[0]
+    print "Usage:%s <filename> <output_dir>" % argv[0]
     exit(-1)
 
 if __name__ == '__main__':

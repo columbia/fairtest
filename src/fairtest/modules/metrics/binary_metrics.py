@@ -103,7 +103,7 @@ class CondDIFF(Metric):
             raise ValueError('CondDIFF metric only usable with binary features')
 
     def __str__(self):
-        return 'COND_DIFF'
+        return 'CondDIFF'
 
 
 class RATIO(Metric):

@@ -14,7 +14,7 @@ import numpy as np
 from sklearn import preprocessing as preprocessing
 from sklearn import cross_validation as cross_validation
 from copy import copy
-from os import path
+from os import path, mkdir
 import sys
 import abc
 import logging
@@ -157,7 +157,7 @@ def train(investigations, max_depth=5, min_leaf_size=100,
     if score_aggregation not in guided_tree.ScoreParams.AGG_TYPES:
         raise ValueError("score_aggregation should be one of 'avg', "
                          "'weighted_avg' or 'max', Got %s", score_aggregation)
-    if max_bins <=0:
+    if max_bins <= 0:
         raise ValueError('max_bins must be positive')
 
     for inv in investigations:
@@ -242,10 +242,8 @@ def test(investigations, prune_insignificant=True, exact=True, ci_level=0.95):
     np.random.seed(investigations[0].random_state)
 
     logging.info('Begin testing phase')
-    all_stats = multitest.compute_all_stats(investigations, exact, ci_level)
 
-    for i, inv in enumerate(investigations):
-        inv.stats = all_stats[i]
+    multitest.compute_all_stats(investigations, exact, ci_level)
 
 
 def report(investigations, dataname, output_dir=None, ci_level=0.95,
@@ -300,8 +298,11 @@ def report(investigations, dataname, output_dir=None, ci_level=0.95,
         elif not path.isdir(output_dir):
             raise IOError("Directory \"%s\" does not exist" % output_dir)
         else:
-            filename = path.join(output_dir,
-                                 "report_" + dataname + str(idx) + ".txt")
+            if len(investigations) > 1:
+                filename = path.join(output_dir, "report_" + dataname + "_" +
+                                     str(idx) + ".txt")
+            else:
+                filename = path.join(output_dir, "report_" + dataname + ".txt")
             output_stream = open(filename, "w+")
 
         # print some global information about the investigation
@@ -317,10 +318,19 @@ def report(investigations, dataname, output_dir=None, ci_level=0.95,
                                         inv.test_params, inv.display_params,
                                         output_stream)
 
+        plot_dir = None
+        if output_dir:
+            if len(investigations) > 1:
+                plot_dir = path.join(output_dir, dataname +
+                                     "_" + str(idx) + "_plots")
+            else:
+                plot_dir = path.join(output_dir, dataname + "_plots")
+
         # print all the bug reports
         for sens in inv.sens_features:
             print >> output_stream, \
-                'Report of associations on Si = {}:'.format(sens)
+                'Report of associations of O={} on Si = {}:'.\
+                    format(inv.output.short_names, sens)
             print >> output_stream, \
                 'Association metric: {}'.format(inv.metrics[sens])
             print >> output_stream
@@ -328,16 +338,24 @@ def report(investigations, dataname, output_dir=None, ci_level=0.95,
             contexts = inv.contexts[sens]
             np.random.seed(inv.random_state)
 
+            if len(inv.sens_features) > 1:
+                sub_plot_dir = path.join(plot_dir, sens)
+            else:
+                sub_plot_dir = plot_dir
+
             # dirty nasty hack for the benchmark
             txt = report_module.bug_report(contexts, stats, sens, inv.expl,
                                            inv.output, output_stream,
                                            level=ci_level,
                                            encoders=inv.encoders,
                                            node_filter=node_filter,
-                                           output_dir=output_dir)
+                                           plot_dir=sub_plot_dir)
 
             if len(inv.sens_features) == 1:
+                output_stream.close()
                 return txt
+
+        output_stream.close()
 
 
 class Feature(object):
@@ -366,13 +384,13 @@ class Target(object):
         self.names = names
         self.num_labels = len(names)
         self.arity = arity
-
-    def __repr__(self):
-        short_names = self.names if len(self.names) < 10 else \
+        self.short_names = self.names if len(self.names) < 10 else \
             '[{} ... {}]'.format(self.names[0], self.names[-1])
 
+    def __repr__(self):
+
         return "%s(names=%s, arity=%s)" \
-               % (self.__class__.__name__, short_names, self.arity)
+               % (self.__class__.__name__, self.short_names, self.arity)
 
 
 def metric_from_string(m_str, **kwargs):
@@ -399,4 +417,6 @@ def metric_from_string(m_str, **kwargs):
         return REGRESSION(topk=kwargs['topk'])
     elif m_str == "CondDiff":
         return CondDIFF()
+    elif m_str == "CondNMI":
+        return CondNMI()
     raise ValueError('Unknown fairness Metric {}'.format(m_str))
