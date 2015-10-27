@@ -46,7 +46,7 @@ function __convert_to_percentage() {
   local _report="$1"
 
   echo "#set,train,test,ptrain,ptest,total,investigation,idx"
-  _convert_to_percentage ${_report} | tr ',' ' ' | awk '{printf "%s,%.2f,%.2f,%.2f,%.2f,%d,%s,%d\n", $1, $2, $3, $4, $5, $6, $7, NR-1}'
+  _convert_to_percentage ${_report} | tr ',' ' ' | awk '{printf "%s,%.2f,%.2f,%.2f,%.2f,%ds,%s,%d\n", $1, $2, $3, $4, $5, $6, $7, NR-1}'
 }
 
 #
