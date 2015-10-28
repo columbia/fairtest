@@ -37,7 +37,7 @@ class Investigation(object):
         if not isinstance(data, pd.DataFrame):
             raise ValueError('data should be a Pandas DataFrame')
 
-        if not 0 < ci_level < 1:
+        if not 0 <= ci_level <= 1:
             raise ValueError('ci_level should be in (0,1), Got %s', ci_level)
 
         if metrics is not None and not isinstance(metrics, dict):
