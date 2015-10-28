@@ -279,7 +279,7 @@ def do_benchmark((classes, pool, guard_lines)):
             # Create the report (apply no filtering)
             context_list = report([inv], "benchmark_" + random_suffix,
                                   output_dir="/tmp", node_filter='all',
-                                  ci_level=0)
+                                  conf=0)
 
             # count success
             found = 0
@@ -339,7 +339,6 @@ def main(argv=sys.argv):
     ITERATIONS = int(argv[2])
 
     classes, pool, lines = load_file(FILENAME)
-
 
     P = multiprocessing.Pool(multiprocessing.cpu_count() + 2)
     results = P.map_async(do_benchmark, [(classes, pool, lines)]*ITERATIONS)

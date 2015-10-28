@@ -84,11 +84,11 @@ class ScoreParams(object):
     MAX = 'max'
     AGG_TYPES = [WEIGHTED_AVG, AVG, MAX]
 
-    def __init__(self, metric, agg_type, ci_level):
+    def __init__(self, metric, agg_type, conf):
         assert agg_type in ScoreParams.AGG_TYPES
         self.metric = metric
         self.agg_type = agg_type
-        self.ci_level = ci_level
+        self.conf = conf
 
 
 class SplitParams(object):
@@ -106,7 +106,7 @@ class SplitParams(object):
         self.min_leaf_size = min_leaf_size
 
 
-def build_tree(data, feature_info, sens, expl, output, metric, ci_level,
+def build_tree(data, feature_info, sens, expl, output, metric, conf,
                max_depth, min_leaf_size=100, agg_type='avg', max_bins=10):
     """
     Builds a decision tree guided towards nodes with high bias
@@ -131,7 +131,7 @@ def build_tree(data, feature_info, sens, expl, output, metric, ci_level,
     metric :
         the fairness metric to use
 
-    ci_level :
+    conf :
         the confidence level
 
     max_depth :
@@ -180,7 +180,7 @@ def build_tree(data, feature_info, sens, expl, output, metric, ci_level,
     # bin the continuous features
     cont_thresholds = find_thresholds(data, features, feature_info, max_bins)
 
-    score_params = ScoreParams(metric, agg_type, ci_level)
+    score_params = ScoreParams(metric, agg_type, conf)
     split_params = SplitParams(targets, sens, expl, dim, feature_info,
                                cont_thresholds, min_leaf_size)
 
@@ -719,14 +719,14 @@ def score(stats, score_params, weight=1):
 
     metric = score_params.metric
     agg_type = score_params.agg_type
-    ci_level = score_params.ci_level
+    conf = score_params.conf
 
     metrics = [copy(metric) for _ in stats]
 
     zip_w_metric = zip(stats, metrics)
 
     # compute a score for each child
-    score_list = [metric_copy.compute(child, ci_level, exact=False).abs_effect()
+    score_list = [metric_copy.compute(child, conf, exact=False).abs_effect()
                   for (child, metric_copy) in zip_w_metric]
 
     logging.debug('split score list: %s', score_list)

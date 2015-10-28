@@ -15,7 +15,7 @@ NODE_FILTERS = [FILTER_ALL,
 
 
 def filter_rank_bugs(context_stats, node_filter=FILTER_BETTER_THAN_ANCESTORS,
-                     level=0.95):
+                     conf=0.95):
     """
     Print all the contexts sorted by relevance
 
@@ -27,7 +27,7 @@ def filter_rank_bugs(context_stats, node_filter=FILTER_BETTER_THAN_ANCESTORS,
     node_filter :
         way to filter the contexts
 
-    level :
+    conf :
         confidence level for filtering insignificant associations
     """
 
@@ -39,7 +39,7 @@ def filter_rank_bugs(context_stats, node_filter=FILTER_BETTER_THAN_ANCESTORS,
                          not c.isroot and c.metric.abs_effect() > 0]
     else:
         filtered_bugs = [(c, c_stats) for (c, c_stats) in context_stats if
-                         not c.isroot and c_stats[-1] <= 1-level]
+                         not c.isroot and c_stats[-1] <= 1-conf]
 
     #
     # Only keep sub-populations that lead to a better bias

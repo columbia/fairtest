@@ -8,7 +8,7 @@ from statsmodels.sandbox.stats.multicomp import multipletests
 import logging
 
 
-def compute_all_stats(investigations, exact=True, level=0.95):
+def compute_all_stats(investigations, exact=True, conf=0.95):
     """
     Compute all statistics for all investigations and protected features
 
@@ -20,18 +20,18 @@ def compute_all_stats(investigations, exact=True, level=0.95):
     exact :
         whether exact tests should be used
 
-    level :
+    conf :
         overall confidence level (1- familywise error rate)
     """
 
     # reserve the same "confidence budget" for each investigation, independently
     # of the number of hypotheses tested in each
-    adj_level = 1-(1-level)/len(investigations)
+    adj_conf = 1-(1-conf)/len(investigations)
     for inv in investigations:
-        inv.stats = compute_investigation_stats(inv, exact, adj_level)
+        inv.stats = compute_investigation_stats(inv, exact, adj_conf)
 
 
-def compute_investigation_stats(inv, exact=True, level=0.95):
+def compute_investigation_stats(inv, exact=True, conf=0.95):
     """
     Compute all statistics for all protected features of an investigation
 
@@ -43,7 +43,7 @@ def compute_investigation_stats(inv, exact=True, level=0.95):
     exact :
         whether exact tests should be used
 
-    level :
+    conf :
         overall confidence level (1- familywise error rate)
 
     Returns
@@ -59,10 +59,10 @@ def compute_investigation_stats(inv, exact=True, level=0.95):
     #
     # Adjusted Confidence Level (Bonferroni)
     #
-    adj_level = 1-(1-level)/total_hypotheses
+    adj_conf = 1-(1-conf)/total_hypotheses
 
     # statistics for all investigations
-    all_stats = {sens: compute_stats(ctxts, exact, adj_level)
+    all_stats = {sens: compute_stats(ctxts, exact, adj_conf)
                  for (sens, ctxts) in sorted(inv.contexts.iteritems())}
 
     # flattened array of all p-values
@@ -72,7 +72,7 @@ def compute_investigation_stats(inv, exact=True, level=0.95):
 
     # correct p-values
     _, pvals_corr, _, _ = multipletests(all_pvals,
-                                        alpha=1-level,
+                                        alpha=1-conf,
                                         method='holm')
 
     # replace p-values by their corrected value
@@ -130,7 +130,7 @@ def num_hypotheses(inv):
     return tot
 
 
-def compute_stats(contexts, exact, level):
+def compute_stats(contexts, exact, conf):
     """
     Compute statistics for a list of contexts
 
@@ -142,7 +142,7 @@ def compute_stats(contexts, exact, level):
     exact :
         whether exact statistics should be computed
 
-    level :
+    conf :
         confidence level
 
     Returns
@@ -152,7 +152,7 @@ def compute_stats(contexts, exact, level):
         information if more than one hypothesis was tested in a context
     """
     metric = contexts[0].metric
-    stats = [c.metric.compute(c.data, level, exact=exact).stats
+    stats = [c.metric.compute(c.data, conf, exact=exact).stats
              for c in contexts]
 
     # For regression, we have multiple p-values per context

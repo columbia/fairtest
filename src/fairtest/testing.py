@@ -13,7 +13,7 @@ class Testing(Investigation):
     """
 
     def __init__(self, data, protected, output, expl=None, metrics=None,
-                 train_size=0.5, ci_level=0.95, random_state=None):
+                 train_size=0.5, conf=0.95, random_state=None):
         """
         Initializes a FairTest Testing Investigation.
 
@@ -31,14 +31,14 @@ class Testing(Investigation):
             dictionary of custom metrics indexed by a protected feature
         train_size :
             fraction of the data to keep for training
-        ci_level :
+        conf :
             confidence level
         random_state :
             seed for random generators
         """
         logging.info('New Testing Investigation')
         Investigation.__init__(self, data, protected, output, expl, metrics,
-                               train_size, ci_level, random_state)
+                               train_size, conf, random_state)
 
     def set_default_metrics(self):
         out = self.output

@@ -1,5 +1,5 @@
 ================================================================================
-Commit Hash: 	0f5b6f6306871fe3ada16c1315438bb8a493797f
+Commit Hash: 	7dc12ccdca260f55b20a50b394a88c0e781c5b19
 
 Dataset: adult
 Train Size: 24421
@@ -12,7 +12,7 @@ E: None
 O: ['income']
 
 Train Params: 	{'max_bins': 10, 'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'avg'}
-Test Params: 	{'prune_insignificant': True, 'exact': True, 'ci_level': 0.95}
+Test Params: 	{'prune_insignificant': True, 'exact': True, 'conf': 0.95}
 Report Params: 	{'node_filter': 'better_than_ancestors'}
 ================================================================================
 

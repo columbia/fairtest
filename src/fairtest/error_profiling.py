@@ -14,7 +14,7 @@ class ErrorProfiling(Investigation):
     """
 
     def __init__(self, data, protected, output, ground_truth, expl=None,
-                 metrics=None, train_size=0.5, ci_level=0.95,
+                 metrics=None, train_size=0.5, conf=0.95,
                  random_state=None):
         """
         Initializes a FairTest Testing Investigation.
@@ -35,7 +35,7 @@ class ErrorProfiling(Investigation):
             dictionary of custom metrics indexed by a protected feature
         train_size :
             fraction of the data to keep for training
-        ci_level :
+        conf :
             confidence level
         random_state :
             seed for random generators
@@ -69,7 +69,7 @@ class ErrorProfiling(Investigation):
         data = data.drop(output, axis=1)
 
         Investigation.__init__(self, data, protected, error_name, expl, metrics,
-                               train_size, ci_level, random_state)
+                               train_size, conf, random_state)
 
     def set_default_metrics(self):
         out = self.output

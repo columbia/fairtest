@@ -17,18 +17,18 @@ class DIFF(Metric):
     dataType = Metric.DATATYPE_CT
 
     @staticmethod
-    def approx_stats(data, level):
-        return difference(data, ci_level=level)
+    def approx_stats(data, conf):
+        return difference(data, conf=conf)
 
     @staticmethod
     def exact_test(data):
         return tests.permutation_test_ct(data)
 
     @staticmethod
-    def exact_ci(data, level):
+    def exact_ci(data, conf):
         return intervals.bootstrap_ci_ct(data,
-                                         lambda s: difference(s, ci_level=None),
-                                         ci_level=level)
+                                         lambda s: difference(s, conf=None),
+                                         conf=conf)
 
     @staticmethod
     def validate(sens, output, expl):
@@ -55,21 +55,21 @@ class CondDIFF(Metric):
     """
     dataType = Metric.DATATYPE_CT
 
-    def compute(self, data, level, exact=True):
+    def compute(self, data, conf, exact=True):
 
         pval = \
             tests.permutation_test_ct_cond(data,
                                            lambda ct: abs(cond_difference(ct)))
 
         ci_low, ci_high = intervals.bootstrap_ci_ct_cond(data, cond_difference,
-                                                         ci_level=level)
+                                                         conf=conf)
 
         self.stats = pd.DataFrame(columns=['ci_low', 'ci_high', 'pval'])
         self.stats.loc[0] = [ci_low, ci_high, pval]
 
         # compute difference for each sub-group
         for (idx, sub_ct) in enumerate(data):
-            self.stats.loc[idx+1] = DIFF().compute(sub_ct, level,
+            self.stats.loc[idx+1] = DIFF().compute(sub_ct, conf,
                                                    exact=exact).stats
 
         return self
@@ -113,18 +113,18 @@ class RATIO(Metric):
     dataType = Metric.DATATYPE_CT
 
     @staticmethod
-    def approx_stats(data, level):
-        return ratio(data, ci_level=level)
+    def approx_stats(data, conf):
+        return ratio(data, conf=conf)
 
     @staticmethod
     def exact_test(data):
         return tests.permutation_test_ct(data)
 
     @staticmethod
-    def exact_ci(data, level):
+    def exact_ci(data, conf):
         return intervals.bootstrap_ci_ct(data,
-                                         lambda s: ratio(s, ci_level=None),
-                                         ci_level=level)
+                                         lambda s: ratio(s, conf=None),
+                                         conf=conf)
 
     @staticmethod
     def validate(sens, output, expl):
@@ -146,7 +146,7 @@ class RATIO(Metric):
         return 'RATIO'
 
 
-def difference(data, ci_level=None):
+def difference(data, conf=None):
     """
     Difference metric, possibly with confidence intervals.
 
@@ -155,7 +155,7 @@ def difference(data, ci_level=None):
     data :
         2x2 contingency table
 
-    ci_level :
+    conf :
         level for confidence intervals (or None)
 
     Returns
@@ -172,7 +172,7 @@ def difference(data, ci_level=None):
 
     # check if data is degenerate
     if data.shape == (1, 1) or data.shape == (1, 2) or data.shape == (2, 1):
-        if ci_level:
+        if conf:
             return 0, 0, 1.0
         else:
             return 0, 1.0
@@ -191,7 +191,7 @@ def difference(data, ci_level=None):
     #
     # confidence levels as in Ruggieri et al. '10
     #
-    if ci_level:
+    if conf:
         # contingency table values
         n1 = tot[0]
         n2 = tot[1]
@@ -206,7 +206,7 @@ def difference(data, ci_level=None):
         sigma_diff = sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2)
         pval = tests.z_test(diff, sigma_diff)
         # confidence intervals
-        ci_low, ci_high = intervals.ci_norm(ci_level, diff, sigma_diff)
+        ci_low, ci_high = intervals.ci_norm(conf, diff, sigma_diff)
 
         ci_low = max(ci_low, -1)
         ci_high = min(ci_high, 1)
@@ -231,12 +231,12 @@ def cond_difference(data):
         conditional difference
     """
     weights = [d.sum() for d in data]
-    diffs = [difference(d, ci_level=None) for d in data]
+    diffs = [difference(d, conf=None) for d in data]
     cond_diff = np.average(diffs, axis=None, weights=weights)
     return cond_diff
 
 
-def ratio(data, ci_level=None):
+def ratio(data, conf=None):
     """
     Ratio metric, possibly with confidence intervals
 
@@ -245,7 +245,7 @@ def ratio(data, ci_level=None):
     data :
         2x2 contingency table
 
-    ci_level :
+    conf :
         level for confidence intervals (or None)
 
     Returns
@@ -261,7 +261,7 @@ def ratio(data, ci_level=None):
     """
     # check if data is degenerate
     if data.shape == (1, 1) or data.shape == (1, 2) or data.shape == (2, 1):
-        if ci_level:
+        if conf:
             return 1, 1, 1.0
         else:
             return 1, 1.0
@@ -282,7 +282,7 @@ def ratio(data, ci_level=None):
     ratio_stat = probas[1, 0]/probas[1, 1]
 
     # confidence levels as in Ruggieri et al. '10
-    if ci_level:
+    if conf:
         # contingency table values
         n1 = tot[0]
         n2 = tot[1]
@@ -294,8 +294,7 @@ def ratio(data, ci_level=None):
         pval = tests.z_test(log(ratio_stat), sigma_log_ratio)
 
         # confidence intervals
-        ci_log_ratio = intervals.ci_norm(ci_level, log(ratio_stat),
-                                         sigma_log_ratio)
+        ci_log_ratio = intervals.ci_norm(conf, log(ratio_stat), sigma_log_ratio)
         ci_low, ci_high = exp(ci_log_ratio[0]), exp(ci_log_ratio[1])
 
         return ci_low, ci_high, pval

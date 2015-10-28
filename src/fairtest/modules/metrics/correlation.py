@@ -19,8 +19,8 @@ class CORR(Metric):
     dataType = Metric.DATATYPE_CORR
 
     @staticmethod
-    def approx_stats(data, level):
-        return correlation(data, ci_level=level)
+    def approx_stats(data, conf):
+        return correlation(data, conf=conf)
 
     @staticmethod
     def exact_test(data):
@@ -28,11 +28,11 @@ class CORR(Metric):
                                            data[data.columns[1]])
 
     @staticmethod
-    def exact_ci(data, level):
+    def exact_ci(data, conf):
         return intervals.bootstrap_ci_corr(
             data[data.columns[1]], data[data.columns[0]],
             lambda x, y: min(1, max(-1, stats.pearsonr(x, y)[0])),
-            ci_level=level)
+            conf=conf)
 
     @staticmethod
     def validate(sens, output, expl):
@@ -53,7 +53,7 @@ class CORR(Metric):
         return 'CORR'
 
 
-def correlation(data, ci_level=None):
+def correlation(data, conf=None):
     """
     Pearson correlation with confidence intervals.
 
@@ -63,7 +63,7 @@ def correlation(data, ci_level=None):
         data for correlation computation. Either aggregate statistics
         (sum_x, sum_x2, sum_y, sum_y2, sum_xy, n) or complete data
 
-    ci_level :
+    conf :
         level for confidence intervals (or None)
 
     Returns
@@ -105,14 +105,14 @@ def correlation(data, ci_level=None):
     corr = (n*sum_xy - sum_x*sum_y) / \
            (sqrt(n*sum_x2 - sum_x**2) * sqrt(n*sum_y2 - sum_y**2))
 
-    if ci_level:
+    if conf:
         # Fisher transform
         fisher = atanh(corr)
         std = 1.0/sqrt(n-3)
 
         pval = tests.z_test(fisher, std)
 
-        ci_fisher = intervals.ci_norm(ci_level, fisher, std)
+        ci_fisher = intervals.ci_norm(conf, fisher, std)
 
         # inverse transform
         ci_low, ci_high = [tanh(ci_fisher[0]), tanh(ci_fisher[1])]

@@ -12,7 +12,7 @@ class Discovery(Investigation):
     A FairTest Discovery Investigation
     """
     def __init__(self, data, protected, output, expl=None, metrics=None,
-                 train_size=0.5, ci_level=0.95, topk=10, random_state=None):
+                 train_size=0.5, conf=0.95, topk=10, random_state=None):
         """
         Initializes a FairTest Testing Investigation.
 
@@ -30,7 +30,7 @@ class Discovery(Investigation):
             dictionary of custom metrics indexed by a protected feature
         train_size :
             fraction of the data to keep for training
-        ci_level :
+        conf :
             confidence level
         topk :
             number of output features with highest association to report on
@@ -41,7 +41,7 @@ class Discovery(Investigation):
         self.topk = topk
         logging.info('New Discovery Investigation')
         Investigation.__init__(self, data, protected, output, expl, metrics,
-                               train_size, ci_level, random_state)
+                               train_size, conf, random_state)
 
     def set_default_metrics(self):
         out = self.output

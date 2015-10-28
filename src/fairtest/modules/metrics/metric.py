@@ -55,7 +55,7 @@ class Metric(object):
             size = len(data)
         return size
 
-    def compute(self, data, level, exact=True):
+    def compute(self, data, conf, exact=True):
         """
         Computes a confidence interval and p-value for given data.
 
@@ -67,7 +67,7 @@ class Metric(object):
         ----------
         data :
             the data to be evaluated
-        level :
+        conf :
             the confidence level for confidence intervals
         exact :
             indicates whether exact methods should be used
@@ -81,13 +81,13 @@ class Metric(object):
         size = self.get_size(data)
 
         if not exact or size > min(self.approx_LIMIT_P, self.approx_LIMIT_CI):
-            ci_low, ci_high, pval = self.approx_stats(data, level)
+            ci_low, ci_high, pval = self.approx_stats(data, conf)
 
         if exact and size < self.approx_LIMIT_P:
             pval = self.exact_test(data)
 
         if exact and size < self.approx_LIMIT_CI:
-            ci_low, ci_high = self.exact_ci(data, level)
+            ci_low, ci_high = self.exact_ci(data, conf)
 
         self.stats = [ci_low, ci_high, pval]
         return self
@@ -144,7 +144,7 @@ class Metric(object):
 
     @staticmethod
     @abc.abstractmethod
-    def exact_ci(data, level):
+    def exact_ci(data, conf):
         """
         Computes an exact confidence interval.
 
@@ -152,7 +152,7 @@ class Metric(object):
         ----------
         data :
             the data to be evaluated
-        level :
+        conf :
             the confidence level
 
         Returns
@@ -166,7 +166,7 @@ class Metric(object):
 
     @staticmethod
     @abc.abstractmethod
-    def approx_stats(data, level):
+    def approx_stats(data, conf):
         """
         Computes an approximate confidence interval and p-value.
 
@@ -174,7 +174,7 @@ class Metric(object):
         ----------
         data :
             the data to be evaluated
-        level :
+        conf :
             the confidence level
 
         Returns

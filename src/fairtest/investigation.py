@@ -32,13 +32,13 @@ class Investigation(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, data, protected, output, expl=None, metrics=None,
-                 train_size=0.5, ci_level=0.95, random_state=None):
+                 train_size=0.5, conf=0.95, random_state=None):
 
         if not isinstance(data, pd.DataFrame):
             raise ValueError('data should be a Pandas DataFrame')
 
-        if not 0 < ci_level < 1:
-            raise ValueError('ci_level should be in (0,1), Got %s', ci_level)
+        if not 0 < conf < 1:
+            raise ValueError('conf should be in (0,1), Got %s', conf)
 
         if metrics is not None and not isinstance(metrics, dict):
             raise ValueError('metrics should be a dictionary')
@@ -49,7 +49,7 @@ class Investigation(object):
         if not output:
             raise ValueError('at least one output feature must be specified')
 
-        self.ci_level = ci_level
+        self.conf = conf
         self.metrics = metrics if metrics is not None else {}
         self.trained_trees = {}
         self.contexts = {}
@@ -184,13 +184,13 @@ def train(investigations, max_depth=5, min_leaf_size=100,
             tree = guided_tree.build_tree(data, inv.feature_info, sens,
                                           inv.expl, inv.output,
                                           copy(inv.metrics[sens]),
-                                          inv.ci_level, max_depth,
-                                          min_leaf_size, score_aggregation,
-                                          max_bins)
+                                          inv.conf, max_depth, min_leaf_size,
+                                          score_aggregation, max_bins)
             inv.trained_trees[sens] = tree
 
 
-def test(investigations, prune_insignificant=True, exact=True, ci_level=0.95):
+def test(investigations, prune_insignificant=True, exact=True,
+         family_conf=0.95):
     """
     Compute effect sizes and p-values for the discrimination contexts
     discovered on the training set. Correct intervals and p-values across
@@ -212,11 +212,11 @@ def test(investigations, prune_insignificant=True, exact=True, ci_level=0.95):
         intervals are generated with bootstrapping techniques and p-values
         via Monte-Carlo permutation tests.
 
-    ci_level :
+    family_conf :
         familywise confidence level
     """
-    if not 0 < ci_level < 1:
-        raise ValueError('ci_level should be in (0,1), Got %s', ci_level)
+    if not 0 < family_conf < 1:
+        raise ValueError('family_conf should be in (0,1), Got %s', family_conf)
 
     for inv in investigations:
         assert isinstance(inv, Investigation)
@@ -226,7 +226,7 @@ def test(investigations, prune_insignificant=True, exact=True, ci_level=0.95):
     for inv in investigations:
         inv.test_params = {'prune_insignificant': prune_insignificant,
                            'exact': exact,
-                           'ci_level': ci_level}
+                           'family_conf': family_conf}
 
         data = inv.test_set
 
@@ -243,10 +243,10 @@ def test(investigations, prune_insignificant=True, exact=True, ci_level=0.95):
 
     logging.info('Begin testing phase')
 
-    multitest.compute_all_stats(investigations, exact, ci_level)
+    multitest.compute_all_stats(investigations, exact, family_conf)
 
 
-def report(investigations, dataname, output_dir=None, ci_level=0.95,
+def report(investigations, dataname, output_dir=None, filter_conf=0.95,
            node_filter=filter_rank.FILTER_BETTER_THAN_ANCESTORS):
     """
     Output a FairTest bug report for each protected feature in each
@@ -260,8 +260,10 @@ def report(investigations, dataname, output_dir=None, ci_level=0.95,
     dataname :
         name of the dataset used in the experiments
 
-    ci_level :
-        confidence level for filtering out bugs
+    filter_conf :
+        confidence level for filtering out bugs. Filters out bugs for which the
+        p-value is larger than (1-filter_conf). If filter_conf is set to 0, all
+        bugs are retained
 
     output_dir :
         directory to which bug reports shall be output.
@@ -276,8 +278,8 @@ def report(investigations, dataname, output_dir=None, ci_level=0.95,
         does not exhibit a stronger association than the larger contexts that
         it is part of.
     """
-    if not 0 <= ci_level < 1:
-        raise ValueError('ci_level should be in [0,1), Got %s', ci_level)
+    if not 0 <= filter_conf < 1:
+        raise ValueError('filter_conf should be in [0,1), Got %s', filter_conf)
 
     if node_filter not in filter_rank.NODE_FILTERS:
         raise ValueError("node_filter should be one of 'all', "
@@ -346,7 +348,7 @@ def report(investigations, dataname, output_dir=None, ci_level=0.95,
             # dirty nasty hack for the benchmark
             txt = report_module.bug_report(contexts, stats, sens, inv.expl,
                                            inv.output, output_stream,
-                                           level=ci_level,
+                                           conf=filter_conf,
                                            encoders=inv.encoders,
                                            node_filter=node_filter,
                                            plot_dir=sub_plot_dir)

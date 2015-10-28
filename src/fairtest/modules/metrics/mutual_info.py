@@ -19,18 +19,18 @@ class NMI(Metric):
     dataType = Metric.DATATYPE_CT
 
     @staticmethod
-    def approx_stats(data, level):
-        return mutual_info(data, norm=True, ci_level=level)
+    def approx_stats(data, conf):
+        return mutual_info(data, norm=True, conf=conf)
 
     @staticmethod
     def exact_test(data):
         return tests.permutation_test_ct(data)
 
     @staticmethod
-    def exact_ci(data, level):
+    def exact_ci(data, conf):
         return intervals.bootstrap_ci_ct(data,
                                          lambda s: mutual_info(s, norm=True),
-                                         ci_level=level)
+                                         conf=conf)
 
     @staticmethod
     def validate(sens, output, expl):
@@ -57,7 +57,7 @@ class CondNMI(Metric):
     """
     dataType = Metric.DATATYPE_CT
 
-    def compute(self, data, level, exact=True):
+    def compute(self, data, conf, exact=True):
         pval = \
             tests.permutation_test_ct_cond(data,
                                            lambda ct: abs(cond_mutual_info(ct)))
@@ -65,14 +65,14 @@ class CondNMI(Metric):
         ci_low, ci_high = \
             intervals.bootstrap_ci_ct_cond(data,
                                            lambda ct: abs(cond_mutual_info(ct)),
-                                           ci_level=level)
+                                           conf=conf)
 
         self.stats = pd.DataFrame(columns=['ci_low', 'ci_high', 'pval'])
         self.stats.loc[0] = [ci_low, ci_high, pval]
 
         # compute mutual information for each sub-group
         for (idx, sub_ct) in enumerate(data):
-            self.stats.loc[idx+1] = NMI().compute(sub_ct, level,
+            self.stats.loc[idx+1] = NMI().compute(sub_ct, conf,
                                                   exact=exact).stats
 
         return self
@@ -82,7 +82,7 @@ class CondNMI(Metric):
         return ci_low
 
     @staticmethod
-    def approx_stats(data, level):
+    def approx_stats(data, conf):
         raise NotImplementedError()
 
     @staticmethod
@@ -90,7 +90,7 @@ class CondNMI(Metric):
         raise NotImplementedError()
 
     @staticmethod
-    def exact_ci(data, level):
+    def exact_ci(data, conf):
         raise NotImplementedError()
 
     @staticmethod
@@ -107,7 +107,7 @@ class CondNMI(Metric):
         return 'CondNMI'
 
 
-def mutual_info(data, norm=True, ci_level=None):
+def mutual_info(data, norm=True, conf=None):
     """
     mutual information with or without normalization and confidence intervals.
 
@@ -119,7 +119,7 @@ def mutual_info(data, norm=True, ci_level=None):
     norm :
         whether the MI should be normalized
 
-    ci_level :
+    conf :
         level for confidence intervals (or None)
 
     Returns
@@ -145,7 +145,7 @@ def mutual_info(data, norm=True, ci_level=None):
     data_smoothed += 1
 
     if data.shape[0] < 2 or data.shape[1] < 2:
-        if ci_level is not None:
+        if conf is not None:
             return 0, 1, 0
         else:
             return 0
@@ -172,14 +172,14 @@ def mutual_info(data, norm=True, ci_level=None):
             mi = mi/min(h_x, h_y)
 
     # no confidence levels, return single measure
-    if ci_level is None:
+    if conf is None:
         return mi
 
     gstat, pval, dof, _ = tests.g_test(data)
 
-    ci_low, ci_high = intervals.ci_mi(gstat, dof, data_size, ci_level)
+    ci_low, ci_high = intervals.ci_mi(gstat, dof, data_size, conf)
 
-    if pval > 1-ci_level:
+    if pval > 1-conf:
         ci_low = 0
 
     if norm:

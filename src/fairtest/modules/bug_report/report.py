@@ -183,7 +183,7 @@ def print_summary(all_contexts, displayed_contexts, namer, output_stream):
 
 
 def bug_report(contexts, stats, sens, expl, output, output_stream,
-               node_filter=filter_rank.FILTER_BETTER_THAN_ANCESTORS, level=0.95,
+               node_filter=filter_rank.FILTER_BETTER_THAN_ANCESTORS, conf=0.95,
                encoders=None, plot_dir=None):
     """
     Print all the association bugs sorted by effect size
@@ -211,7 +211,7 @@ def bug_report(contexts, stats, sens, expl, output, output_stream,
     node_filter :
         method to use to filter contexts
 
-    level :
+    conf :
         confidence level for filtering
 
     encoders :
@@ -250,7 +250,7 @@ def bug_report(contexts, stats, sens, expl, output, output_stream,
     # filter and rank bugs
     ranked_bugs = filter_rank.filter_rank_bugs(contexts_stats,
                                                node_filter=node_filter,
-                                               level=level)
+                                               conf=conf)
 
     # print contexts in order of relevance
     for (context, context_stats) in ranked_bugs:

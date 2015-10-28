@@ -35,7 +35,7 @@ def z_effect(ci_low, ci_high):
     return 0 if (ci_low * ci_high < 0) else min(abs(ci_low), abs(ci_high))
 
 
-def ci_mi(g, dof, n, ci_level):
+def ci_mi(g, dof, n, conf):
     """
     Compute confidence interval for mutual information from the chi-squared
     distribution.
@@ -51,7 +51,7 @@ def ci_mi(g, dof, n, ci_level):
     n :
         the size of the data sample
 
-    ci_level :
+    conf :
         the confidence level
 
     Returns
@@ -68,8 +68,8 @@ def ci_mi(g, dof, n, ci_level):
 
     https://en.wikipedia.org/wiki/G-test
     """
-    p_low = 1-(1-ci_level)/2
-    p_high = (1-ci_level)/2
+    p_low = 1-(1-conf)/2
+    p_high = (1-conf)/2
 
     g_low = special.chndtrinc(g, dof, p_low)
     g_high = special.chndtrinc(g, dof, p_high)
@@ -77,13 +77,13 @@ def ci_mi(g, dof, n, ci_level):
     return ci_low, ci_high
 
 
-def ci_norm(ci_level, stat, sigma):
+def ci_norm(conf, stat, sigma):
     """
     Confidence interval for a normal approximation.
 
     Parameters
     ----------
-    ci_level :
+    conf :
         the confidence level
 
     stat :
@@ -100,11 +100,11 @@ def ci_norm(ci_level, stat, sigma):
         The upper level of the confidence interval
     """
 
-    ci_low, ci_high = stats.norm.interval(ci_level, loc=stat, scale=sigma)
+    ci_low, ci_high = stats.norm.interval(conf, loc=stat, scale=sigma)
     return ci_low, ci_high
 
 
-def bootstrap_ci_ct(data, stat, num_samples=10000, ci_level=0.95):
+def bootstrap_ci_ct(data, stat, num_samples=10000, conf=0.95):
     """
     Bootstrap confidence interval computation on a contingency table
 
@@ -119,7 +119,7 @@ def bootstrap_ci_ct(data, stat, num_samples=10000, ci_level=0.95):
     num_samples :
         Number of bootstrap samples to generate
 
-    ci_level :
+    conf :
         Confidence level for the interval
 
     Returns
@@ -147,14 +147,14 @@ def bootstrap_ci_ct(data, stat, num_samples=10000, ci_level=0.95):
     bs_stats = [row.reshape(dim) for row in temp]
     bs_stats = [stat(ct) for ct in bs_stats]
 
-    alpha = 1-ci_level
+    alpha = 1-conf
     ci_low = np.percentile(bs_stats, 100*alpha/2)
     ci_high = np.percentile(bs_stats, 100*(1-alpha/2))
 
     return ci_low, ci_high
 
 
-def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
+def bootstrap_ci_corr(x, y, stat, num_samples=10000, conf=0.95):
     """
     Bootstrap confidence interval computation for correlation
 
@@ -172,7 +172,7 @@ def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
     num_samples :
         Number of bootstrap samples to generate
 
-    ci_level :
+    conf :
         Confidence level for the interval
 
     Returns
@@ -187,14 +187,14 @@ def bootstrap_ci_corr(x, y, stat, num_samples=10000, ci_level=0.95):
     idxs = np.random.randint(0, n, (num_samples, n))
     samples = [data[idx] for idx in idxs]
     bs_stats = [stat(sample[:, 0], sample[:, 1]) for sample in samples]
-    alpha = 1-ci_level
+    alpha = 1-conf
     ci_low = np.percentile(bs_stats, 100*alpha/2)
     ci_high = np.percentile(bs_stats, 100*(1-alpha/2))
 
     return ci_low, ci_high
 
 
-def bootstrap_ci_ct_cond(data, stat, num_samples=10000, ci_level=0.95):
+def bootstrap_ci_ct_cond(data, stat, num_samples=10000, conf=0.95):
     """
     Bootstrap confidence interval computation on a 3-way contingency table
 
@@ -209,7 +209,7 @@ def bootstrap_ci_ct_cond(data, stat, num_samples=10000, ci_level=0.95):
     num_samples :
         Number of bootstrap samples to generate
 
-    ci_level :
+    conf :
         Confidence level for the interval
 
     Returns
@@ -236,7 +236,7 @@ def bootstrap_ci_ct_cond(data, stat, num_samples=10000, ci_level=0.95):
     bs_stats = [row.T.reshape(dim) for row in temp]
     bs_stats = [stat(ct) for ct in bs_stats]
 
-    alpha = 1-ci_level
+    alpha = 1-conf
     ci_low = np.percentile(bs_stats, 100*alpha/2)
     ci_high = np.percentile(bs_stats, 100*(1-alpha/2))
 

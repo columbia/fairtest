@@ -21,7 +21,7 @@ class REGRESSION(Metric):
         Metric.__init__(self)
         self.topk = topk
 
-    def compute(self, data, level, exact=True):
+    def compute(self, data, conf, exact=True):
 
         # regression not yet trained
         if self.stats is None:
@@ -44,7 +44,7 @@ class REGRESSION(Metric):
             results['std'] = std_est
             results['pval'] = tests.z_test(results['coeff'], results['std'])
 
-            ci_s = intervals.ci_norm(level, results['coeff'], results['std'])
+            ci_s = intervals.ci_norm(conf, results['coeff'], results['std'])
             results['ci_low'] = ci_s[0]
             results['ci_high'] = ci_s[1]
 
@@ -66,7 +66,7 @@ class REGRESSION(Metric):
             for idx in top_labels:
                 ct = pd.crosstab(data[data.columns[idx]],
                                  data[data.columns[-1]])
-                self.stats.loc[idx] = DIFF().compute(ct, level=level,
+                self.stats.loc[idx] = DIFF().compute(ct, conf=conf,
                                                      exact=exact).stats
             return self
 
@@ -76,7 +76,7 @@ class REGRESSION(Metric):
         return np.mean(effects)
 
     @staticmethod
-    def approx_stats(data, level):
+    def approx_stats(data, conf):
         raise NotImplementedError()
 
     @staticmethod
@@ -84,7 +84,7 @@ class REGRESSION(Metric):
         raise NotImplementedError()
 
     @staticmethod
-    def exact_ci(data, level):
+    def exact_ci(data, conf):
         raise NotImplementedError()
 
     @staticmethod
