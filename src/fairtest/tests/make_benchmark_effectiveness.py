@@ -279,7 +279,7 @@ def do_benchmark((classes, pool, guard_lines)):
             # Create the report (apply no filtering)
             context_list = report([inv], "benchmark_" + random_suffix,
                                   output_dir="/tmp", node_filter='all',
-                                  conf=0)
+                                  filter_conf=0)
 
             # count success
             found = 0
