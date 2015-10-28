@@ -33,6 +33,28 @@ class Investigation(object):
 
     def __init__(self, data, protected, output, expl=None, metrics=None,
                  train_size=0.5, conf=0.95, random_state=None):
+        """
+        Initializes a generic FairTest Investigation.
+
+        Parameters
+        ----------
+        data :
+            the dataset
+        protected :
+            list of names of protected features
+        output :
+            name of output feature or features
+        expl :
+            name of explanatory feature
+        metrics :
+            dictionary of custom metrics indexed by a protected feature
+        train_size :
+            fraction of the data to keep for training
+        conf :
+            confidence level
+        random_state :
+            seed for random generators
+        """
 
         if not isinstance(data, pd.DataFrame):
             raise ValueError('data should be a Pandas DataFrame')
