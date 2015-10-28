@@ -389,16 +389,20 @@ def select_best_feature(node_data, features, split_params,
 
         new_best = False
         if curr_better_than_parent:
-            # No better-than-parent split was found yet. Automatically new best
             if not best_better_than_parent:
+                # No previous split resulted in a child with a higher score
+                # than the parent. The current split is the best.
                 new_best = True
                 best_better_than_parent = True
-            # Better than the previous better-than-parent split
             elif split_score > max_score:
+                # There was a previous split that resulted in a child with a
+                # higher score than the parent, but the current split is even
+                # better
                 new_best = True
                 best_better_than_parent = True
         elif not best_better_than_parent and split_score > max_score:
-            # not better than parent but highest score
+            # No split so far resulted in a child with a higher score
+            # than the parent, but the current split has the highest score
             new_best = True
 
         # check quality of split

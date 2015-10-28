@@ -55,7 +55,7 @@ csv:
 benchmarks: benchmark_performance benchmark_effectiveness
 
 benchmark_effectiveness:
-	python -m make_benchmark_effectiveness $(INPUT_FOLDER)/staples/staples.csv 10 >  $(OUTPUT_FOLDER)/benchmark_effectiveness.csv
+	python -m make_benchmark_effectiveness $(INPUT_FOLDER)/staples/staples.csv 10 > $(OUTPUT_FOLDER)/benchmark_effectiveness.csv
 
 benchmark_performance:
 	python -m make_benchmark_performance $(INPUT_FOLDER)/staples/staples.csv 10 > $(OUTPUT_FOLDER)/benchmark_performance.csv

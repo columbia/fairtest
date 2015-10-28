@@ -33,14 +33,13 @@ def filter_rank_bugs(context_stats, node_filter=FILTER_BETTER_THAN_ANCESTORS,
 
     metric = context_stats[0][0].metric
 
-    # Take all the non-root contexts that are significant
+    # Take all the non-root contexts that are statistically significant
     if metric.dataType == Metric.DATATYPE_REG:
         filtered_bugs = [(c, c_stats) for (c, c_stats) in context_stats if
                          not c.isroot and c.metric.abs_effect() > 0]
     else:
         filtered_bugs = [(c, c_stats) for (c, c_stats) in context_stats if
-                         not c.isroot and c.metric.abs_effect() > 0 and
-                         c_stats[-1] <= 1-level]
+                         not c.isroot and c_stats[-1] <= 1-level]
 
     #
     # Only keep sub-populations that lead to a better bias

@@ -65,7 +65,6 @@ def compute_investigation_stats(inv, exact=True, level=0.95):
     all_stats = {sens: compute_stats(ctxts, exact, adj_level)
                  for (sens, ctxts) in sorted(inv.contexts.iteritems())}
 
-
     # flattened array of all p-values
     all_pvals = [max(stat[-1], 1e-180)
                  for sens_stats in all_stats.values()

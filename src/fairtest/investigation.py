@@ -276,8 +276,8 @@ def report(investigations, dataname, output_dir=None, ci_level=0.95,
         does not exhibit a stronger association than the larger contexts that
         it is part of.
     """
-    if not 0 < ci_level < 1:
-        raise ValueError('ci_level should be in (0,1), Got %s', ci_level)
+    if not 0 <= ci_level < 1:
+        raise ValueError('ci_level should be in [0,1), Got %s', ci_level)
 
     if node_filter not in filter_rank.NODE_FILTERS:
         raise ValueError("node_filter should be one of 'all', "
@@ -352,10 +352,12 @@ def report(investigations, dataname, output_dir=None, ci_level=0.95,
                                            plot_dir=sub_plot_dir)
 
             if len(inv.sens_features) == 1:
-                output_stream.close()
+                if output_dir:
+                    output_stream.close()
                 return txt
 
-        output_stream.close()
+        if output_dir:
+            output_stream.close()
 
 
 class Feature(object):

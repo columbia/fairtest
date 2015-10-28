@@ -13,7 +13,7 @@ import numpy as np
 
 class REGRESSION(Metric):
     """
-    Regression metric.
+    Logistic Regression metric.
     """
     dataType = Metric.DATATYPE_REG
 
