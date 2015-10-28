@@ -316,7 +316,7 @@ def parse_results(results, iterations):
                 stats[_class][effect] += result[_class][effect]
 
     print "#size",
-    for effect in sorted(results[0]):
+    for effect in sorted(results[0][results[0].keys()[0]].keys()):
         print ",effect-%s" % effect,
     print
 

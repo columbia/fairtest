@@ -208,7 +208,7 @@ def do_benchmark((contents, feature_range, size_range)):
             results[n_features][size] = [train_time, test_time,
                                          avg_no_of_feat_values]
             del _data
-            print n_features, size, results[n_features][size]
+            # print n_features, size, results[n_features][size]
         # for all sizes
     # for all feature numbers
     return results
@@ -262,8 +262,8 @@ def main(argv=sys.argv):
 
     contents = load_file(FILENAME)
 
-    SIZE_RANGE = [10000, 20000, 40000, 60000, 80000]
-    FEATURES_RANGE = [10, 20, 40, 60, 80]
+    SIZE_RANGE = [10000, 20000, 40000, 60000]
+    FEATURES_RANGE = [10, 20, 40, 60]
 
     P = multiprocessing.Pool(multiprocessing.cpu_count()-2)
     results = P.map_async(do_benchmark,
