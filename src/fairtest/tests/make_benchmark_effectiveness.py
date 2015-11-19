@@ -20,7 +20,7 @@ from random import shuffle, randint, seed
 import os
 import sys
 from math import ceil
-import multiprocessing
+#import multiprocessing
 from datetime import datetime
 
 FIND_CONTEXTS_STRICT = False
@@ -340,11 +340,14 @@ def main(argv=sys.argv):
 
     classes, pool, lines = load_file(FILENAME)
 
-    P = multiprocessing.Pool(multiprocessing.cpu_count() + 2)
-    results = P.map_async(do_benchmark, [(classes, pool, lines)]*ITERATIONS)
-    results = results.get()
-    P.close()
-    P.join()
+#    P = multiprocessing.Pool(multiprocessing.cpu_count() + 2)
+#    results = P.map_async(do_benchmark, [(classes, pool, lines)]*ITERATIONS)
+#    results = results.get()
+#    P.close()
+#    P.join()
+    results = []
+    for _ in range(0, ITERATIONS):
+        results.append(do_benchmark((classes, pool, lines)))
 
     parse_results(results, ITERATIONS)
 

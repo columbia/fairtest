@@ -26,7 +26,7 @@ from random import shuffle, randint, seed
 import os
 import sys
 import pandas as pd
-import multiprocessing
+#import multiprocessing
 from datetime import datetime
 
 
@@ -265,13 +265,16 @@ def main(argv=sys.argv):
     SIZE_RANGE = [10000, 20000, 40000, 60000]
     FEATURES_RANGE = [10, 20, 40, 60]
 
-    P = multiprocessing.Pool(multiprocessing.cpu_count()-2)
-    results = P.map_async(do_benchmark,
-                          [(contents, FEATURES_RANGE, SIZE_RANGE)]*ITERATIONS)
-    results = results.get()
-    P.close()
-    P.join()
-
+#    P = multiprocessing.Pool(multiprocessing.cpu_count()-2)
+#    results = P.map_async(do_benchmark,
+#                          [(contents, FEATURES_RANGE, SIZE_RANGE)]*ITERATIONS)
+#    results = results.get()
+#    P.close()
+#    P.join()
+#
+    results = []
+    for i in range(0, ITERATIONS):
+        results.append(do_benchmark((contents, FEATURES_RANGE, SIZE_RANGE)))
     parse_results(results, ITERATIONS)
 
 
