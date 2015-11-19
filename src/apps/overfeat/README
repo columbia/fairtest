@@ -10,4 +10,4 @@ Run
 and store results in 'results_black.txt' and 'results_white.txt'
 
 * Use 'parse_results.py' to merge the two files
-* Use 'find_labels.py' to group all images with a particular set of labels
+* Use 'find_labels.py' to group all images with a particular label

@@ -1,5 +1,5 @@
 ================================================================================
-Commit Hash: 	0f5b6f6306871fe3ada16c1315438bb8a493797f
+Commit Hash: 	82c74056ed3f5b5cb19f5eb4179738c81cd0f9f2
 
 Dataset: movies
 Train Size: 3020
@@ -10,8 +10,8 @@ E: None
 O: ['RMSE']
 
 Train Params: 	{'max_bins': 10, 'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'avg'}
-Test Params: 	{'prune_insignificant': True, 'exact': True, 'ci_level': 0.95}
-Report Params: 	{'node_filter': 'better_than_ancestors'}
+Test Params: 	{'prune_insignificant': True, 'exact': True, 'family_conf': 0.95}
+Report Params: 	{'node_filter': 'root'}
 ================================================================================
 
 Report of associations of O=['RMSE'] on Si = Gender:
@@ -22,18 +22,11 @@ Global Population 0 of size 3020
 p-value = 9.09e-03 ; CORR = [-0.1215, -0.0005]
 ================================================================================
 
-Sub-Population 2 of size 2353
-Context = {'Age': (25.0, inf)}
-
-p-value = 2.57e-03 ; CORR = [-0.1451, -0.0082]
---------------------------------------------------------------------------------
-
 Hierarchical printing of subpopulations (summary)
 
 ================================================================================
 
  Context = {} ; CI = [-0.1215, -0.0005] ; Size = 3020
-   Context = {'Age': (25.0, inf)} ; CI = [-0.1451, -0.0082] ; Size = 2353
 --------------------------------------------------------------------------------
 
 Report of associations of O=['RMSE'] on Si = Age:

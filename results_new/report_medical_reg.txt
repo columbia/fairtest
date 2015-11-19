@@ -1,5 +1,5 @@
 ================================================================================
-Commit Hash: 	0f5b6f6306871fe3ada16c1315438bb8a493797f
+Commit Hash: 	82c74056ed3f5b5cb19f5eb4179738c81cd0f9f2
 
 Dataset: medical_reg
 Train Size: 43179
@@ -60,11 +60,11 @@ E: None
 O: ['Abs. Error']
 
 Train Params: 	{'max_bins': 10, 'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'avg'}
-Test Params: 	{'prune_insignificant': True, 'exact': True, 'ci_level': 0.95}
+Test Params: 	{'prune_insignificant': True, 'exact': True, 'family_conf': 0.95}
 Report Params: 	{'node_filter': 'better_than_ancestors'}
 ================================================================================
 
-Report of associations on Si = Age:
+Report of associations of O=['Abs. Error'] on Si = Age:
 Association metric: CORR
 
 Global Population 0 of size 43179

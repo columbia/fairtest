@@ -60,7 +60,7 @@ all_investigations = [inv]
 
 train(all_investigations)
 test(all_investigations)
-report(all_investigations, 'adult.csv', output_dir='temp/')
+report(all_investigations, 'adult', output_dir='temp/')
 ```
 
 #### Discovery
@@ -88,10 +88,10 @@ predictions. An appropriate error measure is then computed:
 ```python
 from fairtest.error_profiling import ErrorProfiling
 
-SENS = [...]        # Protected features
-TARGET = ''         # Predicted output
-GROUND_TRUTH = ''   # Ground truth feature
-EXPL = ''           # Explanatory feature
+SENS = [...]            # Protected features
+TARGET = '...'          # Predicted output
+GROUND_TRUTH = '...'    # Ground truth feature
+EXPL = ''               # Explanatory feature
 
 inv = Discovery(data, SENS, TARGET, GROUND_TRUTH, EXPL)
 ```
@@ -153,8 +153,8 @@ calculates a confidence interval and p-value and stores these as the class
 attribute `stats`. The abstract `Metric` class provides a default `compute` 
 method that calls instance specific methods for computing either exact or 
 approximate statistics. Subclasses of `Metric` can either implement these
-specific methods (see `fairtest.modules.metrics.mutual_info.NMI` for instance) or
-redefine the `compute`method entirely (see for example 
+specific methods (see `fairtest.modules.metrics.mutual_info.NMI` for instance) 
+or redefine the `compute`method entirely (see for example 
 `fairtest.modules.metrics.regression.REGRESSION`). 
 
 
@@ -178,4 +178,5 @@ src/fairtest/modules/metrics            |  Fairness metrics module
 src/fairtest/modules/statistics         |  Statistical tests module
 src/fairtest/discovery.py               |  Discovery Investigations
 src/fairtest/error_profiling.py         |  ErrorProfiling Investigations
+src/fairtest/investigation.py           |  Train, Test, Report for arbitrary Investigations
 src/fairtest/testing.py                 |  Testing Investigations

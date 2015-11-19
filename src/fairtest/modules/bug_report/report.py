@@ -14,6 +14,7 @@ import textwrap
 import os
 import errno
 import re
+import pickle
 from fairtest.modules.metrics import Metric
 from fairtest.modules.context_discovery.tree_parser import Bound
 import fairtest.modules.bug_report.filter_rank as filter_rank
@@ -219,8 +220,6 @@ def bug_report(contexts, stats, sens, expl, output, output_stream,
 
     plot_dir :
         directory to save plots
-
-
     """
 
     metric = contexts[0].metric
@@ -399,6 +398,8 @@ def jitter(x, y, **kwargs):
 
 # type of correlation plot ("BOXPLOT", "JITTER" or "HEXBIN")
 CORR_PLOT = 'BOXPLOT'
+# For labeling of plots
+PLOT_LABEL = 'a'
 
 
 def mkdir_p(path):
@@ -495,21 +496,8 @@ def print_context_corr(context, context_stats, metric_name, namer,
     plt.xlabel(data.columns[1])
     plt.ylabel(data.columns[0])
 
-    # if len(out) == 43179:
-    #     plt.text(0.07, 0.9, '(a)', horizontalalignment='center',
-    #     verticalalignment='center', transform=plt.gca().transAxes)
-    # elif len(out) == 123:
-    #     plt.text(0.07, 0.9, '(b)', horizontalalignment='center',
-    #     verticalalignment='center', transform=plt.gca().transAxes)
-    #     plt.yticks([0,1,2])
-    # elif len(out) == 8177:
-    #     plt.text(0.07, 0.9, '(c)', horizontalalignment='center',
-    #     verticalalignment='center', transform=plt.gca().transAxes)
-    # elif len(out) == 558:
-    #     plt.text(0.07, 0.9, '(d)', horizontalalignment='center',
-    #     verticalalignment='center', transform=plt.gca().transAxes)
-
     if plot_name:
+        pickle.dump(fig, file(os.path.splitext(plot_name)[0]+'.pkl', 'w'))
         plt.savefig(plot_name)
         plt.close(fig)
     else:

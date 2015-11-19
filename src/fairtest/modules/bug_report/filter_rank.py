@@ -31,6 +31,9 @@ def filter_rank_bugs(context_stats, node_filter=FILTER_BETTER_THAN_ANCESTORS,
         confidence level for filtering insignificant associations
     """
 
+    if node_filter == FILTER_ROOT_ONLY:
+        return []
+
     metric = context_stats[0][0].metric
 
     # Take all the non-root contexts that are statistically significant
@@ -40,6 +43,10 @@ def filter_rank_bugs(context_stats, node_filter=FILTER_BETTER_THAN_ANCESTORS,
     else:
         filtered_bugs = [(c, c_stats) for (c, c_stats) in context_stats if
                          not c.isroot and c_stats[-1] <= 1-conf]
+
+    if node_filter == FILTER_LEAVES_ONLY:
+        filtered_bugs = [(c, c_stats) for (c, c_stats) in context_stats if
+                         c.isleaf]
 
     #
     # Only keep sub-populations that lead to a better bias
