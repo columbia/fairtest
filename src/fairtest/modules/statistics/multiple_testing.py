@@ -1,11 +1,11 @@
 """
 Run multiple hypothesis tests
 """
-
 import pandas as pd
 import numpy as np
 from statsmodels.sandbox.stats.multicomp import multipletests
 import logging
+import multiprocessing
 
 
 def compute_all_stats(investigations, exact=True, conf=0.95):
@@ -130,6 +130,13 @@ def num_hypotheses(inv):
     return tot
 
 
+def _wrapper((arg, conf, exact)):
+    """
+    Helper, wrapper used for map_async callback
+    """
+    return arg.metric.compute(arg.data, conf, exact=exact).stats
+
+
 def compute_stats(contexts, exact, conf):
     """
     Compute statistics for a list of contexts
@@ -152,8 +159,26 @@ def compute_stats(contexts, exact, conf):
         information if more than one hypothesis was tested in a context
     """
     metric = contexts[0].metric
-    stats = [c.metric.compute(c.data, conf, exact=exact).stats
-             for c in contexts]
+
+    P = multiprocessing.Pool(multiprocessing.cpu_count())
+    results = P.map_async(
+        _wrapper,
+        zip(contexts, [conf]*len(contexts), [exact]*len(contexts))
+    )
+    stats = results.get()
+    P.close()
+    P.join()
+
+    #
+    # The following block helps parallelization on a spark cluster
+    #
+    # from pyspark import SparkContext
+    # sc = SparkContext("local[4]", "FairTest")
+    # rdd = sc.parallelize(
+    #     zip(contexts, [conf]*len(contexts),[exact]*len(contexts))
+    # )
+    # stats = result.collect()
+    #
 
     # For regression, we have multiple p-values per context
     # (one per topK coefficient)
