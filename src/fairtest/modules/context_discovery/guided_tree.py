@@ -301,28 +301,52 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
                                    split_features-set(to_drop + [best_feature]),
                                    depth+1, split_score, pool)
 
-    pool = multiprocessing.Pool(multiprocessing.cpu_count()-2)
+    #
+    # When contextual features are just a few there is
+    # no actual benefit out of parallelization. In fact,
+    # contemption introduces a slight overhead. Hence,
+    # use only one thread to score less than 10 features.
+    #
+    if len(features) < 10:
+        pool_size = 1
+    else:
+        pool_size = multiprocessing.cpu_count() - 2
 
+    pool = multiprocessing.Pool(pool_size)
     rec_build_tree(data, tree, [], features, 0, 0, pool)
+    pool.close()
+    pool.join()
 
     return tree
 
-# wrapper
-def score_feature(
-    (
-        feature,
-        sens,
-        targets,
-        expl,
-        feature_info,
-        node_data,
-        split_params,
-        score_params,
-        parent_score,
-        best_better_than_parent,
-        max_score
-    )
-):
+
+def score_feature(args):
+    """
+    Scores a particular feature
+
+    Parameters
+    ----------
+    args:
+        a tuple of aguments
+
+    Returns
+    -------
+    dict:
+        a dictionary of feature score info
+    """
+    # unpack a long tuple of arguments
+    feature,\
+    sens,\
+    targets,\
+    expl,\
+    feature_info,\
+    node_data,\
+    split_params,\
+    score_params,\
+    parent_score,\
+    best_better_than_parent,\
+    max_score =  args
+
     to_drop = []
     feature_list = [feature, sens] + targets
     if expl:
@@ -431,26 +455,28 @@ def select_best_feature(node_data, features, split_params,
     expl = split_params.expl
     targets = split_params.targets
 
-    results = pool.map_async(
-        score_feature,
-        zip(
-            features,
-            [sens]*len(features),
-            [targets]*len(features),
-            [expl]*len(features),
-            [feature_info]*len(features),
-            [node_data]*len(features),
-            [split_params]*len(features),
-            [score_params]*len(features),
-            [parent_score]*len(features),
-            [best_better_than_parent]*len(features),
-            [max_score]*len(features)
-       )
+    # create a list of argument tuples
+    args = zip(
+        features,
+        [sens]*len(features),
+        [targets]*len(features),
+        [expl]*len(features),
+        [feature_info]*len(features),
+        [node_data]*len(features),
+        [split_params]*len(features),
+        [score_params]*len(features),
+        [parent_score]*len(features),
+        [best_better_than_parent]*len(features),
+        [max_score]*len(features)
     )
-    results = results.get()
+
+    # parallelize scoring of features
+    results = pool.map_async(score_feature, args).get()
+
     # drop None
     results = filter(lambda item: item, results)
 
+    # pick best score; also merge "to_drop" features
     if results:
         best =  sorted(results, key=lambda d: d['split_score'], reverse=True)[0]
         to_drop =  reduce(lambda a,b:a+b, map(lambda d: d['to_drop'], results))
