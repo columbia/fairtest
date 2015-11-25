@@ -10,6 +10,7 @@ from sklearn.externals import six
 from sklearn.externals.six import StringIO
 from copy import copy
 import logging
+import multiprocessing
 
 
 def find_thresholds(data, features, feature_info, num_bins):
@@ -200,7 +201,7 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
     # in order to maximize the average bias (mutual information) in all
     # sub-trees.
     def rec_build_tree(node_data, node, pred, split_features, depth,
-                       parent_score):
+                       parent_score, pool):
         """
         Recursive tree building.
 
@@ -238,7 +239,7 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
         # select the best feature to split on
         split_score, best_feature, threshold, to_drop, child_metrics = \
             select_best_feature(node_data, split_features, split_params,
-                                score_params, parent_score)
+                                score_params, parent_score, pool)
 
         # no split found, make a leaf
         if best_feature is None:
@@ -273,9 +274,9 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
 
             # recursively build the tree
             rec_build_tree(data_left, left_child, pred+[pred_left],
-                           split_features-set(to_drop), depth+1, split_score)
+                           split_features-set(to_drop), depth+1, split_score, pool)
             rec_build_tree(data_right, right_child, pred+[pred_right],
-                           split_features-set(to_drop), depth+1, split_score)
+                           split_features-set(to_drop), depth+1, split_score, pool)
 
         else:
             # categorical split
@@ -298,15 +299,87 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
                     # recursively build the tree
                     rec_build_tree(child_data, child, pred+[new_pred],
                                    split_features-set(to_drop + [best_feature]),
-                                   depth+1, split_score)
+                                   depth+1, split_score, pool)
 
-    rec_build_tree(data, tree, [], features, 0, 0)
+    pool = multiprocessing.Pool(multiprocessing.cpu_count())
+
+    rec_build_tree(data, tree, [], features, 0, 0, pool)
 
     return tree
 
+# wrapper
+def score_feature(
+    (
+        feature,
+        sens,
+        targets,
+        expl,
+        feature_info,
+        node_data,
+        split_params,
+        score_params,
+        parent_score,
+        best_better_than_parent,
+        max_score
+    )
+):
+    to_drop = []
+    feature_list = [feature, sens] + targets
+    if expl:
+        feature_list.append(expl)
+
+    # determine type of split
+    if feature_info[feature].arity:
+        split_score, metrics = test_cat_feature(node_data[feature_list],
+                                                feature, split_params,
+                                                score_params)
+        threshold = None
+    else:
+        split_score, threshold, metrics = \
+                test_cont_feature(node_data[feature_list], feature,
+                                  split_params, score_params)
+
+    logging.debug('feature %s: score %s', feature, split_score)
+
+    # the feature produced no split and can be dropped in sub-trees
+    if split_score is None or np.isnan(split_score):
+        to_drop.append(feature)
+        return
+
+    # check if there is a child with higher score than the parent
+    curr_better_than_parent = \
+        len([metric for metric in metrics.values()
+             if metric.abs_effect() > parent_score]) > 0
+
+    new_best = False
+    if curr_better_than_parent:
+        if not best_better_than_parent:
+            # No previous split resulted in a child with a higher score
+            # than the parent. The current split is the best.
+            new_best = True
+            best_better_than_parent = True
+        elif split_score > max_score:
+            # There was a previous split that resulted in a child with a
+            # higher score than the parent, but the current split is even
+            # better
+            new_best = True
+            best_better_than_parent = True
+    elif not best_better_than_parent and split_score > max_score:
+        # No split so far resulted in a child with a higher score
+        # than the parent, but the current split has the highest score
+        new_best = True
+
+    return {
+        'split_score': split_score,
+        'feature': feature,
+        'threshold': threshold,
+        'to_drop': to_drop,
+        'metrics': metrics
+    }
+
 
 def select_best_feature(node_data, features, split_params,
-                        score_params, parent_score):
+                        score_params, parent_score, pool):
     """
     Selects the optimal contextual feature to split on to maximize bias
 
@@ -358,59 +431,34 @@ def select_best_feature(node_data, features, split_params,
     expl = split_params.expl
     targets = split_params.targets
 
-    # iterate over all available contextual features
-    for feature in features:
-        feature_list = [feature, sens] + targets
-        if expl:
-            feature_list.append(expl)
+    results = pool.map_async(
+        score_feature,
+        zip(
+            features,
+            [sens]*len(features),
+            [targets]*len(features),
+            [expl]*len(features),
+            [feature_info]*len(features),
+            [node_data]*len(features),
+            [split_params]*len(features),
+            [score_params]*len(features),
+            [parent_score]*len(features),
+            [best_better_than_parent]*len(features),
+            [max_score]*len(features)
+       )
+    )
+    results = results.get()
+    # drop None
+    results = filter(lambda item: item, results)
 
-        # determine type of split
-        if feature_info[feature].arity:
-            split_score, metrics = test_cat_feature(node_data[feature_list],
-                                                    feature, split_params,
-                                                    score_params)
-            threshold = None
-        else:
-            split_score, threshold, metrics = \
-                    test_cont_feature(node_data[feature_list], feature,
-                                      split_params, score_params)
+    if results:
+        best =  sorted(results, key=lambda d: d['split_score'], reverse=True)[0]
+        to_drop =  reduce(lambda a,b:a+b, map(lambda d: d['to_drop'], results))
 
-        logging.debug('feature %s: score %s', feature, split_score)
-
-        # the feature produced no split and can be dropped in sub-trees
-        if split_score is None or np.isnan(split_score):
-            to_drop.append(feature)
-            continue
-
-        # check if there is a child with higher score than the parent
-        curr_better_than_parent = \
-            len([metric for metric in metrics.values()
-                 if metric.abs_effect() > parent_score]) > 0
-
-        new_best = False
-        if curr_better_than_parent:
-            if not best_better_than_parent:
-                # No previous split resulted in a child with a higher score
-                # than the parent. The current split is the best.
-                new_best = True
-                best_better_than_parent = True
-            elif split_score > max_score:
-                # There was a previous split that resulted in a child with a
-                # higher score than the parent, but the current split is even
-                # better
-                new_best = True
-                best_better_than_parent = True
-        elif not best_better_than_parent and split_score > max_score:
-            # No split so far resulted in a child with a higher score
-            # than the parent, but the current split has the highest score
-            new_best = True
-
-        # check quality of split
-        if new_best:
-            max_score = split_score
-            best_feature = feature
-            best_threshold = threshold
-            best_metrics = metrics
+        max_score = best['split_score']
+        best_feature = best['feature']
+        best_threshold = best['threshold']
+        best_metrics = best['metrics']
 
     return max_score, best_feature, best_threshold, to_drop, best_metrics
 
