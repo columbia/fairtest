@@ -301,7 +301,7 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
                                    split_features-set(to_drop + [best_feature]),
                                    depth+1, split_score, pool)
 
-    pool = multiprocessing.Pool(multiprocessing.cpu_count())
+    pool = multiprocessing.Pool(multiprocessing.cpu_count()-2)
 
     rec_build_tree(data, tree, [], features, 0, 0, pool)
 
