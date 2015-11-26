@@ -1,0 +1,46 @@
+================================================================================
+Commit Hash: 	82c74056ed3f5b5cb19f5eb4179738c81cd0f9f2
+
+Dataset: movies
+Train Size: 3020
+Test Size: 3020
+S: ['Gender', 'Age']
+X: ['Occupation']
+E: None
+O: ['RMSE']
+
+Train Params: 	{'max_bins': 10, 'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'avg'}
+Test Params: 	{'prune_insignificant': True, 'exact': True, 'family_conf': 0.95}
+Report Params: 	{'node_filter': 'root'}
+================================================================================
+
+Report of associations of O=['RMSE'] on Si = Gender:
+Association metric: CORR
+
+Global Population 0 of size 3020
+
+p-value = 9.09e-03 ; CORR = [-0.1215, -0.0005]
+================================================================================
+
+Hierarchical printing of subpopulations (summary)
+
+================================================================================
+
+ Context = {} ; CI = [-0.1215, -0.0005] ; Size = 3020
+--------------------------------------------------------------------------------
+
+Report of associations of O=['RMSE'] on Si = Age:
+Association metric: CORR
+
+Global Population 0 of size 3020
+
+p-value = 3.09e-04 ; CORR = [-0.1375, -0.0167]
+================================================================================
+
+Hierarchical printing of subpopulations (summary)
+
+================================================================================
+
+ Context = {} ; CI = [-0.1375, -0.0167] ; Size = 3020
+--------------------------------------------------------------------------------
+
