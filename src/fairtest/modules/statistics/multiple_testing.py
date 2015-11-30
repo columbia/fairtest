@@ -131,12 +131,33 @@ def num_hypotheses(inv):
     return tot
 
 
-def _wrapper((context, conf, exact, random_state)):
+def _wrapper((context, conf, exact, seed)):
     """
     Helper, wrapper used for map_async callback
+
+    Parameters
+    ----------
+    context :
+        a discrimination context
+
+    conf :
+        confidence level
+
+    exact :
+        whether exact statistics should be computed
+
+    seed :
+        a seed for the random number generators
+
+    Returns
+    -------
+    dict :
+        discrimination statistics for the given context
     """
-    #ro.r('set.seed({})'.format(random_state))
-    #np.random.seed(random_state)
+
+    # seed the PRNGs used to compute statistics
+    ro.r('set.seed({})'.format(seed))
+    np.random.seed(seed)
     return context.metric.compute(context.data, conf, exact=exact).stats
 
 
@@ -154,6 +175,9 @@ def compute_stats(contexts, exact, conf, seed):
 
     conf :
         confidence level
+
+    seed :
+        seed for the PRNGs used to compute statistics
 
     Returns
     -------
