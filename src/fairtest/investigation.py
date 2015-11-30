@@ -14,7 +14,7 @@ import numpy as np
 from sklearn import preprocessing as preprocessing
 from sklearn import cross_validation as cross_validation
 from copy import copy
-from os import path, mkdir
+from os import path
 import sys
 import abc
 import logging

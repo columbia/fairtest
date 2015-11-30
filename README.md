@@ -28,7 +28,8 @@ Quick Start
 
 Different benchmark datasets in CSV format are located in `fairtest/data`. You
 can use the `utils.prepare_data.data_from_csv()` function to load a dataset as
-a `Pandas DataFrame`, the format expected by FairTest investigations:
+a `Pandas DataFrame`, the format expected by FairTest investigations. The first 
+line of the csv file should list the names of the different features.
 
 ```python
 from fairtest.utils.prepare_data import data_from_csv
