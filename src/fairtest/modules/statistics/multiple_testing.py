@@ -6,6 +6,7 @@ import numpy as np
 from statsmodels.sandbox.stats.multicomp import multipletests
 import logging
 import multiprocessing
+import rpy2.robjects as ro
 
 
 def compute_all_stats(investigations, exact=True, conf=0.95):
@@ -62,7 +63,7 @@ def compute_investigation_stats(inv, exact=True, conf=0.95):
     adj_conf = 1-(1-conf)/total_hypotheses
 
     # statistics for all investigations
-    all_stats = {sens: compute_stats(ctxts, exact, adj_conf)
+    all_stats = {sens: compute_stats(ctxts, exact, adj_conf, inv.random_state)
                  for (sens, ctxts) in sorted(inv.contexts.iteritems())}
 
     # flattened array of all p-values
@@ -130,14 +131,16 @@ def num_hypotheses(inv):
     return tot
 
 
-def _wrapper((arg, conf, exact)):
+def _wrapper((context, conf, exact, random_state)):
     """
     Helper, wrapper used for map_async callback
     """
-    return arg.metric.compute(arg.data, conf, exact=exact).stats
+    #ro.r('set.seed({})'.format(random_state))
+    #np.random.seed(random_state)
+    return context.metric.compute(context.data, conf, exact=exact).stats
 
 
-def compute_stats(contexts, exact, conf):
+def compute_stats(contexts, exact, conf, seed):
     """
     Compute statistics for a list of contexts
 
@@ -163,7 +166,8 @@ def compute_stats(contexts, exact, conf):
     P = multiprocessing.Pool(multiprocessing.cpu_count())
     results = P.map_async(
         _wrapper,
-        zip(contexts, [conf]*len(contexts), [exact]*len(contexts))
+        zip(contexts, [conf]*len(contexts), [exact]*len(contexts),
+            [seed]*len(contexts))
     )
     stats = results.get()
     P.close()
@@ -179,6 +183,14 @@ def compute_stats(contexts, exact, conf):
     # )
     # stats = result.collect()
     #
+
+    #
+    # When calling 'map_async', the Context object is pickled
+    # (passed by value), so we have to apply the change to the stats here.
+    # There's probably a cleaner way to do this.
+    #
+    for (c, c_stats) in zip(contexts, stats):
+        c.metric.stats = c_stats
 
     # For regression, we have multiple p-values per context
     # (one per topK coefficient)

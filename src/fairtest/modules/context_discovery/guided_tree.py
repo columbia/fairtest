@@ -222,6 +222,9 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
         parent_score :
             the metric score at the parent
 
+        pool :
+            the thread pool
+
         Returns
         -------
         tree :
@@ -274,9 +277,11 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
 
             # recursively build the tree
             rec_build_tree(data_left, left_child, pred+[pred_left],
-                           split_features-set(to_drop), depth+1, split_score, pool)
+                           split_features-set(to_drop), depth+1, split_score,
+                           pool)
             rec_build_tree(data_right, right_child, pred+[pred_right],
-                           split_features-set(to_drop), depth+1, split_score, pool)
+                           split_features-set(to_drop), depth+1, split_score,
+                           pool)
 
         else:
             # categorical split
@@ -304,7 +309,7 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
     #
     # When contextual features are just a few there is
     # no actual benefit out of parallelization. In fact,
-    # contemption introduces a slight overhead. Hence,
+    # contention introduces a slight overhead. Hence,
     # use only one thread to score less than 10 features.
     #
     if len(features) < 10:
@@ -327,27 +332,17 @@ def score_feature(args):
     Parameters
     ----------
     args:
-        a tuple of aguments
+        a tuple of thread arguments
 
     Returns
     -------
     dict:
-        a dictionary of feature score info
+        a dictionary of feature scoring information
     """
     # unpack a long tuple of arguments
-    feature,\
-    sens,\
-    targets,\
-    expl,\
-    feature_info,\
-    node_data,\
-    split_params,\
-    score_params,\
-    parent_score,\
-    best_better_than_parent,\
-    max_score =  args
+    (feature, sens, targets, expl, feature_info, node_data, split_params,
+     score_params, parent_score) = args
 
-    to_drop = []
     feature_list = [feature, sens] + targets
     if expl:
         feature_list.append(expl)
@@ -367,38 +362,22 @@ def score_feature(args):
 
     # the feature produced no split and can be dropped in sub-trees
     if split_score is None or np.isnan(split_score):
-        to_drop.append(feature)
-        return
+        return {
+            'feature': feature,
+            'split_score': None
+        }
 
     # check if there is a child with higher score than the parent
-    curr_better_than_parent = \
+    child_better_than_parent = \
         len([metric for metric in metrics.values()
              if metric.abs_effect() > parent_score]) > 0
-
-    new_best = False
-    if curr_better_than_parent:
-        if not best_better_than_parent:
-            # No previous split resulted in a child with a higher score
-            # than the parent. The current split is the best.
-            new_best = True
-            best_better_than_parent = True
-        elif split_score > max_score:
-            # There was a previous split that resulted in a child with a
-            # higher score than the parent, but the current split is even
-            # better
-            new_best = True
-            best_better_than_parent = True
-    elif not best_better_than_parent and split_score > max_score:
-        # No split so far resulted in a child with a higher score
-        # than the parent, but the current split has the highest score
-        new_best = True
 
     return {
         'split_score': split_score,
         'feature': feature,
         'threshold': threshold,
-        'to_drop': to_drop,
-        'metrics': metrics
+        'metrics': metrics,
+        'better_than_parent': child_better_than_parent
     }
 
 
@@ -424,6 +403,9 @@ def select_best_feature(node_data, features, split_params,
     parent_score :
         the score of the parent node
 
+    pool :
+        the thread pool
+
     Returns
     -------
     max_score :
@@ -444,7 +426,6 @@ def select_best_feature(node_data, features, split_params,
     best_feature = None
     best_threshold = None
     best_metrics = None
-    best_better_than_parent = False
     max_score = 0
 
     # keep track of useless features (no splits available)
@@ -465,21 +446,28 @@ def select_best_feature(node_data, features, split_params,
         [node_data]*len(features),
         [split_params]*len(features),
         [score_params]*len(features),
-        [parent_score]*len(features),
-        [best_better_than_parent]*len(features),
-        [max_score]*len(features)
+        [parent_score]*len(features)
     )
 
     # parallelize scoring of features
     results = pool.map_async(score_feature, args).get()
 
-    # drop None
-    results = filter(lambda item: item, results)
+    # drop features with no split
+    to_drop = [d['feature'] for d in results if d['split_score'] is None]
 
-    # pick best score; also merge "to_drop" features
+    logging.debug('dropping features: %s', to_drop)
+
+    # keep all features that produced a split
+    results = [d for d in results if d['split_score'] is not None]
+
+    # pick best score
     if results:
-        best =  sorted(results, key=lambda d: d['split_score'], reverse=True)[0]
-        to_drop =  reduce(lambda a,b:a+b, map(lambda d: d['to_drop'], results))
+        # pick the best split out of those that produced at least one child
+        # with a higher score than the parent node. If no such split exists,
+        # pick the one with the overall highest score.
+        best = sorted(results,
+                      key=lambda d: (d['better_than_parent'], d['split_score']),
+                      reverse=True)[0]
 
         max_score = best['split_score']
         best_feature = best['feature']

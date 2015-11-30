@@ -14,7 +14,7 @@ import numpy as np
 from sklearn import preprocessing as preprocessing
 from sklearn import cross_validation as cross_validation
 from copy import copy
-from os import path, mkdir
+from os import path
 import sys
 import abc
 import logging
@@ -261,10 +261,8 @@ def test(investigations, prune_insignificant=True, exact=True,
                                             prune_insignificant)
 
     # compute p-values and confidence intervals with FWER correction
-    np.random.seed(investigations[0].random_state)
-
     logging.info('Begin testing phase')
-
+    np.random.seed(investigations[0].random_state)
     multitest.compute_all_stats(investigations, exact, family_conf)
 
 
@@ -343,6 +341,7 @@ def report(investigations, dataname, output_dir=None, filter_conf=0.95,
                                         output_stream)
 
         plot_dir = None
+        sub_plot_dir = None
         if output_dir:
             if len(investigations) > 1:
                 plot_dir = path.join(output_dir, dataname +
@@ -360,12 +359,12 @@ def report(investigations, dataname, output_dir=None, filter_conf=0.95,
             print >> output_stream
             stats = inv.stats[sens]
             contexts = inv.contexts[sens]
-            np.random.seed(inv.random_state)
 
-            if len(inv.sens_features) > 1:
-                sub_plot_dir = path.join(plot_dir, sens)
-            else:
-                sub_plot_dir = plot_dir
+            if plot_dir:
+                if len(inv.sens_features) > 1:
+                    sub_plot_dir = path.join(plot_dir, sens)
+                else:
+                    sub_plot_dir = plot_dir
 
             # dirty nasty hack for the benchmark
             txt = report_module.bug_report(contexts, stats, sens, inv.expl,
