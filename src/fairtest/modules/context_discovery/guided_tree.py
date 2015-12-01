@@ -315,7 +315,7 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
     if len(features) < 10:
         pool_size = 1
     else:
-        pool_size = multiprocessing.cpu_count() - 2
+        pool_size = max(1, multiprocessing.cpu_count() - 2)
 
     pool = multiprocessing.Pool(pool_size)
     rec_build_tree(data, tree, [], features, 0, 0, pool)

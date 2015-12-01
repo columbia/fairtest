@@ -31,8 +31,8 @@ apt-dependencies:
 	@gpg -a --export E084DAB9 | sudo apt-key add -
 	@sudo apt-get update
 	@echo "Installing R version 3.2.1"
-	@sudo apt-get install r-base r-base-dev
-	@sudo apt-get install python python-dev python-pip liblzma-dev python-numpy libfreetype6-dev
+	@sudo apt-get -y install r-base r-base-dev
+	@sudo apt-get -y install python python-dev python-pip liblzma-dev python-numpy libfreetype6-dev
 
 pull:
 	@echo "Pulling latest source code:"
