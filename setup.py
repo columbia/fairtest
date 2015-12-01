@@ -16,6 +16,6 @@ setup(name='fairtest',
                 'fairtest.modules.statistics',
                 'fairtest.utils'],
       test_suite="tests",
-      requires=['numpy', 'pandas', 'prettytable', 'matplotlib', 'pydot', 'ete2',
+      install_requires=['numpy', 'pandas', 'prettytable', 'matplotlib', 'pydot', 'ete2',
                 'sklearn', 'scipy', 'statsmodels', 'rpy2']
       )
