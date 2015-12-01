@@ -1,11 +1,11 @@
 all:
 	@echo "Options:"
 	@echo "--------"
-	@echo "make install [VERBOSE=1]"
+	@echo "make apt-dependencies (Install apt package dependencies; Ubuntu 14.02)"
+	@echo "make pip-dependencies (Install python dist package dependencies)"
+	@echo "make install          (Install apt and python dependencies)"
 
 install:
-	@make pull > /dev/null
-
 ifeq ($(VERBOSE),1)
 	@echo "Installing apt dependencies"
 	@make apt-dependencies --ignore-errors
@@ -20,7 +20,6 @@ else
 	@make pip-dependencies
 endif
 
-
 pip-dependencies:
 	@sudo python setup.py install
 
@@ -33,7 +32,3 @@ apt-dependencies:
 	@echo "Installing R version 3.2.1"
 	@sudo apt-get -y install r-base r-base-dev
 	@sudo apt-get -y install python python-dev python-pip liblzma-dev python-numpy libfreetype6-dev
-
-pull:
-	@echo "Pulling latest source code:"
-	@git pull
