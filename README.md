@@ -155,7 +155,7 @@ SENS = ['gender', 'race']   # Protected features
 TARGET = 'income'           # Output
 EXPL = ''                   # Explanatory feature
 
-metrics = {'gender': DIFF}  # Specify a metric for 'gender' and let FairTest 
+metrics = {'gender': 'DIFF'}  # Specify a metric for 'gender' and let FairTest
                             # select a default metric for 'race'
 
 inv = Testing(data, SENS, TARGET, EXPL, metrics=metrics)

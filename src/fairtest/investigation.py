@@ -432,15 +432,15 @@ def metric_from_string(m_str, **kwargs):
     """
     if m_str == "NMI" or m_str == "MI":
         return NMI()
-    elif m_str == "Corr":
+    elif m_str == "CORR":
         return CORR()
-    elif m_str == "Diff":
+    elif m_str == "DIFF":
         return DIFF()
-    elif m_str == "Ratio":
+    elif m_str == "RATIO":
         return RATIO()
-    elif m_str == "Reg":
+    elif m_str == "REGRESSION":
         return REGRESSION(topk=kwargs['topk'])
-    elif m_str == "CondDiff":
+    elif m_str == "CondDIFF":
         return CondDIFF()
     elif m_str == "CondNMI":
         return CondNMI()
