@@ -128,7 +128,7 @@ def find_contexts(tree, data, features_info, sens, expl, output,
 
     prune_insignificant :
         whether contexts should be pruned if they show no significant
-        associaiton on the training set
+        association on the training set
 
     Returns
     -------
@@ -137,7 +137,8 @@ def find_contexts(tree, data, features_info, sens, expl, output,
     """
     # list of contexts
     contexts = []
-    targets = data.columns[-output.num_labels:].tolist()
+    #targets = data.columns[-output.num_labels:].tolist()
+    targets = output.names.tolist()
 
     # assign an id to each node
     node_id = 0
