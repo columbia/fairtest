@@ -3,22 +3,10 @@ all:
 	@echo "--------"
 	@echo "make apt-dependencies (Install apt package dependencies; Ubuntu 14.02)"
 	@echo "make pip-dependencies (Install python dist package dependencies)"
-	@echo "make install          (Install apt and python dependencies)"
+	@echo "make install          (Install FairTest using pip setup-tools)"
 
 install:
-ifeq ($(VERBOSE),1)
-	@echo "Installing apt dependencies"
-	@make apt-dependencies
-	@echo "Installing python dist package dependencies"
-	@sleep 2
-	@make pip-dependencies
-else
-	@echo "Installing apt dependencies"
-	@make apt-dependencies > /dev/null 2>&1
-	@echo "Installing python dist package dependencies"
-	@sleep 2
-	@make pip-dependencies
-endif
+	@sudo python setup.py install
 
 pip-dependencies:
 	@-sudo python setup.py install
