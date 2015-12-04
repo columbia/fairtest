@@ -17,11 +17,24 @@ Installation
 ------------
 
 FairTest is a `Python` application, developed and tested with `Python 2.7`.
-Run `setup.py` to install all the project dependencies.
+FairTest uses `rpy2` python package that provides a python interface
+for `R` programming language and requires `R` (version > 3.1) to be
+installed. We provide a script to assist with the installation of FairTest.
 
-**Note:** For some statistical computations, FairTest makes use of the `rpy2`
-package that provides an interface for `R` programming in `Python`. Installation
-and use of the `ryp2` package require `R` to be installed on the machine.
+
+* Run `make apt-dependencies` to install apt package dependencies and
+  the latests version of `R` (for Ubuntu 12.04 and 14.04).
+
+* Run `make pip-dependencies` to install python pip package dependencies.
+
+
+* Run `make install` to install both apt and pip package dependencies.
+
+
+Alternativelly, you can download an Ubuntu virtual machine with a complete,
+up-to-date FairTest installation from
+<a href="http://www.cs.columbia.edu/~vatlidak/UbuntuVM.tar.gz" title="FairTest VM">here</a>
+and launch it with VMWare Player.
 
 Quick Start
 -----------
@@ -37,6 +50,7 @@ from fairtest.utils.prepare_data import data_from_csv
 data = data_from_csv('fairtest/data/adult/adult.csv', to_drop=['fnlwgt'])
 ```
 
+#### Testing
 To test for associations between user income and race or gender, first create
 the appropriate Fairtest `Investigation`:
 
@@ -50,9 +64,9 @@ EXPL = ''                     # Explanatory feature
 inv = Testing(data, SENS, TARGET, EXPL)
 ```
 
-After you instantiated all the `Investigations` you which to perform, you can
+After you instantiated all the `Investigations` you wish to perform, you can
 `train` the guided decision tree, `test` the discovered association bugs (and
-correct for multiple testing) and `report` the results:
+correct for multiple testing), and `report` the results:
 
 ```python
 from fairtest.investigation import train, test, report
@@ -94,7 +108,7 @@ TARGET = '...'          # Predicted output
 GROUND_TRUTH = '...'    # Ground truth feature
 EXPL = ''               # Explanatory feature
 
-inv = Discovery(data, SENS, TARGET, GROUND_TRUTH, EXPL)
+inv = ErrorProfiling(data, SENS, TARGET, GROUND_TRUTH, EXPL)
 ```
 
 #### Explanatory Attribute
@@ -104,6 +118,10 @@ respect to this attribute. We currently support a single, categorical attribute
 as explanatory for investigations with categorical protected features and 
 outputs. Support for more general explanatory attributes can be enabled by
 defining further *Fairness Metrics* (see Extensions section below).
+
+#### Other Examples
+Additional examples, demonstrating how to use FairTest, are at: `src/fairtest/examples`.
+
 
 Extensions
 ----------
@@ -138,7 +156,7 @@ SENS = ['gender', 'race']   # Protected features
 TARGET = 'income'           # Output
 EXPL = ''                   # Explanatory feature
 
-metrics = {'gender': DIFF}  # Specify a metric for 'gender' and let FairTest 
+metrics = {'gender': 'DIFF'}  # Specify a metric for 'gender' and let FairTest
                             # select a default metric for 'race'
 
 inv = Testing(data, SENS, TARGET, EXPL, metrics=metrics)
@@ -173,6 +191,7 @@ Directory or File                       | Description
 data                                    |  Demo datasets
 src/apps                                |  Demo apps
 src/fairtest/tests                      |  Benchmarks
+src/fairtest/examples                   |  Examples
 src/fairtest/modules/bug_report         |  Bug filter, rank and report module
 src/fairtest/modules/context_discovery  |  Guided tree construction module
 src/fairtest/modules/metrics            |  Fairness metrics module
