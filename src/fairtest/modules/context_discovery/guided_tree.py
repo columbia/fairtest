@@ -156,7 +156,8 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
     tree = Tree()
 
     # Check if there are multiple labeled outputs
-    targets = data.columns[-output.num_labels:].tolist()
+    # targets = data.columns[-output.num_labels:].tolist()
+    targets =  output.names.tolist()
     logging.debug('Targets: %s', targets)
 
     features = set(data.columns.tolist())-set([sens, expl])-set(targets)
