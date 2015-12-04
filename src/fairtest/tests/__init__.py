@@ -1,3 +1,3 @@
 """
-FairTest benchmarking scripts
+FairTest unit tests
 """

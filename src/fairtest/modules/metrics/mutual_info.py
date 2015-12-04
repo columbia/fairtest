@@ -146,7 +146,7 @@ def mutual_info(data, norm=True, conf=None):
 
     if data.shape[0] < 2 or data.shape[1] < 2:
         if conf is not None:
-            return 0, 1, 0
+            return 0, 1, 1.0
         else:
             return 0
 

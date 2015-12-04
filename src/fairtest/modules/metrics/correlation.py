@@ -105,7 +105,13 @@ def correlation(data, conf=None):
     corr = (n*sum_xy - sum_x*sum_y) / \
            (sqrt(n*sum_x2 - sum_x**2) * sqrt(n*sum_y2 - sum_y**2))
 
+    if np.isnan(corr):
+        corr = 0
+
     if conf:
+        # avoid math domain error
+        if corr == 1:
+            corr -= 10**-8
         # Fisher transform
         fisher = atanh(corr)
         std = 1.0/sqrt(n-3)

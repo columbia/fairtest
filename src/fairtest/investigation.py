@@ -21,6 +21,7 @@ import logging
 
 import rpy2.robjects as ro
 from rpy2.robjects import numpy2ri
+
 numpy2ri.activate()
 
 
@@ -60,13 +61,16 @@ class Investigation(object):
             raise ValueError('data should be a Pandas DataFrame')
 
         if not 0 < conf < 1:
-            raise ValueError('conf should be in (0,1), Got %s', conf)
+            raise ValueError('conf should be in (0,1), Got %s' % conf)
 
         if metrics is not None and not isinstance(metrics, dict):
             raise ValueError('metrics should be a dictionary')
 
         if not protected:
             raise ValueError('at least one protected feature must be specified')
+
+        if not hasattr(protected, '__iter__'):
+            raise ValueError('protected attribute must be an iterable')
 
         if not output:
             raise ValueError('at least one output feature must be specified')
@@ -86,7 +90,16 @@ class Investigation(object):
         else:
             self.random_state = 0
         ro.r('set.seed({})'.format(self.random_state))
-        data = pd.DataFrame(data)
+        data = pd.DataFrame(data).copy()
+
+        # check if all protected features are available
+        for sens in protected:
+            if sens not in data.columns:
+                raise ValueError('Feature %s not found' % sens)
+
+        for target in np.asarray([output]).flatten():
+            if target not in data.columns:
+                raise ValueError('Target %s not found' % target)
 
         # encode categorical features
         self.encoders = {}
@@ -94,9 +107,10 @@ class Investigation(object):
             if data.dtypes[column] == np.object:
                 self.encoders[column] = preprocessing.LabelEncoder()
                 data[column] = self.encoders[column].fit_transform(data[column])
-                logging.info('Encoding Feature %s', column)
+                logging.info('Encoding Feature %s' % column)
 
         # set feature information
+        expl = [] if expl is None else expl
         for col in data.columns.drop(output):
             ftype = 'sens' if col in protected \
                 else 'expl' if col in expl \
@@ -120,14 +134,14 @@ class Investigation(object):
         except (KeyError, TypeError):
             target_arity = None
         self.output = Target(np.asarray([output]).flatten(), arity=target_arity)
-        logging.info('Target Feature: %s', self.output)
+        logging.info('Target Feature: %s' % self.output)
 
         # split data into training and testing sets
         self.train_set, self.test_set = \
             cross_validation.train_test_split(data, train_size=train_size,
                                               random_state=random_state)
-        logging.info('Training Size %d -  Testing Size %d',
-                     len(self.train_set), len(self.test_set))
+        logging.info('Training Size %d -  Testing Size %d' %
+                     (len(self.train_set), len(self.test_set)))
 
         # choose default metrics
         self.set_default_metrics()
@@ -178,9 +192,12 @@ def train(investigations, max_depth=5, min_leaf_size=100,
         raise ValueError('min_leaf_size must be positive')
     if score_aggregation not in guided_tree.ScoreParams.AGG_TYPES:
         raise ValueError("score_aggregation should be one of 'avg', "
-                         "'weighted_avg' or 'max', Got %s", score_aggregation)
+                         "'weighted_avg' or 'max', Got %s" % score_aggregation)
     if max_bins <= 0:
         raise ValueError('max_bins must be positive')
+
+    if not hasattr(investigations, '__iter__'):
+        raise ValueError('investigations must be an iterable')
 
     for inv in investigations:
         assert isinstance(inv, Investigation)
@@ -201,7 +218,8 @@ def train(investigations, max_depth=5, min_leaf_size=100,
 
         # find discrimination contexts for each sensitive feature
         for sens in inv.sens_features:
-            logging.info('Begin training phase with protected feature %s', sens)
+            logging.info('Begin training phase with protected '
+                         'feature %s' % sens)
 
             tree = guided_tree.build_tree(data, inv.feature_info, sens,
                                           inv.expl, inv.output,
@@ -238,7 +256,10 @@ def test(investigations, prune_insignificant=True, exact=True,
         familywise confidence level
     """
     if not 0 < family_conf < 1:
-        raise ValueError('family_conf should be in (0,1), Got %s', family_conf)
+        raise ValueError('family_conf should be in (0,1), Got %s' % family_conf)
+
+    if not hasattr(investigations, '__iter__'):
+        raise ValueError('investigations must be an iterable')
 
     for inv in investigations:
         assert isinstance(inv, Investigation)
@@ -299,12 +320,15 @@ def report(investigations, dataname, output_dir=None, filter_conf=0.95,
         it is part of.
     """
     if not 0 <= filter_conf < 1:
-        raise ValueError('filter_conf should be in [0,1), Got %s', filter_conf)
+        raise ValueError('filter_conf should be in [0,1), Got %s' % filter_conf)
 
     if node_filter not in filter_rank.NODE_FILTERS:
         raise ValueError("node_filter should be one of 'all', "
                          "'leaves', 'root' or 'better_than_ancestors',"
-                         " Got %s", node_filter)
+                         " Got %s" % node_filter)
+
+    if not hasattr(investigations, '__iter__'):
+        raise ValueError('investigations must be an iterable')
 
     for inv in investigations:
         assert isinstance(inv, Investigation)

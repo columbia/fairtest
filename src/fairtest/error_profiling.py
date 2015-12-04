@@ -43,6 +43,20 @@ class ErrorProfiling(Investigation):
 
         logging.info('New Error Profiling Investigation')
 
+        if len(np.asarray([output]).flatten()) != 1:
+            raise ValueError('Error Profiling investigation excepts a single '
+                             'target')
+
+        if output not in data.columns:
+            raise ValueError('Unknown target feature %s' % output)
+
+        if len(np.asarray([ground_truth]).flatten()) != 1:
+            raise ValueError('Error Profiling investigation excepts a single '
+                             'ground truth')
+
+        if ground_truth not in data.columns:
+            raise ValueError('Unknown ground truth feature %s' % ground_truth)
+
         if set(data[output].unique()) == set([0, 1]) and \
                 set(data[ground_truth].unique()) == set([0, 1]):
             # binary classification
@@ -94,16 +108,17 @@ class ErrorProfiling(Investigation):
                     if sens.arity != 2 or out.arity != 2:
                         raise ValueError('Only binary protected features '
                                          'and outputs supported')
-                    logging.info('Choosing metric CondDIFF for feature %s',
+                    logging.info('Choosing metric CondDIFF for feature %s' %
                                  sens_str)
                     self.metrics[sens_str] = CondDIFF()
                 elif sens.arity and out.arity:
-                    logging.info('Choosing metric NMI for feature %s', sens_str)
+                    logging.info('Choosing metric NMI for feature %s'
+                                 % sens_str)
                     self.metrics[sens_str] = NMI()
                 else:
                     if sens.arity > 2 or out.arity > 2:
                         raise ValueError('No Metric available for continuous '
                                          'and multi-valued features')
-                    logging.info('Choosing metric CORR for feature %s',
+                    logging.info('Choosing metric CORR for feature %s' %
                                  sens_str)
                     self.metrics[sens_str] = CORR()

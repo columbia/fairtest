@@ -62,17 +62,18 @@ class Testing(Investigation):
                     if sens.arity != 2 or out.arity != 2:
                         raise ValueError('Only binary protected features '
                                          'and outputs supported')
-                    logging.info('Choosing metric CondDIFF for feature %s',
+                    logging.info('Choosing metric CondDIFF for feature %s' %
                                  sens_str)
                     self.metrics[sens_str] = CondDIFF()
                 elif sens.arity and out.arity:
-                    logging.info('Choosing metric NMI for feature %s', sens_str)
+                    logging.info('Choosing metric NMI for feature %s'
+                                 % sens_str)
                     self.metrics[sens_str] = NMI()
                 else:
                     if sens.arity > 2 or out.arity > 2:
                         raise ValueError('No Metric available for continuous '
                                          'and multi-valued features')
-                    logging.info('Choosing metric CORR for feature %s',
-                                 sens_str)
+                    logging.info('Choosing metric CORR for feature %s'
+                                 % sens_str)
                     self.metrics[sens_str] = CORR()
 

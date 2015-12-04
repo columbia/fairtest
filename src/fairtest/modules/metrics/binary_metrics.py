@@ -173,9 +173,9 @@ def difference(data, conf=None):
     # check if data is degenerate
     if data.shape == (1, 1) or data.shape == (1, 2) or data.shape == (2, 1):
         if conf:
-            return 0, 0, 1.0
+            return 0, 1, 1.0
         else:
-            return 0, 1.0
+            return 0
 
     assert data.shape == (2, 2)
     if isinstance(data, pd.DataFrame):
@@ -264,7 +264,7 @@ def ratio(data, conf=None):
         if conf:
             return 1, 1, 1.0
         else:
-            return 1, 1.0
+            return 1
 
     assert data.shape == (2, 2)
     if isinstance(data, pd.DataFrame):

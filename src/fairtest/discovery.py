@@ -39,9 +39,14 @@ class Discovery(Investigation):
         """
 
         self.topk = topk
+
         logging.info('New Discovery Investigation')
         Investigation.__init__(self, data, protected, output, expl, metrics,
                                train_size, conf, random_state)
+
+        if self.topk < 1 or self.topk > self.output.num_labels:
+            raise ValueError('topk should be in [1, %d]'
+                             % self.output.num_labels)
 
     def set_default_metrics(self):
         out = self.output
@@ -66,6 +71,6 @@ class Discovery(Investigation):
                 if expl is not None:
                     raise ValueError('Discovery investigation does not support '
                                      'explanatory features')
-                logging.info('Choosing metric REGRESSION for feature %s',
+                logging.info('Choosing metric REGRESSION for feature %s' %
                              sens_str)
                 self.metrics[sens_str] = REGRESSION(topk=self.topk)

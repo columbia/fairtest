@@ -40,13 +40,13 @@ class REGRESSION(Metric):
 
             # compute confidence intervals and p-values for all coefficients
             results = pd.DataFrame(coeffs, columns=['coeff'])
-
             results['std'] = std_est
             results['pval'] = tests.z_test(results['coeff'], results['std'])
 
             ci_s = intervals.ci_norm(conf, results['coeff'], results['std'])
             results['ci_low'] = ci_s[0]
             results['ci_high'] = ci_s[1]
+            results = results.fillna(0)
 
             # compute a standardized effect size
             # and return the topK coefficients
