@@ -61,8 +61,9 @@ data = DataSource(data, budget=1, conf=0.95)
 
 This creates a training set and holdout set that can be used to perform a single
 batch of investigations with an overall testing confidence of 95%. Budgets 
-larger than 1 allow for `adaptive` data analyses, where new 
-investigations may be performed based on previous results.
+larger than 1 allow for `adaptive data analysis`, where new 
+investigations may be performed based on previous results, and validated over 
+an independent testing set.
 
 #### Testing
 To test for associations between user income and race or gender, first create
