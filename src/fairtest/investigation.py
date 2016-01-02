@@ -8,11 +8,9 @@ import fairtest.modules.statistics.multiple_testing as multitest
 from fairtest.modules.metrics import *
 import fairtest.modules.bug_report.report as report_module
 import fairtest.modules.bug_report.filter_rank as filter_rank
+from fairtest.holdout import DataSource
 
-import pandas as pd
 import numpy as np
-from sklearn import preprocessing as preprocessing
-from sklearn import cross_validation as cross_validation
 from copy import copy
 from os import path
 import sys
@@ -32,15 +30,15 @@ class Investigation(object):
 
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, data, protected, output, expl=None, metrics=None,
-                 train_size=0.5, conf=0.95, random_state=None):
+    def __init__(self, data_source, protected, output, expl=None,
+                 metrics=None, random_state=None, to_drop=None):
         """
         Initializes a generic FairTest Investigation.
 
         Parameters
         ----------
-        data :
-            the dataset
+        data_source :
+            the data source consisting of a training set and a holdout set
         protected :
             list of names of protected features
         output :
@@ -49,19 +47,15 @@ class Investigation(object):
             name of explanatory feature
         metrics :
             dictionary of custom metrics indexed by a protected feature
-        train_size :
-            fraction of the data to keep for training
-        conf :
-            confidence level
         random_state :
             seed for random generators
+        to_drop :
+            features to drop from the training set
         """
 
-        if not isinstance(data, pd.DataFrame):
-            raise ValueError('data should be a Pandas DataFrame')
-
-        if not 0 < conf < 1:
-            raise ValueError('conf should be in (0,1), Got %s' % conf)
+        if not isinstance(data_source, DataSource):
+            raise ValueError('data_source argument should be an instance of '
+                             'DataSource')
 
         if metrics is not None and not isinstance(metrics, dict):
             raise ValueError('metrics should be a dictionary')
@@ -75,7 +69,12 @@ class Investigation(object):
         if not output:
             raise ValueError('at least one output feature must be specified')
 
-        self.conf = conf
+        if data_source.encoders is None:
+            self.encoders = {}
+        else:
+            self.encoders = data_source.encoders
+
+        self.holdout = data_source.holdout
         self.metrics = metrics if metrics is not None else {}
         self.trained_trees = {}
         self.contexts = {}
@@ -84,34 +83,32 @@ class Investigation(object):
         self.test_params = {}
         self.display_params = {}
         self.feature_info = {}
+        self.test_set_size = 0
 
         if random_state:
             self.random_state = random_state
         else:
             self.random_state = 0
         ro.r('set.seed({})'.format(self.random_state))
-        data = pd.DataFrame(data).copy()
+
+        self.train_set = data_source.train_data.copy()
+
+        if to_drop is not None:
+            for col in to_drop:
+                self.train_set = self.train_set.drop(col, axis=1)
 
         # check if all protected features are available
         for sens in protected:
-            if sens not in data.columns:
+            if sens not in self.train_set.columns:
                 raise ValueError('Feature %s not found' % sens)
 
         for target in np.asarray([output]).flatten():
-            if target not in data.columns:
+            if target not in self.train_set.columns:
                 raise ValueError('Target %s not found' % target)
-
-        # encode categorical features
-        self.encoders = {}
-        for column in data.columns:
-            if data.dtypes[column] == np.object:
-                self.encoders[column] = preprocessing.LabelEncoder()
-                data[column] = self.encoders[column].fit_transform(data[column])
-                logging.info('Encoding Feature %s' % column)
 
         # set feature information
         expl = [] if expl is None else expl
-        for col in data.columns.drop(output):
+        for col in self.train_set.columns.drop(output):
             ftype = 'sens' if col in protected \
                 else 'expl' if col in expl \
                 else 'context'
@@ -136,13 +133,6 @@ class Investigation(object):
         self.output = Target(np.asarray([output]).flatten(), arity=target_arity)
         logging.info('Target Feature: %s' % self.output)
 
-        # split data into training and testing sets
-        self.train_set, self.test_set = \
-            cross_validation.train_test_split(data, train_size=train_size,
-                                              random_state=random_state)
-        logging.info('Training Size %d -  Testing Size %d' %
-                     (len(self.train_set), len(self.test_set)))
-
         # choose default metrics
         self.set_default_metrics()
 
@@ -153,6 +143,17 @@ class Investigation(object):
         by the user
         """
         return
+
+    def preprocess_test_data(self, data):
+        """
+        Applies a pre-processing stage to the testing data
+
+        Parameters
+        ----------
+        data :
+            the test data
+        """
+        return data
 
 
 def train(investigations, max_depth=5, min_leaf_size=100,
@@ -205,11 +206,7 @@ def train(investigations, max_depth=5, min_leaf_size=100,
             raise RuntimeError('Investigation was not initialized')
 
     for inv in investigations:
-        assert isinstance(inv, Investigation)
-        if inv.train_set is None:
-            raise RuntimeError('Investigation was not initialized')
-
-        data = inv.train_set
+        data = inv.train_set.copy()
 
         inv.train_params = {'max_depth': max_depth,
                             'min_leaf_size': min_leaf_size,
@@ -221,16 +218,17 @@ def train(investigations, max_depth=5, min_leaf_size=100,
             logging.info('Begin training phase with protected '
                          'feature %s' % sens)
 
+            conf = inv.holdout.test_set_conf
+
             tree = guided_tree.build_tree(data, inv.feature_info, sens,
                                           inv.expl, inv.output,
                                           copy(inv.metrics[sens]),
-                                          inv.conf, max_depth, min_leaf_size,
+                                          conf, max_depth, min_leaf_size,
                                           score_aggregation, max_bins)
             inv.trained_trees[sens] = tree
 
 
-def test(investigations, prune_insignificant=True, exact=True,
-         family_conf=0.95):
+def test(investigations, prune_insignificant=True, exact=True):
     """
     Compute effect sizes and p-values for the discrimination contexts
     discovered on the training set. Correct intervals and p-values across
@@ -251,28 +249,33 @@ def test(investigations, prune_insignificant=True, exact=True,
         generate p-values and confidence intervals. Otherwise, confidence
         intervals are generated with bootstrapping techniques and p-values
         via Monte-Carlo permutation tests.
-
-    family_conf :
-        familywise confidence level
     """
-    if not 0 < family_conf < 1:
-        raise ValueError('family_conf should be in (0,1), Got %s' % family_conf)
 
     if not hasattr(investigations, '__iter__'):
         raise ValueError('investigations must be an iterable')
+
+    holdout = investigations[0].holdout
 
     for inv in investigations:
         assert isinstance(inv, Investigation)
         if not inv.trained_trees:
             raise RuntimeError('Investigation was not trained')
 
+        if inv.holdout != holdout:
+            raise RuntimeError('All tested investigations should use the same '
+                               'holdout set')
+
+    test_data = holdout.get_test_set()
+
     for inv in investigations:
         inv.test_params = {'prune_insignificant': prune_insignificant,
                            'exact': exact,
-                           'family_conf': family_conf}
+                           'family_conf': inv.holdout.test_set_conf}
 
-        data = inv.test_set
+        data = test_data.copy()
+        data = inv.preprocess_test_data(data)
 
+        inv.test_set_size = len(data)
         # prepare testing data for all hypotheses
         for sens in inv.sens_features:
             tree = inv.trained_trees[sens]
@@ -284,7 +287,7 @@ def test(investigations, prune_insignificant=True, exact=True,
     # compute p-values and confidence intervals with FWER correction
     logging.info('Begin testing phase')
     np.random.seed(investigations[0].random_state)
-    multitest.compute_all_stats(investigations, exact, family_conf)
+    multitest.compute_all_stats(investigations, exact, holdout.test_set_conf)
 
 
 def report(investigations, dataname, output_dir=None, filter_conf=0.95,
@@ -301,15 +304,15 @@ def report(investigations, dataname, output_dir=None, filter_conf=0.95,
     dataname :
         name of the dataset used in the experiments
 
-    filter_conf :
-        confidence level for filtering out bugs. Filters out bugs for which the
-        p-value is larger than (1-filter_conf). If filter_conf is set to 0, all
-        bugs are retained
-
     output_dir :
         directory to which bug reports shall be output.
         Should be an absolute path. Default is None and
         reports are sent to stdout.
+
+    filter_conf :
+        confidence level for filtering out bugs. Filters out bugs for which the
+        p-value is larger than (1-filter_conf). If filter_conf is set to 0, all
+        bugs are retained
 
     node_filter :
         method used to filter bugs in each report. Bugs that are not
@@ -353,7 +356,7 @@ def report(investigations, dataname, output_dir=None, filter_conf=0.95,
 
         # print some global information about the investigation
         train_size = len(inv.train_set)
-        test_size = len(inv.test_set)
+        test_size = inv.test_set_size
         sensitive = inv.sens_features
         contextual = [name for (name, f) in inv.feature_info.items()
                       if f.ftype == 'context']

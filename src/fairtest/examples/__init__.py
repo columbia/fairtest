@@ -1,0 +1,3 @@
+"""
+FairTest usage examples
+"""

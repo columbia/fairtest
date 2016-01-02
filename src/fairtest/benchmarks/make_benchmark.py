@@ -6,7 +6,7 @@ Usage: ./make_benchmark.py fairtest/data/benchmark/benchmark.csv \
 """
 
 import fairtest.utils.prepare_data as prepare
-from fairtest import Testing, train, test, report
+from fairtest import Testing, train, test, report, DataSource
 
 from time import time
 import sys
@@ -21,6 +21,8 @@ def main(argv=sys.argv):
     data = prepare.data_from_csv(FILENAME)
     OUTPUT_DIR = argv[2]
 
+    data_source = DataSource(data)
+
     # Initializing parameters for experiment
     EXPL = []
     SENS = ['race']
@@ -28,7 +30,7 @@ def main(argv=sys.argv):
 
     # Instanciate the experiment
     t1 = time()
-    inv = Testing(data, SENS, TARGET, EXPL, random_state=0)
+    inv = Testing(data_source, SENS, TARGET, EXPL, random_state=0)
     # Train the classifier
     t2 = time()
     train([inv])
@@ -44,7 +46,7 @@ def main(argv=sys.argv):
     t5 = time()
 
     print "Testing:Benchmark:Instantiation: %.2f, Train: %.2f, Test: %.2f, " \
-          "Report: %.2f"% ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
+          "Report: %.2f" % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
 
 
 def usage(argv):

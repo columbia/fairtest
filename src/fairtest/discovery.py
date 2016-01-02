@@ -11,15 +11,15 @@ class Discovery(Investigation):
     """
     A FairTest Discovery Investigation
     """
-    def __init__(self, data, protected, output, expl=None, metrics=None,
-                 train_size=0.5, conf=0.95, topk=10, random_state=None):
+    def __init__(self, data_source, protected, output, expl=None,
+                 metrics=None, topk=10, random_state=None, to_drop=None):
         """
         Initializes a FairTest Testing Investigation.
 
         Parameters
         ----------
-        data :
-            the dataset
+        data_source :
+            the data source
         protected :
             list of names of protected features
         output :
@@ -28,21 +28,19 @@ class Discovery(Investigation):
             name of explanatory feature
         metrics :
             dictionary of custom metrics indexed by a protected feature
-        train_size :
-            fraction of the data to keep for training
-        conf :
-            confidence level
         topk :
             number of output features with highest association to report on
         random_state :
             seed for random generators
+        to_drop :
+            features to drop from the training set
         """
 
         self.topk = topk
 
         logging.info('New Discovery Investigation')
-        Investigation.__init__(self, data, protected, output, expl, metrics,
-                               train_size, conf, random_state)
+        Investigation.__init__(self, data_source, protected, output,
+                               expl, metrics, random_state, to_drop)
 
         if self.topk < 1 or self.topk > self.output.num_labels:
             raise ValueError('topk should be in [1, %d]'

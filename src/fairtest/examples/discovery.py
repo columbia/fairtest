@@ -5,7 +5,7 @@ Usage: python discovery.py
 """
 
 import fairtest.utils.prepare_data as prepare
-from fairtest import Discovery, Testing, train, test, report
+from fairtest import Discovery, train, test, report, DataSource
 import ast
 import pandas as pd
 from sklearn import preprocessing
@@ -36,8 +36,10 @@ def main(argv=sys.argv):
     data = pd.concat([data.drop(TARGET, axis=1), df_labels], axis=1)
     TARGET = labels.tolist()
 
+    data_source = DataSource(data)
+
     # Instantiate the experiment
-    inv = Discovery(data, SENS, TARGET, EXPL, topk=10, random_state=0)
+    inv = Discovery(data_source, SENS, TARGET, EXPL, topk=10, random_state=0)
 
     # Train the classifier
     train([inv])

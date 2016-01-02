@@ -12,7 +12,7 @@ The logic for now is:
                     - run FairTest and report the number of contexts found
 """
 import fairtest.utils.prepare_data as prepare
-from fairtest import Testing, train, test, report
+from fairtest import Testing, train, test, report, DataSource
 
 from copy import deepcopy
 from random import shuffle, randint, seed
@@ -20,7 +20,6 @@ from random import shuffle, randint, seed
 import os
 import sys
 from math import ceil
-#import multiprocessing
 from datetime import datetime
 
 FIND_CONTEXTS_STRICT = False
@@ -256,6 +255,7 @@ def do_benchmark((classes, pool, guard_lines)):
 
             # Prepare data into FairTest friendly format
             data = prepare.data_from_csv(current_filename)
+            data_source = DataSource(data)
             os.remove(current_filename)
 
             # Initializing parameters for experiment
@@ -264,7 +264,8 @@ def do_benchmark((classes, pool, guard_lines)):
             TARGET = 'price'
 
             # Instantiate the experiment
-            inv = Testing(data, SENS, TARGET, EXPL, random_state=RANDOM_SEED)
+            inv = Testing(data_source, SENS, TARGET, EXPL,
+                          random_state=RANDOM_SEED)
 
             # Train the classifier
             train([inv], min_leaf_size=50)

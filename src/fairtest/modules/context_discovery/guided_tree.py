@@ -470,10 +470,13 @@ def select_best_feature(node_data, features, split_params,
                       key=lambda d: (d['better_than_parent'], d['split_score']),
                       reverse=True)[0]
 
-        max_score = best['split_score']
-        best_feature = best['feature']
-        best_threshold = best['threshold']
-        best_metrics = best['metrics']
+        if best['better_than_parent']:
+            max_score = best['split_score']
+            best_feature = best['feature']
+            best_threshold = best['threshold']
+            best_metrics = best['metrics']
+        else:
+            logging.debug('No split produced a context better than parent')
 
     return max_score, best_feature, best_threshold, to_drop, best_metrics
 

@@ -6,7 +6,7 @@ Usage: ./make_recommender.py fairtest/data/recommender/recommendations.txt \
 """
 
 import fairtest.utils.prepare_data as prepare
-from fairtest import Discovery, Testing, train, test, report
+from fairtest import Discovery, Testing, train, test, report, DataSource
 import ast
 import pandas as pd
 from sklearn import preprocessing
@@ -20,13 +20,25 @@ def main(argv=sys.argv):
         usage(argv)
 
     '''
-    Testing (average movie rating across age)
+    1. Testing (average movie rating across age)
     '''
     # Prepare data into FairTest friendly format
     FILENAME = argv[1]
-    data = prepare.data_from_csv(FILENAME, sep='\t',
-                                 to_drop=['RMSE', 'Types', 'Avg Movie Age'])
+    data = prepare.data_from_csv(FILENAME, sep='\t')
     OUTPUT_DIR = argv[2]
+
+    label_col = 'Types'
+    labeled_data = [ast.literal_eval(s) for s in data[label_col]]
+    for labels in labeled_data:
+        assert len(labels) == 5
+    label_encoder = preprocessing.MultiLabelBinarizer()
+    labeled_data = label_encoder.fit_transform(labeled_data)
+    labels = label_encoder.classes_
+    df_labels = pd.DataFrame(labeled_data, columns=labels)
+    data = pd.concat([data.drop(label_col, axis=1), df_labels], axis=1)
+    labels = labels.tolist()
+
+    data_source = DataSource(data, budget=3, train_size=0.25)
 
     # Initializing parameters for experiment
     SENS = ['Gender']
@@ -35,7 +47,8 @@ def main(argv=sys.argv):
 
     # Instantiate the experiment
     t1 = time()
-    inv = Testing(data, SENS, TARGET, EXPL, random_state=0)
+    inv = Testing(data_source, SENS, TARGET, EXPL, random_state=0,
+                  to_drop=['RMSE', 'Avg Movie Age'] + labels)
     # Train the classifier
     t2 = time()
     train([inv])
@@ -55,18 +68,16 @@ def main(argv=sys.argv):
     print
 
     '''
-    Error Profiling
+    2. Error Profiling
     '''
-    data = prepare.data_from_csv(FILENAME, sep='\t',
-                                 to_drop=['Types', 'Avg Movie Age',
-                                          'Avg Movie Rating'])
     SENS = ['Gender']
     TARGET = 'RMSE'
     EXPL = []
 
     # Instantiate the experiment
     t1 = time()
-    inv = Testing(data, SENS, TARGET, EXPL, random_state=0)
+    inv = Testing(data_source, SENS, TARGET, EXPL, random_state=0,
+                  to_drop=['Avg Movie Age', 'Avg Movie Rating'] + labels)
     # Train the classifier
     t2 = time()
     train([inv])
@@ -86,28 +97,17 @@ def main(argv=sys.argv):
     print
 
     '''
-    Discovery
+    3. Discovery
     '''
-    data = prepare.data_from_csv(FILENAME, sep='\\t',
-                                 to_drop=['RMSE', 'Avg Movie Age',
-                                          'Avg Movie Rating', 'Occupation'])
-    TARGET = 'Types'
     SENS = ['Gender']
-
+    TARGET = labels
     EXPL = []
-    labeled_data = [ast.literal_eval(s) for s in data[TARGET]]
-    for labels in labeled_data:
-        assert len(labels) == 5
-    label_encoder = preprocessing.MultiLabelBinarizer()
-    labeled_data = label_encoder.fit_transform(labeled_data)
-    labels = label_encoder.classes_
-    df_labels = pd.DataFrame(labeled_data, columns=labels)
-    data = pd.concat([data.drop(TARGET, axis=1), df_labels], axis=1)
-    TARGET = labels.tolist()
 
     # Instantiate the experiment
     t1 = time()
-    inv = Discovery(data, SENS, TARGET, EXPL, topk=10, random_state=0)
+    inv = Discovery(data_source, SENS, TARGET, EXPL, topk=10, random_state=0,
+                    to_drop=['RMSE', 'Avg Movie Age',
+                             'Avg Movie Rating', 'Occupation'])
     # Train the classifier
     t2 = time()
     train([inv])

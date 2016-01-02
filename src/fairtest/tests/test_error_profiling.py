@@ -1,12 +1,12 @@
 import unittest
 import fairtest.utils.prepare_data as prepare
-from fairtest import ErrorProfiling
+from fairtest import ErrorProfiling, DataSource
 
 
 class TestingTestCase(unittest.TestCase):
     def setUp(self):
         FILENAME = "fairtest/tests/data/tiny_predictions_reg.csv"
-        self.data = prepare.data_from_csv(FILENAME)
+        self.data = DataSource(prepare.data_from_csv(FILENAME))
         self.SENS = ['Age']
         self.TARGET = 'Prediction'
         self.GROUND_TRUTH = 'Ground_Truth'

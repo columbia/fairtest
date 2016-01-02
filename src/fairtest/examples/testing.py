@@ -5,7 +5,7 @@ Usage: python staples.py
 """
 
 import fairtest.utils.prepare_data as prepare
-from fairtest import Testing, train, test, report
+from fairtest import Testing, train, test, report, DataSource
 
 import sys
 
@@ -24,8 +24,10 @@ def main(argv=sys.argv):
     SENS = ['income']
     TARGET = 'price'
 
+    data_source = DataSource(data)
+
     # Instantiate the experiment
-    inv = Testing(data, SENS, TARGET, EXPL, random_state=0)
+    inv = Testing(data_source, SENS, TARGET, EXPL, random_state=0)
 
     # Train the classifier
     train([inv])

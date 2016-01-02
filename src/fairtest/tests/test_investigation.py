@@ -1,6 +1,6 @@
 import unittest
 import fairtest.utils.prepare_data as prepare
-from fairtest import Investigation, Testing, train, test, report
+from fairtest import Investigation, Testing, train, test, report, DataSource
 import numpy as np
 
 
@@ -14,7 +14,7 @@ class InvestigationTestCase(unittest.TestCase):
 
     def test_randomness(self):
         # First Experiment
-        inv1 = Testing(self.data, self.SENS, self.TARGET, self.EXPL,
+        inv1 = Testing(DataSource(self.data), self.SENS, self.TARGET, self.EXPL,
                        random_state=0)
         train([inv1])
         test([inv1])
@@ -24,7 +24,7 @@ class InvestigationTestCase(unittest.TestCase):
         np.random.shuffle(shuffle_cols)
         self.data = self.data[shuffle_cols]
 
-        inv2 = Testing(self.data, self.SENS, self.TARGET, self.EXPL,
+        inv2 = Testing(DataSource(self.data), self.SENS, self.TARGET, self.EXPL,
                        random_state=0)
         train([inv2])
         test([inv2])
@@ -40,17 +40,19 @@ class InvestigationTestCase(unittest.TestCase):
                             l2.replace("berkeley2", "berkeley"))
 
     def test_parameter_check(self):
+        data = DataSource(self.data)
+
         # can't instantiate an abstract investigation
         with self.assertRaises(TypeError):
-            Investigation(self.data, self.SENS, self.TARGET, self.EXPL)
+            Investigation(data, self.SENS, self.TARGET, self.EXPL)
 
         # must specify a target
         with self.assertRaises(ValueError):
-            Testing(self.data, self.SENS, None)
+            Testing(data, self.SENS, None)
 
         # must specify a protected feature
         with self.assertRaises(ValueError):
-            Testing(self.data, None, self.TARGET)
+            Testing(data, None, self.TARGET)
 
         # must specify a dataset
         with self.assertRaises(ValueError):
@@ -58,9 +60,9 @@ class InvestigationTestCase(unittest.TestCase):
 
         # protected feature must be a list
         with self.assertRaises(ValueError):
-            Testing(self.data, 'single', self.TARGET)
+            Testing(data, 'single', self.TARGET)
 
-        inv = Testing(self.data, self.SENS, self.TARGET)
+        inv = Testing(data, self.SENS, self.TARGET)
 
         # inv must be a list
         with self.assertRaises(ValueError):
@@ -87,14 +89,6 @@ class InvestigationTestCase(unittest.TestCase):
             report([inv], None)
 
         train([inv])
-
-        # family_conf can't be null
-        with self.assertRaises(ValueError):
-            test([inv], family_conf=0)
-
-        # family_conf can't be 1
-        with self.assertRaises(ValueError):
-            test([inv], family_conf=1)
 
         # can't report before testing
         with self.assertRaises(RuntimeError):

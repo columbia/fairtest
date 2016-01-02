@@ -1,12 +1,12 @@
 import unittest
 import fairtest.utils.prepare_data as prepare
-from fairtest import Testing
+from fairtest import Testing, DataSource
 
 
 class TestingTestCase(unittest.TestCase):
     def setUp(self):
         FILENAME = "../data/adult/adult.csv"
-        self.data = prepare.data_from_csv(FILENAME)
+        self.data = DataSource(prepare.data_from_csv(FILENAME))
         self.SENS = ['sex']
         self.TARGET = 'income'
         self.EXPL = None

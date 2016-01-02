@@ -5,7 +5,7 @@ Usage: ./make_overfeat.py fairtest/data/images/overfeat_raw.csv results/overfeat
 """
 
 import fairtest.utils.prepare_data as prepare
-from fairtest import Discovery, train, test, report
+from fairtest import Discovery, train, test, report, DataSource
 
 from time import time
 
@@ -25,6 +25,7 @@ def main(argv=sys.argv):
     data = prepare.data_from_csv(FILENAME, sep='\\t')
     OUTPUT_DIR = argv[2]
 
+
     TARGET = 'Labels'
     SENS = ['Race']
     EXPL = []
@@ -39,9 +40,11 @@ def main(argv=sys.argv):
     data = pd.concat([data.drop(TARGET, axis=1), df_labels], axis=1)
     TARGET = labels.tolist()
 
+    data_source = DataSource(data)
+
     # Instantiate the experiment
     t1 = time()
-    inv = Discovery(data, SENS, TARGET, EXPL, topk=35, random_state=0)
+    inv = Discovery(data_source, SENS, TARGET, EXPL, topk=35, random_state=0)
 
     # Train the classifier
     t2 = time()

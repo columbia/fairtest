@@ -1,6 +1,6 @@
 import unittest
 import fairtest.utils.prepare_data as prepare
-from fairtest import Discovery
+from fairtest import Discovery, DataSource
 import ast
 from sklearn import preprocessing
 import pandas as pd
@@ -22,7 +22,8 @@ class TestingTestCase(unittest.TestCase):
         labeled_data = label_encoder.fit_transform(labeled_data)
         labels = label_encoder.classes_
         df_labels = pd.DataFrame(labeled_data, columns=labels)
-        self.data = pd.concat([data.drop(TARGET, axis=1), df_labels], axis=1)
+        self.data = DataSource(pd.concat([data.drop(TARGET, axis=1), df_labels],
+                                         axis=1))
         self.TARGET = labels.tolist()
 
     def test_parameters(self):

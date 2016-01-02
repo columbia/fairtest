@@ -31,7 +31,7 @@ installed. We provide a script to assist with the installation of FairTest.
 * Run `make install` to install both apt and pip package dependencies.
 
 
-Alternativelly, you can download an Ubuntu virtual machine with a complete,
+Alternatively, you can download an Ubuntu virtual machine with a complete,
 up-to-date FairTest installation from
 <a href="http://www.cs.columbia.edu/~vatlidak/UbuntuVM.tar.gz" title="FairTest VM">here</a>
 and launch it with VMWare Player.
@@ -49,6 +49,20 @@ from fairtest.utils.prepare_data import data_from_csv
 
 data = data_from_csv('fairtest/data/adult/adult.csv', to_drop=['fnlwgt'])
 ```
+
+The data is then pre-processed and split into training and testing sets by
+encapsulating it in a `DataSource` object.
+
+```python
+from fairtest import DataSource
+
+data = DataSource(data, budget=1, conf=0.95)
+```
+
+This creates a training set and holdout set that can be used to perform a single
+batch of investigations with an overall testing confidence of 95%. Budgets 
+larger than 1 allow for `adaptive` data analyses, where new 
+investigations may be performed based on previous results.
 
 #### Testing
 To test for associations between user income and race or gender, first create
@@ -120,7 +134,8 @@ outputs. Support for more general explanatory attributes can be enabled by
 defining further *Fairness Metrics* (see Extensions section below).
 
 #### Other Examples
-Additional examples, demonstrating how to use FairTest, are at: `src/fairtest/examples`.
+Additional examples, demonstrating how to use FairTest, are at: 
+`src/fairtest/examples`.
 
 
 Extensions

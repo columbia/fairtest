@@ -12,15 +12,15 @@ class Testing(Investigation):
     A FairTest Testing Investigation
     """
 
-    def __init__(self, data, protected, output, expl=None, metrics=None,
-                 train_size=0.5, conf=0.95, random_state=None):
+    def __init__(self, data_source, protected, output, expl=None, metrics=None,
+                 random_state=None, to_drop=None):
         """
         Initializes a FairTest Testing Investigation.
 
         Parameters
         ----------
-        data :
-            the dataset
+        data_source :
+            the data source
         protected :
             list of names of protected features
         output :
@@ -29,16 +29,14 @@ class Testing(Investigation):
             name of explanatory feature
         metrics :
             dictionary of custom metrics indexed by a protected feature
-        train_size :
-            fraction of the data to keep for training
-        conf :
-            confidence level
         random_state :
             seed for random generators
+        to_drop :
+            features to drop from the training set
         """
         logging.info('New Testing Investigation')
-        Investigation.__init__(self, data, protected, output, expl, metrics,
-                               train_size, conf, random_state)
+        Investigation.__init__(self, data_source, protected, output,
+                               expl, metrics, random_state, to_drop)
 
     def set_default_metrics(self):
         out = self.output

@@ -17,7 +17,7 @@ Logic for now is:
 """
 
 import fairtest.utils.prepare_data as prepare
-from fairtest import Testing, train, test, report
+from fairtest import Testing, train, test, report, DataSource
 
 from time import time
 from copy import deepcopy
@@ -26,7 +26,6 @@ from random import shuffle, randint, seed
 import os
 import sys
 import pandas as pd
-#import multiprocessing
 from datetime import datetime
 
 
@@ -184,7 +183,9 @@ def do_benchmark((contents, feature_range, size_range)):
                 data.columns[range(N_BASE-1,
                                    additional_features_range[-1] - 1 -
                                    additional_features)], axis=1).head(size)
-            inv = Testing(_data, SENS, TARGET, EXPL,
+
+            data_source = DataSource(_data)
+            inv = Testing(data_source, SENS, TARGET, EXPL,
                           random_state=int(random_suffix))
 
             # Train the classifier
