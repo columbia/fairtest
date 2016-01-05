@@ -1,16 +1,16 @@
 #FairTest
 
 FairTest enables developers or auditing entities to *discover* and *test* for
-*unwarranted associations* between an algorithm's outputs and certain user 
+*unwarranted associations* between an algorithm's outputs and certain user
 subpopulations identified by *protected* features.
 
 FairTest works by learning a special *decision tree*, that splits a user
 population into smaller subgroups in which the association between protected
-features and algorithm outputs is maximized. FairTest supports and makes use 
+features and algorithm outputs is maximized. FairTest supports and makes use
 of a variety of different fairness *metrics* each appropriate in a particular
-situation. After finding these so-called *contexts of association*, FairTest 
-uses statistical methods to assess their validity and strength. Finally, 
-FairTest retains all statistically significant associations, ranks them by 
+situation. After finding these so-called *contexts of association*, FairTest
+uses statistical methods to assess their validity and strength. Finally,
+FairTest retains all statistically significant associations, ranks them by
 their strength, and reports them as *association bugs* to the user.
 
 Installation
@@ -41,7 +41,7 @@ Quick Start
 
 Different benchmark datasets in CSV format are located in `fairtest/data`. You
 can use the `utils.prepare_data.data_from_csv()` function to load a dataset as
-a `Pandas DataFrame`, the format expected by FairTest investigations. The first 
+a `Pandas DataFrame`, the format expected by FairTest investigations. The first
 line of the csv file should list the names of the different features.
 
 ```python
@@ -54,15 +54,15 @@ The data is then pre-processed and split into training and testing sets by
 encapsulating it in a `DataSource` object.
 
 ```python
-from fairtest import DataSource
+from fairtest.holdout import DataSource
 
 data = DataSource(data, budget=1, conf=0.95)
 ```
 
 This creates a training set and holdout set that can be used to perform a single
-batch of investigations with an overall testing confidence of 95%. Budgets 
-larger than 1 allow for `adaptive data analysis`, where new 
-investigations may be performed based on previous results, and validated over 
+batch of investigations with an overall testing confidence of 95%. Budgets
+larger than 1 allow for `adaptive data analysis`, where new
+investigations may be performed based on previous results, and validated over
 an independent testing set.
 
 #### Testing
@@ -72,7 +72,7 @@ the appropriate Fairtest `Investigation`:
 ```python
 from fairtest.testing import Testing
 
-SENS = ['gender', 'race']     # Protected features
+SENS = ['sex', 'race']     # Protected features
 TARGET = 'income'             # Output
 EXPL = ''                     # Explanatory feature
 
@@ -90,13 +90,13 @@ all_investigations = [inv]
 
 train(all_investigations)
 test(all_investigations)
-report(all_investigations, 'adult', output_dir='temp/')
+report(all_investigations, 'adult', output_dir='/tmp/')
 ```
 
 #### Discovery
 `Discovery` investigations enable the search for potential associations over
 a large output space, with no prior knowledge of which outputs to focus on.
-An additional instance parameter `topk` specifies the maximum number of 
+An additional instance parameter `topk` specifies the maximum number of
 outputs that exhibit the strongest associations to consider:
 
 ```python
@@ -112,7 +112,7 @@ inv = Discovery(data, SENS, TARGET, EXPL, topk=10)
 #### Error Profiling
 `ErrorProfiling` investigations let you search for user subpopulations for which
 an algorithm exhibits abnormally high error rates. The investigation expects
-an additional input specifying the *ground truth* for the algorithm's 
+an additional input specifying the *ground truth* for the algorithm's
 predictions. An appropriate error measure is then computed:
 
 ```python
@@ -127,15 +127,15 @@ inv = ErrorProfiling(data, SENS, TARGET, GROUND_TRUTH, EXPL)
 ```
 
 #### Explanatory Attribute
-It is possible to specify a user attribute as *explanatory*, meaning that 
+It is possible to specify a user attribute as *explanatory*, meaning that
 FairTest will only look for associations among users that are equal with
 respect to this attribute. We currently support a single, categorical attribute
-as explanatory for investigations with categorical protected features and 
+as explanatory for investigations with categorical protected features and
 outputs. Support for more general explanatory attributes can be enabled by
 defining further *Fairness Metrics* (see Extensions section below).
 
 #### Other Examples
-Additional examples, demonstrating how to use FairTest, are at: 
+Additional examples, demonstrating how to use FairTest, are at:
 `src/fairtest/examples`.
 
 
@@ -161,7 +161,7 @@ FairTest currently supports the following metrics:
     - For binary protected feature and multi-labeled output
 
 By default FairTest selects an appropriate metric depending on the type of
-investigation and of protected and output features provided. You can specify 
+investigation and of protected and output features provided. You can specify
 a particular metric to use (as long as that metric is applicable to the data at
 hand) with the `metrics` parameter passed to an `Investigation`:
 
@@ -179,23 +179,23 @@ inv = Testing(data, SENS, TARGET, EXPL, metrics=metrics)
 ```
 
 FairTest can be extended with custom metrics, in order to handle situations
-where the above metrics are not applicable. The class 
+where the above metrics are not applicable. The class
 `fairtest.modules.metrics.metric.Metric` defines an abstract metric. Metrics can
-expect three types of data: in the form of a contingency table (categorical 
+expect three types of data: in the form of a contingency table (categorical
 features), of aggregate statistics (ordinal features), or non-aggregated data
-(for regression). The main method called on a `Metric` is `compute`, which 
+(for regression). The main method called on a `Metric` is `compute`, which
 calculates a confidence interval and p-value and stores these as the class
-attribute `stats`. The abstract `Metric` class provides a default `compute` 
-method that calls instance specific methods for computing either exact or 
+attribute `stats`. The abstract `Metric` class provides a default `compute`
+method that calls instance specific methods for computing either exact or
 approximate statistics. Subclasses of `Metric` can either implement these
-specific methods (see `fairtest.modules.metrics.mutual_info.NMI` for instance) 
-or redefine the `compute`method entirely (see for example 
-`fairtest.modules.metrics.regression.REGRESSION`). 
+specific methods (see `fairtest.modules.metrics.mutual_info.NMI` for instance)
+or redefine the `compute`method entirely (see for example
+`fairtest.modules.metrics.regression.REGRESSION`).
 
 
 #### Logging
 FairTest uses `Python's` standard `logging` module to log simple information
-about ongoing investigations, as well as more fine-grained debug information 
+about ongoing investigations, as well as more fine-grained debug information
 (mainly for the guided tree learning algorithm).
 
 
@@ -216,4 +216,3 @@ src/fairtest/discovery.py               |  Discovery Investigations
 src/fairtest/error_profiling.py         |  ErrorProfiling Investigations
 src/fairtest/investigation.py           |  Train, Test, Report for arbitrary Investigations
 src/fairtest/testing.py                 |  Testing Investigations
-
