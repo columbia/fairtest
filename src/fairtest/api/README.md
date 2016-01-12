@@ -13,8 +13,13 @@ Retrieves all records of an application pool.
 * _Return_: Records of Pool (json format)
 
 #### Return Codes
-* XXX
-
+* 200 (OK) -- Resources successfully returned.
+* 404 (Not Found) -- Cannot find resource URL.
+    * Check spelling of URL
+* 405 (Method not allowed) -- HTTP verb is not allowed.
+    * Verify that your client is issuing a GET request
+* 500 (Internal Server Error) -- Something went wrong in the server
+    * Open a github issue.
 
 ## Post Record into Application Pool
 Inserts a record into an existing application pool. Newly inserted records are integrated in
@@ -33,8 +38,13 @@ experiments.
 * record: The record to register as a json object
 
 #### Return Codes
-* XXX
-
+* 200 (OK) -- Resources successfully returned.
+* 404 (Not Found) -- Cannot find resource URL.
+    * Check spelling of URL
+* 405 (Method not allowed) -- HTTP verb is not allowed.
+    * Verify that your client is issuing a GET request
+* 500 (Internal Server Error) -- Something went wrong in the server
+    * Open a github issue.
 
 
 ## Delete Record from Application Pool
@@ -49,8 +59,13 @@ but are being used for any experiments pending prior to their deletion.
 * _Return_: None
 
 #### Return Codes
-
-* XXX
+* 200 (OK) -- Resources successfully returned.
+* 404 (Not Found) -- Cannot find resource URL.
+    * Check spelling of URL
+* 405 (Method not allowed) -- HTTP verb is not allowed.
+    * Verify that your client is issuing a GET request
+* 500 (Internal Server Error) -- Something went wrong in the server
+    * Open a github issue.
 
 
 
@@ -69,7 +84,13 @@ Updates a record into a application pool. Updated records are not integrated to 
 * record: The new (updated) record
 
 #### Return Codes
-* XXX
+* 200 (OK) -- Resources successfully returned.
+* 404 (Not Found) -- Cannot find resource URL.
+    * Check spelling of URL
+* 405 (Method not allowed) -- HTTP verb is not allowed.
+    * Verify that your client is issuing a GET request
+* 500 (Internal Server Error) -- Something went wrong in the server
+    * Open a github issue.
 
      
 ## Post FairTest Experiment
@@ -118,4 +139,6 @@ curl -k -H "Content-Type: application/json" -X POST -d '{"pool_name":"demo_pool"
 curl -k -X DELETE  http://127.0.0.1:5000/_POOL_NAME/_RECORD_ID`
 
 curl -k  -H "Content-Type: application/json" -X PUT -d '{"type":"external"}' http://127.0.0.1:5000/_POOL_NAME`
+
+...
 ```
