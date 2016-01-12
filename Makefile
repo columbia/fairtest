@@ -21,4 +21,4 @@ apt-dependencies:
 	@-sudo apt-get update
 	@echo "Installing R version 3.2.1"
 	@sudo apt-get -y install r-base r-base-dev
-	@sudo apt-get -y install python python-dev python-pip liblzma-dev python-numpy libfreetype6-dev
+	@sudo apt-get -y install python python-dev python-pip liblzma-dev python-numpy libfreetype6-dev mongodb-org-server
