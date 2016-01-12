@@ -110,11 +110,12 @@ Retrieves the bug-report report corresponding to an instantiated FairTest experi
 
 ## DEMO
 
-`curl -k  -X GET http://127.0.0.1:5000/_POOL_NAME`
+```
+curl -k  -X GET http://127.0.0.1:5000/_POOL_NAME
 
-`curl -k -H "Content-Type: application/json" -X POST -d '{"pool_name":"demo_pool"}'  http://127.0.0.1:5000/_POOL_NAME
+curl -k -H "Content-Type: application/json" -X POST -d '{"pool_name":"demo_pool"}'  http://127.0.0.1:5000/_POOL_NAME`
 
+curl -k -X DELETE  http://127.0.0.1:5000/_POOL_NAME/_RECORD_ID`
 
-`curl -k -X DELETE  http://127.0.0.1:5000/_POOL_NAME/_RECORD_ID
-
-`curl -k  -H "Content-Type: application/json" -X PUT -d '{"type":"external"}' http://127.0.0.1:5000/_POOL_NAME
+curl -k  -H "Content-Type: application/json" -X PUT -d '{"type":"external"}' http://127.0.0.1:5000/_POOL_NAME`
+```
