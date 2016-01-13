@@ -1,6 +1,6 @@
 # FairTest API documentation
 
-A REST-ful Application Programming Interface to enable developers use FairTest remotely over the Web. The current version of the API supports the management of application pools with records for which various FairTest investigations can be ran. An application pool, created from the system administrator upon user's request, is bound to one application and holds all the records of this application. Before running any investigation, a user must populate application records into the poll. The results of FairTest experiments (bug reports) are emitted in the corresponding application pool.
+A REST-ful Application Programming Interface to enable developers use FairTest remotely over the Web. The current version of the API supports the management of application pools with records for which various FairTest investigations can be executed. An application pool, created from the system administrator upon user's request, is bound to one application and holds all the records of this application. Before running any investigation, a user must populate application records into the poll. The results of FairTest experiments (bug reports) are emitted in the corresponding application pool.
 
 ## Get Records of Application Pool
 Retrieves all records of an application pool.
@@ -13,8 +13,13 @@ Retrieves all records of an application pool.
 * _Return_: Records of Pool (json format)
 
 #### Return Codes
-* XXX
-
+* 200 (OK) -- Resources successfully returned
+* 404 (Not Found) -- Cannot find resource URL
+    * Check spelling of URL
+* 405 (Method not allowed) -- HTTP verb is not allowed
+    * Verify that your client is issuing a GET request
+* 500 (Internal Server Error) -- Something went wrong in the server
+    * Open a github issue
 
 ## Post Record into Application Pool
 Inserts a record into an existing application pool. Newly inserted records are integrated in
@@ -26,15 +31,20 @@ experiments.
 * _Method_: POST
 * _Protocol_: HTTP, _Port_: 80
 * _Input Parameters_: Dictionary (json format)
-* _Return_: Record id
+* _Return_: Record uid
 
 #### Dictionary Fields
 
 * record: The record to register as a json object
 
 #### Return Codes
-* XXX
-
+* 200 (OK) -- Resources successfully returned
+* 404 (Not Found) -- Cannot find resource URL
+    * Check spelling of URL
+* 405 (Method not allowed) -- HTTP verb is not allowed
+    * Verify that your client is issuing a GET request
+* 500 (Internal Server Error) -- Something went wrong in the server
+    * Open a github issue.
 
 
 ## Delete Record from Application Pool
@@ -42,15 +52,20 @@ Removes a record from an application pool. Deleted records are not integrated to
 but are being used for any experiments pending prior to their deletion.
 
 #### Specification
-* _URL_: http://127.0.0.1:5000/_POOL_NAME/_RECORD_ID
+* _URL_: http://127.0.0.1:5000/_POOL_NAME/_RECORD_UID
 * _Method_: DELETE
 * _Protocol_: HTTP, _Port_: 80
 * _Input Parameters_: None
 * _Return_: None
 
 #### Return Codes
-
-* XXX
+* 200 (OK) -- Resources successfully returned
+* 404 (Not Found) -- Cannot find resource URL
+    * Check spelling of URL
+* 405 (Method not allowed) -- HTTP verb is not allowed
+    * Verify that your client is issuing a GET request
+* 500 (Internal Server Error) -- Something went wrong in the server
+    * Open a github issue
 
 
 
@@ -58,64 +73,80 @@ but are being used for any experiments pending prior to their deletion.
 Updates a record into a application pool. Updated records are not integrated to any future experiments, but their old values are being used for any experiments pending prior to their update.
 
 #### Specification
-* _URL_: http://127.0.0.1:5000/_POOL_NAME/_RECORD_ID
+* _URL_: http://127.0.0.1:5000/_POOL_NAME/_RECORD_UID
 * _Method_: PUT
 * _Protocol_: HTTP, _Port_: 80
 * _Input Parameters_: Dictionary (json format)
-* _Return_: Record id
+* _Return_: Record uid
 
 #### Dictionary Fields
 
 * record: The new (updated) record
 
 #### Return Codes
-* XXX
+* 200 (OK) -- Resources successfully returned
+* 404 (Not Found) -- Cannot find resource URL
+    * Check spelling of URL
+* 405 (Method not allowed) -- HTTP verb is not allowed
+    * Verify that your client is issuing a GET request
+* 500 (Internal Server Error) -- Something went wrong in the server
+    * Open a github issue
 
      
 ## Post FairTest Experiment
 Instantiates a FairTest experiment into a Application Pool. The records currently in pool will be used as training and testing set of the experiment.
 
 #### Specification
-* _URL_: XXX
+* _URL_: http://127.0.0.1:5000/experiments
 * _Method_: POST
 * _Protocol_: HTTP, _Port_: 80
 * _Input Parameters_: Dictionary (json format)
-* _Return_: The URL of the bug_report
+* _Return_: Experiment UID
 
 #### Dictionary Fields
 
-* XXX
+* pool_name: The name of an existing application pool, with valid records
+* record: A dictionary with the fields of the records
 
 #### Return Codes
-* XXX
+* 200 (OK) -- Resources successfully returned
+* 404 (Not Found) -- Cannot find resource URL
+    * Check spelling of URL
+* 405 (Method not allowed) -- HTTP verb is not allowed
+    * Verify that your client is issuing a GET request
+* 500 (Internal Server Error) -- Something went wrong in the server
+    * Check that your dictionary is contains a valid application pool
+    * Check that the parameters of the experiment are right
+    * Open a github issue if none of the above applies
+
 
 
 ## Get FairTest Report
 Retrieves the bug-report report corresponding to an instantiated FairTest experiment.
 
 #### Specification
-* _URL_: XXX
+* _URL_: http://127.0.0.1:5000/experiments/_EXPERIMENT_UID
 * _Method_: GET
 * _Protocol_: HTTP, _Port_: 80
-* _Input Parameters_: Dictionary (json format)
-* _Return_: FairTest Report
+* _Input Parameters_: None
+* _Return_: Dictionary 
 
 #### Dictionary Fields
 
-* XXX
+* report_url: The URL of the FairTest report for the experiment
 
 #### Return Codes
-* XXX
+* 200 (OK) -- Resources successfully returned
+* 404 (Not Found) -- Cannot find resource URL
+    * Check spelling of URL
+* 405 (Method not allowed) -- HTTP verb is not allowed
+    * Verify that your client is issuing a GET request
+* 500 (Internal Server Error) -- Something went wrong in the server
+    * Check that the parameters of the experiment are right
+    * Open a github issue if none of the above applies
 
 
 ## DEMO
 
-```
-curl -k  -X GET http://127.0.0.1:5000/_POOL_NAME
-
-curl -k -H "Content-Type: application/json" -X POST -d '{"pool_name":"demo_pool"}'  http://127.0.0.1:5000/_POOL_NAME`
-
-curl -k -X DELETE  http://127.0.0.1:5000/_POOL_NAME/_RECORD_ID`
-
-curl -k  -H "Content-Type: application/json" -X PUT -d '{"type":"external"}' http://127.0.0.1:5000/_POOL_NAME`
+```...
 ```
