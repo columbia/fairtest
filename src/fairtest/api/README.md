@@ -39,6 +39,8 @@ experiments.
 
 #### Return Codes
 * 200 (OK) -- Resources successfully returned
+* 400 (Bad Request) -- Server cannot parse request
+    * Verify that your client is sending a valid json object        
 * 404 (Not Found) -- Cannot find resource URL
     * Check spelling of URL
 * 405 (Method not allowed) -- HTTP verb is not allowed
@@ -60,6 +62,7 @@ but are being used for any experiments pending prior to their deletion.
 
 #### Return Codes
 * 200 (OK) -- Resources successfully returned
+* 400 TODO: 
 * 404 (Not Found) -- Cannot find resource URL
     * Check spelling of URL
 * 405 (Method not allowed) -- HTTP verb is not allowed
@@ -85,6 +88,8 @@ Updates a record into a application pool. Updated records are not integrated to 
 
 #### Return Codes
 * 200 (OK) -- Resources successfully returned
+* 400 (Bad Request) -- Server cannot parse request
+    * Verify that your client is sending a valid json object 
 * 404 (Not Found) -- Cannot find resource URL
     * Check spelling of URL
 * 405 (Method not allowed) -- HTTP verb is not allowed
@@ -110,13 +115,14 @@ Instantiates a FairTest experiment into a Application Pool. The records currentl
 
 #### Return Codes
 * 200 (OK) -- Resources successfully returned
+* 400 (Bad Request) -- Server cannot parse request
+    * Verify that your client is sending a valid json object 
 * 404 (Not Found) -- Cannot find resource URL
     * Check spelling of URL
 * 405 (Method not allowed) -- HTTP verb is not allowed
     * Verify that your client is issuing a GET request
 * 500 (Internal Server Error) -- Something went wrong in the server
     * Check that your dictionary is contains a valid application pool
-    * Check that the parameters of the experiment are right
     * Open a github issue if none of the above applies
 
 
@@ -137,6 +143,7 @@ Retrieves the bug-report report corresponding to an instantiated FairTest experi
 
 #### Return Codes
 * 200 (OK) -- Resources successfully returned
+* 400 TODO: 
 * 404 (Not Found) -- Cannot find resource URL
     * Check spelling of URL
 * 405 (Method not allowed) -- HTTP verb is not allowed
