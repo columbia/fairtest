@@ -35,7 +35,7 @@ experiments.
 
 #### Dictionary Fields
 
-* record: The record to register as a json object
+* record: The record to register as a json object.
 
 #### Return Codes
 * 200 (OK) -- Resources successfully returned
@@ -84,7 +84,7 @@ Updates a record into a application pool. Updated records are not integrated to 
 
 #### Dictionary Fields
 
-* record: The new (updated) record
+* record: The new (updated) record.
 
 #### Return Codes
 * 200 (OK) -- Resources successfully returned
@@ -97,7 +97,7 @@ Updates a record into a application pool. Updated records are not integrated to 
 * 500 (Internal Server Error) -- Something went wrong in the server
     * Open a github issue
 
-     
+
 ## Post FairTest Experiment
 Instantiates a FairTest experiment into a Application Pool. The records currently in pool will be used as training and testing set of the experiment.
 
@@ -110,8 +110,10 @@ Instantiates a FairTest experiment into a Application Pool. The records currentl
 
 #### Dictionary Fields
 
-* pool_name: The name of an existing application pool, with valid records
-* record: A dictionary with the fields of the records
+* pool_name: The name of an existing application pool, with valid records.
+* sens: A list of names of sensitive attributes to check.
+* targer: The name of the target (output) attribute.
+* to_drop: A list of names of attributes to drop. This fields is optional.
 
 #### Return Codes
 * 200 (OK) -- Resources successfully returned
@@ -135,11 +137,11 @@ Retrieves the bug-report report corresponding to an instantiated FairTest experi
 * _Method_: GET
 * _Protocol_: HTTP, _Port_: 80
 * _Input Parameters_: None
-* _Return_: Dictionary 
+* _Return_: Dictionary
 
 #### Dictionary Fields
 
-* report_url: The URL of the FairTest report for the experiment
+* experiment_directory: The URL of the FairTest report for the experiment.
 
 #### Return Codes
 * 200 (OK) -- Resources successfully returned

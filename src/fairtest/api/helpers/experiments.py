@@ -23,10 +23,11 @@ def validate(resource, request):
     if resource != 'experiments':
         return
     try:
+        _ = request.get_json()['sens']
+        _ = request.get_json()['target']
         pool_name = 'pools/' + request.get_json()['pool_name']
     except Exception:
-        # TODO: Fix this
-        abort(500, description='bad dict -- This is not 500')
+        abort(400, description='bad dictionary')
 
     print "Validating experiment"
     try:
@@ -35,7 +36,6 @@ def validate(resource, request):
         collection = _db.get_collection(pool_name)
     except Exception, error:
         print error
-        # TODO: Fix this
         abort(500, description='Internal server error.')
     if not collection.count():
         abort(500, description='Application pool empty. No entries registered')
@@ -61,46 +61,56 @@ def run(resource, items):
     if resource != 'experiments':
         return
 
-    experiment_dir = items[0]['experiment_directory']
+    experiment_dict = items[0]
     pool_name = 'pools/' + items[0]['pool_name']
-
-    #pool = multiprocessing.Pool(max(1,int(multiprocessing.cpu_count()/2)))
-    #pool.apply_async(_run, [experiment_dir, pool_name])
-
-    _run(experiment_dir, pool_name)
+    _run(experiment_dict, pool_name)
 
 
-def _run(experiment_dir, pool_name):
+def _run(experiment_dict, pool_name):
     # DO:
     #   - prepare csv from records of DB application pool
     #   - run experiment and place report at proper place
 
     # prepare csv
     filename =  _prepare_csv_from_pool(pool_name)
-    print "Input: %s,  output: %s" % (filename, experiment_dir)
+
+    # retrive dictionary parameteres
+    experiment_dir =  experiment_dict['experiment_directory']
+    sens = experiment_dict['sens']
+    target = experiment_dict['target']
+    if 'to_drop' in experiment_dict:
+        to_drop = experiment_dict['to_drop']
+    else:
+        to_drop = []
+    if 'expl' in experiment_dict:
+        expl = experiment_dict['expl']
+    else:
+        expl = []
+    if 'random_state' in experiment_dict:
+        random_state = experiment_dict['random_state']
+    else:
+        random_state = 0
 
     logging.basicConfig(
-            filename=os.path.join(experiment_dir, 'fairtest.log'),level=logging.DEBUG
-        )
+        filename=os.path.join(experiment_dir, 'fairtest.log'),level=logging.DEBUG
+    )
+    print "Experiment parameters:", experiment_dict
+    print "Input csv: %s\nOutput dir: %s" % (filename, experiment_dir)
 
-    # 
     # run experiment and place report at proper place
-    data = prepare.data_from_csv(filename, to_drop=['zipcode', 'distance'])
-    data_source = DataSource(data)
-
-    expl = []
-    sens = ['income']
-    target = 'price'
-
-    inv = Testing(data_source, sens, target, expl, random_state=0)
-    train([inv])
-    test([inv])
-    report([inv], "", experiment_dir)
+    try:
+        data = prepare.data_from_csv(filename, to_drop=to_drop)
+        data_source = DataSource(data)
+        inv = Testing(data_source, sens, target, expl, random_state=0)
+        train([inv])
+        test([inv])
+        report([inv], "", experiment_dir)
+    except Exception, error:
+        print error
+        abort(500, description='Internal server error.')
 
     # remove csv
-    # os.remove(filename)
-
-    # change experiment's status
+    os.remove(filename)
 
 
 def _prepare_csv_from_pool(pool_name):
@@ -113,7 +123,6 @@ def _prepare_csv_from_pool(pool_name):
         collection = _db.get_collection(pool_name)
     except Exception, error:
         print error
-        # TODO: Fix this
         abort(500, description='Internal server error.')
 
     try:
