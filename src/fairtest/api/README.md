@@ -157,5 +157,54 @@ Retrieves the bug-report report corresponding to an instantiated FairTest experi
 
 ## DEMO
 
-```...
+```python
+import json
+import requests
+
+
+# GET registered records
+url = 'http://127.0.0.1:5000/pools/demo_app'
+r = requests.get(url)
+print r.status_code
+
+payloads = [
+    {'record': 'distance,zipcode,city,state,gender,race,income,price'},
+    {'record': 'near,33167,Miami,FL,F,Black or African American,income < 50K,low'},
+    {'record': 'near,49202,Jackson,MI,M,Black or African American,income < 50K,low'},
+    {'record': 'near,08863,Fords,NJ,F,Hispanic or Latino,income >= 50K,low'},
+    {'record': 'near,07011,Clifton,NJ,F,White Not Hispanic or Latino,income < 50K,low'},
+    {'record': 'near,80247,Denver,CO,F,White Not Hispanic or Latino,income >= 50K,low'},
+    {'record': 'near,46077,Zionsville,IN,F,White Not Hispanic or Latino,income >= 50K,low'},
+    {'record': 'near,01832,Haverhill,MA,F,White Not Hispanic or Latino,income < 50K,low'},
+    {'record': 'far,69138,Gothenburg,NE,M,White Not Hispanic or Latino,income >= 50K,high'},
+    {'record': 'far,25918,Shady Spring,WV,M,White Not Hispanic or Latino,income >= 50K,high'},
+    {'record': 'near,29566,Little River,SC,M,White Not Hispanic or Latino,income < 50K,low'}
+]
+
+# POST new records
+url = 'http://127.0.0.1:5000/pools/demo_app'
+headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+for payload in payloads:
+    r = requests.post(url, data=json.dumps(payload), headers=headers)
+    print r.status_code
+
+# POST an experiment
+url = 'http://127.0.0.1:5000/experiments'
+headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+payload = {'sens': ['income'], 'target': 'price', 'to_drop':['zipcode', 'distance'], 'pool_name': 'demo_app'}
+r = requests.post(url, data=json.dumps(payload), headers=headers)
+
+# check response and GET experiment
+if r.ok:
+    data = json.loads(r.text)
+    experiment_id = data['_id']
+    url = 'http://127.0.0.1:5000/experiments/' + experiment_id
+    r = requests.get(url)
+
+    data = json.loads(r.text)
+    experiment_dir = data['experiment_directory']
+    print "Experiment_directory (reports and logs):\n\t\t\t", experiment_dir
+else:
+    print "Error code:", r.status_code
+
 ```

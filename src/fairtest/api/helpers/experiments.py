@@ -92,7 +92,7 @@ def _run(experiment_dict, pool_name):
         random_state = 0
 
     logging.basicConfig(
-        filename=os.path.join(experiment_dir, 'fairtest.log'),level=logging.DEBUG
+        filename=os.path.join(experiment_dir, 'fairtest.log'), level=logging.DEBUG
     )
     print "Experiment parameters:", experiment_dict
     print "Input csv: %s\nOutput dir: %s" % (filename, experiment_dir)
