@@ -1,4 +1,5 @@
 import os
+import logging
 from helpers import db
 import multiprocessing
 from flask import abort
@@ -42,15 +43,14 @@ def validate(resource, request):
     # Mark experimenent pending and create temp dir for reports to be put
     try:
         request.get_json()['experiment_status'] = 'pending'
-        report_dir = mkdtemp(prefix='fairtest_report_')
-        request.get_json()['report_directory'] = report_dir
-        os.chmod(report_dir, 0777)
+        experiment_dir = mkdtemp(prefix='fairtest_report_')
+        request.get_json()['experiment_directory'] = experiment_dir
+        os.chmod(experiment_dir, 0777)
     except Exception, error:
         print error
         abort(500)
 
     # print request.get_json()
-    print "pre_POST hook: OK"
 
 
 def run(resource, items):
@@ -61,26 +61,30 @@ def run(resource, items):
     if resource != 'experiments':
         return
 
-    report_dir = items[0]['report_directory']
+    experiment_dir = items[0]['experiment_directory']
     pool_name = 'pools/' + items[0]['pool_name']
 
-    pool = multiprocessing.Pool(max(1,int(multiprocessing.cpu_count()/2)))
-    # pool.apply_async(_run_async, [experiment_id, report_dir])
-    pool.apply_async(_run, [report_dir, pool_name])
+    #pool = multiprocessing.Pool(max(1,int(multiprocessing.cpu_count()/2)))
+    #pool.apply_async(_run, [experiment_dir, pool_name])
+
+    _run(experiment_dir, pool_name)
 
 
-def _run(report_dir, pool_name):
+def _run(experiment_dir, pool_name):
     # DO:
     #   - prepare csv from records of DB application pool
     #   - run experiment and place report at proper place
-    print "Horay -- Will run:", report_dir, pool_name
 
     # prepare csv
     filename =  _prepare_csv_from_pool(pool_name)
-    print filename
+    print "Input: %s,  output: %s" % (filename, experiment_dir)
 
+    logging.basicConfig(
+            filename=os.path.join(experiment_dir, 'fairtest.log'),level=logging.DEBUG
+        )
+
+    # 
     # run experiment and place report at proper place
-    output_dir = report_dir
     data = prepare.data_from_csv(filename, to_drop=['zipcode', 'distance'])
     data_source = DataSource(data)
 
@@ -90,10 +94,8 @@ def _run(report_dir, pool_name):
 
     inv = Testing(data_source, sens, target, expl, random_state=0)
     train([inv])
-    print "here"
     test([inv])
-    report([inv], pool_name, output_dir)
-    print "report in:", output_dir
+    report([inv], "", experiment_dir)
 
     # remove csv
     # os.remove(filename)
