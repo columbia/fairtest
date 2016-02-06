@@ -23,7 +23,7 @@ Retrieves all records of an application pool.
 
 ## Post Record into Application Pool
 Inserts a record into an existing application pool. Newly inserted records are integrated in
-all experiments instantiated after their insertion, but are not integrated into any pending 
+all experiments instantiated after their insertion, but are not integrated into any pending
 experiments.
 
 #### Specification
@@ -38,9 +38,10 @@ experiments.
 * record: The record to register as a json object.
 
 #### Return Codes
-* 200 (OK) -- Resources successfully returned
+* 200 (OK) -- Resources successfully created
+* 201 (Created) -- Resources successfully created
 * 400 (Bad Request) -- Server cannot parse request
-    * Verify that your client is sending a valid json object        
+    * Verify that your client is sending a valid json object
 * 404 (Not Found) -- Cannot find resource URL
     * Check spelling of URL
 * 405 (Method not allowed) -- HTTP verb is not allowed
@@ -62,7 +63,6 @@ but are being used for any experiments pending prior to their deletion.
 
 #### Return Codes
 * 200 (OK) -- Resources successfully returned
-* 400 TODO: 
 * 404 (Not Found) -- Cannot find resource URL
     * Check spelling of URL
 * 405 (Method not allowed) -- HTTP verb is not allowed
@@ -89,7 +89,7 @@ Updates a record into a application pool. Updated records are not integrated to 
 #### Return Codes
 * 200 (OK) -- Resources successfully returned
 * 400 (Bad Request) -- Server cannot parse request
-    * Verify that your client is sending a valid json object 
+    * Verify that your client is sending a valid json object
 * 404 (Not Found) -- Cannot find resource URL
     * Check spelling of URL
 * 405 (Method not allowed) -- HTTP verb is not allowed
@@ -118,7 +118,7 @@ Instantiates a FairTest experiment into a Application Pool. The records currentl
 #### Return Codes
 * 200 (OK) -- Resources successfully returned
 * 400 (Bad Request) -- Server cannot parse request
-    * Verify that your client is sending a valid json object 
+    * Verify that your client is sending a valid json object
 * 404 (Not Found) -- Cannot find resource URL
     * Check spelling of URL
 * 405 (Method not allowed) -- HTTP verb is not allowed
@@ -145,7 +145,6 @@ Retrieves the bug-report report corresponding to an instantiated FairTest experi
 
 #### Return Codes
 * 200 (OK) -- Resources successfully returned
-* 400 TODO: 
 * 404 (Not Found) -- Cannot find resource URL
     * Check spelling of URL
 * 405 (Method not allowed) -- HTTP verb is not allowed
@@ -154,8 +153,14 @@ Retrieves the bug-report report corresponding to an instantiated FairTest experi
     * Check that the parameters of the experiment are right
     * Open a github issue if none of the above applies
 
+## Implementation Details
 
-## DEMO
+to be filled. Basically, it's a flask framework application implementing
+the restful API with mongoDB support. Also, the backend workers are built
+using redis...
+
+
+## Demo
 
 ```python
 import json

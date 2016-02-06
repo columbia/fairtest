@@ -1,6 +1,8 @@
 from eve import Eve
+from rq import Queue
+from redis import Redis
+from helpers import worker
 from helpers import experiments
-
 
 settings = {
         'DOMAIN': {
@@ -39,3 +41,4 @@ app.on_inserted += experiments.run
 
 if __name__ == '__main__':
         app.run(debug=True)
+

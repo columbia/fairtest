@@ -1,8 +1,10 @@
 import os
 import logging
+from rq import Queue
 from helpers import db
 import multiprocessing
 from flask import abort
+from redis import Redis
 from bson.objectid import ObjectId
 from tempfile import mkdtemp, mkstemp
 
@@ -10,15 +12,17 @@ import fairtest.utils.prepare_data as prepare
 from fairtest import Testing, train, test, report, DataSource
 
 
+HOSTNAME = 'localhost'
+POOLS    = 'fairtest_pools'
 
 
 def validate(resource, request):
     '''
-    Validate experiment on POST
+    Validate experiment on POST -- This function is invoked by prepost hooks.
 
     Check that experiment is submitted to an existing application pool
-    (collection) which is also not empty and mark experiment pending
-    before it's being inserted in the DB
+    (collection) which is also not empty, and mark experiment pending
+    before it's being inserted into the DB.
     '''
     if resource != 'experiments':
         return
@@ -29,18 +33,18 @@ def validate(resource, request):
     except Exception:
         abort(400, description='bad dictionary')
 
-    print "Validating experiment"
     try:
-        client = db.connect_to_client('localhost', 27017)
-        _db = db.get_db(client, 'fairtest_pools')
+        client = db.connect_to_client(HOSTNAME, 27017)
+        _db = db.get_db(client, POOLS)
         collection = _db.get_collection(pool_name)
     except Exception, error:
         print error
         abort(500, description='Internal server error.')
+
     if not collection.count():
         abort(500, description='Application pool empty. No entries registered')
 
-    # Mark experimenent pending and create temp dir for reports to be put
+    # Mark experimenent pending and create temp dir to place repots
     try:
         request.get_json()['experiment_status'] = 'pending'
         experiment_dir = mkdtemp(prefix='fairtest_report_')
@@ -50,11 +54,11 @@ def validate(resource, request):
         print error
         abort(500)
 
-    # print request.get_json()
-
 
 def run(resource, items):
     '''
+    This function is invoke by on_inserted hooks.
+
     When this event is fired up, the experiment is already
     validated and  introduced into the DB.
     '''
@@ -63,19 +67,24 @@ def run(resource, items):
 
     experiment_dict = items[0]
     pool_name = 'pools/' + items[0]['pool_name']
-    _run(experiment_dict, pool_name)
+    redis_conn = Redis()
+    q = Queue(connection=redis_conn)
+    q.enqueue(_run, experiment_dict, pool_name)
+    #_run(experiment_dict, pool_name)
 
 
 def _run(experiment_dict, pool_name):
-    # DO:
-    #   - prepare csv from records of DB application pool
-    #   - run experiment and place report at proper place
+    '''
+    DO:
+       - prepare csv from records of DB application pool
+       - run experiment and place report at proper place
+    '''
 
     # prepare csv
-    filename =  _prepare_csv_from_pool(pool_name)
+    filename = _prepare_csv_from_pool(pool_name)
 
     # retrive dictionary parameteres
-    experiment_dir =  experiment_dict['experiment_directory']
+    experiment_dir = experiment_dict['experiment_directory']
     sens = experiment_dict['sens']
     target = experiment_dict['target']
     if 'to_drop' in experiment_dict:
@@ -92,7 +101,11 @@ def _run(experiment_dict, pool_name):
         random_state = 0
 
     logging.basicConfig(
-        filename=os.path.join(experiment_dir, 'fairtest.log'), level=logging.DEBUG
+        filename=os.path.join(
+            experiment_dir,
+            'fairtest.log'
+        ),
+        level=logging.DEBUG
     )
     print "Experiment parameters:", experiment_dict
     print "Input csv: %s\nOutput dir: %s" % (filename, experiment_dir)
@@ -101,7 +114,9 @@ def _run(experiment_dict, pool_name):
     try:
         data = prepare.data_from_csv(filename, to_drop=to_drop)
         data_source = DataSource(data)
-        inv = Testing(data_source, sens, target, expl, random_state=0)
+        inv = Testing(
+            data_source, sens, target, expl, random_state=random_state
+        )
         train([inv])
         test([inv])
         report([inv], "", experiment_dir)
@@ -129,7 +144,6 @@ def _prepare_csv_from_pool(pool_name):
         filename = mkstemp(prefix='experiment_csv_')[1]
         with open(filename, "w+") as f:
             for c in collection.find():
-                # print c['record']
                 print >> f, str(c['record'])
         return filename
     except Exception, error:
