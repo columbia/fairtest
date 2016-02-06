@@ -1,7 +1,7 @@
 import os
 import logging
 from rq import Queue
-from helpers import db
+from helpers import db, config
 import multiprocessing
 from flask import abort
 from redis import Redis
@@ -10,10 +10,6 @@ from tempfile import mkdtemp, mkstemp
 
 import fairtest.utils.prepare_data as prepare
 from fairtest import Testing, train, test, report, DataSource
-
-
-HOSTNAME = 'localhost'
-POOLS    = 'fairtest_pools'
 
 
 def validate(resource, request):
@@ -33,9 +29,14 @@ def validate(resource, request):
     except Exception:
         abort(400, description='bad dictionary')
 
+    conf = config.load_config("./config.yaml")
+    hostname = conf['db_hostname']
+    port = conf['db_port']
+    pool = conf['db_name']
+
     try:
-        client = db.connect_to_client(HOSTNAME, 27017)
-        _db = db.get_db(client, POOLS)
+        client = db.connect_to_client(hostname, port)
+        _db = db.get_db(client, pool)
         collection = _db.get_collection(pool_name)
     except Exception, error:
         print error
@@ -64,13 +65,14 @@ def run(resource, items):
     '''
     if resource != 'experiments':
         return
-
+    conf = config.load_config("./config.yaml")
+    host = conf['redis_hostname']
+    port = conf['redis_port']
     experiment_dict = items[0]
     pool_name = 'pools/' + items[0]['pool_name']
-    redis_conn = Redis()
+    redis_conn = Redis(host=host, port=port)
     q = Queue(connection=redis_conn)
     q.enqueue(_run, experiment_dict, pool_name)
-    #_run(experiment_dict, pool_name)
 
 
 def _run(experiment_dict, pool_name):
@@ -79,6 +81,8 @@ def _run(experiment_dict, pool_name):
        - prepare csv from records of DB application pool
        - run experiment and place report at proper place
     '''
+    conf = config.load_config("./config.yaml")
+    logfile = conf['logfile']
 
     # prepare csv
     filename = _prepare_csv_from_pool(pool_name)
@@ -101,9 +105,9 @@ def _run(experiment_dict, pool_name):
         random_state = 0
 
     logging.basicConfig(
-        filename=os.path.join(
+        filename = os.path.join(
             experiment_dir,
-            'fairtest.log'
+            logfile
         ),
         level=logging.DEBUG
     )
@@ -124,18 +128,38 @@ def _run(experiment_dict, pool_name):
         print error
         abort(500, description='Internal server error.')
 
+    conf = config.load_config("./config.yaml")
+    hostname = conf['db_hostname']
+    port = conf['db_port']
+    pool = conf['db_name']
+
     # remove csv
+    try:
+        client = db.connect_to_client(hostname, port)
+        _db = db.get_db(client, pool)
+        experiments = _db.get_collection('experiments')
+    except Exception, error:
+        print error
+        abort(500, description='Internal server error.')
+
+    experiment = experiments.find_one({'experiment_directory': experiment_dir})
+    experiment['experiment_status'] = 'finished'
+    experiments.save(experiment)
     os.remove(filename)
 
 
-def _prepare_csv_from_pool(pool_name):
+def _prepare_csv_from_pool(app_collection):
     '''
     Dump entries into csv fairtest-friendly format
     '''
+    conf = config.load_config("./config.yaml")
+    hostname = conf['db_hostname']
+    port = conf['db_port']
+    pool = conf['db_name']
     try:
-        client = db.connect_to_client('localhost', 27017)
-        _db = db.get_db(client, 'fairtest_pools')
-        collection = _db.get_collection(pool_name)
+        client = db.connect_to_client(hostname, port)
+        _db = db.get_db(client, pool)
+        collection = _db.get_collection(app_collection)
     except Exception, error:
         print error
         abort(500, description='Internal server error.')
