@@ -1,6 +1,13 @@
 # FairTest API documentation
 
-A REST-ful Application Programming Interface to enable developers use FairTest remotely over the Web. The current version of the API supports the management of application pools with records for which various FairTest investigations can be executed. An application pool, created from the system administrator upon user's request, is bound to one application and holds all the records of this application. Before running any investigation, a user must populate application records into the poll. The results of FairTest experiments (bug reports) are emitted in the corresponding application pool.
+A REST-ful Application Programming Interface to enable developers use FairTest
+remotely over the Web. The current version of the API supports the management of
+application pools with records for which various FairTest investigations can be
+executed. An application pool, created from the system administrator upon user's
+request, is bound to one application and holds all the records of this
+application. Before running any investigation, a user must populate application
+records into the poll. The results of FairTest experiments (bug reports) are
+emitted in the corresponding application pool.
 
 ## Get Records of Application Pool
 Retrieves all records of an application pool.
@@ -22,9 +29,9 @@ Retrieves all records of an application pool.
     * Open a github issue
 
 ## Post Record into Application Pool
-Inserts a record into an existing application pool. Newly inserted records are integrated in
-all experiments instantiated after their insertion, but are not integrated into any pending
-experiments.
+Inserts a record into an existing application pool. Newly inserted records are
+integrated in all experiments instantiated after their insertion, but are not
+integrated into any pending experiments.
 
 #### Specification
 * _URL_: http://127.0.0.1:5000/_POOL_NAME
@@ -51,8 +58,9 @@ experiments.
 
 
 ## Delete Record from Application Pool
-Removes a record from an application pool. Deleted records are not integrated to any future experiments
-but are being used for any experiments pending prior to their deletion.
+Removes a record from an application pool. Deleted records are not integrated
+to any future experiments but are being used for any experiments pending prior
+to their deletion.
 
 #### Specification
 * _URL_: http://127.0.0.1:5000/_POOL_NAME/_RECORD_UID
@@ -73,7 +81,9 @@ but are being used for any experiments pending prior to their deletion.
 
 
 ## PUT Record into Application Pool
-Updates a record into a application pool. Updated records are not integrated to any future experiments, but their old values are being used for any experiments pending prior to their update.
+Updates a record into a application pool. Updated records are not integrated to
+any future experiments, but their old values are being used for any experiments
+pending prior to their update.
 
 #### Specification
 * _URL_: http://127.0.0.1:5000/_POOL_NAME/_RECORD_UID
@@ -99,7 +109,8 @@ Updates a record into a application pool. Updated records are not integrated to 
 
 
 ## Post FairTest Experiment
-Instantiates a FairTest experiment into a Application Pool. The records currently in pool will be used as training and testing set of the experiment.
+Instantiates a FairTest experiment into a Application Pool. The records
+currently in pool will be used as training and testing set of the experiment.
 
 #### Specification
 * _URL_: http://127.0.0.1:5000/experiments
@@ -130,7 +141,8 @@ Instantiates a FairTest experiment into a Application Pool. The records currentl
 
 
 ## Get FairTest Report
-Retrieves the bug-report report corresponding to an instantiated FairTest experiment.
+Retrieves the bug-report report corresponding to an instantiated FairTest
+experiment.
 
 #### Specification
 * _URL_: http://127.0.0.1:5000/experiments/_EXPERIMENT_UID
@@ -155,10 +167,16 @@ Retrieves the bug-report report corresponding to an instantiated FairTest experi
 
 ## Implementation Details
 
-to be filled. Basically, it's a flask framework application implementing
-the restful API with mongoDB support. Also, the backend workers are built
-using redis...
-
+In this version FairTest is being deployed as a REST-ful service. It is composed
+of three core components: (a) a front-end server -- implemented using python
+Flash module -- which implements the REST-ful interface described above, (b) a
+MongoDB resilient storage, which persistently stores the collections of entries
+registered for various applications, and (c) a pool of workers, interacting
+through a Redis channel in order to parallelize and asynchronously serve
+multiple incoming requests for FairTest experiments. Note that this deployment
+need not be limited to the bandwidth of one single machine, since multiple
+independent workers can be registered and server the Redis channel, which acts
+as a broker of incoming request.
 
 ## Demo
 
