@@ -1,13 +1,12 @@
 import os
 import logging
 from rq import Queue
-from helpers import db, config
 import multiprocessing
 from flask import abort
 from redis import Redis
-from bson.objectid import ObjectId
 from tempfile import mkdtemp, mkstemp
 
+from helpers import db, config
 import fairtest.utils.prepare_data as prepare
 from fairtest import Testing, train, test, report, DataSource
 
@@ -25,19 +24,19 @@ def validate(resource, request):
     try:
         _ = request.get_json()['sens']
         _ = request.get_json()['target']
-        pool_name = 'pools/' + request.get_json()['pool_name']
+        collection = 'pools/' + request.get_json()['pool_name']
     except Exception:
         abort(400, description='bad dictionary')
 
     conf = config.load_config("./config.yaml")
-    hostname = conf['db_hostname']
+    host = conf['db_hostname']
     port = conf['db_port']
-    pool = conf['db_name']
+    name = conf['db_name']
 
     try:
-        client = db.connect_to_client(hostname, port)
-        _db = db.get_db(client, pool)
-        collection = _db.get_collection(pool_name)
+        client = db.connect_to_client(host, port)
+        _db = db.get_db(client, name)
+        collection = _db.get_collection(collection)
     except Exception, error:
         print error
         abort(500, description='Internal server error.')
@@ -69,13 +68,13 @@ def run(resource, items):
     host = conf['redis_hostname']
     port = conf['redis_port']
     experiment_dict = items[0]
-    pool_name = 'pools/' + items[0]['pool_name']
+    collection = 'pools/' + items[0]['pool_name']
     redis_conn = Redis(host=host, port=port)
     q = Queue(connection=redis_conn)
-    q.enqueue(_run, experiment_dict, pool_name)
+    q.enqueue(_run, experiment_dict, collection)
 
 
-def _run(experiment_dict, pool_name):
+def _run(experiment_dict, collection):
     '''
     DO:
        - prepare csv from records of DB application pool
@@ -85,7 +84,7 @@ def _run(experiment_dict, pool_name):
     logfile = conf['logfile']
 
     # prepare csv
-    filename = _prepare_csv_from_pool(pool_name)
+    filename = _prepare_csv_from_collection(collection)
 
     # retrive dictionary parameteres
     experiment_dir = experiment_dict['experiment_directory']
@@ -105,7 +104,7 @@ def _run(experiment_dict, pool_name):
         random_state = 0
 
     logging.basicConfig(
-        filename = os.path.join(
+        filename=os.path.join(
             experiment_dir,
             logfile
         ),
@@ -118,6 +117,7 @@ def _run(experiment_dict, pool_name):
     try:
         data = prepare.data_from_csv(filename, to_drop=to_drop)
         data_source = DataSource(data)
+        #TODO: integrate also Investigation type
         inv = Testing(
             data_source, sens, target, expl, random_state=random_state
         )
@@ -129,14 +129,14 @@ def _run(experiment_dict, pool_name):
         abort(500, description='Internal server error.')
 
     conf = config.load_config("./config.yaml")
-    hostname = conf['db_hostname']
+    host = conf['db_hostname']
     port = conf['db_port']
-    pool = conf['db_name']
+    name = conf['db_name']
 
     # remove csv
     try:
-        client = db.connect_to_client(hostname, port)
-        _db = db.get_db(client, pool)
+        client = db.connect_to_client(host, port)
+        _db = db.get_db(client, name)
         experiments = _db.get_collection('experiments')
     except Exception, error:
         print error
@@ -145,21 +145,22 @@ def _run(experiment_dict, pool_name):
     experiment = experiments.find_one({'experiment_directory': experiment_dir})
     experiment['experiment_status'] = 'finished'
     experiments.save(experiment)
-    os.remove(filename)
+    # os.remove(filename)
+    print "Experiment done. Input csv: %s removed\n" % (filename)
 
 
-def _prepare_csv_from_pool(app_collection):
+def _prepare_csv_from_collection(collection):
     '''
     Dump entries into csv fairtest-friendly format
     '''
     conf = config.load_config("./config.yaml")
-    hostname = conf['db_hostname']
+    host = conf['db_hostname']
     port = conf['db_port']
-    pool = conf['db_name']
+    name = conf['db_name']
     try:
-        client = db.connect_to_client(hostname, port)
-        _db = db.get_db(client, pool)
-        collection = _db.get_collection(app_collection)
+        client = db.connect_to_client(host, port)
+        _db = db.get_db(client, name)
+        collection = _db.get_collection(collection)
     except Exception, error:
         print error
         abort(500, description='Internal server error.')

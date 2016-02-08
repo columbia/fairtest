@@ -39,7 +39,8 @@ class Holdout(object):
         self._test_sets = []
         for i in range(budget):
             self._test_sets.append(
-                data.iloc[i * test_set_size:(i + 1) * test_set_size])
+                data.iloc[i * test_set_size:(i + 1) * test_set_size]
+            )
 
         logging.info('Testing Sizes %s' % [len(x) for x in self._test_sets])
 
