@@ -12,26 +12,32 @@ url = 'http://127.0.0.1:5000/pools/demo_app'
 r = requests.get(url)
 print r.status_code
 
+
+# header
 payloads = [
     {'record': 'distance,zipcode,city,state,gender,race,income,price'},
+]
+
+# records
+payloads += [
     {'record': 'near,33167,Miami,FL,F,Black or African American,income < 50K,low'},
     {'record': 'near,49202,Jackson,MI,M,Black or African American,income < 50K,low'},
-    {'record': 'near,08863,Fords,NJ,F,Hispanic or Latino,income >= 50K,low'},
-    {'record': 'near,07011,Clifton,NJ,F,White Not Hispanic or Latino,income < 50K,low'},
+    {'record': 'near,18863,Fords,NJ,F,Hispanic or Latino,income >= 50K,low'},
+    {'record': 'near,17011,Clifton,NJ,F,White Not Hispanic or Latino,income < 50K,low'},
     {'record': 'near,85614,Green Valley,AZ,F,White Not Hispanic or Latino,income >= 50K,low'},
     {'record': 'near,63051,House Springs,MO,M,White Not Hispanic or Latino,income < 50K,low'},
-    {'record': 'near,02368,Randolph,MA,M,Black or African American,income >= 50K,low'},
+    {'record': 'near,12368,Randolph,MA,M,Black or African American,income >= 50K,low'},
     {'record': 'near,11423,Hollis,NY,F,Black or African American,income < 50K,low'},
     {'record': 'near,94509,Antioch,CA,M,White Not Hispanic or Latino,income < 50K,low'},
     {'record': 'near,80247,Denver,CO,F,White Not Hispanic or Latino,income >= 50K,low'},
     {'record': 'near,46077,Zionsville,IN,F,White Not Hispanic or Latino,income >= 50K,low'},
-    {'record': 'near,01832,Haverhill,MA,F,White Not Hispanic or Latino,income < 50K,low'},
+    {'record': 'near,11832,Haverhill,MA,F,White Not Hispanic or Latino,income < 50K,low'},
     {'record': 'far,69138,Gothenburg,NE,M,White Not Hispanic or Latino,income >= 50K,high'},
     {'record': 'far,25918,Shady Spring,WV,M,White Not Hispanic or Latino,income >= 50K,high'},
     {'record': 'near,80247,Denver,CO,F,White Not Hispanic or Latino,income >= 50K,low'},
     {'record': 'near,42001,Paducah,KY,F,White Not Hispanic or Latino,income >= 50K,low'},
     {'record': 'near,33056,Opa Locka,FL,M,Black or African American,income < 50K,low'},
-    {'record': 'far,01028,East Longmeadow,MA,M,Black or African American,income >= 50K,high'},
+    {'record': 'far,11028,East Longmeadow,MA,M,Black or African American,income >= 50K,high'},
     {'record': 'near,18447,Olyphant,PA,F,White Not Hispanic or Latino,income >= 50K,low'},
     {'record': 'near,46124,Edinburgh,IN,M,White Not Hispanic or Latino,income >= 50K,low'},
     {'record': 'near,67212,Wichita,KS,F,White Not Hispanic or Latino,income < 50K,low'},
@@ -53,7 +59,7 @@ payloads = [
     {'record': 'near,29006,Batesburg,SC,F,White Not Hispanic or Latino,income < 50K,low'},
     {'record': 'far,93555,Ridgecrest,CA,M,White Not Hispanic or Latino,income >= 50K,high'},
     {'record': 'near,29566,Little River,SC,M,White Not Hispanic or Latino,income < 50K,low'}
-]
+]*100
 
 # POST new records
 url = 'http://127.0.0.1:5000/pools/demo_app'
@@ -61,6 +67,7 @@ headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 for payload in payloads:
     r = requests.post(url, data=json.dumps(payload), headers=headers)
     print r.status_code
+
 
 # POST an experiment
 url = 'http://127.0.0.1:5000/experiments'

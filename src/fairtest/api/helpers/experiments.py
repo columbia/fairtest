@@ -41,7 +41,7 @@ def validate(resource, request):
         print error
         abort(500, description='Internal server error.')
 
-    if collection.count() <= 1:
+    if collection.count() <= 2:
         abort(500, description='Application pool empty. No entries registered')
 
     # Mark experimenent pending and create temp dir to place repots
