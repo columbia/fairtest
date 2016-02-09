@@ -8,6 +8,7 @@ import numpy as np
 import logging
 from sklearn.preprocessing import LabelEncoder
 from copy import copy
+from api.helpers import db
 
 
 class Holdout(object):
@@ -61,7 +62,7 @@ class DataSource(object):
     A place holder for a training set and a holdout set
     """
     def __init__(self, data, budget=1, conf=0.95, train_size=0.5,
-                 random_state=0):
+                 random_state=0, storage=None):
         """
         Prepares a dataset for FairTest investigations. Encodes categorical
         features as numbers and separates the data into a training set and a
@@ -79,12 +80,16 @@ class DataSource(object):
             the number (or fraction) of data samples to use as a training set
         random_state :
             a random seed to be used for the random train-test split
+        storage :
+            the db at which the data are being stored, if any
         """
         if data is not None:
             if not isinstance(data, pd.DataFrame):
                 raise ValueError('data should be a Pandas DataFrame')
 
             data = data.copy()
+            if storage:
+                _data = data.copy()
 
             if budget < 1:
                 raise ValueError("budget parameter should be a positive integer")
@@ -102,6 +107,9 @@ class DataSource(object):
 
             train_data, test_data = cv_split(data, train_size=train_size,
                                              random_state=random_state)
+
+            if storage:
+                db.purge_data(storage, _data.iloc[test_data.index])
 
             logging.info('Training Size %d' % len(train_data))
 

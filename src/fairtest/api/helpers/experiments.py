@@ -41,7 +41,7 @@ def validate(resource, request):
         print error
         abort(500, description='Internal server error.')
 
-    if not collection.count():
+    if collection.count() <= 1:
         abort(500, description='Application pool empty. No entries registered')
 
     # Mark experimenent pending and create temp dir to place repots
@@ -82,6 +82,9 @@ def _run(experiment_dict, collection):
     '''
     conf = config.load_config("./config.yaml")
     logfile = conf['logfile']
+    host = conf['db_hostname']
+    port = conf['db_port']
+    name = conf['db_name']
 
     # prepare csv
     filename = _prepare_csv_from_collection(collection)
@@ -113,13 +116,16 @@ def _run(experiment_dict, collection):
     print "Experiment parameters:", experiment_dict
     print "Input csv: %s\nOutput dir: %s" % (filename, experiment_dir)
 
+    #TODO : support all three types investigations
+    #TODO: index records in mongo DB
+    #TODO: migrate to levelDB
     # run experiment and place report at proper place
     try:
-        data = prepare.data_from_csv(filename, to_drop=to_drop)
-        data_source = DataSource(data)
-        #TODO: integrate also Investigation type
+        data = prepare.data_from_csv(filename)
+        data_source = DataSource(data, storage=(host, port, name, collection))
         inv = Testing(
-            data_source, sens, target, expl, random_state=random_state
+            data_source, sens, target, expl, random_state=random_state,
+            to_drop=to_drop
         )
         train([inv])
         test([inv])
