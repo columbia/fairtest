@@ -47,7 +47,7 @@ def main(argv=sys.argv):
                 shift = line.split(",")[2]
                 print(
                     "%s,%s,%s,%s" % (
-                        zipcode, units, shift, ".".join(demographics[zipcode])
+                        zipcode, units, shift, ",".join(demographics[zipcode])
                     )
                 )
             except Exception as erro:
