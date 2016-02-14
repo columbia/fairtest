@@ -12,9 +12,8 @@ all: shifts
 
 shifts:
 	@mkdir -p $(OUTPUT_FOLDER)
-	$(SCHEDULE) $(INPUT_FOLDER)/dallas_police_reports.json $(UNITS)
-	@$(JOIN) $(INPUT_FOLDER)/demographics.txt ./shifts.txt > $(OUTPUT_FOLDER)/shifts.txt
-	@rm ./shifts.txt
+	$(SCHEDULE) $(INPUT_FOLDER)/dallas_police_reports.json $(INPUT_FOLDER)/demographics.txt $(UNITS)
+	@mv shifts.txt $(OUTPUT_FOLDER)
 
 clean:
 	rm -rf $(OUTPUT_FOLDER)/*

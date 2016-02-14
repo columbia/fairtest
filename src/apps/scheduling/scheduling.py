@@ -17,7 +17,7 @@ districts in order to maximize the coverage of relatively dangerous areas. Note
 that the optimal plan may be different between the three shifts, since,
 intuitively, the relative risk of areas may be dependant on the time of day.
 
-Usage: ./scheduling.py <report> <police_units>
+Usage: ./scheduling.py <reports> <demographics> <police_units>
 """
 import sys
 import json
@@ -29,19 +29,62 @@ def main(argv=sys.argv):
     '''
     Application entry-point
     '''
-    if len(argv) != 3:
+    if len(argv) != 4:
         usage(argv)
 
-    filename = argv[1]
-    total_units = int(argv[2])
+    filename1 = argv[1]
+    filename2 = argv[2]
+    total_units = int(argv[3])
 
-    with open(filename, "r") as f:
+    with open(filename1, "r") as f:
         data = json.load(f)
 
+    demographics = {}
+    with open(filename2, "r") as f:
+        for line in f:
+            try:
+                line = line.strip()
+                zipcode = line.split(",")[0]
+                rest = line.split(",")[1:]
+            except Exception:
+                continue
+            demographics[zipcode] = rest
+
+    with open(filename2, "r") as f:
+        for line in f:
+            header = line.strip()
+            break
+
+
     utils.print_stats(data, columns.COLUMNS)
-    weights = utils.zipcode_weights_per_shift(data, columns.COLUMNS)
+    weights, _records = utils.zipcode_weights_per_shift(
+        data, columns.COLUMNS
+    )
     schedule = make_schedule(weights, total_units)
-    utils.print_schedule(schedule)
+    print(schedule)
+
+    filename = "./shifts" + ".txt"
+    print("Creating file: <%s>" % filename)
+    with open(filename, "w") as f:
+        print("zipcode,police_units,shift," + header[4:], file=f)
+        for record in _records:
+            zipcode = record[0]
+            shift = record[1]
+            try:
+                print(
+                    "%s,%.5f,%s,%s" % (
+                        zipcode,
+                        float(schedule[shift][zipcode])/float(demographics[zipcode][0]),
+                        shift,
+                        ",".join(demographics[zipcode][:])
+                    ),
+                    file=f
+                )
+            except Exception:
+                continue
+
+
+    # utils.print_schedule(schedule)
 
 
 def make_schedule(weights, total_units):
@@ -86,7 +129,7 @@ def make_schedule(weights, total_units):
 
 
 def usage(argv):
-    print('Usage:%s \"report\" \"police_units\"', argv[0])
+    print('Usage:%s \"report\" \"demographics\" \"police_units\"', argv[0])
     exit(-1)
 
 
