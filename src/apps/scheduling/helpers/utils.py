@@ -10,6 +10,7 @@ def zipcode_weights_per_shift(data, columns):
     '''
 
     time_pos = 40
+    year_pos = 37
     zipcode_pos = 24
 
     # convert absolute time to police shifts
@@ -19,18 +20,29 @@ def zipcode_weights_per_shift(data, columns):
         _time_to_shift
     )
     # keep only zipcodes and shifts
-    _records = list(map(lambda l:(l[zipcode_pos],l[time_pos]), _records))
+    _records = list(
+        map(
+            lambda l:(l[zipcode_pos],l[time_pos], l[year_pos]), _records
+        )
+    )
 
     # build zipcodes, report-times dictionary
+    # Training set: all reports before 2016
+    # Testing set: only reports of 2016
     report_dict = {}
     for i,record in enumerate(_records):
         _zipcode = record[0]
         _shift = record[1]
+        _year = record[2]
+        if _year in ['2015']:
+            continue
         if _zipcode == None or _shift == None:
             continue
         if _zipcode not in report_dict:
             report_dict[_zipcode] = {1:0, 2:0, 3:0}
         report_dict[_zipcode][_shift] += 1
+
+    _records = list(filter(lambda l: l[2] == '2015', _records))
 
     # build zipcodes, report probability per-shift dictionary
     report_dict_prob = {}
@@ -64,7 +76,8 @@ def zipcode_weights_per_shift(data, columns):
             key=lambda l:l[1],
             reverse=True
         )
-    return weights
+
+    return weights, _records
 
 
 def print_schedule(schedule):
