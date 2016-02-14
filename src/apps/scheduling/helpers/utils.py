@@ -26,6 +26,8 @@ def zipcode_weights_per_shift(data, columns):
         )
     )
 
+    TESTING_YEAR = '2015'
+
     # build zipcodes, report-times dictionary
     # Training set: all reports before 2016
     # Testing set: only reports of 2016
@@ -34,7 +36,7 @@ def zipcode_weights_per_shift(data, columns):
         _zipcode = record[0]
         _shift = record[1]
         _year = record[2]
-        if _year in ['2015']:
+        if _year == TESTING_YEAR:
             continue
         if _zipcode == None or _shift == None:
             continue
@@ -42,7 +44,7 @@ def zipcode_weights_per_shift(data, columns):
             report_dict[_zipcode] = {1:0, 2:0, 3:0}
         report_dict[_zipcode][_shift] += 1
 
-    _records = list(filter(lambda l: l[2] == '2015', _records))
+    _records = list(filter(lambda l: l[2] == TESTING_YEAR, _records))
 
     # build zipcodes, report probability per-shift dictionary
     report_dict_prob = {}
@@ -77,7 +79,7 @@ def zipcode_weights_per_shift(data, columns):
             reverse=True
         )
 
-    return weights, _records
+    return weights, _records, report_dict
 
 
 def print_schedule(schedule):
@@ -90,7 +92,10 @@ def print_schedule(schedule):
                 key=lambda t: t[1],
                 reverse=True)
             ):
-                print("%s,%d,%s" % (zipcode, schedule[shift][zipcode], shift), file=f)
+                print(
+                    "%s,%d,%s" % (zipcode, schedule[shift][zipcode], shift),
+                    file=f
+                )
 
 
 def print_records(data, columns):
@@ -137,21 +142,6 @@ def print_stats(data, columns):
                 districts.append(record[column])
             if columns[column] == 'time1':
                 times.append(record[column])
-
-    #print("zipcodes:", dict(Counter(zipcodes)))
-    #print("zipcodes", len(list(set(zipcodes))))
-    #print("sectors:", len(list(set((sectors)))))
-    #print("districts:", len(list(set(districts))))
-    #print("entries:", len(data['data']))
-    #shifts = []
-    #for time in times:
-    #    shifts.append(_time_to_shift(time))
-    #print("shift_reports", dict(Counter(filter(None,shifts))))
-    #d = dict(Counter(zipcodes))
-    #print(sorted(list(map(lambda d:d[1], d.items()))))
-    ##d= dict(Counter(districts))
-    ##for k in sorted(d, key=d.get):
-    ##    print(k,",",d[k])
 
 
 def _apply_on_column(data, pos, func):
