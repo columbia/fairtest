@@ -482,7 +482,10 @@ def print_context_corr(context, context_stats, metric_name, namer,
         grouped = data.groupby(data.columns[1])
         keys = [key for (key, group) in grouped]
         groups = [group[data.columns[0]].values for (key, group) in grouped]
-        min_key_diff = min([keys[i + 1]-keys[i] for i in xrange(len(keys)-1)])
+        try:
+            min_key_diff = min([keys[i + 1]-keys[i] for i in xrange(len(keys)-1)])
+        except ValueError:
+            min_key_diff = 2
         plt.boxplot(groups, positions=keys, widths=(1.0*min_key_diff)/2)
 
     plt.rcParams.update({'font.size': 22})
