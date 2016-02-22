@@ -1,5 +1,5 @@
 import fairtest.utils.prepare_data as prepare
-from fairtest import Testing, train, test, report, DataSource
+from fairtest import Testing, ErrorProfiling, train, test, report, DataSource
 
 from time import time
 import sys
@@ -10,19 +10,23 @@ def main(argv=sys.argv):
     if len(argv) != 3:
         usage(argv)
 
-    # Preapre data into FairTest friendly format
+    # Prepare data into FairTest friendly format
     FILENAME = argv[1]
     data = prepare.data_from_csv(FILENAME)
     OUTPUT_DIR = argv[2]
 
     # Initializing parameters for experiment
     EXPL = []
-    SENS = ['MedianAge']
+    SENS = ['ReportsAbs']
     TARGET = 'PoliceUnitsPerReport'
+    GROUND_TRUTH = 'Mean'
 
     to_drop = [
-        'Zipcode',
-        'Households',
+#        'Shift',
+#        'Zipcode',
+#        'Reports',
+#        'ReportsAbs',
+#        'Households',
         'MedianAgeMale',
         'MedianAgeFemale',
         'PoliceUnits',
@@ -50,8 +54,11 @@ def main(argv=sys.argv):
 
     # Instantiate the experiment
     t1 = time()
-    inv = Testing(data_source, SENS, TARGET, EXPL, random_state=0,
-            to_drop=to_drop)
+#    inv = Testing(data_source, SENS, TARGET, EXPL,
+#                         random_state=0, to_drop=to_drop)
+    inv = ErrorProfiling(data_source, SENS, TARGET, GROUND_TRUTH, EXPL,
+                         random_state=0, to_drop=to_drop)
+
 
     # Train the classifier
     t2 = time()
