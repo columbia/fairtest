@@ -1,6 +1,6 @@
 .PHONY: clean
 
-UNITS=5000
+UNITS=2000
 
 INPUT_FOLDER=./data
 OUTPUT_FOLDER=../../../data/scheduling

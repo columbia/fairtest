@@ -27,12 +27,13 @@ def zipcode_weights_per_shift(data, columns):
     )
 
     TESTING_YEAR = '2015'
+    training_records = list(filter(lambda l: l[2] != TESTING_YEAR, _records))
+    testing_records = list(filter(lambda l: l[2] == TESTING_YEAR, _records))
 
     # build zipcodes, report-times dictionary
-    # Training set: all reports before 2016
-    # Testing set: only reports of 2016
-    report_dict = {}
-    for i,record in enumerate(_records):
+    # Training set: all reports except those of 2015
+    training_report_dict = {}
+    for i,record in enumerate(training_records):
         _zipcode = record[0]
         _shift = record[1]
         _year = record[2]
@@ -40,31 +41,43 @@ def zipcode_weights_per_shift(data, columns):
             continue
         if _zipcode == None or _shift == None:
             continue
-        if _zipcode not in report_dict:
-            report_dict[_zipcode] = {1:0, 2:0, 3:0}
-        report_dict[_zipcode][_shift] += 1
+        if _zipcode not in training_report_dict:
+            training_report_dict[_zipcode] = {1:0, 2:0, 3:0}
+        training_report_dict[_zipcode][_shift] += 1
 
-    _records = list(filter(lambda l: l[2] == TESTING_YEAR, _records))
+    # Testing set: only reports of 2015
+    testing_report_dict = {}
+    for i,record in enumerate(testing_records):
+        _zipcode = record[0]
+        _shift = record[1]
+        _year = record[2]
+        if _year != TESTING_YEAR:
+            continue
+        if _zipcode == None or _shift == None:
+            continue
+        if _zipcode not in testing_report_dict:
+            testing_report_dict[_zipcode] = {1:0, 2:0, 3:0}
+        testing_report_dict[_zipcode][_shift] += 1
 
     # build zipcodes, report probability per-shift dictionary
-    report_dict_prob = {}
-    for _zipcode in report_dict:
+    training_report_dict_prob = {}
+    for _zipcode in training_report_dict:
         if _zipcode == None:
             continue
-        total = sum(report_dict[_zipcode].values())
-        for _shift in report_dict[_zipcode]:
+        total = sum(training_report_dict[_zipcode].values())
+        for _shift in training_report_dict[_zipcode]:
             if _shift == None:
                 continue
-            if _zipcode not in report_dict_prob:
-                report_dict_prob[_zipcode] = {1:0, 2:0, 3:0}
-            report_dict_prob[_zipcode][_shift] = \
-                        report_dict[_zipcode][_shift] #/ total
+            if _zipcode not in training_report_dict_prob:
+                training_report_dict_prob[_zipcode] = {1:0, 2:0, 3:0}
+            training_report_dict_prob[_zipcode][_shift] = \
+                        training_report_dict[_zipcode][_shift] #/ total
 
     # sort zipcodes per shift in a decreasing order of risk
     shifts = {1:{}, 2:{}, 3:{}}
     for shift in shifts:
-        for _zipcode in report_dict_prob:
-            shifts[shift][_zipcode] = report_dict_prob[_zipcode][shift]
+        for _zipcode in training_report_dict_prob:
+            shifts[shift][_zipcode] = training_report_dict_prob[_zipcode][shift]
 
     # calculate final weights
     weights = {}
@@ -79,7 +92,13 @@ def zipcode_weights_per_shift(data, columns):
             reverse=True
         )
 
-    return weights, _records, report_dict
+    return (
+        weights,
+        training_records,
+        testing_records,
+        training_report_dict,
+        testing_report_dict
+    )
 
 
 def print_schedule(schedule):

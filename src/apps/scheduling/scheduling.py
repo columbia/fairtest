@@ -35,16 +35,39 @@ I run an investigation to check if there is any association between the output
 of my application (police units available to resolve each report) and the
 median age of the population of an area.
 
+
+Investigation phases:
+====================
+
+A.) Testing
+
 At first sight, the report says that overall -- on the global population --
-there is very little correlation between median age and the output of the
-application. This is in-line with my initial naive approach to check the quality
-of my application. However, a more fine grained analysis, there are some
+there is very little correlation between (a) population size or (b) median age,
+and the output of the application. This is in-line with the initial, naive,
+approach of blindly checking the variance and the standard deviation of the
+distribution produced by the application.
+
+However, a more fine grained analysis, there are some
 contexts of subpopulation that have very negative correlation between median age
-and the output of my application. (see attached picture and bug report.) These
-populations are residents of areas that were under-represented in the "training"
-set of reports used to profile the relative risk of areas. There were very few
-incidents reported in the past, and these minorities received "unfavorable"
-treatment from the application.
+or population size, and the output of my application. This lead to the second
+investigation phase in which I would like to understand these correlations and
+the deviation (error) of some outputs from the mean value of a close-to normal
+distribution. Naturally, I will use the Error-Profiling abstraction.
+
+
+B.) Error-Profiling
+
+I used Error-Profiling to profile the deviations from the mean value of the
+target police-units-available-per-report. (Remember that the outer purpose of
+the application is to propose a balanced and efficient distribution of police
+units to resolve reports accordingly.)
+
+First, for the population we observed that
+
+Second, for the median age we observed that
+
+Both of the above were the result of.
+
 
 Usage: ./scheduling.py <reports> <demographics> <police_units>
 """
@@ -87,7 +110,7 @@ def main(argv=sys.argv):
 
 
     utils.print_stats(data, columns.COLUMNS)
-    weights, _records, report_dict = utils.zipcode_weights_per_shift(
+    weights, train_r, test_r, train_d, test_d = utils.zipcode_weights_per_shift(
         data, columns.COLUMNS
     )
     schedule = make_schedule(weights, total_units)
@@ -98,17 +121,17 @@ def main(argv=sys.argv):
     vals = []
     with open(filename, "w") as f:
         print(
-            "Zipcode,PoliceUnitsPerReport,PoliceUnits,Shift," + header[4:],
+            "Zipcode,PoliceUnitsPerReport,PoliceUnits,Reports,ReportsAbs,Shift,Mean," + header[4:],
             file=f
         )
-        for record in _records:
+        for record in test_r:
             zipcode = record[0]
             shift = record[1]
             n_reports = 1
             try:
                 population = float(demographics[zipcode][0])
                 units = float(schedule[shift][zipcode])
-                n_reports = float(max(1, int(report_dict[zipcode][shift])))
+                n_reports = float(max(1, int(test_d[zipcode][shift])))
             except KeyError:
                 # no zipcode in entry -- malformed record
                 if not zipcode:
@@ -119,12 +142,14 @@ def main(argv=sys.argv):
                     population = 1
 
             cat = {1: "A", 2: "B", 3: "C"}
+            if int(n_reports) <= 1000:
+                rep = "reports <= 1000"
+            else:
+                rep = "reports > 1000"
             print(
-                "%s,%.5f,%d,%s,%s" % (
-                    zipcode,
-                    units / n_reports,
-                    units,
-                    cat[shift],
+                "%s,%.5f,%d,%s,%d,%s,%.7f,%s" % (
+                    zipcode, units / n_reports, units,
+                    rep, n_reports, cat[shift], 0.0639686,
                     ",".join(demographics[zipcode][:])
                 ),
                 file=f
@@ -132,7 +157,7 @@ def main(argv=sys.argv):
             vals.append(units/n_reports)
 
     print(
-        "Mean:%.2f, Mode:%.2f, Stdev:%.2f" % (
+        "Mean:%.7f, Mode:%.2f, Stdev:%.2f" % (
             mean(vals), mode(vals), stdev(vals)
         )
     )
