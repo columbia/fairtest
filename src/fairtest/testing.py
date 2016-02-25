@@ -3,7 +3,7 @@ Testing Investigations
 """
 
 from fairtest.investigation import Investigation, metric_from_string
-from fairtest.modules.metrics import NMI, CondDIFF, CORR
+from fairtest.modules.metrics import NMI, CondDIFF, CORR, CondNMI, CondCORR
 import logging
 
 
@@ -57,12 +57,21 @@ class Testing(Investigation):
                     if not expl.arity:
                         raise ValueError(
                             'Only categorical explanatory features allowed')
-                    if sens.arity != 2 or out.arity != 2:
-                        raise ValueError('Only binary protected features '
+                    if sens.arity == 2 and out.arity == 2:
+                        logging.info('Choosing metric CondDIFF for feature %s' %
+                                     sens_str)
+                        self.metrics[sens_str] = CondDIFF()
+                    elif sens.arity and out.arity:
+                        logging.info('Choosing metric CondNMI for feature %s'
+                                     % sens_str)
+                        self.metrics[sens_str] = CondNMI()
+                    elif not (sens.arity > 2 or out.arity > 2):
+                        logging.info('Choosing metric CondCORR for feature %s'
+                                     % sens_str)
+                        self.metrics[sens_str] = CondCORR()
+                    else:
+                        raise ValueError('Only categorical protected features '
                                          'and outputs supported')
-                    logging.info('Choosing metric CondDIFF for feature %s' %
-                                 sens_str)
-                    self.metrics[sens_str] = CondDIFF()
                 elif sens.arity and out.arity:
                     logging.info('Choosing metric NMI for feature %s'
                                  % sens_str)

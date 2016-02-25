@@ -183,6 +183,14 @@ def difference(data, conf=None):
 
     # transform contingency table into probability table
     tot = np.sum(data, axis=0)
+
+    # degenerate case for conditional difference
+    if tot[0] == 0 or tot[1] == 0:
+        if conf:
+            return 0, 1, 1.0
+        else:
+            return 0
+
     probas = np.array(data, dtype=float)/tot
 
     # Difference metric

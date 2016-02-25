@@ -3,7 +3,7 @@ Error Profiling Investigations
 """
 
 from fairtest.investigation import Investigation, metric_from_string
-from fairtest.modules.metrics import NMI, CondDIFF, CORR
+from fairtest.modules.metrics import NMI, CondDIFF, CORR, CondNMI, CondCORR
 import numpy as np
 import logging
 from sklearn.preprocessing import LabelEncoder
@@ -139,30 +139,41 @@ class ErrorProfiling(Investigation):
 
     def set_default_metrics(self):
         out = self.output
+        expl = self.feature_info[self.expl] if self.expl else None
+
         if out.num_labels != 1:
             raise ValueError('Error Profiling investigation excepts a single '
                              'target')
 
         for sens_str in self.sens_features:
             sens = self.feature_info[sens_str]
+
             if sens_str in self.metrics:
                 if isinstance(self.metrics[sens_str], basestring):
                     self.metrics[sens_str] = \
                         metric_from_string(self.metrics[sens_str])
 
-                expl = self.feature_info[self.expl] if self.expl else None
                 self.metrics[sens_str].validate(sens, out, expl)
             else:
-                if self.expl:
-                    if not self.feature_info[self.expl].arity:
+                if expl is not None:
+                    if not expl.arity:
                         raise ValueError(
                             'Only categorical explanatory features allowed')
-                    if sens.arity != 2 or out.arity != 2:
-                        raise ValueError('Only binary protected features '
+                    if sens.arity == 2 and out.arity == 2:
+                        logging.info('Choosing metric CondDIFF for feature %s' %
+                                     sens_str)
+                        self.metrics[sens_str] = CondDIFF()
+                    elif sens.arity and out.arity:
+                        logging.info('Choosing metric CondNMI for feature %s'
+                                     % sens_str)
+                        self.metrics[sens_str] = CondNMI()
+                    elif not (sens.arity > 2 or out.arity > 2):
+                        logging.info('Choosing metric CondCORR for feature %s'
+                                     % sens_str)
+                        self.metrics[sens_str] = CondCORR()
+                    else:
+                        raise ValueError('Only categorical protected features '
                                          'and outputs supported')
-                    logging.info('Choosing metric CondDIFF for feature %s' %
-                                 sens_str)
-                    self.metrics[sens_str] = CondDIFF()
                 elif sens.arity and out.arity:
                     logging.info('Choosing metric NMI for feature %s'
                                  % sens_str)

@@ -22,7 +22,7 @@ def compute_all_stats(investigations, exact=True, conf=0.95):
         whether exact tests should be used
 
     conf :
-        overall confidence level (1- familywise error rate)
+        overall confidence level (1-familywise error rate)
     """
 
     # reserve the same "confidence budget" for each investigation, independently
@@ -156,6 +156,7 @@ def _wrapper((context, conf, exact, seed)):
     """
 
     # seed the PRNGs used to compute statistics
+    logging.info('Computing stats for context %d' % context.num)
     ro.r('set.seed({})'.format(seed))
     np.random.seed(seed)
     return context.metric.compute(context.data, conf, exact=exact).stats
@@ -187,6 +188,9 @@ def compute_stats(contexts, exact, conf, seed):
     """
     metric = contexts[0].metric
 
+    logging.info('Computing stats for %d contexts' % len(contexts))
+
+    """
     P = multiprocessing.Pool(multiprocessing.cpu_count())
     results = P.map_async(
         _wrapper,
@@ -196,6 +200,9 @@ def compute_stats(contexts, exact, conf, seed):
     stats = results.get()
     P.close()
     P.join()
+    """
+
+    stats = [_wrapper((context, conf, exact, seed)) for context in contexts]
 
     #
     # The following block helps parallelization on a spark cluster

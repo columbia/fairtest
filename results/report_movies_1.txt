@@ -1,5 +1,5 @@
 ================================================================================
-Commit Hash: 	82c74056ed3f5b5cb19f5eb4179738c81cd0f9f2
+Commit Hash: 	92042b5a35bf4d1b6d400efbbbdf6abde7347e5e
 
 Dataset: movies
 Train Size: 3020
@@ -11,7 +11,7 @@ O: ['RMSE']
 
 Train Params: 	{'max_bins': 10, 'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'avg'}
 Test Params: 	{'prune_insignificant': True, 'exact': True, 'family_conf': 0.95}
-Report Params: 	{'node_filter': 'root'}
+Report Params: 	{'node_filter': 'better_than_ancestors'}
 ================================================================================
 
 Report of associations of O=['RMSE'] on Si = Gender:
@@ -19,14 +19,22 @@ Association metric: CORR
 
 Global Population 0 of size 3020
 
-p-value = 9.09e-03 ; CORR = [-0.1215, -0.0005]
+Error Statistics: min=0.16, max=2.27, median=0.84
+p-value = 6.82e-03 ; CORR = [-0.1204, -0.0016]
 ================================================================================
+
+Sub-Population 2 of size 2353
+Context = {'Age': (25.0, inf)}
+
+p-value = 2.02e-03 ; CORR = [-0.1438, -0.0095]
+--------------------------------------------------------------------------------
 
 Hierarchical printing of subpopulations (summary)
 
 ================================================================================
 
- Context = {} ; CI = [-0.1215, -0.0005] ; Size = 3020
+ Context = {} ; CI = [-0.1204, -0.0016] ; Size = 3020
+   Context = {'Age': (25.0, inf)} ; CI = [-0.1438, -0.0095] ; Size = 2353
 --------------------------------------------------------------------------------
 
 Report of associations of O=['RMSE'] on Si = Age:
@@ -34,13 +42,14 @@ Association metric: CORR
 
 Global Population 0 of size 3020
 
-p-value = 3.09e-04 ; CORR = [-0.1375, -0.0167]
+Error Statistics: min=0.16, max=2.27, median=0.84
+p-value = 2.47e-04 ; CORR = [-0.1364, -0.0178]
 ================================================================================
 
 Hierarchical printing of subpopulations (summary)
 
 ================================================================================
 
- Context = {} ; CI = [-0.1375, -0.0167] ; Size = 3020
+ Context = {} ; CI = [-0.1364, -0.0178] ; Size = 3020
 --------------------------------------------------------------------------------
 

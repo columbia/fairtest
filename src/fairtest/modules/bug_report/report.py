@@ -398,8 +398,6 @@ def jitter(x, y, **kwargs):
 
 # type of correlation plot ("BOXPLOT", "JITTER" or "HEXBIN")
 CORR_PLOT = 'BOXPLOT'
-# For labeling of plots
-PLOT_LABEL = 'a'
 
 
 def mkdir_p(path):
@@ -445,63 +443,122 @@ def print_context_corr(context, context_stats, metric_name, namer,
     plot_dir :
         directory to be used to store plots
     """
-    data = context.data
 
-    out = data[data.columns[0]]
-    sens = data[data.columns[1]]
+    if not namer.expl:
+        data = context.data
 
-    rcParams.update({'figure.autolayout': True})
+        out = data[data.columns[0]]
+        sens = data[data.columns[1]]
 
-    # avoid matplotlib overflow
-    if len(out) > 100000:
-        (out, sens) = zip(*random.sample(zip(out, sens), 100000))
-        out = np.array(out)
-        sens = np.array(sens)
+        rcParams.update({'figure.autolayout': True})
 
-    if plot_dir:
-        try:
-            mkdir_p(plot_dir)
-        except OSError:
-            # directory already exists
-            pass
-        plot_name = os.path.join(plot_dir, 'context_{}.png'.format(context.num))
+        # avoid matplotlib overflow
+        if len(out) > 100000:
+            (out, sens) = zip(*random.sample(zip(out, sens), 100000))
+            out = np.array(out)
+            sens = np.array(sens)
+
+        if plot_dir:
+            try:
+                mkdir_p(plot_dir)
+            except OSError:
+                # directory already exists
+                pass
+            plot_name = os.path.join(plot_dir,
+                                     'context_{}.png'.format(context.num))
+        else:
+            plot_name = None
+
+        fig = plt.figure()
+        m, b = np.polyfit(sens, out, 1)
+        plt.plot(sens, m*sens + b, '-', color='green', linewidth=3)
+
+        if CORR_PLOT == 'JITTER':
+            jitter(sens, out, color='blue', edgecolor='none')
+        elif CORR_PLOT == 'HEXBIN':
+            plt.hexbin(sens, out, gridsize=20, norm=colors.LogNorm(),
+                       cmap=plt.get_cmap('Blues'))
+            plt.colorbar()
+        elif CORR_PLOT == 'BOXPLOT':
+            grouped = data.groupby(data.columns[1])
+            keys = [key for (key, group) in grouped]
+            groups = [group[data.columns[0]].values for (key, group) in grouped]
+            min_key_diff = min([keys[i + 1]-keys[i]
+                                for i in xrange(len(keys)-1)])
+            plt.boxplot(groups, positions=keys, widths=(1.0*min_key_diff)/2,
+                        sym='')
+
+        plt.rcParams.update({'font.size': 22})
+        if namer.sens in namer.encoders:
+            ax = plt.gca()
+            ax.set_xticklabels(namer.get_sens_feature_vals(
+                len(data[data.columns[1]].unique())))
+        else:
+            plt.xlim(np.min(sens) - 0.4*np.std(sens),
+                     np.max(sens) + 0.4*np.std(sens))
+            plt.ylim(np.min(out) - 0.4*np.std(out),
+                     np.max(out) + 0.4*np.std(out))
+        plt.xlabel(data.columns[1])
+        plt.ylabel(data.columns[0])
+
+        if plot_name:
+            pickle.dump(fig, file(os.path.splitext(plot_name)[0]+'.pkl', 'w'))
+            plt.savefig(plot_name)
+            plt.close(fig)
+        else:
+            plt.show()
     else:
-        plot_name = None
+        context_stats = context_stats.values
+        expl_values = namer.get_expl_feature_vals(len(context_stats))
+        for i in range(len(context.data)):
+            if len(context.data[i]) > 0:
+                size = len(context.data[i])
+                weight = (100.0*size)/context.size
+                print >> output_stream, '> {} = {} ; size {} ({:.2f}%):'.\
+                    format(namer.expl, expl_values[i], size, weight)
 
-    fig = plt.figure()
-    m, b = np.polyfit(sens, out, 1)
-    plt.plot(sens, m*sens + b, '-', color='green')
+                data = context.data[i]
+                out = data[data.columns[0]]
+                sens = data[data.columns[1]]
 
-    if CORR_PLOT == 'JITTER':
-        jitter(sens, out, color='blue', edgecolor='none')
-    elif CORR_PLOT == 'HEXBIN':
-        plt.hexbin(sens, out, gridsize=20, norm=colors.LogNorm(),
-                   cmap=plt.get_cmap('Blues'))
-        plt.colorbar()
-    elif CORR_PLOT == 'BOXPLOT':
-        grouped = data.groupby(data.columns[1])
-        keys = [key for (key, group) in grouped]
-        groups = [group[data.columns[0]].values for (key, group) in grouped]
-        min_key_diff = min([keys[i + 1]-keys[i] for i in xrange(len(keys)-1)])
-        plt.boxplot(groups, positions=keys, widths=(1.0*min_key_diff)/2)
+                fig = plt.figure()
+                m, b = np.polyfit(sens, out, 1)
+                plt.plot(sens, m*sens + b, '-', color='green', linewidth=3)
 
-    plt.rcParams.update({'font.size': 22})
-    if namer.sens in namer.encoders:
-        ax = plt.gca()
-        ax.set_xticklabels(
-            namer.get_sens_feature_vals(len(data[data.columns[1]].unique())))
-    else:
-        plt.xlim(np.min(sens)-0.4*np.std(sens), np.max(sens)+0.4*np.std(sens))
-        plt.ylim(np.min(out)-0.4*np.std(out), np.max(out)+0.4*np.std(out))
-    plt.xlabel(data.columns[1])
-    plt.ylabel(data.columns[0])
+                rcParams.update({'figure.autolayout': True})
 
-    if plot_name:
-        pickle.dump(fig, file(os.path.splitext(plot_name)[0]+'.pkl', 'w'))
-        plt.savefig(plot_name)
-        plt.close(fig)
-    else:
-        plt.show()
+                grouped = data.groupby(data.columns[1])
+                keys = [key for (key, group) in grouped]
+                groups = [group[data.columns[0]].values
+                          for (key, group) in grouped]
+                min_key_diff = min([keys[_ + 1]-keys[_]
+                                    for _ in xrange(len(keys)-1)])
+
+                plt.boxplot(groups, positions=keys,
+                            widths=(1.0*min_key_diff)/2, sym='')
+
+                plt.rcParams.update({'font.size': 22})
+                if namer.sens in namer.encoders:
+                    ax = plt.gca()
+                    ax.set_xticklabels(namer.get_sens_feature_vals(
+                        len(data[data.columns[1]].unique())))
+                else:
+                    plt.xlim(np.min(sens) - 0.4*np.std(sens),
+                             np.max(sens) + 0.4*np.std(sens))
+                    plt.ylim(np.min(out) - 0.4*np.std(out),
+                             np.max(out) + 0.4*np.std(out))
+
+                plt.xlabel(data.columns[1])
+                plt.ylabel(data.columns[0])
+                plt.show()
+
+            (effect_low, effect_high, p_val) = context_stats[i+1]
+            print >> output_stream, \
+                'p-value = {:.2e} ; {} = [{:.4f}, {:.4f}]'.\
+                format(p_val, 'CORR', effect_low, effect_high)
+            print >> output_stream
+
+        context_stats = context_stats[0]
 
     # print p-value and confidence interval of correlation
     (effect_low, effect_high, p_val) = context_stats

@@ -42,17 +42,27 @@ class Holdout(object):
                 data.iloc[i * test_set_size:(i + 1) * test_set_size])
 
         logging.info('Testing Sizes %s' % [len(x) for x in self._test_sets])
+        self.index = budget - 1
 
     def get_test_set(self):
         """
         Obtain a new independent testing set
         """
-        if len(self._test_sets) == 0:
+        if self.index >= len(self._test_sets):
             raise RuntimeError('Maximum number of %d adaptive investigations '
                                'has been reached. You need to create a new '
                                'hold out set!' % self._adaptive_budget)
 
-        return self._test_sets.pop()
+        ret = self._test_sets[self.index]
+        self.index -= 1
+        return ret
+
+    def return_unused_data(self, test_set):
+        """
+        Fallback if something went wrong during testing and the test set was
+        actually not used
+        """
+        self._test_sets.append(test_set)
 
 
 class DataSource(object):
@@ -86,7 +96,8 @@ class DataSource(object):
             data = data.copy()
 
             if budget < 1:
-                raise ValueError("budget parameter should be a positive integer")
+                raise ValueError("budget parameter should be a positive "
+                                 "integer")
 
             if not 0 < conf < 1:
                 raise ValueError('conf should be in (0,1), Got %s' % conf)

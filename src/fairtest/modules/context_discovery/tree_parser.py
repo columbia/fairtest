@@ -102,7 +102,7 @@ def update_cont_path(feature_path, feature, lower_bound=None, upper_bound=None):
 
 
 def find_contexts(tree, data, features_info, sens, expl, output,
-                  prune_insignificant=False):
+                  prune_insignificant=False, new_metric=None):
     """
     Traverse a tree and output contexts for each node.
 
@@ -137,7 +137,6 @@ def find_contexts(tree, data, features_info, sens, expl, output,
     """
     # list of contexts
     contexts = []
-    #targets = data.columns[-output.num_labels:].tolist()
     targets = output.names.tolist()
 
     # assign an id to each node
@@ -146,7 +145,10 @@ def find_contexts(tree, data, features_info, sens, expl, output,
         tree_node.add_features(id=node_id)
         node_id += 1
 
-    metric_type = tree.metric.dataType
+    if new_metric is not None:
+        metric_type = new_metric.dataType
+    else:
+        metric_type = tree.metric.dataType
 
     def bfs(node, parent, data_node, feature_path):
         """
@@ -221,8 +223,13 @@ def find_contexts(tree, data, features_info, sens, expl, output,
             size = len(data_node)
 
         elif metric_type == Metric.DATATYPE_CORR:
-            # continuous data
-            data = data_node[[targets[0], sens]]
+            if not expl:
+                # continuous data
+                data = data_node[[targets[0], sens]]
+            else:
+                data = [group[[targets[0], sens]]
+                        for (key, group) in data_node.groupby(expl)]
+
             size = len(data_node)
             additional_data = None
         else:
@@ -238,6 +245,10 @@ def find_contexts(tree, data, features_info, sens, expl, output,
         ancestor_ptr = parent
         # prune non-significant contexts
         if (is_root or metric.abs_effect() > 0) or not prune_insignificant:
+
+            if new_metric is not None:
+                metric = copy(new_metric)
+
             clstr = Context(node.id, feature_path, is_leaf, is_root, parent,
                             data, size, metric, additional_data)
             if parent:

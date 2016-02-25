@@ -15,7 +15,6 @@ class CORR(Metric):
     """
     Pearson Correlation Metric.
     """
-
     dataType = Metric.DATATYPE_CORR
 
     @staticmethod
@@ -51,6 +50,74 @@ class CORR(Metric):
 
     def __str__(self):
         return 'CORR'
+
+
+class CondCORR(Metric):
+    """
+    Conditional Correlation metric.
+    """
+    dataType = Metric.DATATYPE_CORR
+
+    def compute(self, data, conf, exact=True):
+        [ci_low, ci_high, pval] = cond_correlation(data, conf=conf)
+
+        self.stats = pd.DataFrame(columns=['ci_low', 'ci_high', 'pval'])
+        self.stats.loc[0] = [ci_low, ci_high, pval]
+
+        # compute mutual information for each sub-group
+        for (idx, sub_ct) in enumerate(data):
+            self.stats.loc[idx+1] = CORR().compute(sub_ct, conf,
+                                                   exact=exact).stats
+
+        return self
+
+    def abs_effect(self):
+        (ci_low, ci_high, _) = self.stats.loc[0]
+        return intervals.z_effect(ci_low, ci_high)
+
+    @staticmethod
+    def approx_stats(data, conf):
+        raise NotImplementedError()
+
+    @staticmethod
+    def exact_test(data):
+        raise NotImplementedError()
+
+    @staticmethod
+    def exact_ci(data, conf):
+        raise NotImplementedError()
+
+    @staticmethod
+    def validate(sens, output, expl):
+        if output.num_labels != 1:
+            raise ValueError('CondCORR metric only usable for a single target')
+        if expl is None:
+            raise ValueError('CondCORR metric expects an explanatory feature')
+        if sens.arity > 2 or output.arity > 2:
+            raise ValueError('CORR metric not usable with multivalued features')
+
+    def __str__(self):
+        return 'CondCORR'
+
+
+def cond_correlation(data, conf=None):
+    """
+    Compute the conditional correlation of two variables given a third
+    Parameters
+    ----------
+    data :
+        data for the `correlation' method, grouped by the conditioning variable
+    conf :
+        confidence level
+    Returns
+    -------
+    cond_corr :
+        the conditional correlation
+    """
+    weights = [d[5] if np.array(d).shape == (6,) else len(d) for d in data]
+    corrs = [correlation(d, conf) for d in data]
+    cond_corr = np.average(corrs, axis=0, weights=weights)
+    return cond_corr
 
 
 def correlation(data, conf=None):
@@ -101,31 +168,40 @@ def correlation(data, conf=None):
         sum_xy = np.dot(x, y)
         n = len(x)
 
-    # correlation coefficient
-    corr = (n*sum_xy - sum_x*sum_y) / \
-           (sqrt(n*sum_x2 - sum_x**2) * sqrt(n*sum_y2 - sum_y**2))
+    try:
+        # correlation coefficient
+        corr = (n*sum_xy - sum_x*sum_y) / \
+               (sqrt(n*sum_x2 - sum_x**2) * sqrt(n*sum_y2 - sum_y**2))
 
-    if np.isnan(corr):
-        corr = 0
+        if np.isnan(corr):
+            raise ValueError()
+
+    except (ZeroDivisionError, ValueError):
+        if conf:
+            return -1, 1, 1.0
+        else:
+            return 0
 
     if conf:
-        # avoid math domain error
-        if corr == 1:
-            corr -= 10**-8
-        # Fisher transform
-        fisher = atanh(corr)
-        std = 1.0/sqrt(n-3)
+        try:
+            # Fisher transform
+            fisher = atanh(max(min(corr, 1-1e-6), -1+1e-6))
 
-        pval = tests.z_test(fisher, std)
+            std = 1.0/sqrt(n-3)
 
-        ci_fisher = intervals.ci_norm(conf, fisher, std)
+            pval = tests.z_test(fisher, std)
 
-        # inverse transform
-        ci_low, ci_high = [tanh(ci_fisher[0]), tanh(ci_fisher[1])]
+            ci_fisher = intervals.ci_norm(conf, fisher, std)
 
-        if np.isnan(ci_low) or np.isnan(ci_high) or np.isnan(pval):
+            # inverse transform
+            ci_low, ci_high = [tanh(ci_fisher[0]), tanh(ci_fisher[1])]
+
+            if np.isnan(ci_low) or np.isnan(ci_high) or np.isnan(pval):
+                return -1, 1, 1.0
+
+            return ci_low, ci_high, pval
+
+        except (ZeroDivisionError, ValueError):
             return -1, 1, 1.0
-
-        return ci_low, ci_high, pval
     else:
         return corr
