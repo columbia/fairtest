@@ -14,8 +14,11 @@ setup(name='fairtest',
                 'fairtest.modules.context_discovery',
                 'fairtest.modules.metrics',
                 'fairtest.modules.statistics',
+                'fairtest.api',
+                'fairtest.api.helpers',
                 'fairtest.utils'],
       test_suite="tests",
-      install_requires=['numpy', 'pandas', 'prettytable', 'matplotlib', 'pydot', 'ete2',
-                'sklearn', 'scipy', 'statsmodels', 'rpy2']
+      install_requires=['numpy', 'pandas', 'prettytable', 'matplotlib', 'pydot',
+                        'ete2', 'sklearn', 'scipy', 'statsmodels', 'rpy2',
+                        'eve', 'redis', 'rq', 'requests']
       )

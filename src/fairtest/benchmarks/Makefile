@@ -38,7 +38,7 @@ medical_bin:
 	rm -r $(OUTPUT_FOLDER)/medical_bin; \
 	mkdir -p $(OUTPUT_FOLDER)/medical_bin; \
 	python -m make_medical_bin $(INPUT_FOLDER)/medical/predictions_bin.csv  $(OUTPUT_FOLDER)/medical_bin > $(OUTPUT_FOLDER)/results_medical_bin.csv
-	
+
 medical_reg:
 	rm -r $(OUTPUT_FOLDER)/medical_reg; \
 	mkdir -p $(OUTPUT_FOLDER)/medical_reg; \
@@ -48,6 +48,13 @@ overfeat:
 	rm -r $(OUTPUT_FOLDER)/overfeat; \
 	mkdir -p $(OUTPUT_FOLDER)/overfeat; \
 	python -m make_overfeat $(INPUT_FOLDER)/images/overfeat_raw.txt  $(OUTPUT_FOLDER)/overfeat > $(OUTPUT_FOLDER)/results_overfeat.csv
+
+scheduling:
+	rm -r $(OUTPUT_FOLDER)/scheduling; \
+	mkdir -p $(OUTPUT_FOLDER)/scheduling; \
+	python -m make_scheduling $(INPUT_FOLDER)/scheduling/shifts.txt  $(OUTPUT_FOLDER)/scheduling > $(OUTPUT_FOLDER)/results_scheduling.csv
+
+
 
 csv:
 	./make_csv.sh results/results $(OUTPUT_FOLDER)/timing_percentages.csv

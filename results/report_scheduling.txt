@@ -1,0 +1,129 @@
+================================================================================
+Commit Hash: Not A Git Repository
+
+Dataset: scheduling
+Train Size: 23449
+Test Size: 70347
+S: ['MedianAge']
+X: ['PopulationRaceAsian', 'PopulationRaceOther',
+	'PopulationFemale', 'PopulationRaceWhite', 'Shift',
+	'PopulationAmerindian', 'PopulationRaceMulti',
+	'SingleFatherHousehold', 'PopulationMale',
+	'Households5Person', 'PopulationRacePacific',
+	'Households3Person', 'SingleMotherHousehold',
+	'PopulationRaceLatino', 'PopulationRaceBlack',
+	'HusbandWifeHouseholds', 'Population']
+E: None
+O: ['PoliceUnitsPerReport']
+
+Train Params: 	{'max_bins': 10, 'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'avg'}
+Test Params: 	{'prune_insignificant': True, 'exact': True, 'family_conf': 0.95}
+Report Params: 	{'node_filter': 'better_than_ancestors'}
+================================================================================
+
+Report of associations of O=['PoliceUnitsPerReport'] on Si = MedianAge:
+Association metric: CORR
+
+Global Population 0 of size 70347
+
+p-value = 6.65e-01 ; CORR = [-0.0128, 0.0096]
+================================================================================
+
+Sub-Population 6 of size 1956
+Context = {'Shift': 'B', 'HusbandWifeHouseholds': (9446.5, inf)}
+
+p-value = 1.70e-179 ; CORR = [-0.9991, -0.9988]
+--------------------------------------------------------------------------------
+
+Sub-Population 18 of size 1534
+Context = {'Shift': 'C', 'HusbandWifeHouseholds': (7351.5, 9446.5], 'PopulationRaceLatino': (0.2780420615, inf)}
+
+p-value = 1.70e-179 ; CORR = [-0.9730, -0.9636]
+--------------------------------------------------------------------------------
+
+Sub-Population 7 of size 2255
+Context = {'Shift': 'A', 'HusbandWifeHouseholds': (9446.5, inf)}
+
+p-value = 1.70e-179 ; CORR = [-0.9652, -0.9555]
+--------------------------------------------------------------------------------
+
+Sub-Population 19 of size 1087
+Context = {'Shift': 'A', 'HusbandWifeHouseholds': (7351.5, 9446.5], 'PopulationRaceAsian': (-inf, 0.027468415]}
+
+p-value = 1.70e-179 ; CORR = [-0.9438, -0.9203]
+--------------------------------------------------------------------------------
+
+Sub-Population 17 of size 1669
+Context = {'Shift': 'C', 'HusbandWifeHouseholds': (7351.5, 9446.5], 'PopulationRaceLatino': (-inf, 0.2780420615]}
+
+p-value = 1.70e-179 ; CORR = [-0.8693, -0.8289]
+--------------------------------------------------------------------------------
+
+Sub-Population 5 of size 3451
+Context = {'Shift': 'C', 'HusbandWifeHouseholds': (9446.5, inf)}
+
+p-value = 1.70e-179 ; CORR = [-0.8460, -0.8146]
+--------------------------------------------------------------------------------
+
+Sub-Population 15 of size 958
+Context = {'Shift': 'B', 'PopulationRaceMulti': (-inf, 0.0173389465], 'HusbandWifeHouseholds': (7351.5, 9446.5]}
+
+p-value = 3.00e-04 ; CORR = [-0.9803, -0.6382]
+--------------------------------------------------------------------------------
+
+Sub-Population 16 of size 888
+Context = {'Shift': 'B', 'PopulationRaceMulti': (0.0173389465, inf), 'HusbandWifeHouseholds': (7351.5, 9446.5]}
+
+p-value = 3.00e-04 ; CORR = [-1.0000, -0.6079]
+--------------------------------------------------------------------------------
+
+Sub-Population 10 of size 2258
+Context = {'Shift': 'A', 'HusbandWifeHouseholds': (7351.5, 9446.5]}
+
+p-value = 1.70e-179 ; CORR = [-0.6636, -0.5876]
+--------------------------------------------------------------------------------
+
+Sub-Population 8 of size 1846
+Context = {'Shift': 'B', 'HusbandWifeHouseholds': (7351.5, 9446.5]}
+
+p-value = 1.70e-179 ; CORR = [-0.6690, -0.5852]
+--------------------------------------------------------------------------------
+
+Sub-Population 9 of size 3203
+Context = {'Shift': 'C', 'HusbandWifeHouseholds': (7351.5, 9446.5]}
+
+p-value = 1.70e-179 ; CORR = [-0.6085, -0.5381]
+--------------------------------------------------------------------------------
+
+Sub-Population 4 of size 7307
+Context = {'HusbandWifeHouseholds': (7351.5, 9446.5]}
+
+p-value = 1.44e-81 ; CORR = [-0.2539, -0.1878]
+--------------------------------------------------------------------------------
+
+Sub-Population 2 of size 7662
+Context = {'HusbandWifeHouseholds': (9446.5, inf)}
+
+p-value = 4.18e-72 ; CORR = [-0.2355, -0.1704]
+--------------------------------------------------------------------------------
+
+Hierarchical printing of subpopulations (summary)
+
+================================================================================
+
+ Context = {} ; CI = [-0.0128, 0.0096] ; Size = 70347
+   Context = {'HusbandWifeHouseholds': (7351.5, 9446.5]} ; CI = [-0.2539, -0.1878] ; Size = 7307
+     Context = {'Shift': 'B', 'HusbandWifeHouseholds': (7351.5, 9446.5]} ; CI = [-0.6690, -0.5852] ; Size = 1846
+       Context = {'Shift': 'B', 'PopulationRaceMulti': (-inf, 0.0173389465], 'HusbandWifeHouseholds': (7351.5, 9446.5]} ; CI = [-0.9803, -0.6382] ; Size = 958
+       Context = {'Shift': 'B', 'PopulationRaceMulti': (0.0173389465, inf), 'HusbandWifeHouseholds': (7351.5, 9446.5]} ; CI = [-1.0000, -0.6079] ; Size = 888
+     Context = {'Shift': 'C', 'HusbandWifeHouseholds': (7351.5, 9446.5]} ; CI = [-0.6085, -0.5381] ; Size = 3203
+       Context = {'Shift': 'C', 'HusbandWifeHouseholds': (7351.5, 9446.5], 'PopulationRaceLatino': (-inf, 0.2780420615]} ; CI = [-0.8693, -0.8289] ; Size = 1669
+       Context = {'Shift': 'C', 'HusbandWifeHouseholds': (7351.5, 9446.5], 'PopulationRaceLatino': (0.2780420615, inf)} ; CI = [-0.9730, -0.9636] ; Size = 1534
+     Context = {'Shift': 'A', 'HusbandWifeHouseholds': (7351.5, 9446.5]} ; CI = [-0.6636, -0.5876] ; Size = 2258
+       Context = {'Shift': 'A', 'HusbandWifeHouseholds': (7351.5, 9446.5], 'PopulationRaceAsian': (-inf, 0.027468415]} ; CI = [-0.9438, -0.9203] ; Size = 1087
+   Context = {'HusbandWifeHouseholds': (9446.5, inf)} ; CI = [-0.2355, -0.1704] ; Size = 7662
+     Context = {'Shift': 'C', 'HusbandWifeHouseholds': (9446.5, inf)} ; CI = [-0.8460, -0.8146] ; Size = 3451
+     Context = {'Shift': 'B', 'HusbandWifeHouseholds': (9446.5, inf)} ; CI = [-0.9991, -0.9988] ; Size = 1956
+     Context = {'Shift': 'A', 'HusbandWifeHouseholds': (9446.5, inf)} ; CI = [-0.9652, -0.9555] ; Size = 2255
+--------------------------------------------------------------------------------
+
