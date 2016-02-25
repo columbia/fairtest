@@ -173,7 +173,8 @@ def correlation(data, conf=None):
         corr = (n*sum_xy - sum_x*sum_y) / \
                (sqrt(n*sum_x2 - sum_x**2) * sqrt(n*sum_y2 - sum_y**2))
 
-        if np.isnan(corr):
+        delta = 1e-5
+        if not np.isfinite(corr) or not (-1-delta <= corr <= 1+delta):
             raise ValueError()
 
     except (ZeroDivisionError, ValueError):

@@ -3,6 +3,7 @@ from fairtest import Testing, train, test, report, DataSource
 
 from time import time
 import sys
+import numpy as np
 
 
 def main(argv=sys.argv):
@@ -43,6 +44,8 @@ def main(argv=sys.argv):
         'HouseholdsWith75Plus',
     ]
 
+    data[SENS] = np.round(data[SENS])
+
     data_source = DataSource(data, train_size=0.25)
 
     # Instantiate the experiment
@@ -56,7 +59,7 @@ def main(argv=sys.argv):
 
     # Evaluate on the testing set
     t3 = time()
-    test([inv])
+    test([inv], exact=False)
 
     # Create the report
     t4 = time()
