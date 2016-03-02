@@ -179,3 +179,43 @@ def _prepare_csv_from_collection(collection):
     except Exception, error:
         print error
         raise
+
+
+def demo_run(experiment_dict):
+    """
+    This function is invoke by on_inserted hooks.
+
+    When this event is fired up, the experiment is already
+    validated and  introduced into the DB.
+    """
+    # retrive dictionary parameteres
+    output = experiment_dict['out']
+    sens = [experiment_dict['sens']]
+    dataset = experiment_dict['dataset']
+    experiment_folder = experiment_dict['experiment_folder']
+
+    if 'expl' in experiment_dict:
+        expl = experiment_dict['expl']
+    else:
+        expl = []
+    print "Experiment parameters:", experiment_dict
+
+    # run experiment and place report at proper place
+    try:
+        print dataset
+        try:
+            data = prepare.data_from_csv(dataset)
+        except Exception, error:
+            print "Error:", error
+        data_source = DataSource(data)
+        inv = Testing(
+            data_source, sens, output, expl
+        )
+        train([inv])
+        test([inv])
+        report([inv], os.path.basename(dataset).split('.')[0], experiment_folder)
+    except Exception, error:
+        print error
+        abort(500, description='Internal server error.')
+
+

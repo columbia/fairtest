@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>FairTest</title>
+  <head>
+   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+
+  <div class="container">
+    <div class="header">
+     <h2 class="text-muted">Upload Application Dataset</h3>
+    </div>
+    <hr/>
+    <div>
+      <form action="" method=post enctype=multipart/form-data>
+        <input type=file name=file>
+        <br/><br />
+       <input type=submit value=Upload>
+      </form>
+    </div>
+
+    <br/><br />
+    <div class="header">
+      <h4 class="text-muted">Available Datasets</h4>
+      <ul>
+      {%- for item in tree1.children recursive %}
+        <li>{{ item.name }}
+        {%- if item.children -%}
+          <ul>{{ loop(item.children) }}</ul>
+        {%- endif %}</li>
+      {%- endfor %}
+      </ul>
+    </div>
+    </div>
+    <br/><br />
+
+
+  <div class="container">
+    <div class="header">
+     <h2 class="text-muted">Post Fairtest Experiment</h2>
+    </div>
+    <hr/>
+    <div>
+      <form action="" method=post enctype=multipart/form-data>
+        <h4 class="text-muted">Dataset:</h4><input type=field name=dataset><br /><br />
+        <h4 class="text-muted">Sensitive Features:</h4><input type=field name=sens><br /><br />
+        <h4 class="text-muted">Explanatory Features:</h4><input type=field name=expl><br /><br />
+        <h4 class="text-muted">Output Feature:</h4><input type=field name=out><br /><br />
+        <h4 class="text-muted">Investigation Type:</h4><input type=field name=inv><br /><br />
+       <input type=submit value=Post>
+      </form>
+    </div>
+
+    <br/><br />
+    <div class="header">
+      <h4 class="text-muted">Finished Experiments</h4>
+      <ul>
+      {%- for item in tree2.children recursive %}
+        <li>{{ item.name }}
+        {%- if item.children -%}
+          <ul>{{ loop(item.children) }}</ul>
+        {%- endif %}</li>
+      {%- endfor %}
+      </ul>
+    </div>
+    </div>
+   </div>
+    <br/><br />
+
+
+  <div class="container">
+    <div class="header">
+     <h2 class="text-muted">Post Fairtest Experiment</h2>
+    </div>
+    <hr/>
+    <div>
+      <form action="" method=post enctype=multipart/form-data>
+        <h4 class="text-muted">Experiment:</h4><input type=field name=report><br /><br />
+       <input type=submit value=Get>
+      </form>
+    </div>
+    </div>
+    <br/><br />
+  </div>
+   </div>
+
+
+
+  </body>
+</html>
