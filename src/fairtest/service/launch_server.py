@@ -6,10 +6,11 @@ import yaml
 
 
 from flask import Flask
+from flask import url_for
 from flask import request
 from flask import Response
 from flask import redirect
-from flask import url_for
+from flask import send_file
 from flask import render_template
 from flask import send_from_directory
 
@@ -25,7 +26,6 @@ from tempfile import mkdtemp, mkstemp
 UPLOAD_FOLDER = '/tmp/fairtest/datasets'
 EXPERIMENTS_FOLDER = '/tmp/fairtest/experiments'
 ALLOWED_EXTENSIONS = set(['csv', 'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-
 
 
 def load_config(config):
@@ -146,10 +146,18 @@ def handler():
             if not os.path.isfile(filename):
                 raise Exception("Report file unavailable")
             # respond with the attachment
+            print filename
+            # return  send_file(filename)
+            with open(filename, "r") as f:
+                content = f.read()
+            f.close()
+            os.remove(filename)
             return Response(
+                content,
                 mimetype="text/plain",
                 headers={"Content-Disposition":
-                    "attachment;filename=" + filename}
+                        "attachment;filename=" + filename
+                }
             )
 
     return render_template("upload.html",
@@ -157,8 +165,5 @@ def handler():
                            tree2=make_tree(app.config['EXPERIMENTS_FOLDER']))
 
 
-
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=80)
-
-

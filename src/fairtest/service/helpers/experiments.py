@@ -202,7 +202,6 @@ def demo_run(experiment_dict):
 
     # run experiment and place report at proper place
     try:
-        print dataset
         try:
             data = prepare.data_from_csv(dataset)
         except Exception, error:
@@ -213,7 +212,8 @@ def demo_run(experiment_dict):
         )
         train([inv])
         test([inv])
-        report([inv], os.path.basename(dataset).split('.')[0], experiment_folder)
+        report_name =  os.path.basename(dataset).split('.')[0] + "_" + sens[0] + "_" + output
+        report([inv], report_name, experiment_folder)
     except Exception, error:
         print error
         abort(500, description='Internal server error.')
