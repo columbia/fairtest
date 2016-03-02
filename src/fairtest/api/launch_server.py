@@ -1,41 +1,56 @@
-from eve import Eve
-from helpers import experiments
+import os
+from flask import Flask, request, render_template, redirect, url_for
+from flask import send_from_directory
+from werkzeug import secure_filename
 
-settings = {
-        'DOMAIN': {
-            # Allow:
-            #   (i) GET, POST of records into a application pool
-            #   (ii) GET, PUT, DELETE of individual records
-            'pools/demo_app': {
-                'allow_unknown': True,
-                'resource_methods': ['GET', 'POST'],
-                'item_methods': ['GET', 'PUT', 'DELETE']
-            },
+UPLOAD_FOLDER = '/tmp/fairtest'
+ALLOWED_EXTENSIONS = set(['csv', 'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
-            # Allow:
-            #   (i) POST of an experiment into experiments pool
-            #   (ii) GET of an individual experiement (whose id is known to
-            #   the user)
-            'experiments': {
-                # TODO: Limit Rate
-                'allow_unknown': True,
-                'resource_methods': ['POST'],
-                'item_methods': ['GET']
-            }
-            # ADD HERE (don't forget comma seperators)
-        },
-        # Global configuration
-        'IF_MATCH': False,
-        'MONGO_DBNAME': 'fairtest_pools',
-        'CACHE_EXPIRES': 1
-    }
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+def make_tree(path):
+    tree = dict(name=os.path.basename(path), children=[])
+    try: lst = os.listdir(path)
+    except OSError:
+        pass #ignore errors
+    else:
+        for name in lst:
+            fn = os.path.join(path, name)
+            if os.path.isdir(fn):
+                tree['children'].append(make_tree(fn))
+            else:
+                tree['children'].append(dict(name=name))
+    return tree
 
 
-app = Eve(settings=settings)
-app.on_pre_POST += experiments.validate
-app.on_inserted += experiments.run
+@app.route('/fairtest/demo_app', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        try:
+          file = request.files['file']
+        except Exception, error:
+          print error
+          raise
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return render_template("upload.html", tree=make_tree(app.config['UPLOAD_FOLDER']))
+    return render_template("upload.html", tree=make_tree(app.config['UPLOAD_FOLDER']))
+
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    print filename
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 
 
 if __name__ == '__main__':
-        app.run(debug=True)
+  app.run(debug=True)
+
 
