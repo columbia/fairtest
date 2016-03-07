@@ -139,31 +139,32 @@ def handler():
             print experiment_dict
             REDIS_QUEUE.enqueue(experiments.demo_run, experiment_dict)
 
-        # 3. request report for finished experiment
-        if report:
-            # construct filename path and check it exists
-            filename = os.path.join(app.config['EXPERIMENTS_FOLDER'], report)
-            if not os.path.isfile(filename):
-                raise Exception("Report file unavailable")
-            # respond with the attachment
-            print filename
-            # return  send_file(filename)
-            with open(filename, "r") as f:
-                content = f.read()
-            f.close()
-            os.remove(filename)
-            return Response(
-                content,
-                mimetype="text/plain",
-                headers={"Content-Disposition":
-                        "attachment;filename=" + filename
-                }
-            )
+#        # 3. request report for finished experiment
+#        if report:
+#            # construct filename path and check it exists
+#            filename = os.path.join(app.config['EXPERIMENTS_FOLDER'], report)
+#            if not os.path.isfile(filename):
+#                raise Exception("Report file unavailable")
+#            # respond with the attachment
+#            print filename
+#            # return  send_file(filename)
+#            with open(filename, "r") as f:
+#                content = f.read()
+#            f.close()
+#            os.remove(filename)
+#            return Response(
+#                content,
+#                mimetype="text/plain",
+#                headers={"Content-Disposition":
+#                        "attachment;filename=" + filename
+#                }
+#            )
 
     return render_template("upload.html",
                            tree1=make_tree(app.config['UPLOAD_FOLDER']),
-                           tree2=make_tree(app.config['EXPERIMENTS_FOLDER']))
+                           tree2=make_tree(app.config['EXPERIMENTS_FOLDER']),
+                           experiments_folder=app.config['EXPERIMENTS_FOLDER'])
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=80)
+    app.run(debug=True, host='0.0.0.0')
