@@ -220,7 +220,7 @@ def demo_run(experiment_dict):
         src_path = os.path.join(tmp_folder, "report_" + report_name + ".txt")
         dst_path = os.path.join(
             experiment_folder,
-            report_name + "_" + sens[0] + "_" + output + "_" + str(calendar.timegm(time.gmtime())) + ".txt"
+            report_name + "_" + sens[0] + "_" + output + ".txt"
         )
         os.rename(src_path, dst_path)
         os.rmdir(tmp_folder)

@@ -149,7 +149,6 @@ def handler():
 
         # 2. post a new experiment
         if dataset:
-            print dataset
             dataset = os.path.join(app.config['DATASETS_FOLDER'], dataset)
             experiment_dict = {'dataset': dataset,
                 'sens': sens,
@@ -161,7 +160,6 @@ def handler():
             print experiment_dict
             REDIS_QUEUE.enqueue(experiments.demo_run, experiment_dict)
 
-    print make_tree(app.config['DATASETS_FOLDER'], metadata=True)
     return render_template("upload.html",
                            tree1=make_tree(app.config['DATASETS_FOLDER'], metadata=True),
                            datasets_folder=app.config['DATASETS_FOLDER'],
