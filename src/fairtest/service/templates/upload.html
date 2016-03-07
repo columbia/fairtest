@@ -24,10 +24,7 @@
       <h4 class="text-muted">Available Datasets</h4>
       <ul>
       {%- for item in tree1.children recursive %}
-        <li>{{ item.name }}
-        {%- if item.children -%}
-          <ul>{{ loop(item.children) }}</ul>
-        {%- endif %}</li>
+      <li><a href="{{ datasets_folder }}/{{ item.name }}">{{item.name}}</a> {{item.metadata}}
       {%- endfor %}
       </ul>
     </div>
@@ -59,9 +56,6 @@
       <ul>
         {%- for item in tree2.children recursive %}
           <li><a href="{{ experiments_folder }}/{{ item.name }}">{{item.name}}</a>
-            {%- if item.children -%}
-              <ul>{{ loop(item.children) }}</ul>
-              {%- endif %}
           </li>
         {%- endfor %}
       </ul>

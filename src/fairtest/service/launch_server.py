@@ -23,11 +23,6 @@ from redis import Redis
 from tempfile import mkdtemp, mkstemp
 
 
-UPLOAD_FOLDER = '/tmp/fairtest/datasets'
-EXPERIMENTS_FOLDER = '/tmp/fairtest/experiments'
-ALLOWED_EXTENSIONS = set(['csv', 'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-
-
 def load_config(config):
     config = os.path.join("config", config)
     with open(config, 'r') as config_file:
@@ -39,6 +34,9 @@ HOSTNAME = CONF['redis_hostname']
 PORT = CONF['redis_port']
 REDIS_CONN = Redis(host=HOSTNAME, port=PORT)
 REDIS_QUEUE = Queue(connection=REDIS_CONN)
+DATASETS_FOLDER = '/tmp/fairtest/datasets'
+EXPERIMENTS_FOLDER = '/tmp/fairtest/experiments'
+ALLOWED_EXTENSIONS = set(['csv', 'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 
 def allowed_file(filename):
@@ -48,7 +46,23 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-def make_tree(path):
+
+def list_features(filename):
+  """
+  Helper getting features from csv header
+  """
+  with open(filename, "r") as f:
+    head = []
+    try:
+      for line in f:
+        head = line.rstrip().split(',')
+        break
+    except Exception, error:
+      print "Exception:", error
+    return head
+
+
+def make_tree(path, metadata=False):
     """
     List directory contents
     """
@@ -62,12 +76,20 @@ def make_tree(path):
             if os.path.isdir(fn):
                 tree['children'].append(make_tree(fn))
             else:
-                tree['children'].append(dict(name=name))
+              MAX = 10
+              features = []
+              if metadata:
+                features = "(Features: " + ', '.join(list_features(fn)[:MAX])
+                if len(list_features(fn)) > MAX:
+                  features += " ..."
+                features += ")"
+
+              tree['children'].append({'name': name, 'metadata': features})
     return tree
 
 
 app = Flask(__name__, static_folder='/tmp')
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['DATASETS_FOLDER'] = DATASETS_FOLDER
 app.config['EXPERIMENTS_FOLDER'] = EXPERIMENTS_FOLDER
 
 
@@ -123,45 +145,26 @@ def handler():
         if upload_file:
             if upload_file and allowed_file(upload_file.filename):
                 filename = secure_filename(upload_file.filename)
-                upload_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                upload_file.save(os.path.join(app.config['DATASETS_FOLDER'], filename))
 
         # 2. post a new experiment
         if dataset:
             print dataset
-            dataset = os.path.join(app.config['UPLOAD_FOLDER'], dataset)
+            dataset = os.path.join(app.config['DATASETS_FOLDER'], dataset)
             experiment_dict = {'dataset': dataset,
                 'sens': sens,
                 'expl': expl,
                 'inv': inv,
                 'out': out,
-                'experiment_folder': EXPERIMENTS_FOLDER
+                'experiments_folder': EXPERIMENTS_FOLDER
             }
             print experiment_dict
             REDIS_QUEUE.enqueue(experiments.demo_run, experiment_dict)
 
-#        # 3. request report for finished experiment
-#        if report:
-#            # construct filename path and check it exists
-#            filename = os.path.join(app.config['EXPERIMENTS_FOLDER'], report)
-#            if not os.path.isfile(filename):
-#                raise Exception("Report file unavailable")
-#            # respond with the attachment
-#            print filename
-#            # return  send_file(filename)
-#            with open(filename, "r") as f:
-#                content = f.read()
-#            f.close()
-#            os.remove(filename)
-#            return Response(
-#                content,
-#                mimetype="text/plain",
-#                headers={"Content-Disposition":
-#                        "attachment;filename=" + filename
-#                }
-#            )
-
+    print make_tree(app.config['DATASETS_FOLDER'], metadata=True)
     return render_template("upload.html",
-                           tree1=make_tree(app.config['UPLOAD_FOLDER']),
+                           tree1=make_tree(app.config['DATASETS_FOLDER'], metadata=True),
+                           datasets_folder=app.config['DATASETS_FOLDER'],
                            tree2=make_tree(app.config['EXPERIMENTS_FOLDER']),
                            experiments_folder=app.config['EXPERIMENTS_FOLDER'])
 

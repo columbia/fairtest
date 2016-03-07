@@ -2,6 +2,7 @@
 Report association bugs
 """
 from StringIO import StringIO
+import datetime
 import prettytable
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
@@ -743,12 +744,14 @@ def print_report_info(dataset, train_size, test_size, sensitive, contextual,
         stream to output the data to
     """
     print >> output_stream, '='*80
-    if os.path.exists('../.git'):
-        print >> output_stream, 'Commit Hash: \t{}'.\
-            format(subprocess.check_output(['git', 'rev-parse', 'HEAD'],
-                                           cwd='..').strip())
-    else:
-        print >> output_stream, 'Commit Hash: Not A Git Repository'
+#    if os.path.exists('../.git'):
+#        print >> output_stream, 'Commit Hash: \t{}'.\
+#            format(subprocess.check_output(['git', 'rev-parse', 'HEAD'],
+#                                           cwd='..').strip())
+#    else:
+#        print >> output_stream, 'Commit Hash: Not A Git Repository'
+    print >> output_stream, 'Report Creation time:',\
+        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print >> output_stream
     print >> output_stream, 'Dataset: {}'.format(dataset)
     print >> output_stream, 'Train Size: {}'.format(train_size)
