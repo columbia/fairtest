@@ -228,7 +228,8 @@ def train(investigations, max_depth=5, min_leaf_size=100,
             inv.trained_trees[sens] = tree
 
 
-def test(investigations, prune_insignificant=True, exact=True):
+def test(investigations, prune_insignificant=True, exact=True,
+         new_metrics=None, new_expl=None):
     """
     Compute effect sizes and p-values for the discrimination contexts
     discovered on the training set. Correct intervals and p-values across
@@ -254,6 +255,20 @@ def test(investigations, prune_insignificant=True, exact=True):
     if not hasattr(investigations, '__iter__'):
         raise ValueError('investigations must be an iterable')
 
+    if new_metrics is None:
+        new_metrics = [{}]*len(investigations)
+
+    if not len(new_metrics) == len(investigations):
+        raise ValueError('new_metrics should be None, or a list of '
+                         'dictionaries for each investigation')
+
+    if new_expl is None:
+        new_expl = [None]*len(investigations)
+
+    if not len(new_expl) == len(investigations):
+        raise ValueError('new_expl should be None, or a list of '
+                         'features for each investigation')
+
     holdout = investigations[0].holdout
 
     for inv in investigations:
@@ -267,27 +282,42 @@ def test(investigations, prune_insignificant=True, exact=True):
 
     test_data = holdout.get_test_set()
 
-    for inv in investigations:
-        inv.test_params = {'prune_insignificant': prune_insignificant,
-                           'exact': exact,
-                           'family_conf': inv.holdout.test_set_conf}
+    try:
+        for (idx, inv) in enumerate(investigations):
+            inv.test_params = {'prune_insignificant': prune_insignificant,
+                               'exact': exact,
+                               'family_conf': inv.holdout.test_set_conf}
 
-        data = test_data.copy()
-        data = inv.preprocess_test_data(data)
+            data = test_data.copy()
+            data = inv.preprocess_test_data(data)
 
-        inv.test_set_size = len(data)
-        # prepare testing data for all hypotheses
-        for sens in inv.sens_features:
-            tree = inv.trained_trees[sens]
-            inv.contexts[sens] \
-                = tree_parser.find_contexts(tree, data, inv.feature_info, sens,
-                                            inv.expl, inv.output,
-                                            prune_insignificant)
+            inv.test_set_size = len(data)
 
-    # compute p-values and confidence intervals with FWER correction
-    logging.info('Begin testing phase')
-    np.random.seed(investigations[0].random_state)
-    multitest.compute_all_stats(investigations, exact, holdout.test_set_conf)
+            if new_expl[idx] is not None:
+                inv.expl = new_expl[idx]
+
+            # prepare testing data for all hypotheses
+            for sens in inv.sens_features:
+                new_metric = new_metrics[idx].get(sens, None)
+                if isinstance(new_metric, basestring):
+                    new_metric = metric_from_string(new_metric)
+
+                tree = inv.trained_trees[sens]
+                logging.info('Parsing tree for sensitive feature %s...' % sens)
+                inv.contexts[sens] \
+                    = tree_parser.find_contexts(tree, data, inv.feature_info,
+                                                sens, inv.expl, inv.output,
+                                                prune_insignificant,
+                                                new_metric=new_metric)
+                logging.info('Parsed tree for sensitive feature %s' % sens)
+
+        # compute p-values and confidence intervals with FWER correction
+        logging.info('Begin testing phase')
+        np.random.seed(investigations[0].random_state)
+        multitest.compute_all_stats(investigations, exact,
+                                    holdout.test_set_conf)
+    except Exception:
+        holdout.return_unused_data(test_data)
 
 
 def report(investigations, dataname, output_dir=None, filter_conf=0.95,
@@ -378,9 +408,8 @@ def report(investigations, dataname, output_dir=None, filter_conf=0.95,
 
         # print all the bug reports
         for sens in inv.sens_features:
-            print >> output_stream, \
-                'Report of associations of O={} on Si = {}:'.\
-                    format(inv.output.short_names, sens)
+            print >> output_stream, 'Report of associations of O={} on Si = ' \
+                                    '{}:'.format(inv.output.short_names, sens)
             print >> output_stream, \
                 'Association metric: {}'.format(inv.metrics[sens])
             print >> output_stream
@@ -471,4 +500,6 @@ def metric_from_string(m_str, **kwargs):
         return CondDIFF()
     elif m_str == "CondNMI":
         return CondNMI()
+    elif m_str == "CondCorr":
+        return CondCORR()
     raise ValueError('Unknown fairness Metric {}'.format(m_str))

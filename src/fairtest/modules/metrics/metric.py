@@ -81,7 +81,10 @@ class Metric(object):
         size = self.get_size(data)
 
         if not exact or size > min(self.approx_LIMIT_P, self.approx_LIMIT_CI):
-            ci_low, ci_high, pval = self.approx_stats(data, conf)
+            try:
+                ci_low, ci_high, pval = self.approx_stats(data, conf)
+            except ValueError:
+                ci_low, ci_high, pval = 0, 0, 10*10
 
         if exact and size <= self.approx_LIMIT_P:
             pval = self.exact_test(data)

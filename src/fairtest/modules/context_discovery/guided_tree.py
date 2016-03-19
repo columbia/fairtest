@@ -11,6 +11,8 @@ from sklearn.externals.six import StringIO
 from copy import copy
 import logging
 import multiprocessing
+import traceback
+import sys
 
 
 def find_thresholds(data, features, feature_info, num_bins):
@@ -190,7 +192,7 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
     if metric.dataType == Metric.DATATYPE_CT:
         stats = [count_values(data, sens, targets[0], expl, dim)[0]]
     elif metric.dataType == Metric.DATATYPE_CORR:
-        stats = [corr_values(data, sens, targets[0])[0]]
+        stats = [corr_values(data, sens, targets[0], expl, dim)[0]]
     else:
         stats = [data[targets+[sens]]]
 
@@ -341,45 +343,48 @@ def score_feature(args):
         a dictionary of feature scoring information
     """
     # unpack a long tuple of arguments
-    (feature, sens, targets, expl, feature_info, node_data, split_params,
-     score_params, parent_score) = args
+    try:
+        (feature, sens, targets, expl, feature_info, node_data, split_params,
+         score_params, parent_score) = args
 
-    feature_list = [feature, sens] + targets
-    if expl:
-        feature_list.append(expl)
+        feature_list = [feature, sens] + targets
+        if expl:
+            feature_list.append(expl)
 
-    # determine type of split
-    if feature_info[feature].arity:
-        split_score, metrics = test_cat_feature(node_data[feature_list],
-                                                feature, split_params,
-                                                score_params)
-        threshold = None
-    else:
-        split_score, threshold, metrics = \
-                test_cont_feature(node_data[feature_list], feature,
-                                  split_params, score_params)
+        # determine type of split
+        if feature_info[feature].arity:
+            split_score, metrics = test_cat_feature(node_data[feature_list],
+                                                    feature, split_params,
+                                                    score_params)
+            threshold = None
+        else:
+            split_score, threshold, metrics = \
+                    test_cont_feature(node_data[feature_list], feature,
+                                      split_params, score_params)
 
-    logging.debug('feature %s: score %s', feature, split_score)
+        logging.debug('feature %s: score %s', feature, split_score)
 
-    # the feature produced no split and can be dropped in sub-trees
-    if split_score is None or np.isnan(split_score):
+        # the feature produced no split and can be dropped in sub-trees
+        if split_score is None or np.isnan(split_score):
+            return {
+                'feature': feature,
+                'split_score': None
+            }
+
+        # check if there is a child with higher score than the parent
+        child_better_than_parent = \
+            len([metric for metric in metrics.values()
+                 if metric.abs_effect() > parent_score]) > 0
+
         return {
+            'split_score': split_score,
             'feature': feature,
-            'split_score': None
+            'threshold': threshold,
+            'metrics': metrics,
+            'better_than_parent': child_better_than_parent
         }
-
-    # check if there is a child with higher score than the parent
-    child_better_than_parent = \
-        len([metric for metric in metrics.values()
-             if metric.abs_effect() > parent_score]) > 0
-
-    return {
-        'split_score': split_score,
-        'feature': feature,
-        'threshold': threshold,
-        'metrics': metrics,
-        'better_than_parent': child_better_than_parent
-    }
+    except:
+        raise Exception("".join(traceback.format_exception(*sys.exc_info())))
 
 
 def select_best_feature(node_data, features, split_params,
@@ -536,7 +541,7 @@ def count_values(data, sens, target, expl, dim):
         return values, len(data)
 
 
-def corr_values(data, sens, target):
+def corr_values(data, sens, target, expl, dim):
     """
     Get statistics for correlation measures
 
@@ -556,13 +561,25 @@ def corr_values(data, sens, target):
     values :
         an array of aggregate statistics
     """
-    (x, y) = (np.array(data[sens]), np.array(data[target]))
-    # sum(x), sum(x^2), sum(y), sum(y^2), sum(xy)
-    return np.array([x.sum(),
-                     np.dot(x, x),
-                     y.sum(),
-                     np.dot(y, y),
-                     np.dot(x, y), x.size]), len(x)
+
+    if expl:
+        values = np.zeros(dim)
+        groups = [(group[target], group[sens])
+                  for (_, group) in data.groupby(expl)]
+
+        for k, (x, y) in enumerate(groups):
+            values[k] = np.array([x.sum(), np.dot(x, x), y.sum(),
+                                  np.dot(y, y), np.dot(x, y), x.size])
+        return values, min([x.size for (x, _) in groups])
+
+    else:
+        (x, y) = (np.array(data[sens]), np.array(data[target]))
+        # sum(x), sum(x^2), sum(y), sum(y^2), sum(xy)
+        return np.array([x.sum(),
+                         np.dot(x, x),
+                         y.sum(),
+                         np.dot(y, y),
+                         np.dot(x, y), x.size]), len(x)
 
 
 def test_cat_feature(node_data, feature, split_params, score_params):
@@ -605,7 +622,7 @@ def test_cat_feature(node_data, feature, split_params, score_params):
                        for key, group in node_data.groupby(feature)]
     elif data_type == Metric.DATATYPE_CORR:
         # compute summary statistics for each child
-        child_stats = [(key, corr_values(group, sens, targets[0]))
+        child_stats = [(key, corr_values(group, sens, targets[0], expl, dim))
                        for key, group in node_data.groupby(feature)]
     else:
         # aggregate all the data for each child for regression
@@ -710,7 +727,7 @@ def test_cont_feature(node_data, feature, split_params, score_params):
                 for (key, group) in groups]
     elif data_type == Metric.DATATYPE_CORR:
         # correlation scores
-        temp = [(key, corr_values(group, sens, targets[0]))
+        temp = [(key, corr_values(group, sens, targets[0], expl, dim))
                 for (key, group) in groups]
 
     # get the indices of the bin thresholds

@@ -58,14 +58,14 @@ class CondNMI(Metric):
     dataType = Metric.DATATYPE_CT
 
     def compute(self, data, conf, exact=True):
-        pval = \
-            tests.permutation_test_ct_cond(data,
-                                           lambda ct: abs(cond_mutual_info(ct)))
+        if exact:
+            pval = tests.permutation_test_ct_cond(
+                data, lambda ct: abs(cond_mutual_info(ct)))
 
-        ci_low, ci_high = \
-            intervals.bootstrap_ci_ct_cond(data,
-                                           lambda ct: abs(cond_mutual_info(ct)),
-                                           conf=conf)
+            ci_low, ci_high = intervals.bootstrap_ci_ct_cond(
+                data, lambda ct: abs(cond_mutual_info(ct)), conf=conf)
+        else:
+            [ci_low, ci_high, pval] = cond_mutual_info(data, conf=conf)
 
         self.stats = pd.DataFrame(columns=['ci_low', 'ci_high', 'pval'])
         self.stats.loc[0] = [ci_low, ci_high, pval]
@@ -192,7 +192,7 @@ def mutual_info(data, norm=True, conf=None):
     return ci_low, ci_high, pval
 
 
-def cond_mutual_info(data, norm=True):
+def cond_mutual_info(data, norm=True, conf=None):
     """
     Compute the conditional mutual information of two variables given a third
     Parameters
@@ -211,6 +211,6 @@ def cond_mutual_info(data, norm=True):
     https://en.wikipedia.org/wiki/Conditional_mutual_information
     """
     weights = [d.sum() for d in data]
-    mis = [mutual_info(d, norm) for d in data]
-    cond_mi = np.average(mis, axis=None, weights=weights)
+    mis = [mutual_info(d, norm, conf) for d in data]
+    cond_mi = np.average(mis, axis=0, weights=weights)
     return cond_mi

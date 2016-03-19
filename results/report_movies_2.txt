@@ -1,5 +1,5 @@
 ================================================================================
-Commit Hash: 	82c74056ed3f5b5cb19f5eb4179738c81cd0f9f2
+Commit Hash: 	92042b5a35bf4d1b6d400efbbbdf6abde7347e5e
 
 Dataset: movies
 Train Size: 3020
@@ -11,7 +11,7 @@ O: ['Avg Movie Age']
 
 Train Params: 	{'max_bins': 10, 'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'avg'}
 Test Params: 	{'prune_insignificant': True, 'exact': True, 'family_conf': 0.95}
-Report Params: 	{'node_filter': 'root'}
+Report Params: 	{'node_filter': 'better_than_ancestors'}
 ================================================================================
 
 Report of associations of O=['Avg Movie Age'] on Si = Gender:
@@ -19,14 +19,15 @@ Association metric: CORR
 
 Global Population 0 of size 3020
 
-p-value = 4.27e-02 ; CORR = [-0.0116, 0.1074]
+Error Statistics: min=18.78, max=61.70, median=37.75
+p-value = 2.46e-02 ; CORR = [-0.0079, 0.1038]
 ================================================================================
 
 Hierarchical printing of subpopulations (summary)
 
 ================================================================================
 
- Context = {} ; CI = [-0.0116, 0.1074] ; Size = 3020
+ Context = {} ; CI = [-0.0079, 0.1038] ; Size = 3020
 --------------------------------------------------------------------------------
 
 Report of associations of O=['Avg Movie Age'] on Si = Age:
@@ -34,13 +35,14 @@ Association metric: CORR
 
 Global Population 0 of size 3020
 
-p-value = 1.03e-61 ; CORR = [0.2400, 0.3489]
+Error Statistics: min=18.78, max=61.70, median=37.75
+p-value = 5.14e-62 ; CORR = [0.2435, 0.3457]
 ================================================================================
 
 Hierarchical printing of subpopulations (summary)
 
 ================================================================================
 
- Context = {} ; CI = [0.2400, 0.3489] ; Size = 3020
+ Context = {} ; CI = [0.2435, 0.3457] ; Size = 3020
 --------------------------------------------------------------------------------
 

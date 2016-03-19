@@ -1,5 +1,5 @@
 ================================================================================
-Commit Hash: 	82c74056ed3f5b5cb19f5eb4179738c81cd0f9f2
+Commit Hash: 	92042b5a35bf4d1b6d400efbbbdf6abde7347e5e
 
 Dataset: movies
 Train Size: 3020
@@ -11,7 +11,7 @@ O: ['Avg Movie Rating']
 
 Train Params: 	{'max_bins': 10, 'min_leaf_size': 100, 'max_depth': 5, 'agg_type': 'avg'}
 Test Params: 	{'prune_insignificant': True, 'exact': True, 'family_conf': 0.95}
-Report Params: 	{'node_filter': 'root'}
+Report Params: 	{'node_filter': 'better_than_ancestors'}
 ================================================================================
 
 Report of associations of O=['Avg Movie Rating'] on Si = Gender:
@@ -19,14 +19,15 @@ Association metric: CORR
 
 Global Population 0 of size 3020
 
-p-value = 1.25e-03 ; CORR = [0.0101, 0.1279]
+Error Statistics: min=2.91, max=4.44, median=4.31
+p-value = 1.11e-03 ; CORR = [0.0106, 0.1274]
 ================================================================================
 
 Hierarchical printing of subpopulations (summary)
 
 ================================================================================
 
- Context = {} ; CI = [0.0101, 0.1279] ; Size = 3020
+ Context = {} ; CI = [0.0106, 0.1274] ; Size = 3020
 --------------------------------------------------------------------------------
 
 Report of associations of O=['Avg Movie Rating'] on Si = Age:
@@ -34,13 +35,21 @@ Association metric: CORR
 
 Global Population 0 of size 3020
 
-p-value = 2.17e-15 ; CORR = [0.0902, 0.2060]
+Error Statistics: min=2.91, max=4.44, median=4.31
+p-value = 1.97e-15 ; CORR = [0.0907, 0.2055]
 ================================================================================
+
+Sub-Population 1 of size 2174
+Context = {'Gender': 'M'}
+
+p-value = 4.87e-13 ; CORR = [0.0919, 0.2267]
+--------------------------------------------------------------------------------
 
 Hierarchical printing of subpopulations (summary)
 
 ================================================================================
 
- Context = {} ; CI = [0.0902, 0.2060] ; Size = 3020
+ Context = {} ; CI = [0.0907, 0.2055] ; Size = 3020
+   Context = {'Gender': 'M'} ; CI = [0.0919, 0.2267] ; Size = 2174
 --------------------------------------------------------------------------------
 
