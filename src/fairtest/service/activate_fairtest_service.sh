@@ -46,9 +46,6 @@ function check_and_relaunch()
 {
     date
 
-    # always check directories
-    mkfs
-
     # relaunch redis
     ps -FALL | grep -vw "grep" | grep -wq "redis-server"
     if [ "$?" -eq 0 ]; then
@@ -74,4 +71,9 @@ function check_and_relaunch()
     fi
 }
 
+
+# always check directories
+mkfs
+
+# check and relaunch
 check_and_relaunch 2>&1 >> ${DAEMON_LOGFILE}
