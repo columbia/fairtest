@@ -2,6 +2,8 @@
 Report association bugs
 """
 from StringIO import StringIO
+import csv
+import _csv
 import prettytable
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
@@ -19,6 +21,7 @@ from fairtest.modules.metrics import Metric
 from fairtest.modules.context_discovery.tree_parser import Bound
 import fairtest.modules.bug_report.filter_rank as filter_rank
 
+import sys
 
 class Namer(object):
     """
@@ -646,11 +649,25 @@ def pretty_ct(ct):
     output = StringIO()
     rich_ct(ct).to_csv(output)
     output.seek(0)
-    pretty_table = prettytable.from_csv(output)
-    pretty_table.padding_width = 0
-    pretty_table.align = 'r'
-    pretty_table.align[pretty_table.field_names[0]] = 'l'
-    return pretty_table
+    try:
+        pretty_table = prettytable.from_csv(output)
+        pretty_table.padding_width = 0
+        pretty_table.align = 'r'
+        pretty_table.align[pretty_table.field_names[0]] = 'l'
+        return pretty_table
+    except _csv.Error:
+        exc_info = sys.exc_info()
+        print >> sys.stderr, "[Warning] pretty_table raised an exception :", \
+                             exc_info[1]
+        if exc_info[1].message == "Could not determine delimiter":
+            pt = None
+            output.seek(0)
+            rd = csv.reader(output, delimiter=',')
+            pt = prettytable.PrettyTable(next(rd))
+            for row in rd:
+                pt.add_row(row)
+        else:
+            raise exc_info[0], exc_info[1], exc_info[2]
 
 
 def rich_ct(contingency_table):
