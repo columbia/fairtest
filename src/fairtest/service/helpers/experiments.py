@@ -200,7 +200,6 @@ def demo_run(experiment_dict):
         expl = experiment_dict['expl']
     else:
         expl = []
-    print "Experiment parameters:", experiment_dict
 
     # run experiment and place report at proper place
     try:
@@ -212,6 +211,8 @@ def demo_run(experiment_dict):
         inv = Testing(
             data_source, sens, output, expl
         )
+
+        print "Experiment parameters:", experiment_dict
         train([inv])
         test([inv])
         report_name =  os.path.basename(dataset).split('.')[0]
@@ -222,6 +223,7 @@ def demo_run(experiment_dict):
             experiment_folder,
             report_name + "_" + sens[0] + "_" + output + ".txt"
         )
+        print src_path, dst_path
         os.rename(src_path, dst_path)
         os.rmdir(tmp_folder)
 

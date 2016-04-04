@@ -7,7 +7,7 @@ redis_hostname: 'localhost'
 redis_port: 6379
 
 # Workers
-workers: 10
+workers: 5
 
 # FairTest
 db_name: 'fairtest_pools'
