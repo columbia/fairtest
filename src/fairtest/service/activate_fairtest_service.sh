@@ -3,10 +3,12 @@
 # Daemonize fairtest service
 #
 
-DIR="/tmp/fairtest"
-DAEMON_LOGFILE="${DIR}/fairtest_daemon.log"
-SERVER_LOGFILE="${DIR}/fairtest_server.log"
-WORKERS_LOGFILE="${DIR}/fairtest_workers.log"
+TMPDIR="/tmp/fairtest"
+CWD=`pwd`
+
+DAEMON_LOGFILE="${TMPDIR}/fairtest_daemon.log"
+SERVER_LOGFILE="${TMPDIR}/fairtest_server.log"
+WORKERS_LOGFILE="${TMPDIR}/fairtest_workers.log"
 
 REDDISBIN="reddis-server"
 WORKERSBIN="python launch_workers.py"
@@ -14,13 +16,15 @@ SERVERBIN="python launch_server.py"
 
 function mkfs()
 {
-    [ -d ${DIR} ] || mkdir ${DIR}
-    [ -d ${DIR}/datasets ] || mkdir ${DIR}/datasets
-    [ -d ${DIR}/experiments ] || mkdir ${DIR}/experiments
+    [ -d ${TMPDIR} ] || mkdir ${TMPDIR}
+    [ -d ${TMPDIR}/datasets ] || mkdir ${TMPDIR}/datasets
+    [ -d ${TMPDIR}/experiments ] || mkdir ${TMPDIR}/experiments
 
     [ -f ${DAEMON_LOGFILE} ] || touch ${DAEMON_LOGFILE}
     [ -f ${SERVER_LOGFILE} ] || touch ${SERVER_LOGFILE}
     [ -f ${WORKERS_LOGFILE} ] || touch ${WORKERS_LOGFILE}
+
+    [ -d ${TMPDIR}/static ] || ln -s ${CWD}/static ${TMPDIR}/static
 }
 
 function launch_reddis()
