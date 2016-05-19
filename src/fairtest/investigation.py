@@ -74,6 +74,8 @@ class Investigation(object):
         else:
             self.encoders = data_source.encoders
 
+        self.k = data_source.k
+        self.m = data_source.m
         self.holdout = data_source.holdout
         self.metrics = metrics if metrics is not None else {}
         self.trained_trees = {}

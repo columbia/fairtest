@@ -50,7 +50,7 @@ class Holdout(object):
         """
         Obtain a new independent testing set
         """
-        if self.index >= len(self._test_sets):
+        if self.index >= len(self._test_sets) or self.index < 0:
             raise RuntimeError('Maximum number of %d adaptive investigations '
                                'has been reached. You need to create a new '
                                'hold out set!' % self._adaptive_budget)
@@ -72,7 +72,7 @@ class DataSource(object):
     A place holder for a training set and a holdout set
     """
     def __init__(self, data, budget=1, conf=0.95, train_size=0.5,
-                 random_state=0, storage=None):
+                 random_state=0, storage=None, k=0):
         """
         Prepares a dataset for FairTest investigations. Encodes categorical
         features as numbers and separates the data into a training set and a
@@ -129,6 +129,9 @@ class DataSource(object):
             self.train_data = train_data
             self.holdout = holdout
             self.encoders = encoders
+            self.k = k
+            self.m = holdout._adaptive_budget
+
 
     def duplicate(self):
         """
