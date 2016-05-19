@@ -30,9 +30,8 @@ EFFECT = 15
 CLASS = '1000'
 FIND_CONTEXTS_STRICT = True
 
-ITERATIONS = 25
 MAX_BUDGET_REPS = 10
-BUDGETS = [1, 2, 3, 4, 10]
+BUDGETS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 
 def parse_line(line):
@@ -300,7 +299,7 @@ def do_benchmark(data, classes, random_suffix, sens=SENS, target=TARGET,
     return stats
 
 
-def make_plot(data):
+def make_plot(data, n_iterations):
     """
         Helper for plotting
     """
@@ -317,7 +316,7 @@ def make_plot(data):
     plt.xlim((0, max(max_x) + 2))
     plt.ylim((0, max(max_y) + 2))
 
-    plt.ylabel("Discovered Contexts")
+    plt.ylabel("Discovered Contexts (#iterations: {})".format(n_iterations))
     plt.xlabel("Budget (# of investigations)")
 
     for d in data:
@@ -350,12 +349,13 @@ def parallelizer(args):
 
 def main(argv=sys.argv):
 
-    if len(argv) != 2:
+    if len(argv) != 3:
         usage(argv)
 
     log.set_params(level=logging.DEBUG)
 
     FILENAME = argv[1]
+    ITERATIONS = int(argv[2])
     OUTPUT_DIR = "."
 
     P = multiprocessing.Pool(multiprocessing.cpu_count())
@@ -383,7 +383,7 @@ def main(argv=sys.argv):
     # executre benchmark for new implementation and average results
     result = results = P.map_async(
         parallelizer,
-        zip([FILENAME]*ITERATIONS, [False]*ITERATIONS)
+        zip([FILENAME]*ITERATIONS, [True]*ITERATIONS)
     )
     cdfs = results.get()
     mean = map(
@@ -398,19 +398,15 @@ def main(argv=sys.argv):
     print "-"*20
     print cdf2
 
-    make_plot([cdf1, cdf2])
+    make_plot([cdf1, cdf2], ITERATIONS)
 
     P.close()
     P.join()
 
 
 def usage(argv):
-    print "Usage:%s <filename>" % argv[0]
+    print "Usage:%s <filename> <n_iterations>" % argv[0]
     exit(-1)
 
 if __name__ == '__main__':
     sys.exit(main())
-
-
-
-

@@ -17,7 +17,7 @@ class Holdout(object):
     Splits a testing set into multiple independent sets that can be
     used to validate successive adaptive investigations.
     """
-    def __init__(self, data, budget, conf):
+    def __init__(self, data, budget, conf, force_reuse=False):
         """
         Initializes a Data Holdout.
 
@@ -30,6 +30,7 @@ class Holdout(object):
         conf :
             overall family-wide confidence
         """
+        self.force_reuse = force_reuse
         self._adaptive_budget = budget
 
         # set a confidence per adaptive investigation
@@ -56,7 +57,8 @@ class Holdout(object):
                                'hold out set!' % self._adaptive_budget)
 
         ret = self._test_sets[self.index]
-        self.index -= 1
+        if not self.force_reuse:
+            self.index -= 1
         return ret
 
     def return_unused_data(self, test_set):
@@ -72,7 +74,7 @@ class DataSource(object):
     A place holder for a training set and a holdout set
     """
     def __init__(self, data, budget=1, conf=0.95, train_size=0.5,
-                 random_state=0, storage=None, k=0):
+                 random_state=0, storage=None, k=0, force_reuse=False):
         """
         Prepares a dataset for FairTest investigations. Encodes categorical
         features as numbers and separates the data into a training set and a
@@ -124,7 +126,7 @@ class DataSource(object):
 
             logging.info('Training Size %d' % len(train_data))
 
-            holdout = Holdout(test_data, budget, conf)
+            holdout = Holdout(test_data, budget, conf, force_reuse=force_reuse)
 
             self.train_data = train_data
             self.holdout = holdout
