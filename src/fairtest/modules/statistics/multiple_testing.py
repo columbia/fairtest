@@ -190,19 +190,17 @@ def compute_stats(contexts, exact, conf, seed):
 
     logging.info('Computing stats for %d contexts' % len(contexts))
 
-    """
-    P = multiprocessing.Pool(multiprocessing.cpu_count())
-    results = P.map_async(
-        _wrapper,
-        zip(contexts, [conf]*len(contexts), [exact]*len(contexts),
-            [seed]*len(contexts))
-    )
-    stats = results.get()
-    P.close()
-    P.join()
-    """
+    # P = multiprocessing.Pool(multiprocessing.cpu_count())
+    # results = P.map_async(
+    #     _wrapper,
+    #     zip(contexts, [conf]*len(contexts), [exact]*len(contexts),
+    #         [seed]*len(contexts), [k]*len(contexts), [m]*len(contexts))
+    # )
+    # stats = results.get()
+    # P.close()
+    # P.join()
 
-    stats = [_wrapper((context, conf, exact, seed)) for context in contexts]
+    stats = [_wrapper((context, conf, exact, seed, k, m)) for context in contexts]
 
     #
     # The following block helps parallelization on a spark cluster

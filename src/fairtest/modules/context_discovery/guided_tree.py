@@ -320,10 +320,11 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
     else:
         pool_size = max(1, multiprocessing.cpu_count() - 2)
 
-    pool = multiprocessing.Pool(pool_size)
+    # pool = multiprocessing.Pool(pool_size)
+    pool = None
     rec_build_tree(data, tree, [], features, 0, 0, pool)
-    pool.close()
-    pool.join()
+    # pool.close()
+    # pool.join()
 
     return tree
 
@@ -442,21 +443,32 @@ def select_best_feature(node_data, features, split_params,
     expl = split_params.expl
     targets = split_params.targets
 
-    # create a list of argument tuples
-    args = zip(
-        features,
-        [sens]*len(features),
-        [targets]*len(features),
-        [expl]*len(features),
-        [feature_info]*len(features),
-        [node_data]*len(features),
-        [split_params]*len(features),
-        [score_params]*len(features),
-        [parent_score]*len(features)
-    )
+    # # create a list of argument tuples
+    # args = zip(
+    #     features,
+    #     [sens]*len(features),
+    #     [targets]*len(features),
+    #     [expl]*len(features),
+    #     [feature_info]*len(features),
+    #     [node_data]*len(features),
+    #     [split_params]*len(features),
+    #     [score_params]*len(features),
+    #     [parent_score]*len(features)
+    # )
+    #
+    # # `parallelize scoring of features
+    # results = pool.map_async(score_feature, args).get()
+    # print "--->", len(args)
+    # results = score_feature(args)
 
-    # parallelize scoring of features
-    results = pool.map_async(score_feature, args).get()
+    results = []
+    for feature in features:
+        results.append(
+            score_feature(
+                (feature, sens, targets, expl, feature_info, node_data,
+                split_params, score_params, parent_score)
+            )
+        )
 
     # drop features with no split
     to_drop = [d['feature'] for d in results if d['split_score'] is None]
