@@ -63,7 +63,8 @@ def compute_investigation_stats(inv, exact=True, conf=0.95):
     adj_conf = 1-(1-conf)/total_hypotheses
 
     # statistics for all investigations
-    all_stats = {sens: compute_stats(ctxts, exact, adj_conf, inv.random_state)
+    all_stats = {sens: compute_stats(ctxts, exact, adj_conf, inv.random_state,
+                                     inv.k, inv.m)
                  for (sens, ctxts) in sorted(inv.contexts.iteritems())}
 
     # flattened array of all p-values
@@ -131,7 +132,7 @@ def num_hypotheses(inv):
     return tot
 
 
-def _wrapper((context, conf, exact, seed)):
+def _wrapper((context, conf, exact, seed, k, m)):
     """
     Helper, wrapper used for map_async callback
 
@@ -159,10 +160,10 @@ def _wrapper((context, conf, exact, seed)):
     logging.info('Computing stats for context %d' % context.num)
     ro.r('set.seed({})'.format(seed))
     np.random.seed(seed)
-    return context.metric.compute(context.data, conf, exact=exact).stats
+    return context.metric.compute(context.data, conf, k, m, exact=exact).stats
 
 
-def compute_stats(contexts, exact, conf, seed):
+def compute_stats(contexts, exact, conf, seed, k, m):
     """
     Compute statistics for a list of contexts
 

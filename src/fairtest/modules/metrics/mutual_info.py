@@ -19,17 +19,17 @@ class NMI(Metric):
     dataType = Metric.DATATYPE_CT
 
     @staticmethod
-    def approx_stats(data, conf):
-        return mutual_info(data, norm=True, conf=conf)
+    def approx_stats(data, conf, k, m):
+        return mutual_info(data, k, m, norm=True, conf=conf)
 
     @staticmethod
     def exact_test(data):
         return tests.permutation_test_ct(data)
 
     @staticmethod
-    def exact_ci(data, conf):
+    def exact_ci(data, conf, k, m):
         return intervals.bootstrap_ci_ct(data,
-                                         lambda s: mutual_info(s, norm=True),
+                                         lambda s: mutual_info(s, k, m, norm=True),
                                          conf=conf)
 
     @staticmethod
@@ -57,15 +57,15 @@ class CondNMI(Metric):
     """
     dataType = Metric.DATATYPE_CT
 
-    def compute(self, data, conf, exact=True):
+    def compute(self, data, conf, k, m, exact=True):
         if exact:
             pval = tests.permutation_test_ct_cond(
-                data, lambda ct: abs(cond_mutual_info(ct)))
+                data, lambda ct: abs(cond_mutual_info(ct, k, m)))
 
             ci_low, ci_high = intervals.bootstrap_ci_ct_cond(
-                data, lambda ct: abs(cond_mutual_info(ct)), conf=conf)
+                data, lambda ct: abs(cond_mutual_info(ct, k, m)), conf=conf)
         else:
-            [ci_low, ci_high, pval] = cond_mutual_info(data, conf=conf)
+            [ci_low, ci_high, pval] = cond_mutual_info(data, k, m, conf=conf)
 
         self.stats = pd.DataFrame(columns=['ci_low', 'ci_high', 'pval'])
         self.stats.loc[0] = [ci_low, ci_high, pval]
@@ -107,7 +107,7 @@ class CondNMI(Metric):
         return 'CondNMI'
 
 
-def mutual_info(data, norm=True, conf=None):
+def mutual_info(data, k, m, norm=True, conf=None):
     """
     mutual information with or without normalization and confidence intervals.
 
@@ -177,7 +177,7 @@ def mutual_info(data, norm=True, conf=None):
 
     gstat, pval, dof, _ = tests.g_test(data)
 
-    ci_low, ci_high = intervals.ci_mi(gstat, dof, data_size, conf)
+    ci_low, ci_high = intervals.ci_mi(gstat, dof, data_size, conf, k, m)
 
     if pval > 1-conf:
         ci_low = 0
@@ -192,7 +192,7 @@ def mutual_info(data, norm=True, conf=None):
     return ci_low, ci_high, pval
 
 
-def cond_mutual_info(data, norm=True, conf=None):
+def cond_mutual_info(data, k, m, norm=True, conf=None):
     """
     Compute the conditional mutual information of two variables given a third
     Parameters
@@ -211,6 +211,6 @@ def cond_mutual_info(data, norm=True, conf=None):
     https://en.wikipedia.org/wiki/Conditional_mutual_information
     """
     weights = [d.sum() for d in data]
-    mis = [mutual_info(d, norm, conf) for d in data]
+    mis = [mutual_info(d, k, m, norm, conf) for d in data]
     cond_mi = np.average(mis, axis=0, weights=weights)
     return cond_mi

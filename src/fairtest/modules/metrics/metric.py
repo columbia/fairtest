@@ -55,7 +55,7 @@ class Metric(object):
             size = len(data)
         return size
 
-    def compute(self, data, conf, exact=True):
+    def compute(self, data, conf, k=0, m=0, exact=True):
         """
         Computes a confidence interval and p-value for given data.
 
@@ -82,7 +82,7 @@ class Metric(object):
 
         if not exact or size > min(self.approx_LIMIT_P, self.approx_LIMIT_CI):
             try:
-                ci_low, ci_high, pval = self.approx_stats(data, conf)
+                ci_low, ci_high, pval = self.approx_stats(data, conf, k, m)
             except ValueError:
                 ci_low, ci_high, pval = 0, 0, 10*10
 
@@ -90,7 +90,7 @@ class Metric(object):
             pval = self.exact_test(data)
 
         if exact and size <= self.approx_LIMIT_CI:
-            ci_low, ci_high = self.exact_ci(data, conf)
+            ci_low, ci_high = self.exact_ci(data, conf, k, m)
 
         self.stats = [ci_low, ci_high, pval]
         return self

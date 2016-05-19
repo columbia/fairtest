@@ -56,6 +56,7 @@ def filter_rank_bugs(context_stats, node_filter=FILTER_BETTER_THAN_ANCESTORS,
             filtered_bugs = [(c, c_stats) for (c, c_stats) in context_stats if
                              not c.isroot and c_stats[-1] <= 1-conf]
 
+
     logging.info('%d statistically significant sub-contexts'
                  % len(filtered_bugs))
 
@@ -86,6 +87,10 @@ def filter_rank_bugs(context_stats, node_filter=FILTER_BETTER_THAN_ANCESTORS,
     # sort by effect size
     filtered_bugs.sort(key=lambda (c, stats): c.metric.abs_effect(),
                        reverse=True)
+
+    filtered_bugs = [(c, c_stats) for (c, c_stats) in filtered_bugs if
+                         c_stats[0] > 0]
+
 
     logging.info('%d sub-contexts printed' % len(filtered_bugs))
     return filtered_bugs

@@ -7,6 +7,29 @@ import numpy as np
 import pandas as pd
 import scipy.stats as stats
 
+import math
+
+
+def laplacian_noise(n, k, m):
+    """
+    Implements Daniel's formula:
+
+    mean  := 0
+    sigma := (m^0.5*((ln(k/0.05))^1.5)/n)^(1/2.5), where
+
+           n: is the test-set size
+           m: is the number of roounds of investigations -- i.e., the budget
+           k: is the number of subpopulations across all investigations
+    """
+    mean = 0
+    sigma = pow(
+        pow(m, 0.5) * (pow(math.log(float(k) / 0.05), 1.5)) / n,
+        1.0 / 2.5
+    )
+    l_noise = float(np.random.laplace(mean, sigma, 1))
+
+    return l_noise
+
 
 def z_effect(ci_low, ci_high):
     """
@@ -35,7 +58,7 @@ def z_effect(ci_low, ci_high):
     return 0 if (ci_low * ci_high < 0) else min(abs(ci_low), abs(ci_high))
 
 
-def ci_mi(g, dof, n, conf):
+def ci_mi(g, dof, n, conf, k, m):
     """
     Compute confidence interval for mutual information from the chi-squared
     distribution.
@@ -68,12 +91,22 @@ def ci_mi(g, dof, n, conf):
 
     https://en.wikipedia.org/wiki/G-test
     """
+    noise = 0.0
+    if k:
+        noise = abs(laplacian_noise(n, k, m))
+
+    g += noise
+
     p_low = 1-(1-conf)/2
     p_high = (1-conf)/2
 
     g_low = special.chndtrinc(g, dof, p_low)
     g_high = special.chndtrinc(g, dof, p_high)
     ci_low, ci_high = ((g_low+dof)/(2.0*n), (g_high+dof)/(2.0*n))
+
+    ci_low -= noise/2
+    ci_high += noise/2
+
     return ci_low, ci_high
 
 
