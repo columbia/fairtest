@@ -14,10 +14,12 @@ import logging
 import os
 import sys
 
+import multiprocessing
 from copy import deepcopy
 from random import shuffle, randint, seed
 from math import ceil
 from datetime import datetime
+import numpy as np
 
 
 EXPL = []
@@ -26,12 +28,11 @@ TARGET = 'price'
 
 EFFECT = 15
 CLASS = '1000'
-FIND_CONTEXTS_STRICT = False
+FIND_CONTEXTS_STRICT = True
 
-MAX_BUDGET_REPS = 1#0
-BUDGETS = [8000, 8500, 9000, 95000, 10000, 11000, 12000, 14000, 16000, 32000]
-BUDGETS = [9000]
-
+ITERATIONS = 25
+MAX_BUDGET_REPS = 10
+BUDGETS = [1, 2, 3, 4, 10]
 
 
 def parse_line(line):
@@ -175,23 +176,15 @@ def load_file(file_name):
     return classes, pool, lines
 
 
-def do_benchmark(classes, pool, guard_lines,
-                 expl, sens, target, output_dir, budgets, noise=False):
+def create_contexts(classes, pool, guard_lines, random_suffix):
     """
-    main method doing the benchmark
+        Helper to create contexts
     """
     stats = []
     BASE_FILENAME = "/tmp/temp_fairtest"
 
-    MICROSECONDS = int((datetime.now() - datetime(1970, 1, 1)).total_seconds()*10**6)
-
-    # keep last digits of this very large number
-    RANDOM_SEED = MICROSECONDS % 10**8
-    seed(RANDOM_SEED)
-
     selected = classes[CLASS]
 
-    random_suffix = str(randint(1, 999999))
     current_filename = BASE_FILENAME + random_suffix
     f_temp = open(current_filename, "w+")
     print >> f_temp, "state,gender,race,income,price"
@@ -240,28 +233,38 @@ def do_benchmark(classes, pool, guard_lines,
     f_temp.close()
     assert guard_lines == lines
 
-    print "Finished file creation"
-
     # Prepare data into FairTest friendly format
+    print "Finished file creation"
     data = prepare.data_from_csv(current_filename)
     os.remove(current_filename)
-
     print "Finished data loading"
     print "Max number of contexs: %s" % (len(selected))
+
+    return data
+
+
+
+def do_benchmark(data, classes, random_suffix, sens=SENS, target=TARGET,
+                 expl=EXPL, noise=False, budgets=BUDGETS):
+    """
+    main method doing the benchmark
+    """
+
+    stats = []
+    selected = classes[CLASS]
 
     k = 0
     if noise:
         k = len(selected)
 
     for budget in budgets:
-    #for budget in range(minBudget, maxBudget + 1, step):
 
         found = 0.0
         data_source = DataSource(data, budget=budget, k=k)
-        for nRep in xrange(1, budget + 1):
-            inv = Testing(data_source, sens, target, expl, random_state=0)
-            train([inv])
+        inv = Testing(data_source, sens, target, expl, random_state=0)
+        train([inv])
 
+        for nRep in xrange(1, budget + 1):
 
             exact_stats = False
             if int(CLASS) < 1000:
@@ -287,22 +290,20 @@ def do_benchmark(classes, pool, guard_lines,
                         found += 1
             del _selected
 
-            print "Iteration-%d,%d,%d,%.2f" % (nRep, budget, found, found / nRep)
-
             # uncomment to cap the number of reps averaged
             if nRep >= MAX_BUDGET_REPS:
                  break
 
         stats.append((budget, found / nRep))
-        print stats
-        if found == 0.0:
-            break
 
+    print stats
     return stats
 
 
 def make_plot(data):
-
+    """
+        Helper for plotting
+    """
     plt.gca().set_color_cycle(['red', 'green'])
 
     max_x = []
@@ -313,7 +314,6 @@ def make_plot(data):
     for d in data:
         max_y.append(max(map(lambda x: x[1], d)))
 
-
     plt.xlim((0, max(max_x) + 2))
     plt.ylim((0, max(max_y) + 2))
 
@@ -323,10 +323,29 @@ def make_plot(data):
     for d in data:
         x = list(map(lambda x: x[0], d))
         y = list(map(lambda x: x[1], d))
-        plt.plot(x, y, marker='o')
+        std = list(map(lambda x: x[2], d))
+        plt.errorbar(x, y, yerr=std, marker='o')
 
-    plt.legend(['Baseline CDF', 'CDF with Laplacian Noise'], loc='upper left')
+    plt.legend(['Baseline CDF', 'CDF with Laplacian Noise'], loc='upper right')
     plt.savefig("./plot.png")
+
+
+def parallelizer(args):
+    """
+        Helper to parallelize execution
+    """
+    # keep last digits of this very large number
+    MICROSECONDS = int((datetime.now() - datetime(1970, 1, 1)).total_seconds()*10**6)
+    RANDOM_SEED = MICROSECONDS % 10**8
+    seed(RANDOM_SEED)
+    random_suffix = str(randint(1, 999999))
+
+    filename, noise = args
+    classes, pool, lines = load_file(filename)
+    data = create_contexts(classes, pool, lines, random_suffix)
+    cdf = do_benchmark(data, classes, random_suffix, noise=noise)
+
+    return cdf
 
 
 def main(argv=sys.argv):
@@ -334,26 +353,55 @@ def main(argv=sys.argv):
     if len(argv) != 2:
         usage(argv)
 
+    log.set_params(level=logging.DEBUG)
+
     FILENAME = argv[1]
     OUTPUT_DIR = "."
 
-    log.set_params(level=logging.DEBUG)
+    P = multiprocessing.Pool(multiprocessing.cpu_count())
 
-#    # baseline CDF
-#    classes, pool, lines = load_file(FILENAME)
-#    cdf1 = do_benchmark(classes, pool, lines,
-#                        EXPL, SENS, TARGET, OUTPUT_DIR, BUDGETS)
-
-    # CDF with laplacian noise
-    classes, pool, lines = load_file(FILENAME)
-    cdf2 = do_benchmark(classes, pool, lines,
-                        EXPL, SENS, TARGET, OUTPUT_DIR, BUDGETS, noise=True)
-
+    # executre benchmark for baseline and average results
+    result = results = P.map_async(
+        parallelizer,
+        zip([FILENAME]*ITERATIONS, [False]*ITERATIONS)
+    )
+    cdfs = results.get()
+    mean = map(
+        lambda x: np.mean((x)),
+        zip(*map(lambda x: x[1], map(zip, *zip(*cdfs))))
+    )
+    stdev = map(
+        lambda x: np.std((x)),
+        zip(*map(lambda x: x[1], map(zip, *zip(*cdfs))))
+    )
+    cdf1  = zip(BUDGETS, mean, stdev)
     print "-"*20
-#    print cdf1
-#    print cdf2
-#
-#    make_plot([cdf1, cdf2])
+    print cdf1
+
+    print "="*20
+
+    # executre benchmark for new implementation and average results
+    result = results = P.map_async(
+        parallelizer,
+        zip([FILENAME]*ITERATIONS, [False]*ITERATIONS)
+    )
+    cdfs = results.get()
+    mean = map(
+        lambda x: np.mean((x)),
+        zip(*map(lambda x: x[1], map(zip, *zip(*cdfs))))
+    )
+    stdev = map(
+        lambda x: np.std((x)),
+        zip(*map(lambda x: x[1], map(zip, *zip(*cdfs))))
+    )
+    cdf2  = zip(BUDGETS, mean, stdev)
+    print "-"*20
+    print cdf2
+
+    make_plot([cdf1, cdf2])
+
+    P.close()
+    P.join()
 
 
 def usage(argv):
