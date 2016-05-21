@@ -257,8 +257,13 @@ def do_benchmark(data_dict, classes, random_suffix, sens=SENS, target=TARGET,
     if noise:
         k = len(selected)
 
+    prev = 0
     for budget in budgets:
-        for key in sorted(data_dict):
+        # optimize this for to avoid redundant iterations based on
+        # the following idea: if budget b cannot succeed in effect e,
+        # then budget b + 1, should not start iterate for all effects
+        # (starting from 1) but for some value near e.
+        for key in sorted(data_dict)[prev:]:
             found = 0.0
             data = data_dict[key]
             if noise:
@@ -292,6 +297,7 @@ def do_benchmark(data_dict, classes, random_suffix, sens=SENS, target=TARGET,
                 if nRep >= MAX_BUDGET_REPS:
                      break
 
+            # print "budget:%d, effect:%d, found:%.2f" % (budget, key, found/nRep)
             if found / nRep == float(len(selected)):
                 break
 
@@ -300,7 +306,13 @@ def do_benchmark(data_dict, classes, random_suffix, sens=SENS, target=TARGET,
             stats.append((budget, key))
         else:
             print "budget:%d, effect:%d, NOT found" % (budget, key)
-            stats.append((budget, 0))
+            for budget in budgets[budgets.index(budget):]:
+                stats.append((budget, 0))
+            break
+
+        # optimaze search space
+        prev = sorted(data_dict).index(key) - 2
+        if prev < 0: prev = 0
 
     print stats
     return stats
@@ -394,7 +406,6 @@ def main(argv=sys.argv):
 
     print "="*20
 
-
     result = results = P.map_async(
         parallelizer,
         zip([FILENAME]*ITERATIONS, [True]*ITERATIONS)
@@ -411,9 +422,9 @@ def main(argv=sys.argv):
     cdf2  = zip(BUDGETS, mean, stdev)
     print "-"*20
 
-    make_plot([cdf1, cdf2], ITERATIONS)
     print cdf1
     print cdf2
+    make_plot([cdf1, cdf2], ITERATIONS)
 
     P.close()
     P.join()
