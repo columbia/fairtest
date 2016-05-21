@@ -22,13 +22,10 @@ def laplacian_noise(n, k, m):
            k: is the number of subpopulations across all investigations
     """
     mean = 0
-    sigma = pow(
-        pow(m, 0.5) * (pow(math.log(float(k) / 0.05), 1.5)) / n,
-        1.0 / 2.5
-    )
-    l_noise = float(np.random.laplace(mean, sigma, 1))
+    sigma = pow(pow(m, 0.5)*(pow(math.log(float(k)/0.05), 1.5))/n, 1/2.5)
+    noise = float(np.random.laplace(mean, sigma, 1))
 
-    return l_noise
+    return noise, sigma
 
 
 def z_effect(ci_low, ci_high):
@@ -92,8 +89,14 @@ def ci_mi(g, dof, n, conf, k, m):
     https://en.wikipedia.org/wiki/G-test
     """
     noise = 0.0
-    if k:
-        noise = abs(laplacian_noise(n, k, m))
+    sigma = 0.0
+
+    # if more than one investigation and noise method activated
+    if m > 1 and k > 0:
+        noise, sigma = laplacian_noise(n, k, m)
+#        print "k: %d, m: %d" % (k, m)
+#        print "noise: %.2f, sigma: %.2f" %(noise, sigma)
+#        print ""
 
     g += noise
 
@@ -104,8 +107,8 @@ def ci_mi(g, dof, n, conf, k, m):
     g_high = special.chndtrinc(g, dof, p_high)
     ci_low, ci_high = ((g_low+dof)/(2.0*n), (g_high+dof)/(2.0*n))
 
-    ci_low -= noise/2
-    ci_high += noise/2
+    ci_low -= sigma
+    ci_high += sigma
 
     return ci_low, ci_high
 
