@@ -242,15 +242,16 @@ def create_contexts(classes, pool, guard_lines, random_suffix):
     return data
 
 
-
 def do_benchmark(data, classes, random_suffix, sens=SENS, target=TARGET,
                  expl=EXPL, noise=False, budgets=BUDGETS):
     """
     main method doing the benchmark
     """
-
     stats = []
     selected = classes[CLASS]
+    exact_stats = False
+    if int(CLASS) < 1000:
+        exact_stats = True
 
     k = 0
     if noise:
@@ -259,20 +260,17 @@ def do_benchmark(data, classes, random_suffix, sens=SENS, target=TARGET,
     for budget in budgets:
 
         found = 0.0
-        data_source = DataSource(data, budget=budget, k=k)
+        if noise:
+            data_source = DataSource(data, budget=budget, k=k, force_reuse=True)
+        else:
+            data_source = DataSource(data, budget=budget, k=k, force_reuse=False)
         inv = Testing(data_source, sens, target, expl, random_state=0)
         train([inv])
 
         for nRep in xrange(1, budget + 1):
-
-            exact_stats = False
-            if int(CLASS) < 1000:
-                exact_stats = True
-
             test([inv], exact=exact_stats)
 
-            # Create the report (apply no filtering)
-            context_list = report([inv], "benchmark_" + random_suffix,
+            context_list = report([inv], "benchmark_" + random_suffix + "_" + str(budget),
                                   output_dir="/tmp", node_filter='all',
                                   filter_conf=0)
             # count success
@@ -334,11 +332,7 @@ def parallelizer(args):
         Helper to parallelize execution
     """
     # keep last digits of this very large number
-    MICROSECONDS = int((datetime.now() - datetime(1970, 1, 1)).total_seconds()*10**6)
-    RANDOM_SEED = MICROSECONDS % 10**8
-    seed(RANDOM_SEED)
-    random_suffix = str(randint(1, 999999))
-
+    random_suffix = str(randint(1, 999999999999))
     filename, noise = args
     classes, pool, lines = load_file(filename)
     data = create_contexts(classes, pool, lines, random_suffix)
@@ -352,11 +346,15 @@ def main(argv=sys.argv):
     if len(argv) != 3:
         usage(argv)
 
-    log.set_params(level=logging.DEBUG)
+    log.set_params(level=logging.INFO)
 
     FILENAME = argv[1]
     ITERATIONS = int(argv[2])
     OUTPUT_DIR = "."
+
+    MICROSECONDS = int((datetime.now() - datetime(1970, 1, 1)).total_seconds()*10**6)
+    RANDOM_SEED = MICROSECONDS % 10**8
+    seed(RANDOM_SEED)
 
     P = multiprocessing.Pool(multiprocessing.cpu_count())
 
@@ -380,7 +378,7 @@ def main(argv=sys.argv):
 
     print "="*20
 
-    # executre benchmark for new implementation and average results
+
     result = results = P.map_async(
         parallelizer,
         zip([FILENAME]*ITERATIONS, [True]*ITERATIONS)
