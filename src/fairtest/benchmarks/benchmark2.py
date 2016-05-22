@@ -27,11 +27,11 @@ SENS = ['income']
 TARGET = 'price'
 
 EFFECT = 20
-CLASS = '1000'
+CLASS = '5000'
 FIND_CONTEXTS_STRICT = True
 
 MAX_BUDGET_REPS = 1
-BUDGETS = [1, 5, 20, 40, 80]
+BUDGETS = [1]#20]#, 20, 40, 80]
 
 
 def parse_line(line):
@@ -79,6 +79,11 @@ def round(key):
     SIZE = 10000
     if key in range(int(SIZE*(1 - DELTA_HIGH)), int(SIZE*(1 + DELTA_HIGH))+1):
         return str(SIZE)
+
+    SIZE = 20000
+    if key in range(int(SIZE*(1 - DELTA_HIGH)), int(SIZE*(1 + DELTA_HIGH))+1):
+        return str(SIZE)
+
 
     return None
 
@@ -249,6 +254,7 @@ def do_benchmark(data, classes, random_suffix, sens=SENS, target=TARGET,
     """
     stats = []
     selected = classes[CLASS]
+    print selected
     exact_stats = False
     if int(CLASS) < 1000:
         exact_stats = True
@@ -285,12 +291,14 @@ def do_benchmark(data, classes, random_suffix, sens=SENS, target=TARGET,
                         # times sub-sub-populations of a population
                         _selected.remove(state_race)
                         found += 1
+            print _selected
             del _selected
 
             # uncomment to cap the number of reps averaged
             if nRep >= MAX_BUDGET_REPS:
                  break
 
+        print budget, float(found) / float(nRep)
         stats.append((budget, found / nRep))
 
     print stats
@@ -358,46 +366,47 @@ def main(argv=sys.argv):
 
     P = multiprocessing.Pool(multiprocessing.cpu_count())
 
-    # executre benchmark for baseline and average results
-    result = results = P.map_async(
-        parallelizer,
-        zip([FILENAME]*ITERATIONS, [False]*ITERATIONS)
-    )
-    cdfs = results.get()
-    mean = map(
-        lambda x: np.mean((x)),
-        zip(*map(lambda x: x[1], map(zip, *zip(*cdfs))))
-    )
-    stdev = map(
-        lambda x: np.std((x)),
-        zip(*map(lambda x: x[1], map(zip, *zip(*cdfs))))
-    )
-    cdf1  = zip(BUDGETS, mean, stdev)
-    print "-"*20
-
-    print "="*20
-
-
-    result = results = P.map_async(
-        parallelizer,
-        zip([FILENAME]*ITERATIONS, [True]*ITERATIONS)
-    )
-    cdfs = results.get()
-    mean = map(
-        lambda x: np.mean((x)),
-        zip(*map(lambda x: x[1], map(zip, *zip(*cdfs))))
-    )
-    stdev = map(
-        lambda x: np.std((x)),
-        zip(*map(lambda x: x[1], map(zip, *zip(*cdfs))))
-    )
-    cdf2  = zip(BUDGETS, mean, stdev)
-    print "-"*20
-    print cdf1
-    print cdf2
-
-    make_plot([cdf1, cdf2], ITERATIONS)
-
+    parallelizer((FILENAME, False))
+#    # executre benchmark for baseline and average results
+#    result = results = P.map_async(
+#        parallelizer,
+#        zip([FILENAME]*ITERATIONS, [False]*ITERATIONS)
+#    )
+#    cdfs = results.get()
+#    mean = map(
+#        lambda x: np.mean((x)),
+#        zip(*map(lambda x: x[1], map(zip, *zip(*cdfs))))
+#    )
+#    stdev = map(
+#        lambda x: np.std((x)),
+#        zip(*map(lambda x: x[1], map(zip, *zip(*cdfs))))
+#    )
+#    cdf1  = zip(BUDGETS, mean, stdev)
+#    print "-"*20
+#
+#    print "="*20
+#
+#
+#    result = results = P.map_async(
+#        parallelizer,
+#        zip([FILENAME]*ITERATIONS, [True]*ITERATIONS)
+#    )
+#    cdfs = results.get()
+#    mean = map(
+#        lambda x: np.mean((x)),
+#        zip(*map(lambda x: x[1], map(zip, *zip(*cdfs))))
+#    )
+#    stdev = map(
+#        lambda x: np.std((x)),
+#        zip(*map(lambda x: x[1], map(zip, *zip(*cdfs))))
+#    )
+#    cdf2  = zip(BUDGETS, mean, stdev)
+#    print "-"*20
+#    print cdf1
+#    print cdf2
+#
+#    make_plot([cdf1, cdf2], ITERATIONS)
+#
     P.close()
     P.join()
 
