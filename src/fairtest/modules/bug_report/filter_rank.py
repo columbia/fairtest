@@ -89,8 +89,7 @@ def filter_rank_bugs(context_stats, node_filter=FILTER_BETTER_THAN_ANCESTORS,
                        reverse=True)
 
     filtered_bugs = [(c, c_stats) for (c, c_stats) in filtered_bugs if
-                         c_stats[0] > 0]
-
+                         c_stats[2] < 0.05]
 
     logging.info('%d sub-contexts printed' % len(filtered_bugs))
     return filtered_bugs
