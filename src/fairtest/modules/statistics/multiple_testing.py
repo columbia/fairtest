@@ -160,7 +160,7 @@ def _wrapper((context, conf, exact, seed, k, m)):
     logging.info('Computing stats for context %d' % context.num)
     ro.r('set.seed({})'.format(seed))
     np.random.seed(seed)
-    return context.metric.compute(context.data, conf, k, m, exact=exact).stats
+    return context.metric.compute(context.data, conf, k=k, m=m, exact=exact).stats
 
 
 def compute_stats(contexts, exact, conf, seed, k, m):

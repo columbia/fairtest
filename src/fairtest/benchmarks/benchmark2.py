@@ -26,12 +26,12 @@ EXPL = []
 SENS = ['income']
 TARGET = 'price'
 
-EFFECT = 15
+EFFECT = 20
 CLASS = '1000'
 FIND_CONTEXTS_STRICT = True
 
-MAX_BUDGET_REPS = 10
-BUDGETS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+MAX_BUDGET_REPS = 1
+BUDGETS = [1, 5, 20, 40, 80]
 
 
 def parse_line(line):
@@ -270,7 +270,7 @@ def do_benchmark(data, classes, random_suffix, sens=SENS, target=TARGET,
         for nRep in xrange(1, budget + 1):
             test([inv], exact=exact_stats)
 
-            context_list = report([inv], "benchmark_" + random_suffix + "_" + str(budget),
+            context_list = report([inv], "benchmark2_" + random_suffix + "_" + str(budget),
                                   output_dir="/tmp", node_filter='all',
                                   filter_conf=0)
             # count success
@@ -374,7 +374,6 @@ def main(argv=sys.argv):
     )
     cdf1  = zip(BUDGETS, mean, stdev)
     print "-"*20
-    print cdf1
 
     print "="*20
 
@@ -394,6 +393,7 @@ def main(argv=sys.argv):
     )
     cdf2  = zip(BUDGETS, mean, stdev)
     print "-"*20
+    print cdf1
     print cdf2
 
     make_plot([cdf1, cdf2], ITERATIONS)
