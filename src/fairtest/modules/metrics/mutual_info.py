@@ -10,12 +10,52 @@ import numpy as np
 import scipy.stats as stats
 import sys
 
-def algorithm2(data):
+def algorithm2(data, k):
     """
     Calculates p-values for adaptive investifations according to:
         http://arxiv.org/pdf/1511.03376v2.pdf
     """
+    print "in"
+    n = data.size
+    epsilon = k
+
+    # add noise to each individual cell
+    mean  = 0
+    sigma = 2.0 / epsilon
+    data = data + np.random.laplace(mean, sigma, data.shape)
+
+    # calculate approximate statistic from noisy table
+    gstat, _, _, _ = tests.g_test(data)
+
+    SUM_i = 0
+    SUM_j = 1
+
+    theta = np.zeros(data.shape)
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            theta[i, j] = data.sum(SUM_j)[i] * data.sum(SUM_i)[j] / pow(data.sum() ,2)
+
+    tau = []
+    for _ in range(200):
+        a  = np.reshape(theta, (theta.shape[0]*theta.shape[1], 1)).diagonal()
+        b  = np.reshape(theta, (theta.shape[0]*theta.shape[1], 1)) * np.reshape(theta, (theta.shape[0]*theta.shape[1], 1)).transpose()
+        _sigma = a - b
+        _mean = np.zeros(_sigma.shape[1])
+        VecA = np.random.multivariate_normal(_mean, _sigma)
+        A = np.reshape(VecA, data.shape)
+        V =  np.random.laplace(mean, sigma, data.shape)
+        X = A + V / pow(n, 1.0/2)
+        tau.append(1)
+
+    tau = [t for t in tau if t >= gstat]
+
+    if len(tau) == 0:
+        pval = 1
+    else:
+        pval = float(sum(tau)) / float(len(tau))
+
     pval = 1
+    print "out"
 
     return pval
 
@@ -201,7 +241,7 @@ def mutual_info(data, k, m, norm=True, conf=None):
 
     # override everything and use paper's algorithm
     if k:
-        pval = algorithm2(data)
+        pval = algorithm2(data, k)
         ci_low, ci_high = 0.0, 0.0
 
 
