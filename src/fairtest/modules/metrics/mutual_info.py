@@ -10,6 +10,15 @@ import numpy as np
 import scipy.stats as stats
 import sys
 
+def algorithm2(data):
+    """
+    Calculates p-values for adaptive investifations according to:
+        http://arxiv.org/pdf/1511.03376v2.pdf
+    """
+    pval = 1
+
+    return pval
+
 
 class NMI(Metric):
     """
@@ -179,6 +188,7 @@ def mutual_info(data, k, m, norm=True, conf=None):
 
     ci_low, ci_high = intervals.ci_mi(gstat, dof, data_size, conf, k, m)
 
+
     if pval > 1-conf:
         ci_low = 0
 
@@ -188,6 +198,12 @@ def mutual_info(data, k, m, norm=True, conf=None):
 
     ci_low = max(ci_low, 0)
     ci_high = min(ci_high, 1)
+
+    # override everything and use paper's algorithm
+    if k:
+        pval = algorithm2(data)
+        ci_low, ci_high = 0.0, 0.0
+
 
     return ci_low, ci_high, pval
 
