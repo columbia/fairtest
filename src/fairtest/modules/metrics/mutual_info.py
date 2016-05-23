@@ -15,69 +15,70 @@ def algorithm2(data, m):
     Calculates p-values for adaptive investifations according to:
         http://arxiv.org/pdf/1511.03376v2.pdf
     """
+    N_SAMPLES = 500
     data = data
     original_gstat, original_pval, _, _ = tests.g_test(data)
 
-#    n = data.size
-#    epsilon = 1.0 / m
-#
-#    # add noise to each individual cell
-#    mean  = 0
-#    sigma = 2.0 / epsilon
-#    data = data + np.random.laplace(mean, sigma, data.shape)
-#
-#    # calculate approximate statistic from noisy table
-#    gstat, _, _, _ = tests.g_test(data)
-#
-#    # T[i, .] = data.sum(SUM_j)[i]
-#    # T[., j] = data.sum(SUM_i)[j]
-#    SUM_i = 0
-#    SUM_j = 1
-#    theta = np.zeros(data.shape)
-#    for i in range(data.shape[0]):
-#        for j in range(data.shape[1]):
-#            theta[i, j] = data.sum(SUM_j)[i] * data.sum(SUM_i)[j] / pow(data.sum() ,2)
-#
-#    n_samples = 2000
-#    tau = []
-#    # in case p-val equals zero because the approximation didn' t generate any
-#    # acceptable samle, set p-value = 1 / (m + 1), making an extremely modest
-#    # assumption -- instead of setting it to zero, which would be more realistic
-#    TINY_PVAL = 1.0 / (n_samples + 1)
-#
-#    for _ in range(n_samples):
-#        a  = np.reshape(theta, (theta.shape[0]*theta.shape[1], 1)).diagonal()
-#        b1 = np.reshape(theta, (theta.shape[0]*theta.shape[1], 1))
-#        b2 = np.reshape(theta, (theta.shape[0]*theta.shape[1], 1)).transpose()
-#        multivariate_sigma = a - b1 * b2
-#        multivariate_mean = np.zeros(multivariate_sigma.shape[1])
-#        VecA = np.random.multivariate_normal(multivariate_mean, multivariate_sigma)
-#        A = np.reshape(VecA, data.shape)
-#        V =  np.random.laplace(mean, sigma, data.shape)
-#        X = A + V / pow(n, 1.0/2)
-#
-#        sum1 = 0.0
-#        sum2 = 0.0
-#        for i in range(data.shape[0]):
-#            for j in range(data.shape[1]):
-#                sum1 += X[i, j]**2 / theta[i, j]
-#            sum2 += X.sum(SUM_j)[i]**2 / theta.sum(SUM_j)[i]
-#
-#        sum3 = 0.0
-#        for j in range(data.shape[1]):
-#            sum3 += X.sum(SUM_i)[j]**2 / theta.sum(SUM_i)[j]
-#
-#        t = sum1 - sum2 - sum3 + X.sum()**2 / theta.sum()
-#        tau.append(t)
-#
-#    tau = [t for t in tau if t >= gstat]
-#
-#    if len(tau):
-#        pval = float(len(tau)) / float(n_samples)
-#    else:
-#        pval = TINY_PVAL
-#
-#    print original_pval, pval, m
+
+    # add noise to each individual cell
+    n = data.size
+    mean  = 0
+    epsilon = 1.0 / m
+    sigma = 2.0 / epsilon
+    data = data + np.random.laplace(mean, sigma, data.shape)
+
+    # calculate approximate statistic from noisy table
+    gstat, _, _, _ = tests.g_test(data)
+
+    #
+    # Note the following:
+    #   * T[i, .] = data.sum(SUM_j)[i]
+    #   * T[., j] = data.sum(SUM_i)[j]
+    #
+    SUM_i = 0
+    SUM_j = 1
+    theta = np.zeros(data.shape)
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            theta[i, j] = data.sum(SUM_j)[i] * data.sum(SUM_i)[j] / pow(data.sum() ,2)
+
+    tau = []
+    # in case p-val equals zero because the approximation didn' t generate any
+    # acceptable samle, set p-value = 1 / (m + 1), making an extremely modest
+    # assumption -- instead of setting it to zero, which would be more realistic
+    TINY_PVAL = 1.0 / (N_SAMPLES + 1)
+
+    for _ in range(N_SAMPLES):
+        a  = np.reshape(theta, (theta.shape[0]*theta.shape[1], 1)).diagonal()
+        b1 = np.reshape(theta, (theta.shape[0]*theta.shape[1], 1))
+        b2 = np.reshape(theta, (theta.shape[0]*theta.shape[1], 1)).transpose()
+        multivariate_sigma = a - b1 * b2
+        multivariate_mean = np.zeros(multivariate_sigma.shape[1])
+        VecA = np.random.multivariate_normal(multivariate_mean, multivariate_sigma)
+        A = np.reshape(VecA, data.shape)
+        V =  np.random.laplace(mean, sigma, data.shape)
+        X = A + V / pow(n, 1.0/2)
+
+        sum1 = 0.0
+        sum2 = 0.0
+        for i in range(data.shape[0]):
+            for j in range(data.shape[1]):
+                sum1 += X[i, j]**2 / theta[i, j]
+            sum2 += X.sum(SUM_j)[i]**2 / theta.sum(SUM_j)[i]
+
+        sum3 = 0.0
+        for j in range(data.shape[1]):
+            sum3 += X.sum(SUM_i)[j]**2 / theta.sum(SUM_i)[j]
+
+        t = sum1 - sum2 - sum3 + X.sum()**2 / theta.sum()
+        tau.append(t)
+
+    tau = [t for t in tau if t >= gstat]
+
+    if len(tau):
+        pval = float(len(tau)) / float(N_SAMPLES)
+    else:
+        pval = TINY_PVAL
 
     return original_pval
 
@@ -262,8 +263,7 @@ def mutual_info(data, k, m, norm=True, conf=None):
     ci_high = min(ci_high, 1)
 
     # override everything and use paper's algorithm
-    if k:
-        print "here"
+    if k and m > 1:
         #pval = algorithm2(data, 1)
         pval = algorithm2(data, m)
         #pval = algorithm2(data, m+5)
