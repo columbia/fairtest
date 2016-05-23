@@ -26,9 +26,9 @@ EXPL = []
 SENS = ['income']
 TARGET = 'price'
 
-CLASS = '1000'
-EFFECTS = range(10, 50, 1)
-FIND_CONTEXTS_STRICT = True
+CLASS = '10000'
+EFFECTS = range(5, 50, 1)
+FIND_CONTEXTS_STRICT = False
 
 MAX_BUDGET_REPS = 10
 BUDGETS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -345,7 +345,7 @@ def make_plot(data, n_iterations):
         plt.errorbar(x, y, yerr=std, marker='o')
 
     plt.legend(['Baseline CDF', 'CDF with Laplacian Noise'], loc='best')
-    plt.savefig("./plot.png")
+    plt.savefig("./plot3.png")
 
 
 def parallelizer(args):
