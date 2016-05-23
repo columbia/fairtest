@@ -17,7 +17,6 @@ def algorithm2(data, m):
     """
     N_SAMPLES = 500
     data = data
-    original_gstat, original_pval, _, _ = tests.g_test(data)
 
 
     # add noise to each individual cell
@@ -42,12 +41,13 @@ def algorithm2(data, m):
         for j in range(data.shape[1]):
             theta[i, j] = data.sum(SUM_j)[i] * data.sum(SUM_i)[j] / pow(data.sum() ,2)
 
-    tau = []
     # in case p-val equals zero because the approximation didn' t generate any
     # acceptable samle, set p-value = 1 / (m + 1), making an extremely modest
     # assumption -- instead of setting it to zero, which would be more realistic
     TINY_PVAL = 1.0 / (N_SAMPLES + 1)
+    tau = []
 
+    # generate sample to approximate p-val
     for _ in range(N_SAMPLES):
         a  = np.reshape(theta, (theta.shape[0]*theta.shape[1], 1)).diagonal()
         b1 = np.reshape(theta, (theta.shape[0]*theta.shape[1], 1))
@@ -73,6 +73,7 @@ def algorithm2(data, m):
         t = sum1 - sum2 - sum3 + X.sum()**2 / theta.sum()
         tau.append(t)
 
+    # sample values to calculate approximate p-val
     tau = [t for t in tau if t >= gstat]
 
     if len(tau):
