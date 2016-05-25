@@ -14,7 +14,7 @@ def main():
     workers = conf['workers']
     redis_conn = Redis()
     workers_handler = worker.WorkerHandler()
-    queue = Queue(connection=redis_conn)
+    queue = Queue(connection=redis_conn, default_timeout=18000)
     workers_handler.start_workers(redis_conn, queue, workers)
 
 
