@@ -351,16 +351,19 @@ def main(argv):
     print "median_entropy:", median_entropy
     print "max_entropy:", max_entropy
 
-    print(Counter(map(lambda x: 'Low entropy' if x < median_entropy else 'High Entropy', entropy)))
+    print(Counter(map(lambda x: 'High' if x < median_entropy else 'Low', entropy)))
 
     originalTestData = originalData.iloc[test_index].copy()
+
+    originalTestData['Prediction Confidence Abs'] =  entropy
     originalTestData['Prediction Confidence'] =  map(
-        lambda x: 'Low Entropy' if x < median_entropy else 'High Entropy', entropy
+        lambda x: 'High' if x < median_entropy else 'Low', entropy
     )
-    originalTestData['Prediction'] = predictions# == labels_test.values)
+    originalTestData['Prediction'] = predictions
     originalTestData['Ground Truth'] = labels_test.values
-    originalTestData['Error'] = map(lambda x: 0 if x else 1,
-                                    originalTestData['Prediction'] == originalTestData['Ground Truth'])
+    originalTestData['Error'] = map(lambda x: 1 if x else 0,
+                                    originalTestData['Prediction'] == originalTestData['Ground Truth']
+                                    )
 
     losses = np.zeros(originalTestData.shape[0])
     for i in range(originalTestData.shape[0]):
@@ -372,8 +375,17 @@ def main(argv):
     print "-"*30
 
     for (val, g) in originalTestData.groupby('Prediction Confidence'):
-        print '{}: mean binary loss = {}'.format(val, (g['Error']).mean())
+        print '{}: mean binary error = {}'.format(val, (g['Error']).mean())
     print "-"*30
+
+    for (val, g) in originalTestData.groupby('Category'):
+        print '{}: mean abs confidence = {}'.format((g['Prediction Confidence Abs']).mean(), val)
+    print "-"*30
+
+    for (val, g) in originalTestData.groupby('Category'):
+        print '{}: mean logloss = {}'.format((g['logloss']).mean(), val)
+    print "-"*30
+
 
 
     feature_list = originalTestData.columns.tolist()
