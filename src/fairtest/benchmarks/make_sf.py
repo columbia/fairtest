@@ -15,17 +15,31 @@ def main(argv=sys.argv):
     data = prepare.data_from_csv(FILENAME)
     OUTPUT_DIR = argv[2]
 
-    # Initializing parameters for experiment
-    EXPL = []
-    SENS = ['Median hh income 12 months']
-    TARGET = 'logloss'
+    to_drop = ['logloss', 'Entropy Abs', 'PdDistrict']
+
+    EXPL = ['Entropy Bin']
+    SENS = ['Category']
+    TARGET = 'Error Str'
 
     data_source = DataSource(data, train_size=0.5)
 
-    inv = Testing(data_source, SENS, TARGET, EXPL, random_state=0)
+    inv = Testing(data_source, SENS, TARGET, EXPL, random_state=0,
+                  to_drop=to_drop)
     train([inv])
     test([inv], exact=False)
-    report([inv], "sf", OUTPUT_DIR)
+    if EXPL:
+        report(
+            [inv],
+            "sf" + SENS[0].replace(' ', '') + TARGET.replace(' ','') + EXPL[0].replace(' ', ''),
+            OUTPUT_DIR
+        )
+    else:
+        report(
+            [inv],
+            "sf" + SENS[0].replace(' ', '') + TARGET.replace(' ',''),
+            OUTPUT_DIR
+        )
+
 
 
 
