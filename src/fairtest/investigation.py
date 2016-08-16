@@ -16,6 +16,7 @@ from os import path
 import sys
 import abc
 import logging
+import random
 
 import rpy2.robjects as ro
 from rpy2.robjects import numpy2ri
@@ -90,6 +91,7 @@ class Investigation(object):
         else:
             self.random_state = 0
         ro.r('set.seed({})'.format(self.random_state))
+        random.seed(self.random_state)
 
         self.train_set = data_source.train_data.copy()
 
@@ -157,7 +159,8 @@ class Investigation(object):
 
 
 def train(investigations, max_depth=5, min_leaf_size=100,
-          score_aggregation=guided_tree.ScoreParams.AVG, max_bins=10):
+          score_aggregation=guided_tree.ScoreParams.AVG, max_bins=10,
+          subsample_frac=1.0):
     """
     Form hypotheses about discrimination contexts for each protected feature
     in each investigation
@@ -224,11 +227,12 @@ def train(investigations, max_depth=5, min_leaf_size=100,
                                           inv.expl, inv.output,
                                           copy(inv.metrics[sens]),
                                           conf, max_depth, min_leaf_size,
-                                          score_aggregation, max_bins)
+                                          score_aggregation, max_bins,
+                                          subsample_frac)
             inv.trained_trees[sens] = tree
 
 
-def test(investigations, prune_insignificant=True, exact=True,
+def test(investigations, prune_insignificant=True, exact=True, correct=True,
          new_metrics=None, new_expl=None):
     """
     Compute effect sizes and p-values for the discrimination contexts
@@ -314,8 +318,9 @@ def test(investigations, prune_insignificant=True, exact=True,
         # compute p-values and confidence intervals with FWER correction
         logging.info('Begin testing phase')
         np.random.seed(investigations[0].random_state)
+
         multitest.compute_all_stats(investigations, exact,
-                                    holdout.test_set_conf)
+                                    holdout.test_set_conf, correct)
     except Exception:
         holdout.return_unused_data(test_data)
 

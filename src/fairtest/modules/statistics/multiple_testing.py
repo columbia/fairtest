@@ -9,7 +9,7 @@ import multiprocessing
 import rpy2.robjects as ro
 
 
-def compute_all_stats(investigations, exact=True, conf=0.95):
+def compute_all_stats(investigations, exact=True, conf=0.95, correct=True):
     """
     Compute all statistics for all investigations and protected features
 
@@ -27,12 +27,13 @@ def compute_all_stats(investigations, exact=True, conf=0.95):
 
     # reserve the same "confidence budget" for each investigation, independently
     # of the number of hypotheses tested in each
-    adj_conf = 1-(1-conf)/len(investigations)
+    adj_conf = 1-(1-conf)/len(investigations) if correct else conf
+
     for inv in investigations:
-        inv.stats = compute_investigation_stats(inv, exact, adj_conf)
+        inv.stats = compute_investigation_stats(inv, exact, adj_conf, correct)
 
 
-def compute_investigation_stats(inv, exact=True, conf=0.95):
+def compute_investigation_stats(inv, exact=True, conf=0.95, correct=True):
     """
     Compute all statistics for all protected features of an investigation
 
@@ -60,7 +61,7 @@ def compute_investigation_stats(inv, exact=True, conf=0.95):
     #
     # Adjusted Confidence Level (Bonferroni)
     #
-    adj_conf = 1-(1-conf)/total_hypotheses
+    adj_conf = 1-(1-conf)/total_hypotheses if correct else conf
 
     # statistics for all investigations
     all_stats = {sens: compute_stats(ctxts, exact, adj_conf, inv.random_state)
@@ -72,9 +73,10 @@ def compute_investigation_stats(inv, exact=True, conf=0.95):
                  for stat in sens_stats['stats']]
 
     # correct p-values
-    _, pvals_corr, _, _ = multipletests(all_pvals,
-                                        alpha=1-conf,
-                                        method='holm')
+    if correct:
+        pvals_corr = multipletests(all_pvals, alpha=1-conf,  method='holm')[1]
+    else:
+        pvals_corr = all_pvals
 
     # replace p-values by their corrected value
     idx = 0
@@ -203,17 +205,6 @@ def compute_stats(contexts, exact, conf, seed):
     """
 
     stats = [_wrapper((context, conf, exact, seed)) for context in contexts]
-
-    #
-    # The following block helps parallelization on a spark cluster
-    #
-    # from pyspark import SparkContext
-    # sc = SparkContext("local[4]", "FairTest")
-    # rdd = sc.parallelize(
-    #     zip(contexts, [conf]*len(contexts),[exact]*len(contexts))
-    # )
-    # stats = result.collect()
-    #
 
     #
     # When calling 'map_async', the Context object is pickled

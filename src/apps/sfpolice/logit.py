@@ -342,7 +342,7 @@ def main(argv):
 
     interval_sizes, stds = pred_ints(model, features_test, labels_test)
     # use std instead of percentile difference
-    interval_sizes = stds
+    # interval_sizes = stds
     median_interval_size = np.median(interval_sizes)
     max_interval_size = np.max(interval_sizes)
     min_interval_size = np.min(interval_sizes)

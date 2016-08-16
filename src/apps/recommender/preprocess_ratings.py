@@ -2,7 +2,6 @@
 Parse ratings file and replace timestamp with a counter for each user
 """
 import sys
-import statistics
 from os.path import isfile
 from random import shuffle
 

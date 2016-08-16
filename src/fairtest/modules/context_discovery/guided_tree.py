@@ -13,6 +13,8 @@ import logging
 import multiprocessing
 import traceback
 import sys
+import random
+import math
 
 
 def find_thresholds(data, features, feature_info, num_bins):
@@ -99,7 +101,7 @@ class SplitParams(object):
     Split parameters
     """
     def __init__(self, targets, sens, expl, dim, feature_info,
-                 thresholds, min_leaf_size):
+                 thresholds, min_leaf_size, subsample):
         self.targets = targets
         self.sens = sens
         self.expl = expl
@@ -107,10 +109,12 @@ class SplitParams(object):
         self.feature_info = feature_info
         self.thresholds = thresholds
         self.min_leaf_size = min_leaf_size
+        self.subsample = subsample
 
 
 def build_tree(data, feature_info, sens, expl, output, metric, conf,
-               max_depth, min_leaf_size=100, agg_type='avg', max_bins=10):
+               max_depth, min_leaf_size=100, agg_type='avg', max_bins=10,
+               subsample_frac=1.0):
     """
     Builds a decision tree guided towards nodes with high bias
 
@@ -186,7 +190,7 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
 
     score_params = ScoreParams(metric, agg_type, conf)
     split_params = SplitParams(targets, sens, expl, dim, feature_info,
-                               cont_thresholds, min_leaf_size)
+                               cont_thresholds, min_leaf_size, subsample_frac)
 
     # get a measure for the root
     if metric.dataType == Metric.DATATYPE_CT:
@@ -318,7 +322,7 @@ def build_tree(data, feature_info, sens, expl, output, metric, conf,
     if len(features) < 10:
         pool_size = 1
     else:
-        pool_size = max(1, multiprocessing.cpu_count() - 2)
+        pool_size = 1#max(1, multiprocessing.cpu_count() - 2)
 
     pool = multiprocessing.Pool(pool_size)
     rec_build_tree(data, tree, [], features, 0, 0, pool)
@@ -441,6 +445,10 @@ def select_best_feature(node_data, features, split_params,
     sens = split_params.sens
     expl = split_params.expl
     targets = split_params.targets
+    subsample_frac = split_params.subsample
+
+    features = random.sample(features,
+                             int(math.ceil(subsample_frac*len(features))))
 
     # create a list of argument tuples
     args = zip(

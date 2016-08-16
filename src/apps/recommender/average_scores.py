@@ -2,7 +2,6 @@
 Compute the average score of movies in different genres and decades
 """
 import sys
-import statistics
 from os.path import isfile
 from collections import Counter
 import ast
@@ -247,7 +246,7 @@ if __name__ == "__main__":
     1980: 3.59
     1990: 3.47
     1910: 3.47
-    2000: 3.3
+    2000: 3.37
     '''
 
     

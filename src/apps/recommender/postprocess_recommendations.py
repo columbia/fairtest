@@ -3,7 +3,6 @@
 Join recommendations with user attributes and movie genres
 """
 import sys
-import statistics
 import ast
 import re
 from collections import Counter
@@ -62,7 +61,7 @@ def parse_recommendation(line):
     """
     fields = line.strip().split("\t")[:]
     return [str(fields[0]), str(fields[1]),
-            str(fields[2]), ast.literal_eval(fields[3])]
+            str(fields[2]), str(fields[3]), ast.literal_eval(fields[4])]
 
 def load_users(user_file):
     """
@@ -158,18 +157,18 @@ if __name__ == "__main__":
     
     f_out = open('output/recommendations.txt', 'w')
     
-    print >> f_out, "Gender\tAge\tOccupation\tAvg Movie Rating\tRMSE\tAvg Movie Age\tTypes"
+    print >> f_out, "Gender\tAge\tOccupation\tAvg Recommended Rating\tAvg Seen Rating\tRMSE\tAvg Movie Age\tTypes"
     
     for userId in recs:
         rec = recs[userId]
         user = users[userId]
         movieTypes = []
         tot_age = 0
-        for movie in rec[2]:
+        for movie in rec[3]:
             movieTypes += movies[movie]
             year = re.search(r"\((\d+)\)", movie).group(1)
             tot_age +=  2015-int(year)
-        avg_age = (1.0*tot_age)/len(rec[2])
+        avg_age = (1.0*tot_age)/len(rec[3])
         counter = Counter(movieTypes)
         top5 = map(lambda x: x[0], counter.most_common(5))
-        print >> f_out, "{}\t{}\t{}\t{}\t{}\t{}\t{}".format(user[0], user[1], user[2], rec[0], rec[1], avg_age, top5)
+        print >> f_out, "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(user[0], user[1], user[2], rec[0], rec[1], rec[2], avg_age, top5)

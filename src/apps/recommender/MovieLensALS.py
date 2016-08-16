@@ -62,6 +62,7 @@ if __name__ == "__main__":
       .setAppName("MovieLensALS") \
       .set("spark.executor.memory", "2g")
     sc = SparkContext(conf=conf)
+    sc.setCheckpointDir('checkpoint/')
     
     # load ratings and movie titles
     movieLensHomeDir = sys.argv[1]
@@ -132,9 +133,9 @@ if __name__ == "__main__":
     
     # train models and evaluate them on the validation set
 
-    ranks = [8, 12]
-    lambdas = [0.1, 10.0]
-    numIters = [10, 20]
+    ranks = [12]
+    lambdas = [0.1]
+    numIters = [20]
     bestModel = None
     bestValidationRmse = float("inf")
     bestRank = 0
@@ -182,6 +183,9 @@ if __name__ == "__main__":
         user_movies_avgs = [movie_avgs[x[1]][0] for x in recommendations]
         user_weighted_avg = np.average(user_movies_avgs, weights=None)
         
+        # average ratings of movies seen
+        user_movies_avgs_seen = np.average([movie_avgs[x][0] for x in user_movies])
+
         # get the user's test set and compute the error
         user_test = test.filter(lambda r: r[0] == user)
         n = user_test.count()
@@ -192,8 +196,8 @@ if __name__ == "__main__":
         user_movies_weights = [movie_avgs[x[1]][1] for x in recommendations]
         user_weighted_avg = np.average(user_movies_avgs, weights=user_movies_weights)
         avg_score = np.mean([x[2] for x in recommendations])
-        print '{}\t{}\t{}\t{}'.format(user, user_weighted_avg, rmse, labels)
-        print >> f_out, '{}\t{}\t{}\t{}'.format(user, user_weighted_avg, rmse, labels)
+        print '{}\t{}\t{}\t{}\t{}'.format(user, user_weighted_avg, user_movies_avgs_seen, rmse, labels)
+        print >> f_out, '{}\t{}\t{}\t{}\t{}'.format(user, user_weighted_avg, user_movies_avgs_seen, rmse, labels)
     # clean up
     sc.stop()
     

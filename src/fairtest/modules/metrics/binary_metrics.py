@@ -181,6 +181,9 @@ def difference(data, conf=None):
     if isinstance(data, pd.DataFrame):
         data = data.values
 
+    data = data.copy()
+    data += 5
+
     # transform contingency table into probability table
     tot = np.sum(data, axis=0)
 
@@ -280,7 +283,7 @@ def ratio(data, conf=None):
 
     # data smoothing
     data = data.copy()
-    data += 1
+    data += 5
 
     # transform contingency table into probability table
     tot = np.sum(data, axis=0)
