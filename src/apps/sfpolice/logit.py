@@ -181,12 +181,12 @@ def train_and_test_model1(features_train, labels_train, features_test,
     print("train", log_loss(labels_train, model.predict_proba(features_train.as_matrix())))
 
     cat_indexes = labels_test.cat.codes
-    predictions = model.predict_proba(features_test.as_matrix())
+    predict_probas = model.predict_proba(features_test.as_matrix())
 
     sumloss = .0
     losses = []
-    for i in range(predictions.shape[0]):
-      loss = (-1) * sp.log(max(min(predictions[i][cat_indexes[i]], 1 - 10**(-5)), 10**(-5)))
+    for i in range(predict_probas.shape[0]):
+      loss = (-1) * sp.log(max(min(predict_probas[i][cat_indexes[i]], 1 - 10**(-5)), 10**(-5)))
       sumloss += loss
       losses.append(loss)
 
@@ -199,7 +199,7 @@ def train_and_test_model1(features_train, labels_train, features_test,
                               "Description", "Dates", "Time", "Category",
                               "Descript"]
     features_test_original = features_test_original[feature_list]
-    print("Test Loss: %.5f" % (sumloss / predictions.shape[0]))
+    print("Test Loss: %.5f" % (sumloss / predict_probas.shape[0]))
     print("test: %.5f" % log_loss(labels_test, model.predict_proba(features_test.as_matrix())))
 
 
@@ -236,15 +236,15 @@ def train_and_test_model2(features_train, labels_train, features_test,
     print("Train", log_loss(labels_train, model.predict_proba(features_train.as_matrix())))
 
     cat_indexes = labels_test.cat.codes
-    predictions = model.predict_proba(features_test.as_matrix())
+    predict_probas = model.predict_proba(features_test.as_matrix())
     feature_list = features_test.columns.tolist()
     features_test = features_test[feature_list]
 
     #_sum = .0
     #INF = 10**(-15)
-    #for i in range(predictions.shape[0]):
-    #    _sum -= sp.log(max(min(predictions[i][cat_indexes[i]], 1 - INF), INF))
-    #print "=--->", _sum / float(len(predictions))
+    #for i in range(predict_probas.shape[0]):
+    #    _sum -= sp.log(max(min(predict_probas[i][cat_indexes[i]], 1 - INF), INF))
+    #print "=--->", _sum / float(len(predict_probas))
 
     print("Test: %.5f" % log_loss(labels_test, model.predict_proba(features_test.as_matrix())))
 
@@ -282,11 +282,11 @@ def pred_ints(model, X, Y, percentile=90, batch_size=1000):
         interval_size[idx[0]: idx[1]] = err_up -  err_down
         std[idx[0]: idx[1]] = np.std(preds, axis=1)
 
-    err_down = np.percentile(interval_size, (100 - percentile) / 2. , axis=0)
-    err_up  = np.percentile(interval_size, 100 - (100 - percentile) / 2., axis=0)
-    interval_size = err_up -  err_down
+    #err_down = np.percentile(interval_size, (100 - percentile) / 2. , axis=0)
+    #err_up  = np.percentile(interval_size, 100 - (100 - percentile) / 2., axis=0)
+    #interval_size = err_up -  err_down
 
-    std = np.std(std, axis=0)
+    #std = np.std(std, axis=0)
 
     return interval_size, std
 
@@ -347,47 +347,49 @@ def main(argv):
     max_interval_size = np.max(interval_sizes)
     min_interval_size = np.min(interval_sizes)
 
-    print interval_sizes
-    print "min_interval_size:", min_interval_size
-    print "median_interval_size:", median_interval_size
-    print "max_interval_size:", max_interval_size
+    median_entropy = np.median(entropy)
+    max_entropy = np.max(entropy)
+    min_entropy = np.min(entropy)
+    print "min_entropy:", min_entropy
+    print "median_entropy:", median_entropy
+    print "max_entropy:", max_entropy
 
-    cat_conf = {}
-    for i in range(stds.shape[0]):
-        cat_conf[labels_test.cat.categories[i]] = interval_sizes[i]
-
-    predictions = model.predict_proba(features_test_original.as_matrix())
+    print(Counter(map(lambda x: 'High' if x < median_entropy else 'Low', entropy)))
 
     originalTestData = originalData.iloc[test_index].copy()
+
+    originalTestData['Prediction Confidence Abs'] =  entropy
     originalTestData['Prediction Confidence'] =  map(
-        lambda x: 'High Conf' if cat_conf[x] < median_interval_size else 'Low Conf',
-        originalTestData['Category']
+        lambda x: 'High' if x < median_entropy else 'Low', entropy
     )
-
-    print(Counter(map(lambda x: 'High Conf' if x < median_interval_size
-                      else 'Low Conf', interval_sizes)))
-
-    print(Counter(map(lambda x: 'High Conf' if cat_conf[x] < median_interval_size else 'Low Conf',
-                      originalTestData['Category'])))
+    originalTestData['Prediction'] = predictions
+    originalTestData['Ground Truth'] = labels_test.values
+    originalTestData['Error'] = map(lambda x: 1 if x else 0,
+                                    originalTestData['Prediction'] == originalTestData['Ground Truth']
+                                    )
 
     losses = np.zeros(originalTestData.shape[0])
     for i in range(originalTestData.shape[0]):
-        losses[i] = max(min(predictions[i][cat_indexes[i]], 1 - INF), INF)
+        losses[i] = max(min(predict_probas[i][cat_indexes[i]], 1 - INF), INF)
     originalTestData['logloss'] =  -1*sp.log(np.array(losses))
 
     for (val, g) in originalTestData.groupby('Prediction Confidence'):
         print '{}: mean logloss = {}'.format(val, (g['logloss']).mean())
     print "-"*30
 
+    for (val, g) in originalTestData.groupby('Prediction Confidence'):
+        print '{}: mean binary error = {}'.format(val, (g['Error']).mean())
+    print "-"*30
+
     for (val, g) in originalTestData.groupby('Category'):
-        print '{}: mean logloss = {}'.format(val, (g['logloss']).mean())
+        print '{}: mean abs confidence = {}'.format((g['Prediction Confidence Abs']).mean(), val)
+    print "-"*30
+
+    for (val, g) in originalTestData.groupby('Category'):
+        print '{}: mean logloss = {}'.format((g['logloss']).mean(), val)
     print "-"*30
 
 
-    for cat in sorted(cat_conf, key=cat_conf.get):
-        conf = 'High Conf' if cat_conf[cat] <  median_interval_size else 'Low Conf'
-        print cat_conf[cat], conf, cat
-    print "-"*30
 
     feature_list = originalTestData.columns.tolist()
     for feature in ["X","Y", "ZipCode", "Address", "Resolution", "Description",
@@ -398,18 +400,6 @@ def main(argv):
     originalTestData = originalTestData[feature_list]
     originalTestData.to_csv("results.csv", delimiter=',', index=False)
 
-    #  p50 =  np.percentile(originalData['Total Population'], 50)
-    #  originalData = originalData.iloc[features_test_original.index]
-    #  originalData = originalData[originalData['Category'] == 'LARCENY/THEFT' ]
-    #  index_a = originalData[originalData['Total Population'] < p50].index
-    #  index_b = originalData[originalData['Total Population'] >= p50].index
-    #  index_ab = originalData.index
-    #  print "<50th", features_test_original.loc[index_a, 'logloss'].mean()
-    #  print ">=50th", features_test_original.loc[index_b, 'logloss'].mean()
-    #  for (val, g) in features_test_original.loc[index_ab, :].groupby('Prediction Confidence'):
-    #      print '{}: mean logloss = {}'.format(val, (g['logloss']).mean())
-    #  print features_test_original.loc[index_ab, 'logloss'].mean()
-    #  print features_test_original['logloss'].mean()
 
 if __name__ == "__main__":
     main(sys.argv)
