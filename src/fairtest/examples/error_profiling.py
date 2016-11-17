@@ -1,7 +1,7 @@
 """
 Run FairTest Error Profiling Investigations on Movie Recommender Dataset
 
-Usage: python recommender.py
+Usage: python error_profiling.py
 """
 
 import fairtest.utils.prepare_data as prepare
@@ -18,7 +18,8 @@ def main(argv=sys.argv):
     OUTPUT_DIR = "."
     data = prepare.data_from_csv(FILENAME, sep='\t',
                                  to_drop=['Types', 'Avg Movie Age',
-                                          'Avg Movie Rating'])
+                                          'Avg Recommended Rating',
+                                          'Avg Seen Rating'])
     SENS = ['Gender']
     TARGET = 'RMSE'
     EXPL = []

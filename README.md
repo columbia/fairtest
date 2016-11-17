@@ -216,3 +216,26 @@ src/fairtest/discovery.py               |  Discovery Investigations
 src/fairtest/error_profiling.py         |  ErrorProfiling Investigations
 src/fairtest/investigation.py           |  Train, Test, Report for arbitrary Investigations
 src/fairtest/testing.py                 |  Testing Investigations
+
+
+Citing This Work
+----------------
+If you use FairTest for academic research, you are highly encouraged to cite the following paper:
+
+```
+@article{tramer2015fairtest,
+  title={FairTest: Discovering Unwarranted Associations in Data-Driven Applications},
+  author={Tramer, Florian and Atlidakis, Vaggelis and Geambasu, Roxana and Hsu, Daniel 
+          and Hubaux, Jean-Pierre and Humbert, Mathias and Juels, Ari and Lin, Huang},
+  journal={arXiv preprint arXiv:1510.02377},
+  year={2015}
+}
+```
+
+Reproducing Results
+-------------------
+
+To reproduce the results from our paper above, you can run the IPython notebooks
+`medical.ipynb`, `recommender.ipynb` and `test.ipynb`. Make sure to restart
+the notebooks for each experiment, to ensure that you start from a freshly
+fixed random seed.

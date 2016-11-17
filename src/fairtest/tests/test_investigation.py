@@ -35,9 +35,8 @@ class InvestigationTestCase(unittest.TestCase):
         with open("/tmp/report_berkeley2.txt") as inf2:
             res2 = inf2.readlines()
 
-        for (l1, l2) in zip(res1, res2):
-            self.assertTrue(l1.replace("berkeley1", "berkeley") ==
-                            l2.replace("berkeley2", "berkeley"))
+        for (l1, l2) in zip(res1, res2)[4:]:
+            self.assertTrue(l1 == l2)
 
     def test_parameter_check(self):
         data = DataSource(self.data)

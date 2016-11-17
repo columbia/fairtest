@@ -9,6 +9,7 @@ import fairtest.utils.prepare_data as prepare
 from fairtest import Discovery, Testing, train, test, report, DataSource
 import ast
 import pandas as pd
+import numpy as np
 from sklearn import preprocessing
 
 from time import time
@@ -27,103 +28,60 @@ def main(argv=sys.argv):
     data = prepare.data_from_csv(FILENAME, sep='\t')
     OUTPUT_DIR = argv[2]
 
-    label_col = 'Types'
-    labeled_data = [ast.literal_eval(s) for s in data[label_col]]
-    for labels in labeled_data:
-        assert len(labels) == 5
-    label_encoder = preprocessing.MultiLabelBinarizer()
-    labeled_data = label_encoder.fit_transform(labeled_data)
-    labels = label_encoder.classes_
-    df_labels = pd.DataFrame(labeled_data, columns=labels)
-    data = pd.concat([data.drop(label_col, axis=1), df_labels], axis=1)
-    labels = labels.tolist()
+    # prepare age
+    data['Age'] = map(lambda a: 10 if a == 1
+                           else 20 if a == 18
+                           else 30 if a == 25
+                           else 40 if a == 35
+                           else 50 if a == 45 or a == 50
+                           else 60 if a == 56 else None, data['Age'])
 
-    data_source = DataSource(data, budget=3, train_size=0.25)
+    data['Avg Seen Rating'] = ['low' if x < np.mean(data['Avg Seen Rating'])
+                                   else 'high' for x in data['Avg Seen Rating']]
 
-    # Initializing parameters for experiment
-    SENS = ['Gender']
-    TARGET = 'Avg Movie Rating'
+    data_source = DataSource(data)
+
+    # Instantiate the experiments
+    t1 = time()
+
+    #
+    # Test of associations on movie popularity
+    #
+    SENS = ['Gender', 'Age']
+    TARGET = 'Avg Recommended Rating'
     EXPL = []
 
-    # Instantiate the experiment
-    t1 = time()
-    inv = Testing(data_source, SENS, TARGET, EXPL, random_state=0,
-                  to_drop=['RMSE', 'Avg Movie Age'] + labels)
+    test_ratings = Testing(data_source, SENS, TARGET, EXPL, random_state=0,
+                           to_drop=['RMSE', 'Avg Movie Age',
+                                    'Types', 'Avg Seen Rating'])
+
+    #
+    # Test of associations on movie popularity conditioned on error
+    #
+    SENS = ['Gender', 'Age']
+    TARGET = 'Avg Recommended Rating'
+    EXPL = ['Avg Seen Rating']
+
+    test_ratings_expl = Testing(data_source, SENS, TARGET, EXPL, random_state=0,
+                                to_drop=['RMSE', 'Avg Movie Age', 'Types'])
+
+    inv = [test_ratings, test_ratings_expl]
+
     # Train the classifier
     t2 = time()
-    train([inv])
+    train(inv)
 
     # Evaluate on the testing set
     t3 = time()
-    test([inv])
+    test(inv)
 
     # Create the report
     t4 = time()
-    report([inv], "recommender_test", OUTPUT_DIR+"/test")
+    report(inv, "recommender", OUTPUT_DIR)
 
     t5 = time()
     print "Testing:Recommender:Instantiation: %.2f, Train: %.2f, Test: %.2f, " \
           "Report: %.2f" % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
-    print "-" * 80
-    print
-
-    '''
-    2. Error Profiling
-    '''
-    SENS = ['Gender']
-    TARGET = 'RMSE'
-    EXPL = []
-
-    # Instantiate the experiment
-    t1 = time()
-    inv = Testing(data_source, SENS, TARGET, EXPL, random_state=0,
-                  to_drop=['Avg Movie Age', 'Avg Movie Rating'] + labels)
-    # Train the classifier
-    t2 = time()
-    train([inv])
-
-    # Evaluate on the testing set
-    t3 = time()
-    test([inv])
-
-    # Create the report
-    t4 = time()
-    report([inv], "recommender_error", OUTPUT_DIR+"/error")
-
-    t5 = time()
-    print "Error:Recommender:Instantiation: %.2f, Train: %.2f, Test: %.2f, " \
-          "Report: %.2f" % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
-    print "-" * 80
-    print
-
-    '''
-    3. Discovery
-    '''
-    SENS = ['Gender']
-    TARGET = labels
-    EXPL = []
-
-    # Instantiate the experiment
-    t1 = time()
-    inv = Discovery(data_source, SENS, TARGET, EXPL, topk=10, random_state=0,
-                    to_drop=['RMSE', 'Avg Movie Age',
-                             'Avg Movie Rating', 'Occupation'])
-    # Train the classifier
-    t2 = time()
-    train([inv])
-
-    # Evaluate on the testing set
-    t3 = time()
-    test([inv])
-
-    # Create the report
-    t4 = time()
-    report([inv], "recommender_discovery", OUTPUT_DIR+"/discovery")
-
-    t5 = time()
-
-    print "Discovery:Recommender:Instantiation: %.2f, Train: %.2f, " \
-          "Test: %.2f, Report: %.2f" % ((t2-t1), (t3-t2), (t4-t3), (t5-t4))
     print "-" * 80
     print
 

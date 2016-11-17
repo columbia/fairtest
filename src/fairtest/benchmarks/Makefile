@@ -4,7 +4,7 @@ OUTPUT_FOLDER=results
 
 export PYTHONPATH=../../../src
 
-all: adult berkeley recommender staples medical_bin medical_reg overfeat csv
+all: adult berkeley recommender staples medical images csv
 
 adult:
 	rm -r $(OUTPUT_FOLDER)/adult; \
@@ -34,20 +34,15 @@ staples:
 	mkdir -p $(OUTPUT_FOLDER)/staples; \
 	python -m make_staples $(INPUT_FOLDER)/staples/staples.csv $(OUTPUT_FOLDER)/staples > $(OUTPUT_FOLDER)/results_staples.csv
 
-medical_bin:
-	rm -r $(OUTPUT_FOLDER)/medical_bin; \
-	mkdir -p $(OUTPUT_FOLDER)/medical_bin; \
-	python -m make_medical_bin $(INPUT_FOLDER)/medical/predictions_bin.csv  $(OUTPUT_FOLDER)/medical_bin > $(OUTPUT_FOLDER)/results_medical_bin.csv
+medical:
+	rm -r $(OUTPUT_FOLDER)/medical; \
+	mkdir -p $(OUTPUT_FOLDER)/medical; \
+	python -m make_medical $(INPUT_FOLDER)/medical/predictions_reg_log.csv $(OUTPUT_FOLDER)/medical > $(OUTPUT_FOLDER)/results_medical.csv
 
-medical_reg:
-	rm -r $(OUTPUT_FOLDER)/medical_reg; \
-	mkdir -p $(OUTPUT_FOLDER)/medical_reg; \
-	python -m make_medical_reg $(INPUT_FOLDER)/medical/predictions_reg_log.csv $(OUTPUT_FOLDER)/medical_reg > $(OUTPUT_FOLDER)/results_medical_reg.csv
-
-overfeat:
-	rm -r $(OUTPUT_FOLDER)/overfeat; \
-	mkdir -p $(OUTPUT_FOLDER)/overfeat; \
-	python -m make_overfeat $(INPUT_FOLDER)/images/overfeat_raw.txt  $(OUTPUT_FOLDER)/overfeat > $(OUTPUT_FOLDER)/results_overfeat.csv
+images:
+	rm -r $(OUTPUT_FOLDER)/images; \
+	mkdir -p $(OUTPUT_FOLDER)/images; \
+	python -m make_images $(INPUT_FOLDER)/images/caffe.txt  $(OUTPUT_FOLDER)/images > $(OUTPUT_FOLDER)/results_images.csv
 
 scheduling:
 	rm -r $(OUTPUT_FOLDER)/scheduling; \
