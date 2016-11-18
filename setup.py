@@ -18,6 +18,4 @@ setup(name='fairtest',
                 'fairtest.service.helpers',
                 'fairtest.utils'],
       test_suite="tests",
-      install_requires=['prettytable', 'pydot', 'ete2', 'rpy2', 'eve', 'redis',
-                        'rq', 'requests']
       )
