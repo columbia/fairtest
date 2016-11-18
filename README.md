@@ -32,7 +32,7 @@ installed. We provide a script to assist with the installation of FairTest.
 
 Alternatively, you can download an Ubuntu virtual machine with a complete,
 up-to-date FairTest installation from
-<a href="http://www.cs.columbia.edu/~vatlidak/FairtestVM.gz" title="FairTest VM">here</a>
+<a href="http://www.cs.columbia.edu/~vatlidak/FairtestVM.tar.gz" title="FairTest VM">here</a>
 and launch it with VMWare Player.
 
 Quick Start
