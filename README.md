@@ -35,7 +35,7 @@ apt-get -y install python python-dev python-pip
 
 Install mongo-db fo using Fairtest as an service.
 ```
-apt-get install -y mongodb-server
+apt-get install -y mongodb-server redis-server
 ```
 
 
@@ -44,7 +44,7 @@ Now, create a python virtual environment and install pip package dependencies.
 apt-get install python-virtualenv
 virtualenv venv
 source venv/bin/activate
-pip2 install numpy sklearn statsmodels scipy prettytable pydot ete2 rpy2 eve redis rq requests matplotlib
+pip2 install numpy sklearn statsmodels scipy prettytable pydot ete2 rpy2 eve redis rq requests matplotlib pyyaml
 python2.7 setup.py install
 ```
 
