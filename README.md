@@ -28,22 +28,28 @@ sudo apt-get update
 sudo apt-get -y install r-base r-base-dev
 ```
 
-Then, make sure python is properly installed, along with mongo-db-server (required when Fairtest is used as a service),
-and numpy (a fundamental package for scientific computing).
+Then, make sure python is properly installed
 ```
-sudo apt-get -y install python python-dev python-pip mongodb-org-server liblzma-dev python-numpy libfreetype6-dev 
+sudo apt-get -y install python python-dev python-pip
 ```
 
-Now, create and activate a python2.7 virtual environment
+Install packages for scientific computing and ML.
+```
+sudo apt-get install -y liblzma-dev python-numpy python-sklearn python-statsmodels python-scipy libfreetype6-dev 
+```
+
+Install mongo-db fo using Fairtest as an service.
+```
+sudo apt-get install -y mongodb-server
+```
+
+
+Now, create a python2.7 virtual environment and install pip package dependencies.
 ```
 sudo apt-get install python-virtualenv
 virtualenv -p /usr/bin/python2.7 venv
 source venv/bin/activate
-```
-
-Finally, install pip package dependencies.
-```
-python setup.py install
+python2.7 setup.py install
 ```
 
 Alternatively, you can download an Ubuntu virtual machine with a complete,
