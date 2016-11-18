@@ -22,18 +22,17 @@ for `R` programming language and requires `R` (version > 3.1) to be
 installed. We provide a script to assist with the installation of FairTest.
 
 
-* Run `make apt-dependencies` to install apt package dependencies and
+* First, run `make apt-dependencies` to install apt package dependencies and
   the latests version of `R` (for Ubuntu 12.04 and 14.04).
 
-* Run `make pip-dependencies` to install python pip package dependencies.
+* Then, run `make pip-dependencies` to install python pip package dependencies.
 
-
-* Run `make install` to install both apt and pip package dependencies.
+* To install both apt and pip dependencies run `make install`.
 
 
 Alternatively, you can download an Ubuntu virtual machine with a complete,
 up-to-date FairTest installation from
-<a href="http://www.cs.columbia.edu/~vatlidak/UbuntuVM.tar.gz" title="FairTest VM">here</a>
+<a href="http://www.cs.columbia.edu/~vatlidak/FairtestVM.gz" title="FairTest VM">here</a>
 and launch it with VMWare Player.
 
 Quick Start
