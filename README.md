@@ -21,34 +21,30 @@ FairTest uses `rpy2` python package that provides a python interface
 for `R` programming language and requires `R` (version > 3.1) to be
 installed. First, add the latests version of `R` (for Ubuntu 12.04 and 14.04).
 ```
-sudo sh -c 'echo "deb http://cran.rstudio.com/bin/linux/ubuntu trusty/" >> /etc/apt/sources.list'
+sh -c 'echo "deb http://cran.rstudio.com/bin/linux/ubuntu trusty/" >> /etc/apt/sources.list'
 gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
 gpg -a --export E084DAB9 | sudo apt-key add -
-sudo apt-get update
-sudo apt-get -y install r-base r-base-dev
+apt-get update
+apt-get -y install r-base r-base-dev liblzma-dev libfreetype6-dev 
 ```
 
 Then, make sure python is properly installed
 ```
-sudo apt-get -y install python python-dev python-pip
-```
-
-Install packages for scientific computing and ML.
-```
-sudo apt-get install -y liblzma-dev python-numpy python-sklearn python-statsmodels python-scipy libfreetype6-dev 
+apt-get -y install python python-dev python-pip
 ```
 
 Install mongo-db fo using Fairtest as an service.
 ```
-sudo apt-get install -y mongodb-server
+apt-get install -y mongodb-server
 ```
 
 
-Now, create a python2.7 virtual environment and install pip package dependencies.
+Now, create a python virtual environment and install pip package dependencies.
 ```
-sudo apt-get install python-virtualenv
-virtualenv -p /usr/bin/python2.7 venv
+apt-get install python-virtualenv
+virtualenv venv
 source venv/bin/activate
+pip2 install numpy sklearn statsmodels scipy prettytable pydot ete2 rpy2 eve redis rq requests matplotlib
 python2.7 setup.py install
 ```
 
