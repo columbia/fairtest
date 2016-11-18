@@ -18,7 +18,6 @@ setup(name='fairtest',
                 'fairtest.service.helpers',
                 'fairtest.utils'],
       test_suite="tests",
-      install_requires=['numpy', 'pandas', 'prettytable', 'matplotlib', 'pydot',
-                        'ete2', 'sklearn', 'scipy', 'statsmodels', 'rpy2',
-                        'eve', 'redis', 'rq', 'requests']
+      install_requires=['prettytable', 'pydot', 'ete2', 'rpy2', 'eve', 'redis',
+                        'rq', 'requests']
       )
