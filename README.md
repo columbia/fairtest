@@ -51,7 +51,7 @@ python2.7 setup.py install
 Alternatively, you can download an Ubuntu virtual machine with a complete,
 up-to-date FairTest installation from
 <a href="http://www.cs.columbia.edu/~vatlidak/FairtestVM.tar.gz" title="FairTest VM">here</a>
-and launch it with VMWare Player.
+and launch it with VMWare Player. (username and password are both "fairtest")
 
 Quick Start
 -----------
