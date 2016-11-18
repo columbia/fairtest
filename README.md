@@ -19,16 +19,32 @@ Installation
 FairTest is a `Python` application, developed and tested with `Python 2.7`.
 FairTest uses `rpy2` python package that provides a python interface
 for `R` programming language and requires `R` (version > 3.1) to be
-installed. We provide a script to assist with the installation of FairTest.
+installed. First, add the latests version of `R` (for Ubuntu 12.04 and 14.04).
+```
+sudo sh -c 'echo "deb http://cran.rstudio.com/bin/linux/ubuntu trusty/" >> /etc/apt/sources.list'
+gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
+gpg -a --export E084DAB9 | sudo apt-key add -
+sudo apt-get update
+sudo apt-get -y install r-base r-base-dev
+```
 
+Then, make sure python is properly installed, along with mongo-db-server (required when Fairtest is used as a service),
+and numpy (a fundamental package for scientific computing).
+```
+sudo apt-get -y install python python-dev python-pip mongodb-org-server liblzma-dev python-numpy libfreetype6-dev 
+```
 
-* First, run `make apt-dependencies` to install apt package dependencies and
-  the latests version of `R` (for Ubuntu 12.04 and 14.04).
+Now, create and activate a python2.7 virtual environment
+```
+sudo apt-get install python-virtualenv
+virtualenv -p /usr/bin/python2.7 venv
+source venv/bin/activate
+```
 
-* Then, run `make pip-dependencies` to install python pip package dependencies.
-
-* To install both apt and pip dependencies run `make install`.
-
+Finally, install pip package dependencies.
+```
+python setup.py install
+```
 
 Alternatively, you can download an Ubuntu virtual machine with a complete,
 up-to-date FairTest installation from
