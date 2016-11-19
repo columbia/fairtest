@@ -51,7 +51,7 @@ python2.7 setup.py install
 Alternatively, you can download an Ubuntu virtual machine 
 with a complete, up-to-date FairTest installation from
 <a href="http://www.cs.columbia.edu/~vatlidak/FairtestVM.tar.gz" title="FairTest VM">here</a> (username/password: fairtest).
-There is a fairtest folder is under the home directory and you only need to activate the
+There is a fairtest folder under home directory and you only need to activate the
 preconfigured python virtual environment. 
 
 Quick Start
