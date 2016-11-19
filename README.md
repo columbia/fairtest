@@ -48,10 +48,11 @@ pip2 install numpy sklearn statsmodels scipy prettytable pydot ete2 rpy2 eve red
 python2.7 setup.py install
 ```
 
-Alternatively, you can download an Ubuntu virtual machine with a complete,
-up-to-date FairTest installation from
-<a href="http://www.cs.columbia.edu/~vatlidak/FairtestVM.tar.gz" title="FairTest VM">here</a>
-and launch it with VMWare Player. (username and password are both "fairtest")
+Alternatively, you can download an Ubuntu virtual machine 
+with a complete, up-to-date FairTest installation from
+<a href="http://www.cs.columbia.edu/~vatlidak/FairtestVM.tar.gz" title="FairTest VM">here</a> (username/password: fairtest).
+There is a fairtest folder is under the home directory and you only need to activate the
+preconfigured python virtual environment. 
 
 Quick Start
 -----------
