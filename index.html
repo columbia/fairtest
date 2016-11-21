@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Libtrack by columbia</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h2>Fairtest: Discovering Unwarranted Associations in Data-Driven
+            Applications</h2>
+        <p class="view"><a href="https://github.com/columbia/fairtest">View the
+            Project on GitHub <small>columbia/fairtest</small></a></p>
+        <ul>
+          <li><a href="https://github.com/columbia/fairtest">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+
+<h3>Goal</h3>
+In a world where traditional notions of privacy are increasingly challenged
+by the myriad companies that collect and analyze our data,
+it is important that decision-making entities are held accountable
+for unfair treatments arising from irresponsible data usage.
+Unfortunately, a lack of appropriate
+methodologies and tools means that even identifying unfair or
+discriminatory effects can be a challenge in practice.
+%we must rely on
+%those companies' responsible use of our data to ensure our fair
+%treatment.
+
+We introduce the unwarranted associations (UA) framework,
+a principled methodology for the discovery of
+unfair, discriminatory, or
+offensive user treatment in data-driven applications.
+The UA framework unifies and rationalizes a number of prior attempts at
+formalizing algorithmic fairness.
+It uniquely combines multiple investigative primitives and fairness metrics
+with broad applicability,
+granular exploration of unfair treatment in user subgroups,
+and incorporation of natural notions of utility that may account for
+observed disparities.
+
+We instantiate the UA framework in Fairtest, the first comprehensive tool that helps
+developers check data-driven
+applications for unfair user treatment.
+It enables scalable and statistically rigorous investigation of
+ associations between application outcomes (such as prices or
+premiums) and sensitive user attributes (such as race or gender).
+Furthermore, Fairtest provides debugging
+capabilities that let programmers rule out potential confounders for observed
+unfair effects.
+
+We report on use of Fairtest to investigate and in some cases address
+disparate impact, offensive labeling, and uneven rates of
+algorithmic error in four data-driven applications.
+As examples, our results reveal subtle biases against older populations
+in the distribution of error in a predictive health application and
+offensive racial labeling in an image tagger.
+
+<h3>Resources</h3>
+Some useful resources are:
+
+ <ul>
+ <li><a href="https://github.com/columbia/libtrack/tree/master/fairtest">Source Code</a></li>
+ </ul>
+
+<p>
+<h3>Authors and Contributors</h3>
+
+<p>
+<a href="http://floriantramer.com/">Florian Tramer</a>,
+<a href="http://www.cs.columbia.edu/~vatlidak/">Vaggelis Atlidakis</a>,
+</p>
+
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/columbia">columbia</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+  </body>
+</html>
