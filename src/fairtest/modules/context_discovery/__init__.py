@@ -1,3 +1,0 @@
-"""
-Guided Tree Construction Module.
-"""
