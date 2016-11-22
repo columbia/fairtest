@@ -239,6 +239,17 @@ src/fairtest/error_profiling.py         |  ErrorProfiling Investigations
 src/fairtest/investigation.py           |  Train, Test, Report for arbitrary Investigations
 src/fairtest/testing.py                 |  Testing Investigations
 
+Reproducing Results
+-------------------
+
+To reproduce the results from our paper above, you can run the IPython notebooks
+`medical.ipynb`, `recommender.ipynb` and `test.ipynb`. Make sure to restart
+the notebooks for each experiment, to ensure that you start from a freshly
+fixed random seed.
+
+Reading Our Paper
+-----------------
+[![FairTest: Discovering Unwarranted Associations in Data-Driven Applications](https://github.com/columbia/fairtest/blob/master/fairtest.png)](https://github.com/columbia/fairtest/blob/master/fairtest.pdf)
 
 Citing This Work
 ----------------
@@ -253,16 +264,3 @@ If you use FairTest for academic research, you are highly encouraged to cite the
   year={2015}
 }
 ```
-Reading Our Paper
------------------
-[![FairTest: Discovering Unwarranted Associations in Data-Driven Applications](https://github.com/columbia/fairtest/blob/master/fairtest.png)](https://github.com/columbia/fairtest/blob/master/fairtest.pdf)
-
-
-
-Reproducing Results
--------------------
-
-To reproduce the results from our paper above, you can run the IPython notebooks
-`medical.ipynb`, `recommender.ipynb` and `test.ipynb`. Make sure to restart
-the notebooks for each experiment, to ensure that you start from a freshly
-fixed random seed.
