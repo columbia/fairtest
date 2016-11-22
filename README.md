@@ -253,6 +253,11 @@ If you use FairTest for academic research, you are highly encouraged to cite the
   year={2015}
 }
 ```
+Reading Our Paper
+-----------------
+[![FairTest: Discovering Unwarranted Associations in Data-Driven Applications](https://github.com/columbia/fairtest/blob/master/fairtest.png)](https://github.com/columbia/fairtest/blob/master/fairtest.pdf)
+
+
 
 Reproducing Results
 -------------------
