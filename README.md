@@ -13,8 +13,8 @@ uses statistical methods to assess their validity and strength. Finally,
 FairTest retains all statistically significant associations, ranks them by
 their strength, and reports them as *association bugs* to the user.
 
-Installation
-------------
+Local Installation
+------------------
 
 FairTest is a `Python` application, developed and tested with `Python 2.7`.
 FairTest uses `rpy2` python package that provides a python interface
@@ -25,7 +25,7 @@ sh -c 'echo "deb http://cran.rstudio.com/bin/linux/ubuntu trusty/" >> /etc/apt/s
 gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
 gpg -a --export E084DAB9 | sudo apt-key add -
 apt-get update
-apt-get -y install r-base r-base-dev liblzma-dev libfreetype6-dev 
+apt-get -y install r-base r-base-dev liblzma-dev libfreetype6-dev
 ```
 
 Then, make sure python is properly installed
@@ -39,7 +39,7 @@ apt-get install -y mongodb-server redis-server
 ```
 
 
-Now, create a python virtual environment and install pip package dependencies.
+Now, create a python virtual environment and install the required pip package dependencies.
 ```
 apt-get install python-virtualenv
 virtualenv venv
@@ -48,11 +48,13 @@ pip2 install numpy sklearn statsmodels scipy prettytable pydot ete2 rpy2 eve red
 python2.7 setup.py install
 ```
 
-Alternatively, you can download an Ubuntu virtual machine 
-with a complete, up-to-date FairTest available 
+Preconfigured Virtual Machine
+-----------------------------
+Alternatively, you can download an Ubuntu virtual machine
+with a complete, up-to-date FairTest installation available
 <a href="http://www.cs.columbia.edu/~vatlidak/FairtestVM.tar.gz" title="FairTest VM">here</a>.
-Launch the VM either with VMWare workstation or with Virtualbox and activate the preconfigured python 
-virtual environment as follows:
+Launch the VM either with VMWare workstation or with Virtualbox and activate the preconfigured
+python  virtual environment as follows:
 ```
 cd ~/fairtest
 source venv/bin/activate
@@ -160,6 +162,31 @@ defining further *Fairness Metrics* (see Extensions section below).
 Additional examples, demonstrating how to use FairTest, are at:
 `src/fairtest/examples`.
 
+Fairtest as an Online Service
+-----------------------------
+In addition to using it as a standalone library, Fairtest can also be
+deployed as an online service. Our prototype supports multiple users
+asynchronously conducting Fairtest investigations.
+Users can post investigations through a web interface and
+access the respective bug reports once the experiments are completed.
+Our implementation is based on python job queues and each Fairtest
+investigation is abstracted into a job which is dispatched for
+asynchronous execution into a poll of workers.
+
+To activate the online Fairtest service locally use the following instructions:
+```
+cd ~/fairtest/src/fairtest/service
+source venv/bin/activate
+python2.7 launch_server.py
+```
+This will launch the front-end server which is accessible at
+your local interface, port 5000 (http://0.0.0.0:5000/fairtest). Then,
+create a new tab and launch back-end workers (default number of workers is five).
+```
+python2.7 launch_workers.py
+```
+At that point you can navigate the web interface and post Fairtest investigations.
+
 
 Extensions
 ----------
@@ -238,6 +265,8 @@ src/fairtest/discovery.py               |  Discovery Investigations
 src/fairtest/error_profiling.py         |  ErrorProfiling Investigations
 src/fairtest/investigation.py           |  Train, Test, Report for arbitrary Investigations
 src/fairtest/testing.py                 |  Testing Investigations
+src/fairtest/service                    |  Online service module
+
 
 Reproducing Results
 -------------------
@@ -258,7 +287,7 @@ If you use FairTest for academic research, you are highly encouraged to cite the
 ```
 @article{tramer2015fairtest,
   title={FairTest: Discovering Unwarranted Associations in Data-Driven Applications},
-  author={Tramer, Florian and Atlidakis, Vaggelis and Geambasu, Roxana and Hsu, Daniel 
+  author={Tramer, Florian and Atlidakis, Vaggelis and Geambasu, Roxana and Hsu, Daniel
           and Hubaux, Jean-Pierre and Humbert, Mathias and Juels, Ari and Lin, Huang},
   journal={arXiv preprint arXiv:1510.02377},
   year={2015}
