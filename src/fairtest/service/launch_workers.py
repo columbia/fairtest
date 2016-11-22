@@ -1,7 +1,5 @@
 """
 Launch workers backend
-
-Usage: ./launch_workers <workers>
 """
 import sys
 from rq import Queue
