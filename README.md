@@ -1,4 +1,4 @@
-#FairTest
+# FairTest
 
 FairTest enables developers or auditing entities to *discover* and *test* for
 *unwarranted associations* between an algorithm's outputs and certain user
