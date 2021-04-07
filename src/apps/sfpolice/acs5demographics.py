@@ -40,7 +40,7 @@ import csv
 from census import Census
 
 
-KEY = "9d0d784521088f815d4b10730efafd4116224b76"
+KEY = "_"
 
 QUERY = {
     'B01003_001E':'Total Population',
