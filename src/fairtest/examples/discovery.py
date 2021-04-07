@@ -21,7 +21,8 @@ def main(argv=sys.argv):
     OUTPUT_DIR = "."
     data = prepare.data_from_csv(FILENAME, sep='\\t',
                                  to_drop=['RMSE', 'Avg Movie Age',
-                                          'Avg Movie Rating', 'Occupation'])
+                                          'Avg Recommended Rating',
+                                          'Avg Seen Rating', 'Occupation'])
     TARGET = 'Types'
     SENS = ['Gender']
 

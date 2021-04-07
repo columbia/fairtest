@@ -1,7 +1,0 @@
-* Look for image-net datasets trained on people
-
-* Make sure performance/effectiveness benchmarks still work
-
-* Correct some results
-
-* Test a "clean" installation of FairTest using setup.py

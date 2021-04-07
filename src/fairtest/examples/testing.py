@@ -1,7 +1,7 @@
 """
 Run FairTest Testing Investigation on Staples Dataset
 
-Usage: python staples.py
+Usage: python testing.py
 """
 
 import fairtest.utils.prepare_data as prepare

@@ -1,4 +1,4 @@
-#FairTest
+# FairTest
 
 FairTest enables developers or auditing entities to *discover* and *test* for
 *unwarranted associations* between an algorithm's outputs and certain user
@@ -13,28 +13,52 @@ uses statistical methods to assess their validity and strength. Finally,
 FairTest retains all statistically significant associations, ranks them by
 their strength, and reports them as *association bugs* to the user.
 
-Installation
-------------
+Local Installation
+------------------
 
 FairTest is a `Python` application, developed and tested with `Python 2.7`.
 FairTest uses `rpy2` python package that provides a python interface
 for `R` programming language and requires `R` (version > 3.1) to be
-installed. We provide a script to assist with the installation of FairTest.
+installed. First, add the latests version of `R` (for Ubuntu 12.04 and 14.04).
+```
+sh -c 'echo "deb http://cran.rstudio.com/bin/linux/ubuntu trusty/" >> /etc/apt/sources.list'
+gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
+gpg -a --export E084DAB9 | sudo apt-key add -
+apt-get update
+apt-get -y install r-base r-base-dev liblzma-dev libfreetype6-dev
+```
+
+Then, make sure python is properly installed
+```
+apt-get -y install python python-dev python-pip
+```
+
+Install mongo-db fo using Fairtest as an service.
+```
+apt-get install -y mongodb-server redis-server
+```
 
 
-* Run `make apt-dependencies` to install apt package dependencies and
-  the latests version of `R` (for Ubuntu 12.04 and 14.04).
+Now, create a python virtual environment and install the required pip package dependencies.
+```
+apt-get install python-virtualenv
+virtualenv venv
+source venv/bin/activate
+pip2 install numpy sklearn statsmodels scipy prettytable pydot ete2 rpy2 eve redis rq requests matplotlib pyyaml
+python2.7 setup.py install
+```
 
-* Run `make pip-dependencies` to install python pip package dependencies.
-
-
-* Run `make install` to install both apt and pip package dependencies.
-
-
-Alternatively, you can download an Ubuntu virtual machine with a complete,
-up-to-date FairTest installation from
-<a href="http://www.cs.columbia.edu/~vatlidak/UbuntuVM.tar.gz" title="FairTest VM">here</a>
-and launch it with VMWare Player.
+Preconfigured Virtual Machine
+-----------------------------
+Alternatively, you can download an Ubuntu virtual machine
+with a complete, up-to-date FairTest installation available
+<a href="http://www.cs.columbia.edu/~vatlidak/FairtestVM.tar.gz" title="FairTest VM">here</a>.
+Launch the VM either with VMWare workstation or with Virtualbox and activate the preconfigured
+python  virtual environment as follows:
+```
+cd ~/fairtest
+source venv/bin/activate
+```
 
 Quick Start
 -----------
@@ -138,6 +162,31 @@ defining further *Fairness Metrics* (see Extensions section below).
 Additional examples, demonstrating how to use FairTest, are at:
 `src/fairtest/examples`.
 
+Fairtest as an Online Service
+-----------------------------
+In addition to using it as a standalone library, Fairtest can also be
+deployed as an online service. Our prototype supports multiple users
+asynchronously conducting Fairtest investigations.
+Users can post investigations through a web interface and
+access the respective bug reports once the experiments are completed.
+Our implementation is based on python job queues and each Fairtest
+investigation is abstracted into a job which is dispatched for
+asynchronous execution into a poll of workers.
+
+To activate the online Fairtest service locally use the following instructions:
+```
+cd ~/fairtest/src/fairtest/service
+source venv/bin/activate
+python2.7 launch_server.py
+```
+This will launch the front-end server which is accessible at
+your local interface, port 5000 (http://0.0.0.0:5000/fairtest). Then,
+create a new tab and launch back-end workers (default number of workers is five).
+```
+python2.7 launch_workers.py
+```
+At that point you can navigate the web interface and post Fairtest investigations.
+
 
 Extensions
 ----------
@@ -216,3 +265,31 @@ src/fairtest/discovery.py               |  Discovery Investigations
 src/fairtest/error_profiling.py         |  ErrorProfiling Investigations
 src/fairtest/investigation.py           |  Train, Test, Report for arbitrary Investigations
 src/fairtest/testing.py                 |  Testing Investigations
+src/fairtest/service                    |  Online service module
+
+
+Reproducing Results
+-------------------
+
+To reproduce the results from our paper above, you can run the IPython notebooks
+`medical.ipynb`, `recommender.ipynb` and `test.ipynb`. Make sure to restart
+the notebooks for each experiment, to ensure that you start from a freshly
+fixed random seed.
+
+Reading Our Paper
+-----------------
+[![FairTest: Discovering Unwarranted Associations in Data-Driven Applications](https://github.com/columbia/fairtest/blob/master/fairtest.png)](https://github.com/columbia/fairtest/blob/master/fairtest.pdf)
+
+Citing This Work
+----------------
+If you use FairTest for academic research, you are highly encouraged to cite the following paper:
+
+```
+@article{tramer2015fairtest,
+  title={FairTest: Discovering Unwarranted Associations in Data-Driven Applications},
+  author={Tramer, Florian and Atlidakis, Vaggelis and Geambasu, Roxana and Hsu, Daniel
+          and Hubaux, Jean-Pierre and Humbert, Mathias and Juels, Ari and Lin, Huang},
+  journal={arXiv preprint arXiv:1510.02377},
+  year={2015}
+}
+```

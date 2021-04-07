@@ -28,7 +28,7 @@ class TestingMutualInfo(unittest.TestCase):
         data = np.random.rand(1000, 2)
         data[:, 1] = 2 * data[:, 0]
         data = pd.DataFrame(data)
-        self.assertTrue(correlation(data, conf=None) == 1)
+        self.assertAlmostEqual(correlation(data, conf=None), 1.0)
 
         assertAlmostEqualTuples(self, correlation(data, conf=0.95), (1, 1, 0),
                                 delta=0.01)
